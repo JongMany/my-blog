@@ -96,10 +96,6 @@ jobs:
           test -f dist_ghp/portfolio/assets/remoteEntry.js
           test -f dist_ghp/resume/assets/remoteEntry.js
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist_ghp
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
