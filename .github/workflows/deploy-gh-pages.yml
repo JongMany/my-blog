@@ -76,12 +76,6 @@ jobs:
       # ===== 수집 + 검사 =====
       - run: node scripts/collect-ghp.js
 
-      # ▼▼▼ 추가: shell public -> dist_ghp 루트로 복사
-      - name: Copy shell public to dist_ghp root
-        run: |
-          mkdir -p dist_ghp
-          rsync -a --delete apps/shell/public/ dist_ghp/
-
       - name: Sanity check
         run: |
           test -f dist_ghp/.nojekyll
@@ -89,8 +83,6 @@ jobs:
           test -f dist_ghp/blog/assets/remoteEntry.js
           test -f dist_ghp/portfolio/assets/remoteEntry.js
           test -f dist_ghp/resume/assets/remoteEntry.js
-          # ▼ 추가 점검 (원하면)
-          test -f dist_ghp/projects/tpsl.gif
 
       - uses: actions/upload-pages-artifact@v3
         with:
