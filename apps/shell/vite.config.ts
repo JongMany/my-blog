@@ -89,6 +89,7 @@ function injectRemoteHints(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   base: isCI ? `/${REPO}/` : "/",
+  publicDir: "public",
   plugins: [
     react(),
     tailwindcss(),
