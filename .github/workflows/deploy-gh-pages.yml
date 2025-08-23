@@ -33,7 +33,15 @@ jobs:
       # 또는: - run: pnpm -w --filter ./apps/shell... build && pnpm -w --filter ./apps/blog... build ...
 
       - run: node scripts/collect-ghp.js
-
+      - run: |
+          echo "=== DIST_GHP TREE (depth 4) ==="
+          find dist_ghp -maxdepth 4 -type d -print | sed 's,^,DIR: ,'
+          echo "=== IMPORTANT FILES ==="
+          ls -la dist_ghp/my-blog/index.html || true
+          ls -la dist_ghp/my-blog/assets || true
+          ls -la dist_ghp/my-blog/blog/assets/remoteEntry.js || true
+          ls -la dist_ghp/my-blog/portfolio/assets/remoteEntry.js || true
+          ls -la dist_ghp/my-blog/resume/assets/remoteEntry.js || true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
