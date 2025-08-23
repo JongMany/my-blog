@@ -17,10 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ✅ version 제거 (package.json의 packageManager를 따름)
       - uses: pnpm/action-setup@v4
         with:
-          run_install: false # 설치는 아래에서 직접 실행할 거라 false
+          run_install: false # version 키는 제거 (packageManager 사용)
 
       - uses: actions/setup-node@v4
         with:
@@ -29,10 +28,9 @@ jobs:
 
       - run: pnpm -w install --frozen-lockfile
 
-      - run: pnpm --filter ./apps/shell build
-      - run: pnpm --filter ./apps/blog build
-      - run: pnpm --filter ./apps/portfolio build
-      - run: pnpm --filter ./apps/resume build
+      # 🔹 의존까지 포함해 전체 빌드
+      - run: pnpm -w turbo run build
+      # 또는: - run: pnpm -w --filter ./apps/shell... build && pnpm -w --filter ./apps/blog... build ...
 
       - run: node scripts/collect-ghp.js
 
