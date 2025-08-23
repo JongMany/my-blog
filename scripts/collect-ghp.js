@@ -59,7 +59,7 @@ if (fs.existsSync(resumeDist)) {
 }
 
 // ✅ 루트 / → /my-blog/ 리다이렉트
-const redirectHtml = `<!doctype html><meta http-equiv="refresh" content="0; url=/${REPO}/"><script>location.replace('/${REPO}/')</script>`;
-fs.writeFileSync(path.join(out, "index.html"), redirectHtml);
+// const redirectHtml = `<!doctype html><meta http-equiv="refresh" content="0; url=/${REPO}/"><script>location.replace('/${REPO}/')</script>`;
+// fs.writeFileSync(path.join(out, "index.html"), redirectHtml);
 fs.writeFileSync(path.join(out, ".nojekyll"), "");
 console.log("✓ collected to dist_ghp/my-blog/ (root redirects to /my-blog/)");
