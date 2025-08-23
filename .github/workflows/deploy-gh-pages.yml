@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,11 +58,15 @@ jobs:
       # 캐시버스터(셸 remotes의 ?v=SHA)
       - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
-      # --- 셸은 항상 새로 빌드 (SHA 주입 필요) ---
+      # ✅ 패키지들 먼저 빌드 (tokens/ui/shared 등)
+      - name: Build workspace packages first
+        run: pnpm -w -r --filter "packages/**" run build
+
+      # --- shell: 항상 새 빌드 (SHA 주입 필요) ---
       - name: Build shell
         run: pnpm -w -F shell build:ghp
 
-      # --- blog: 변경되었거나 packages가 바뀌면 빌드, 아니면 이전 artifact 재사용 ---
+      # --- blog: 변경 or packages 변경 시 빌드, 아니면 지난 빌드물 복구 ---
       - name: Build blog
         if: steps.changes.outputs.blog == 'true' || steps.changes.outputs.packages == 'true'
         run: pnpm -w -F blog build:ghp
@@ -71,6 +79,9 @@ jobs:
           name: blog-dist-latest
           path: apps/blog/dist
           if_no_artifact_found: warn
+      - name: Fallback build blog if dist missing
+        if: steps.changes.outputs.blog != 'true' && steps.changes.outputs.packages != 'true'
+        run: test -d apps/blog/dist || pnpm -w -F blog build:ghp
 
       # --- portfolio ---
       - name: Build portfolio
@@ -85,6 +96,9 @@ jobs:
           name: portfolio-dist-latest
           path: apps/portfolio/dist
           if_no_artifact_found: warn
+      - name: Fallback build portfolio if dist missing
+        if: steps.changes.outputs.portfolio != 'true' && steps.changes.outputs.packages != 'true'
+        run: test -d apps/portfolio/dist || pnpm -w -F portfolio build:ghp
 
       # --- resume ---
       - name: Build resume
@@ -99,19 +113,31 @@ jobs:
           name: resume-dist-latest
           path: apps/resume/dist
           if_no_artifact_found: warn
+      - name: Fallback build resume if dist missing
+        if: steps.changes.outputs.resume != 'true' && steps.changes.outputs.packages != 'true'
+        run: test -d apps/resume/dist || pnpm -w -F resume build:ghp
 
       # 빌드물 수집 (flat)
       - run: node scripts/collect-ghp.js
 
       # 필수 파일 존재 검사
-      - run: |
+      - name: Sanity check
+        run: |
           test -f dist_ghp/.nojekyll
           test -f dist_ghp/index.html
           test -f dist_ghp/blog/assets/remoteEntry.js
           test -f dist_ghp/portfolio/assets/remoteEntry.js
           test -f dist_ghp/resume/assets/remoteEntry.js
 
-      # 사람이 내려받아 확인할 수 있게 각 앱 dist도 이름 고정으로 업로드(다음 런에서 재사용)
+      # (디버깅용) 전체 사이트 산출물도 다운로드 가능하게 업로드
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist_ghp-${{ github.sha }}
+          path: dist_ghp
+          if-no-files-found: error
+          retention-days: 7
+
+      # (다음 런에서 재사용할) 각 앱 dist를 이름 고정으로 업로드
       - uses: actions/upload-artifact@v4
         with:
           name: blog-dist-latest
@@ -131,7 +157,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      # 전체 사이트 아티팩트(배포용)
+      # Pages 배포용 아티팩트
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
@@ -145,3 +171,19 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify live pages
+        run: |
+          set -e
+          BASE="https://jongmany.github.io/my-blog"
+          SHA="${{ github.sha }}"
+          echo "Check index"
+          curl -sSfL "$BASE/" >/dev/null
+          echo "Check remotes with cache-buster"
+          curl -sSfL "$BASE/blog/assets/remoteEntry.js?v=$SHA" >/dev/null
+          curl -sSfL "$BASE/portfolio/assets/remoteEntry.js?v=$SHA" >/dev/null
+          curl -sSfL "$BASE/resume/assets/remoteEntry.js?v=$SHA" >/dev/null
