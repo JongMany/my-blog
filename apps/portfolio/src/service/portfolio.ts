@@ -8,7 +8,8 @@ export type Project = {
   tags: string[];
   highlights?: string[];
   links?: LinkItem[];
-  thumb?: string;
+  thumb?: string; // 대표 이미지(선택)
+  images?: string[];
 };
 export type Experience = {
   company: string;
@@ -35,6 +36,7 @@ export const projects: Project[] = [
       "가시성 판정 → 드래그 가이드 → 주문 패널 연동 표준화",
       "드래그 종료 시 가격 규약 확립, Amending 피드백/성공·실패 핸들링",
     ],
+    thumb: "/projects/tpsl.gif",
   },
   {
     slug: "market-limit-order-ui",
@@ -47,6 +49,7 @@ export const projects: Project[] = [
       "초기 Vanilla → Lit 마이그레이션으로 캡슐화/재사용성 확보",
       "환경별 vite-manifest URL 문제를 동적 로딩 아키텍처로 해결",
     ],
+    thumb: "/projects/order.gif",
   },
   {
     slug: "stability-refactor",

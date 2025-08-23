@@ -26,14 +26,15 @@ export default function Home() {
             className="text-balance text-3xl font-semibold sm:text-4xl"
             {...fadeUp}
           >
-            속도와 감성을 함께 담는 인터랙션을 만듭니다.
+            UX와 DX를 모두 신경쓰기 위해 노력합니다.
           </motion.h1>
           <motion.p
             className="mt-3 max-w-2xl text-[var(--muted-fg)]"
             {...fadeUp}
             transition={{ delay: 0.05 }}
           >
-            Vite + Module Federation 기반 MFE, 성능/접근성 중심의 프런트엔드.
+            다양한 레퍼런스를 참고하여, 기획과 개발을 진행하는 프론트엔드
+            개발자입니다.
           </motion.p>
           <motion.div
             className="mt-6 flex flex-wrap gap-2"
@@ -42,13 +43,7 @@ export default function Home() {
             whileInView="show"
             viewport={{ once: true }}
           >
-            {[
-              "React",
-              "Vite",
-              "Module Federation",
-              "Tailwind",
-              "Framer Motion",
-            ].map((s) => (
+            {["UX", "DX", "소통", "기획"].map((s) => (
               <motion.span key={s} variants={item} className="t-chip">
                 {s}
               </motion.span>
