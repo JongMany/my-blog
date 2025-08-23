@@ -12,8 +12,6 @@ import PostDetail from "./pages/detail/PostDetail";
 import WritePage from "./pages/write/WritePage";
 
 export default function BlogApp() {
-  const setTheme = useAppStore((s) => s.setTheme);
-
   return (
     <Routes>
       <Route
