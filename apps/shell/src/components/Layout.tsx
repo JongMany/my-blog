@@ -110,47 +110,6 @@ export default function Layout({ children }: PropsWithChildren) {
   );
 }
 
-// export default function Layout({ children }: React.PropsWithChildren) {
-//   return (
-//     <div className="relative mx-auto max-w-screen-2xl px-4 pt-8 pb-16">
-//       {/* 배경 데코레이션 */}
-//       <HeroBackdrop />
-//       <header className="mb-8 flex items-center gap-4">
-//         <h1 className="mr-2 text-xl font-semibold tracking-tight">My Site</h1>
-//         <nav className="flex gap-2 text-sm">
-//           {[
-//             { to: "/", label: "Home", end: true },
-//             { to: "/blog", label: "Blog" },
-//             { to: "/portfolio", label: "Portfolio" },
-//             { to: "/resume", label: "Resume" },
-//           ].map((n) => (
-//             <NavLink
-//               key={n.to}
-//               to={n.to}
-//               end={(n as any).end}
-//               className={({ isActive }) =>
-//                 [
-//                   "rounded-md px-3 py-1 transition",
-//                   isActive ? "bg-white/10 underline" : "hover:bg-white/10",
-//                 ].join(" ")
-//               }
-//             >
-//               {n.label}
-//             </NavLink>
-//           ))}
-//         </nav>
-//         <div className="ml-auto">{/* <ThemeSwitcher /> */}</div>
-//       </header>
-
-//       <main className="relative z-10">{children}</main>
-
-//       <footer className="mt-14 text-sm/6 text-yellow-8">
-//         © {new Date().getFullYear()} · Built with Vite + Module Federation
-//       </footer>
-//     </div>
-//   );
-// }
-
 function HeroBackdrop() {
   return (
     <>

@@ -20,27 +20,43 @@ export default function Hero() {
         상태·라우팅·쿼리를 호스트에서 일원화하고, 각 리모트는 독립적으로
         배포하세요.
       </p>
-
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Link
-          to="/portfolio"
-          className="rounded-lg bg-white text-black px-4 py-2 text-sm font-medium shadow/30 shadow-black/30 transition hover:translate-y-[-1px] hover:shadow-lg"
-        >
-          포트폴리오 보기
-        </Link>
-        <Link
-          to="/blog"
-          className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white-9 backdrop-blur transition hover:bg-white/10"
-        >
-          블로그로 이동
-        </Link>
-        <Link
-          to="/resume"
-          className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white-9 backdrop-blur transition hover:bg-white/10"
-        >
-          이력서 보기
-        </Link>
-      </div>
     </section>
   );
 }
+// function AppChip({
+//   to,
+//   label,
+//   emoji,
+// }: {
+//   to: string;
+//   label: string;
+//   emoji: string;
+// }) {
+//   return (
+//     <li>
+//       <Link
+//         to={to}
+//         className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-white/85 backdrop-blur transition hover:border-white/25 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+//         aria-label={`${label}로 이동`}
+//       >
+//         <span className="text-base leading-none">{emoji}</span>
+//         <span className="text-sm font-medium">{label}</span>
+//         <span
+//           aria-hidden
+//           className="ml-0.5 translate-x-0 text-white/70 transition group-hover:translate-x-0.5"
+//         >
+//           →
+//         </span>
+//       </Link>
+//     </li>
+//   );
+// }
+
+// function Connector() {
+//   return (
+//     <li
+//       aria-hidden
+//       className="hidden h-px w-6 flex-1 min-w-6 shrink sm:block sm:max-w-[64px] bg-gradient-to-r from-transparent via-white/30 to-transparent"
+//     />
+//   );
+// }
