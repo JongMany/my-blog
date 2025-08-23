@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages (Vite MFE Monorepo)
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -16,22 +16,30 @@ jobs:
       CI: true
     steps:
       - uses: actions/checkout@v4
+
+      # ✅ version 제거 (package.json의 packageManager를 따름)
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
+        with:
+          run_install: false # 설치는 아래에서 직접 실행할 거라 false
+
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'pnpm' }
+        with:
+          node-version: 20
+          cache: "pnpm"
+
       - run: pnpm -w install --frozen-lockfile
-      # 앱들 빌드
+
       - run: pnpm --filter ./apps/shell build
       - run: pnpm --filter ./apps/blog build
       - run: pnpm --filter ./apps/portfolio build
       - run: pnpm --filter ./apps/resume build
-      # 합치기
+
       - run: node scripts/collect-ghp.js
-      # Pages 아티팩트 업로드
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
