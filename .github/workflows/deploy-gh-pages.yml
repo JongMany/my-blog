@@ -1,4 +1,5 @@
-name: Deploy to GitHub Pages (Vite MFE Monorepo)
+name: Deploy to GitHub Pages (Selective MFE)
+
 on:
   push:
     branches: [main]
@@ -16,36 +17,121 @@ jobs:
       CI: true
     steps:
       - uses: actions/checkout@v4
+
+      # 어떤 앱이 바뀌었는지 감지
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            packages:
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'turbo.json'
+              - 'scripts/**'
+              - 'package.json'
+              - '.github/workflows/**'
+            shell:
+              - 'apps/shell/**'
+            blog:
+              - 'apps/blog/**'
+            portfolio:
+              - 'apps/portfolio/**'
+            resume:
+              - 'apps/resume/**'
+
       - uses: pnpm/action-setup@v4
         with: { run_install: false }
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: pnpm }
-      - run: pnpm -w install --frozen-lockfile
-
-      # ✅ 이 줄 추가: 셸이 읽을 환경변수 주입
-      - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+          cache: pnpm
 
       - run: pnpm -w install --frozen-lockfile
 
-      # 🔹 의존까지 포함해 전체 빌드
-      - run: pnpm -w turbo run build
-      # 또는: - run: pnpm -w --filter ./apps/shell... build && pnpm -w --filter ./apps/blog... build ...
+      # 캐시버스터(셸 remotes의 ?v=SHA)
+      - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
+      # --- 셸은 항상 새로 빌드 (SHA 주입 필요) ---
+      - name: Build shell
+        run: pnpm -w -F shell build:ghp
+
+      # --- blog: 변경되었거나 packages가 바뀌면 빌드, 아니면 이전 artifact 재사용 ---
+      - name: Build blog
+        if: steps.changes.outputs.blog == 'true' || steps.changes.outputs.packages == 'true'
+        run: pnpm -w -F blog build:ghp
+      - name: Restore blog dist from last run
+        if: steps.changes.outputs.blog != 'true' && steps.changes.outputs.packages != 'true'
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: Deploy to GitHub Pages (Selective MFE)
+          branch: main
+          name: blog-dist-latest
+          path: apps/blog/dist
+          if_no_artifact_found: warn
+
+      # --- portfolio ---
+      - name: Build portfolio
+        if: steps.changes.outputs.portfolio == 'true' || steps.changes.outputs.packages == 'true'
+        run: pnpm -w -F portfolio build:ghp
+      - name: Restore portfolio dist from last run
+        if: steps.changes.outputs.portfolio != 'true' && steps.changes.outputs.packages != 'true'
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: Deploy to GitHub Pages (Selective MFE)
+          branch: main
+          name: portfolio-dist-latest
+          path: apps/portfolio/dist
+          if_no_artifact_found: warn
+
+      # --- resume ---
+      - name: Build resume
+        if: steps.changes.outputs.resume == 'true' || steps.changes.outputs.packages == 'true'
+        run: pnpm -w -F resume build:ghp
+      - name: Restore resume dist from last run
+        if: steps.changes.outputs.resume != 'true' && steps.changes.outputs.packages != 'true'
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: Deploy to GitHub Pages (Selective MFE)
+          branch: main
+          name: resume-dist-latest
+          path: apps/resume/dist
+          if_no_artifact_found: warn
+
+      # 빌드물 수집 (flat)
       - run: node scripts/collect-ghp.js
+
+      # 필수 파일 존재 검사
       - run: |
-          echo "=== DIST_GHP TREE (depth 4) ==="
-          find dist_ghp -maxdepth 4 -type d -print | sed 's,^,DIR: ,'
-          echo "=== IMPORTANT FILES ==="
-          ls -la dist_ghp/my-blog/index.html || true
-          ls -la dist_ghp/my-blog/assets || true
-          ls -la dist_ghp/my-blog/blog/assets/remoteEntry.js || true
-          ls -la dist_ghp/my-blog/portfolio/assets/remoteEntry.js || true
-          ls -la dist_ghp/my-blog/resume/assets/remoteEntry.js || true
+          test -f dist_ghp/.nojekyll
+          test -f dist_ghp/index.html
+          test -f dist_ghp/blog/assets/remoteEntry.js
+          test -f dist_ghp/portfolio/assets/remoteEntry.js
+          test -f dist_ghp/resume/assets/remoteEntry.js
+
+      # 사람이 내려받아 확인할 수 있게 각 앱 dist도 이름 고정으로 업로드(다음 런에서 재사용)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blog-dist-latest
+          path: apps/blog/dist
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-dist-latest
+          path: apps/portfolio/dist
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: resume-dist-latest
+          path: apps/resume/dist
+          if-no-files-found: warn
+          retention-days: 30
+
+      # 전체 사이트 아티팩트(배포용)
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
