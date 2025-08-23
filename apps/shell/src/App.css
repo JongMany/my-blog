@@ -1,5 +1,6 @@
+@import "tailwindcss" prefix(shell);
+/* @import "tailwindcss"; */
 @import "./tailwindcss/index.css";
-@import "tailwindcss";
 
 /* ===== Design Tokens: Toss-ish ===== */
 /* Light */

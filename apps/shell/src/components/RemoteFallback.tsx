@@ -34,14 +34,14 @@ export default function RemoteFallback({
   };
 
   return (
-    <div className="t-card p-6 text-sm">
-      <div className="font-medium">원격 앱 로드에 실패했어요.</div>
+    <div className="shell:t-card shell:p-6 shell:text-sm">
+      <div className="shell:font-medium">원격 앱 로드에 실패했어요.</div>
       {/* ...중략... */}
 
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="shell:mt-3 shell:flex shell:flex-wrap shell:gap-2">
         <button
           onClick={onRetry}
-          className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] px-3.5 py-2 text-sm hover:bg-[var(--hover-bg)]"
+          className="shell:rounded-xl shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3.5 shell:py-2 shell:text-sm hover:shell:bg-[var(--hover-bg)]"
         >
           다시 시도
         </button>
@@ -51,7 +51,7 @@ export default function RemoteFallback({
         {hasError && (
           <button
             onClick={copyError}
-            className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] px-3.5 py-2 text-sm hover:bg-[var(--hover-bg)]"
+            className="shell:rounded-xl shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3.5 shell:py-2 shell:text-sm hover:shell:bg-[var(--hover-bg)]"
           >
             오류 내용 복사
           </button>
@@ -59,7 +59,7 @@ export default function RemoteFallback({
       </div>
 
       {import.meta.env.PROD && hasError && (
-        <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-[var(--surface)] p-3 text-[11px]">
+        <pre className="shell:mt-3 shell:max-h-48 shell:overflow-auto shell:whitespace-pre-wrap shell:rounded-lg shell:bg-[var(--surface)] shell:p-3 shell:text-[11px]">
           {errorText}
         </pre>
       )}

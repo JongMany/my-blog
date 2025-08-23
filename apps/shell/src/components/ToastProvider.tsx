@@ -32,27 +32,27 @@ export default function ToastProvider() {
     <div
       aria-live="polite"
       aria-atomic="true"
-      className="pointer-events-none fixed bottom-4 left-1/2 z-[1000] -translate-x-1/2 space-y-2"
+      className="shell:pointer-events-none shell:fixed shell:bottom-4 shell:left-1/2 shell:z-[1000] shell:-translate-x-1/2 shell:space-y-2"
     >
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="pointer-events-auto t-card flex items-start gap-3 rounded-xl px-4 py-3 shadow-lg"
+          className="shell:pointer-events-auto shell:t-card shell:flex shell:items-start shell:gap-3 shell:rounded-xl shell:px-4 shell:py-3 shell:shadow-lg"
           role="status"
         >
           <span
             className={
               t.variant === "error"
-                ? "mt-0.5 size-2 rounded-full bg-red-500"
+                ? "shell:mt-0.5 shell:size-2 shell:rounded-full shell:bg-red-500"
                 : t.variant === "success"
-                  ? "mt-0.5 size-2 rounded-full bg-emerald-500"
-                  : "mt-0.5 size-2 rounded-full bg-[var(--primary)]"
+                  ? "shell:mt-0.5 shell:size-2 shell:rounded-full shell:bg-emerald-500"
+                  : "shell:mt-0.5 shell:size-2 shell:rounded-full shell:bg-[var(--primary)]"
             }
           />
           <div>
-            <div className="font-semibold">{t.title}</div>
+            <div className="shell:font-semibold">{t.title}</div>
             {t.description && (
-              <div className="text-[var(--muted-fg)] text-xs">
+              <div className="shell:text-[var(--muted-fg)] shell:text-xs">
                 {t.description}
               </div>
             )}

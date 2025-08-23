@@ -18,7 +18,7 @@ export default function ActivePill({
     const root = containerRef.current;
     if (!root) return;
 
-    // 1) 가장 신뢰도 높은: aria-current="page"
+    // 1) aria-current="page"
     let el =
       (root.querySelector(
         'a[aria-current="page"]'
@@ -27,7 +27,7 @@ export default function ActivePill({
         'a[aria-current="true"]'
       ) as HTMLAnchorElement | null);
 
-    // 2) 폴백: pathname 기준으로 가장 긴 prefix 매칭
+    // 2) fallback: prefix match by pathname
     if (!el) {
       const anchors = Array.from(
         root.querySelectorAll<HTMLAnchorElement>('a[href^="/"]')
@@ -69,17 +69,14 @@ export default function ActivePill({
   }, [containerRef, pathname]);
 
   React.useEffect(() => {
-    // 최초 + 라우트 변경 시
     requestAnimationFrame(measure);
 
-    // 리사이즈/폰트로드 대응
     const onResize = () => requestAnimationFrame(measure);
     window.addEventListener("resize", onResize);
 
     const ro = new ResizeObserver(() => requestAnimationFrame(measure));
     if (containerRef.current) ro.observe(containerRef.current);
 
-    // 폰트 로드 후 폭이 달라지는 경우
     (document as any).fonts?.ready?.then?.(() =>
       requestAnimationFrame(measure)
     );
@@ -93,7 +90,7 @@ export default function ActivePill({
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 z-0 rounded-full transition-[transform,width] duration-200 will-change-transform bg-[var(--primary)]"
+      className="shell:pointer-events-none shell:absolute shell:left-0 shell:top-1/2 shell:-translate-y-1/2 shell:z-0 shell:rounded-full shell:transition-[transform,width] shell:duration-200 shell:will-change-transform shell:bg-[var(--primary)]"
       style={style}
     />
   );
