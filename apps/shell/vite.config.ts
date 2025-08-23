@@ -26,6 +26,10 @@ const isCI = process.env.CI === "true";
 const REPO = "my-blog";
 const isDev = process.env.NODE_ENV !== "production" && !process.env.CI;
 
+// GH Actions에서 주입할 값(없으면 빈 문자열)
+const buildId = process.env.VITE_BUILD_ID ?? "";
+const q = buildId ? `?v=${buildId}` : "";
+
 const remotes = isDev
   ? {
       // ✅ dev는 각 포트의 /assets/remoteEntry.js
@@ -35,9 +39,9 @@ const remotes = isDev
     }
   : {
       // ✅ 배포/프리뷰는 루트-상대 경로(오리진 자동)
-      blog: `/${REPO}/blog/assets/remoteEntry.js`,
-      portfolio: `/${REPO}/portfolio/assets/remoteEntry.js`,
-      resume: `/${REPO}/resume/assets/remoteEntry.js`,
+      blog: `/my-blog/blog/assets/remoteEntry.js${q}`,
+      portfolio: `/my-blog/portfolio/assets/remoteEntry.js${q}`,
+      resume: `/my-blog/resume/assets/remoteEntry.js${q}`,
     };
 
 // https://vite.dev/config/

@@ -16,10 +16,14 @@ jobs:
       CI: true
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-        with:
-          run_install: false # version 키는 제거 (packageManager 사용)
+        with: { run_install: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm -w install --frozen-lockfile
+
+      # ✅ 이 줄 추가: 셸이 읽을 환경변수 주입
+      - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v4
         with:
