@@ -1,0 +1,35 @@
+{
+  "name": "@srf/tokens",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "style": "./dist/css/index.css",
+  "exports": {
+    ".": {
+      "style": "./dist/css/index.css"
+    },
+    "./styles": "./dist/css/index.css"
+  },
+  "scripts": {
+    "rm:dist": "rm -rf dist/*",
+    "build": "pnpm rm:dist && pnpm rollup -c && pnpm build-css-modules",
+    "build-css-modules": "node ./scripts/color-tokens.js && node ./scripts/color-roles-css.js && node ./scripts/color-css.js && node ./scripts/cursor-css.js && node ./scripts/scaling-css.js && node ./scripts/space-css.js && node ./scripts/radius-css.js && node ./scripts/typography-css.js && node ./scripts/shadow-css.js && node ./scripts/base-css.js &&  node ./scripts/generate-index-css.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "rollup": "^4.44.1",
+    "tailwindcss": "^4.1.11"
+  },
+  "dependencies": {
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@srf/eslint-config": "workspace:*",
+    "@srf/typescript-config": "workspace:*",
+    "@srf/utils": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.11"
+  }
+}

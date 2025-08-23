@@ -1,0 +1,82 @@
+@layer components {
+  .slanted-tab-base {
+    min-width: 52%;
+    --h: 32px;
+    --r: calc(var(--h) / 2);
+
+    /* 오른쪽 피처 오프셋 (Right Feature Offsets) */
+    --off-tr: 1px; /* Top-Right */
+    --off-br: 27.5px; /* Bottom-Right (Feature Width anchor) */
+    --c1-ex-off: 0.5px; /* Curve1 End X Offset */
+    --c1-ey: 0.8px; /* Curve1 End Y */
+    --c1-cp1x-off: 0.5px;
+    --c1-cp1y: 0px;
+    --c1-cp2x-off: 0.3px;
+    --c1-cp2y: 0.4px;
+    --line-ex-off: 17.5px; /* Line End X Offset */
+    --line-ey: 26.5px; /* Line End Y */
+    --c2-cp1x-off: 20px;
+    --c2-cp1y: 30px;
+    --c2-cp2x-off: 23.5px;
+    /* c2 cp2 y는 bottom */
+
+    /* 왼쪽/오른쪽 둥근 부분 제어점 오프셋 */
+    --side-cp-off: 7px;
+
+    @supports not (clip-path: shape(nonzero from 0 0, line to 10px 10px)) {
+      min-width: 142px;
+    }
+  }
+
+  .shape-point-right {
+    height: var(--h);
+    clip-path: shape(
+      from left var(--r),
+      curve to var(--r) top with 0px var(--side-cp-off) / var(--side-cp-off) top,
+      hline to calc(100% - var(--off-tr)),
+      curve to calc(100% - var(--c1-ex-off)) var(--c1-ey) with
+        calc(100% - var(--c1-cp1x-off)) var(--c1-cp1y) /
+        calc(100% - var(--c1-cp2x-off)) var(--c1-cp2y),
+      line to calc(100% - var(--line-ex-off)) var(--line-ey),
+      curve to calc(100% - var(--off-br)) bottom with
+        calc(100% - var(--c2-cp1x-off)) var(--c2-cp1y) /
+        calc(100% - var(--c2-cp2x-off)) bottom,
+      hline to var(--r),
+      curve to left var(--r) with var(--side-cp-off) bottom / 0px
+        calc(var(--h) - var(--side-cp-off)),
+      close
+    );
+
+    @supports not (clip-path: shape(nonzero from 0 0, line to 10px 10px)) {
+      clip-path: path(
+        "M0 16C0 7.16344 7.16344 0 16 0H141.074C141.472 0 141.71 0.441825 141.492 0.774328L124.554 26.5839C122.336 29.9641 118.565 32 114.522 32H16C7.16345 32 0 24.8366 0 16Z"
+      );
+    }
+  }
+
+  .shape-point-left {
+    height: var(--h);
+    clip-path: shape(
+      from right var(--r),
+      curve to calc(100% - var(--r)) bottom with right
+        calc(var(--h) - var(--side-cp-off)) / calc(100% - var(--side-cp-off))
+        bottom,
+      hline to var(--off-tr),
+      curve to var(--c1-ex-off) calc(var(--h) - var(--c1-ey)) with
+        var(--c1-cp1x-off) calc(var(--h) - var(--c1-cp1y)) / var(--c1-cp2x-off)
+        calc(var(--h) - var(--c1-cp2y)),
+      line to var(--line-ex-off) calc(var(--h) - var(--line-ey)),
+      curve to var(--off-br) top with var(--c2-cp1x-off)
+        calc(var(--h) - var(--c2-cp1y)) / var(--c2-cp2x-off) top,
+      hline to calc(100% - var(--r)),
+      curve to right var(--r) with calc(100% - var(--side-cp-off)) top / right
+        var(--side-cp-off),
+      close
+    );
+    @supports not (clip-path: shape(nonzero from 0 0, line to 10px 10px)) {
+      clip-path: path(
+        "M17.4457 5.41613C19.6639 2.03594 23.4352 0 27.4782 0H126C134.837 0 142 7.16344 142 16C142 24.8366 134.837 32 126 32H0.926175C0.528466 32 0.289948 31.5582 0.508153 31.2257L17.4457 5.41613Z"
+      );
+    }
+  }
+}

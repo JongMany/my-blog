@@ -1,0 +1,43 @@
+@utility anchor-none {
+  overflow-anchor: none;
+}
+
+@layer utilities {
+  .transition-collapse {
+    transition-property: width, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-opacity-delay {
+    transition-property: opacity;
+    transition-duration: 300ms;
+    transition-delay: 150ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  .transition-width-delay {
+    transition-property: width;
+    transition-duration: 300ms;
+    transition-delay: 150ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  .collapsed {
+    width: 0;
+    opacity: 0;
+  }
+
+  .expanded {
+    opacity: 100;
+    width: 248px;
+  }
+}
+
+@layer utilities {
+  .text-shadow-black {
+    text-shadow: 0 0 0.5px black;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+}

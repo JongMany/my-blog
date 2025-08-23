@@ -1,0 +1,20 @@
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: #fff !important;
+  }
+  .t-card,
+  .rounded-2xl {
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+}

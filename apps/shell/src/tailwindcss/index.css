@@ -1,0 +1,13 @@
+@import "./token/index.css";
+
+@layer theme, base, components, utilities;
+
+@import "./layers/themes.css" layer(theme);
+@import "tailwindcss/theme.css" layer(theme);
+
+@import "./layers/components.css" layer(components);
+
+@import "tailwindcss/preflight.css" layer(base);
+
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./layers/utilities.css";

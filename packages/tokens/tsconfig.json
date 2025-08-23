@@ -1,0 +1,13 @@
+{
+  "extends": "@srf/typescript-config/react-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "declarationDir": "dist",
+    "module": "esnext",
+    "target": "ES2019"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
