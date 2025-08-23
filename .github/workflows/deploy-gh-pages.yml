@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read # ← (선택) Turbo 원격 캐시 메타에 유용
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -19,10 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
+      # Turbo Remote Cache (선택 권장) — 레포 Secrets에 설정해두면 변경 없는 패키지 dist를 "복원"해줌
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - uses: actions/checkout@v4
 
-      # 어떤 앱이 바뀌었는지 감지
+      # 무엇이 변경됐는지 감지 (전체 빌드 vs 선택 빌드 판단용)
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -36,14 +40,8 @@ jobs:
               - 'scripts/**'
               - 'package.json'
               - '.github/workflows/**'
-            shell:
-              - 'apps/shell/**'
-            blog:
-              - 'apps/blog/**'
-            portfolio:
-              - 'apps/portfolio/**'
-            resume:
-              - 'apps/resume/**'
+            apps:
+              - 'apps/**'
 
       - uses: pnpm/action-setup@v4
         with: { run_install: false }
@@ -55,72 +53,25 @@ jobs:
 
       - run: pnpm -w install --frozen-lockfile
 
-      # 캐시버스터(셸 remotes의 ?v=SHA)
+      # remoteEntry 캐시 버스터 (shell이 매번 새 산출물 내도록)
       - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
-      # ✅ 패키지들 먼저 빌드 (tokens/ui/shared 등)
-      - name: Build workspace packages first
-        run: pnpm -w -r --filter "packages/**" run build
+      # === 단 한 번의 Turbo 빌드 ===
+      # 1) packages 또는 인프라가 바뀐 경우: 전체 그래프 빌드 (캐시가 대부분 복원하므로 빨라요)
+      - name: Build all (packages/infra changed)
+        if: steps.changes.outputs.packages == 'true'
+        run: pnpm -w turbo run build
 
-      # --- shell: 항상 새 빌드 (SHA 주입 필요) ---
-      - name: Build shell
-        run: pnpm -w -F shell build:ghp
+      # 2) 앱만 변경된 경우: 변경분 + 영향받은 것만 빌드/복원
+      #    기준 SHA: 직전 커밋 (push 이벤트의 before SHA 사용)
+      - name: Build only changed since last commit (with deps)
+        if: steps.changes.outputs.packages != 'true'
+        run: pnpm -w turbo run build --filter="...[${{ github.event.before }}]"
 
-      # --- blog: 변경 or packages 변경 시 빌드, 아니면 지난 빌드물 복구 ---
-      - name: Build blog
-        if: steps.changes.outputs.blog == 'true' || steps.changes.outputs.packages == 'true'
-        run: pnpm -w -F blog build:ghp
-      - name: Restore blog dist from last run
-        if: steps.changes.outputs.blog != 'true' && steps.changes.outputs.packages != 'true'
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: Deploy to GitHub Pages (Selective MFE)
-          branch: main
-          name: blog-dist-latest
-          path: apps/blog/dist
-          if_no_artifact_found: warn
-      - name: Fallback build blog if dist missing
-        if: steps.changes.outputs.blog != 'true' && steps.changes.outputs.packages != 'true'
-        run: test -d apps/blog/dist || pnpm -w -F blog build:ghp
-
-      # --- portfolio ---
-      - name: Build portfolio
-        if: steps.changes.outputs.portfolio == 'true' || steps.changes.outputs.packages == 'true'
-        run: pnpm -w -F portfolio build:ghp
-      - name: Restore portfolio dist from last run
-        if: steps.changes.outputs.portfolio != 'true' && steps.changes.outputs.packages != 'true'
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: Deploy to GitHub Pages (Selective MFE)
-          branch: main
-          name: portfolio-dist-latest
-          path: apps/portfolio/dist
-          if_no_artifact_found: warn
-      - name: Fallback build portfolio if dist missing
-        if: steps.changes.outputs.portfolio != 'true' && steps.changes.outputs.packages != 'true'
-        run: test -d apps/portfolio/dist || pnpm -w -F portfolio build:ghp
-
-      # --- resume ---
-      - name: Build resume
-        if: steps.changes.outputs.resume == 'true' || steps.changes.outputs.packages == 'true'
-        run: pnpm -w -F resume build:ghp
-      - name: Restore resume dist from last run
-        if: steps.changes.outputs.resume != 'true' && steps.changes.outputs.packages != 'true'
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: Deploy to GitHub Pages (Selective MFE)
-          branch: main
-          name: resume-dist-latest
-          path: apps/resume/dist
-          if_no_artifact_found: warn
-      - name: Fallback build resume if dist missing
-        if: steps.changes.outputs.resume != 'true' && steps.changes.outputs.packages != 'true'
-        run: test -d apps/resume/dist || pnpm -w -F resume build:ghp
-
-      # 빌드물 수집 (flat)
+      # 수집(Flat)
       - run: node scripts/collect-ghp.js
 
-      # 필수 파일 존재 검사
+      # 필수 파일 확인
       - name: Sanity check
         run: |
           test -f dist_ghp/.nojekyll
@@ -129,7 +80,7 @@ jobs:
           test -f dist_ghp/portfolio/assets/remoteEntry.js
           test -f dist_ghp/resume/assets/remoteEntry.js
 
-      # (디버깅용) 전체 사이트 산출물도 다운로드 가능하게 업로드
+      # (선택) 사람 확인용 전체 산출물 업로드
       - uses: actions/upload-artifact@v4
         with:
           name: dist_ghp-${{ github.sha }}
@@ -137,27 +88,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      # (다음 런에서 재사용할) 각 앱 dist를 이름 고정으로 업로드
-      - uses: actions/upload-artifact@v4
-        with:
-          name: blog-dist-latest
-          path: apps/blog/dist
-          if-no-files-found: warn
-          retention-days: 30
-      - uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-dist-latest
-          path: apps/portfolio/dist
-          if-no-files-found: warn
-          retention-days: 30
-      - uses: actions/upload-artifact@v4
-        with:
-          name: resume-dist-latest
-          path: apps/resume/dist
-          if-no-files-found: warn
-          retention-days: 30
-
-      # Pages 배포용 아티팩트
+      # Pages 배포용
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
@@ -181,9 +112,7 @@ jobs:
           set -e
           BASE="https://jongmany.github.io/my-blog"
           SHA="${{ github.sha }}"
-          echo "Check index"
           curl -sSfL "$BASE/" >/dev/null
-          echo "Check remotes with cache-buster"
           curl -sSfL "$BASE/blog/assets/remoteEntry.js?v=$SHA" >/dev/null
           curl -sSfL "$BASE/portfolio/assets/remoteEntry.js?v=$SHA" >/dev/null
           curl -sSfL "$BASE/resume/assets/remoteEntry.js?v=$SHA" >/dev/null
