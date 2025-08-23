@@ -1,21 +1,18 @@
-// apps/portfolio/src/pages/ProjectDetail.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import { projects } from "../service/portfolio"; // 경로 주의!
+import { projects, type ImageItem } from "../service/portfolio";
 
 export default function ProjectDetail() {
   const { slug = "" } = useParams();
   const p = projects.find((x) => x.slug === slug);
 
-  const images = useMemo(() => {
+  const images: ImageItem[] = useMemo(() => {
     if (!p) return [];
-    const set = new Set<string>([...(p.images ?? [])]);
-    if (p.thumb) set.add(p.thumb);
-    // 대표이미지는 그리드 첫번째에 오도록 정렬
-    const arr = Array.from(set);
-    if (p.thumb) {
-      arr.sort((a, b) => (a === p.thumb ? -1 : b === p.thumb ? 1 : 0));
+    const arr = [...(p.images ?? [])];
+    // thumb가 있고 images에 없으면 맨 앞에 넣기
+    if (p.thumb && !arr.some((i) => i.src === p.thumb)) {
+      arr.unshift({ src: p.thumb, caption: "대표 이미지" });
     }
     return arr;
   }, [p]);
@@ -53,7 +50,6 @@ export default function ProjectDetail() {
           </ul>
         ) : null}
 
-        {/* ▼ 이미지 그리드 */}
         {images.length > 0 && <ImageGrid images={images} />}
 
         {p.links?.length ? (
@@ -76,7 +72,7 @@ export default function ProjectDetail() {
   );
 }
 
-function ImageGrid({ images }: { images: string[] }) {
+function ImageGrid({ images }: { images: ImageItem[] }) {
   const [open, setOpen] = useState(false);
   const [idx, setIdx] = useState(0);
 
@@ -100,26 +96,32 @@ function ImageGrid({ images }: { images: string[] }) {
 
   return (
     <>
+      {/* 썸네일 그리드 */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {images.map((src, i) => (
+        {images.map((img, i) => (
           <button
-            key={src}
+            key={img.src}
             onClick={() => openAt(i)}
             className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] shadow-sm transition hover:border-white/20 hover:bg-white/[0.06]"
           >
             <img
-              src={src}
-              alt=""
+              src={img.src}
+              alt={img.alt || img.caption || ""}
               loading="lazy"
               decoding="async"
               className="aspect-[4/3] w-full object-cover"
             />
-            <span className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100 bg-gradient-to-tr from-white/0 via-white/0 to-white/10" />
+            {/* 캡션 미리보기 (있을 때만) */}
+            {img.caption && (
+              <span className="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-1 bg-gradient-to-t from-black/60 to-transparent px-2 py-1 text-[11px] text-white opacity-0 transition group-hover:opacity-100">
+                {img.caption}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* 라이트박스 */}
+      {/* 라이트박스: 이미지(좌) + 설명(우) */}
       {open && (
         <>
           <div
@@ -128,49 +130,112 @@ function ImageGrid({ images }: { images: string[] }) {
             aria-hidden
           />
           <div className="fixed inset-0 z-[95] grid place-items-center p-4">
-            <figure className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-white/15 bg-black/40 shadow-2xl">
-              <img
-                key={images[idx]}
-                src={images[idx]}
-                alt=""
-                className="max-h-[90vh] w-full object-contain"
-                loading="eager"
-                decoding="async"
-              />
-              {/* Prev/Next */}
-              {images.length > 1 && (
-                <>
-                  <button
-                    className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIdx((v) => (v - 1 + images.length) % images.length);
-                    }}
-                    aria-label="Previous"
+            {/* md 이상에서 2열, 우측 패널은 고정폭(22rem) */}
+            <section className="relative grid w-full max-w-6xl overflow-hidden rounded-2xl border border-white/15 bg-[var(--card-bg)] shadow-2xl md:[grid-template-columns:minmax(0,1fr)_22rem]">
+              {/* 좌: 이미지 영역 */}
+              <figure className="relative max-h-[90vh]">
+                <img
+                  key={images[idx].src}
+                  src={images[idx].src}
+                  alt={images[idx].alt || images[idx].caption || ""}
+                  className="max-h-[90vh] w-full object-contain bg-black/20"
+                  loading="eager"
+                  decoding="async"
+                />
+                {/* Prev/Next */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIdx((v) => (v - 1 + images.length) % images.length);
+                      }}
+                      aria-label="Previous"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIdx((v) => (v + 1) % images.length);
+                      }}
+                      aria-label="Next"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
+                {/* 닫기 */}
+                <button
+                  className="absolute right-3 top-3 rounded-lg bg-black/50 px-2 py-1 text-sm text-white hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close"
+                >
+                  닫기
+                </button>
+              </figure>
+
+              {/* 우: 설명 패널 (모바일에서는 아래로 스택) */}
+              <aside className="max-h-[90vh] overflow-auto border-t border-white/10 p-4 md:border-l md:border-t-0">
+                <div className="mb-2 text-xs text-white/60">
+                  {idx + 1} / {images.length}
+                </div>
+
+                {/* caption */}
+                {images[idx].caption && (
+                  <h3 className="text-base font-medium">
+                    {images[idx].caption}
+                  </h3>
+                )}
+
+                {/* note (긴 설명) */}
+                {images[idx].note && (
+                  <p className="mt-2 whitespace-pre-wrap text-sm text-[var(--muted-fg)]">
+                    {images[idx].note}
+                  </p>
+                )}
+
+                {/* 원본 열기 / 새탭 */}
+                <div className="mt-4 flex items-center gap-2">
+                  <a
+                    href={images[idx].src}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="t-btn t-btn--primary text-xs"
                   >
-                    ‹
-                  </button>
-                  <button
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIdx((v) => (v + 1) % images.length);
-                    }}
-                    aria-label="Next"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
-              {/* Close */}
-              <button
-                className="absolute right-3 top-3 rounded-lg bg-black/50 px-2 py-1 text-sm text-white hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-              >
-                닫기
-              </button>
-            </figure>
+                    원본 보기
+                  </a>
+                </div>
+
+                {/* 썸네일 미니 리스트(선택) */}
+                {images.length > 1 && (
+                  <div className="mt-4 grid grid-cols-4 gap-2 md:grid-cols-3">
+                    {images.map((img, i) => (
+                      <button
+                        key={img.src}
+                        onClick={() => setIdx(i)}
+                        className={`overflow-hidden rounded-md border ${
+                          i === idx
+                            ? "border-[var(--primary)]"
+                            : "border-white/10 hover:border-white/20"
+                        }`}
+                        aria-label={`Go to image ${i + 1}`}
+                      >
+                        <img
+                          src={img.src}
+                          alt={img.alt || img.caption || ""}
+                          loading="lazy"
+                          decoding="async"
+                          className="aspect-[4/3] w-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </aside>
+            </section>
           </div>
         </>
       )}

@@ -7,6 +7,7 @@ import FeatureGrid from "./components/FeatureGrid";
 import StatsStrip from "./components/StatsStrip";
 import { lazyRemote } from "./mfe/lazyRemote";
 import { withBoundary } from "./components/withBoundary";
+import BootRedirect from "./components/BootRedirect";
 
 export const BlogApp = withBoundary(
   lazyRemote(
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <Layout>
       <React.Suspense fallback={<p>Loading...</p>}>
+        <BootRedirect />
         <Routes>
           <Route
             path="/"

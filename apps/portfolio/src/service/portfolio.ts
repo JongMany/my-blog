@@ -1,5 +1,12 @@
 // apps/portfolio/src/data/portfolio.ts
 export type LinkItem = { label: string; href: string };
+export type ImageItem = {
+  src: string; // public 기준 절대 경로 (예: "/projects/slug/1.jpg")
+  alt?: string;
+  caption?: string; // 한 줄 설명
+  note?: string; // 길게 쓰는 설명 (옵션)
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -8,8 +15,8 @@ export type Project = {
   tags: string[];
   highlights?: string[];
   links?: LinkItem[];
-  thumb?: string; // 대표 이미지(선택)
-  images?: string[];
+  thumb?: string;
+  images?: ImageItem[]; // string[] → ImageItem[] 로 확장
 };
 export type Experience = {
   company: string;
@@ -28,9 +35,9 @@ export const projects: Project[] = [
     slug: "tradingview-tpsl-drag",
     title: "TradingView 차트 TP/SL 드래그 UX 확장",
     summary:
-      "TP/SL(익절/손절) 라인을 차트에서 직접 드래그해 설정하는 내부 인터페이스를 설계·구현. 렌더·히트테스트·이벤트 파이프라인 확장.",
+      "TradingView 라이브러리를 리버스 엔지니어링을 통해 TP/SL(익절/손절) 라인을 차트에서 직접 드래그해 설정하는 내부 인터페이스를 설계·구현. 렌더·히트테스트·이벤트 파이프라인 확장",
     project: "Coinness",
-    tags: ["TradingView", "Canvas", "UX", "Internal API"],
+    tags: ["Coinness", "기획", "리버스 엔지니어링"],
     highlights: [
       "callOnMove/onTpSl/setPnlFormula 등 내부 메서드 추가",
       "가시성 판정 → 드래그 가이드 → 주문 패널 연동 표준화",
