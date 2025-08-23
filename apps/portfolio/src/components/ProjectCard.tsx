@@ -74,7 +74,7 @@ export default function ProjectCard({
           {showImage && p.thumb && imgOk && (
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
-                src={`${import.meta.env.BASE_URL}/my-blog${p.thumb}`}
+                src={`${import.meta.env.BASE_URL}my-blog${p.thumb}`}
                 alt=""
                 loading="lazy"
                 decoding="async"
