@@ -17,15 +17,15 @@ export default function Layout({ children }: PropsWithChildren) {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (!navRef.current?.contains(target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, [open]);
+  // useEffect(() => {
+  //   if (!open) return;
+  //   const onClick = (e: MouseEvent) => {
+  //     const target = e.target as Node;
+  //     if (!navRef.current?.contains(target)) setOpen(false);
+  //   };
+  //   document.addEventListener("mousedown", onClick);
+  //   return () => document.removeEventListener("mousedown", onClick);
+  // }, [open]);
 
   const activeLabel =
     NAV.find((n) =>
@@ -116,33 +116,33 @@ function MobileNavDropdown({
   const btnRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Escape") {
-      setOpen(false);
-      btnRef.current?.focus();
-    }
-  };
+  // const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  //   if (e.key === "Escape") {
+  //     setOpen(false);
+  //     btnRef.current?.focus();
+  //   }
+  // };
 
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const t = setTimeout(() => {
-      rootRef.current
-        ?.querySelector<HTMLAnchorElement>("#mobile-nav-menu a")
-        ?.focus();
-    }, 0);
-    return () => {
-      document.body.style.overflow = prev;
-      clearTimeout(t);
-    };
-  }, [open]);
+  // useEffect(() => {
+  //   if (!open) return;
+  //   const prev = document.body.style.overflow;
+  //   document.body.style.overflow = "hidden";
+  //   const t = setTimeout(() => {
+  //     rootRef.current
+  //       ?.querySelector<HTMLAnchorElement>("#mobile-nav-menu a")
+  //       ?.focus();
+  //   }, 0);
+  //   return () => {
+  //     document.body.style.overflow = prev;
+  //     clearTimeout(t);
+  //   };
+  // }, [open]);
 
   return (
     <div
       ref={rootRef}
       className="shell:relative shell:z-[70] shell:md:hidden"
-      onKeyDown={onKeyDown}
+      // onKeyDown={onKeyDown}
     >
       <button
         ref={btnRef}
@@ -154,7 +154,7 @@ function MobileNavDropdown({
           "shell:inline-flex shell:items-center shell:gap-2 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3 shell:py-1.5 shell:text-sm",
           "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]"
         )}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(true)}
       >
         <span>{activeLabel}</span>
         <svg
@@ -172,11 +172,7 @@ function MobileNavDropdown({
 
       {open && (
         <>
-          <div
-            className="shell:fixed shell:inset-0 shell:z-[60]"
-            onClick={() => setOpen(false)}
-            aria-hidden
-          />
+          <div className="shell:fixed shell:inset-0 shell:z-[60]" aria-hidden />
           <div
             id="mobile-nav-menu"
             role="menu"
@@ -198,6 +194,10 @@ function MobileNavDropdown({
                   <NavLink
                     key={n.to}
                     to={n.to}
+                    onClick={() => {
+                      console.log(n.to, n.end);
+                      // setOpen(false);
+                    }}
                     end={(n as any).end}
                     role="menuitem"
                     className={({ isActive: rrActive }) =>
