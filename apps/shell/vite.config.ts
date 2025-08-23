@@ -1,4 +1,5 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin, type HtmlTagDescriptor } from "vite";
+
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { listenForRemoteRebuilds } from "@antdevx/vite-plugin-hmr-sync";
@@ -43,7 +44,48 @@ const remotes = isDev
       portfolio: `/my-blog/portfolio/assets/remoteEntry.js${q}`,
       resume: `/my-blog/resume/assets/remoteEntry.js${q}`,
     };
+const BASE = isCI ? `/${REPO}/` : "/";
 
+function injectRemoteHints(): Plugin {
+  return {
+    name: "inject-remote-hints",
+    apply: "build",
+    transformIndexHtml(html: string) {
+      const tags: HtmlTagDescriptor[] = [
+        // 첫 화면에 꼭 쓰는 원격만 preload
+        {
+          tag: "link",
+          injectTo: "head",
+          attrs: {
+            rel: "preload",
+            as: "script",
+            href: `${BASE}blog/assets/remoteEntry.js${q}`,
+          },
+        },
+        // 나머지는 prefetch
+        {
+          tag: "link",
+          injectTo: "head",
+          attrs: {
+            rel: "prefetch",
+            as: "script",
+            href: `${BASE}portfolio/assets/remoteEntry.js${q}`,
+          },
+        },
+        {
+          tag: "link",
+          injectTo: "head",
+          attrs: {
+            rel: "prefetch",
+            as: "script",
+            href: `${BASE}resume/assets/remoteEntry.js${q}`,
+          },
+        },
+      ];
+      return { html, tags }; // ← 최신 타입에 맞는 반환 형태
+    },
+  };
+}
 // https://vite.dev/config/
 export default defineConfig({
   base: isCI ? `/${REPO}/` : "/",
@@ -75,6 +117,7 @@ export default defineConfig({
         "@mfe/shared": { version: "0.0.0" },
       },
     }),
+    injectRemoteHints(),
     listenForRemoteRebuilds({
       allowedApps: ["blog", "portfolio", "resume"],
       endpoint: "/__remote_rebuilt__",
