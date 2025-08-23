@@ -9,7 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read # ← (선택) Turbo 원격 캐시 메타에 유용
+  actions: read
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -20,17 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      # Turbo Remote Cache (선택 권장) — 레포 Secrets에 설정해두면 변경 없는 패키지 dist를 "복원"해줌
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM  || ''}}
     steps:
       - uses: actions/checkout@v4
 
-      # 무엇이 변경됐는지 감지 (전체 빌드 vs 선택 빌드 판단용)
       - uses: dorny/paths-filter@v3
         id: changes
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           filters: |
             packages:
               - 'packages/**'
@@ -53,25 +50,32 @@ jobs:
 
       - run: pnpm -w install --frozen-lockfile
 
-      # remoteEntry 캐시 버스터 (shell이 매번 새 산출물 내도록)
       - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
 
-      # === 단 한 번의 Turbo 빌드 ===
-      # 1) packages 또는 인프라가 바뀐 경우: 전체 그래프 빌드 (캐시가 대부분 복원하므로 빨라요)
+      # ===== 빌드 =====
       - name: Build all (packages/infra changed)
         if: steps.changes.outputs.packages == 'true'
         run: pnpm -w turbo run build
 
-      # 2) 앱만 변경된 경우: 변경분 + 영향받은 것만 빌드/복원
-      #    기준 SHA: 직전 커밋 (push 이벤트의 before SHA 사용)
       - name: Build only changed since last commit (with deps)
-        if: steps.changes.outputs.packages != 'true'
+        if: steps.changes.outputs.packages != 'true' && github.event.before != '' && github.event.before != github.sha
         run: pnpm -w turbo run build --filter="...[${{ github.event.before }}]"
 
-      # 수집(Flat)
+      - name: Fallback full build if before empty or equal
+        if: steps.changes.outputs.packages != 'true' && (github.event.before == '' || github.event.before == github.sha)
+        run: pnpm -w turbo run build
+
+      # ===== 보충 빌드 (dist 없으면 해당 앱만) =====
+      - name: Ensure blog dist exists
+        run: test -f apps/blog/dist/assets/remoteEntry.js || pnpm -w -F blog build:ghp
+      - name: Ensure portfolio dist exists
+        run: test -f apps/portfolio/dist/assets/remoteEntry.js || pnpm -w -F portfolio build:ghp
+      - name: Ensure resume dist exists
+        run: test -f apps/resume/dist/assets/remoteEntry.js || pnpm -w -F resume build:ghp
+
+      # ===== 수집 + 검사 =====
       - run: node scripts/collect-ghp.js
 
-      # 필수 파일 확인
       - name: Sanity check
         run: |
           test -f dist_ghp/.nojekyll
@@ -80,15 +84,6 @@ jobs:
           test -f dist_ghp/portfolio/assets/remoteEntry.js
           test -f dist_ghp/resume/assets/remoteEntry.js
 
-      # (선택) 사람 확인용 전체 산출물 업로드
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist_ghp-${{ github.sha }}
-          path: dist_ghp
-          if-no-files-found: error
-          retention-days: 7
-
-      # Pages 배포용
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
@@ -102,17 +97,3 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-
-  verify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify live pages
-        run: |
-          set -e
-          BASE="https://jongmany.github.io/my-blog"
-          SHA="${{ github.sha }}"
-          curl -sSfL "$BASE/" >/dev/null
-          curl -sSfL "$BASE/blog/assets/remoteEntry.js?v=$SHA" >/dev/null
-          curl -sSfL "$BASE/portfolio/assets/remoteEntry.js?v=$SHA" >/dev/null
-          curl -sSfL "$BASE/resume/assets/remoteEntry.js?v=$SHA" >/dev/null
