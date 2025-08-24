@@ -11,6 +11,7 @@ const isCI = process.env.CI === "true";
 
 export default defineConfig({
   base: isCI ? `/${REPO}/portfolio/` : "/",
+  publicDir: "public",
   plugins: [
     react(),
     tailwindcss(),
