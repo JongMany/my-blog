@@ -105,7 +105,7 @@ function ImageGrid({ images }: { images: ImageItem[] }) {
             className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] shadow-sm transition hover:border-white/20 hover:bg-white/[0.06]"
           >
             <img
-              src={img.src}
+              src={`/my-blog/portfolio/${img.src}`}
               alt={img.alt || img.caption || ""}
               loading="lazy"
               decoding="async"
@@ -136,7 +136,7 @@ function ImageGrid({ images }: { images: ImageItem[] }) {
               <figure className="relative max-h-[90vh]">
                 <img
                   key={images[idx].src}
-                  src={images[idx].src}
+                  src={`/my-blog/portfolio/${images[idx].src}`}
                   alt={images[idx].alt || images[idx].caption || ""}
                   className="max-h-[90vh] w-full object-contain bg-black/20"
                   loading="eager"
@@ -224,7 +224,7 @@ function ImageGrid({ images }: { images: ImageItem[] }) {
                         aria-label={`Go to image ${i + 1}`}
                       >
                         <img
-                          src={img.src}
+                          src={`/my-blog/portfolio/${img.src}`}
                           alt={img.alt || img.caption || ""}
                           loading="lazy"
                           decoding="async"
