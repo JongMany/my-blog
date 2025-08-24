@@ -29,7 +29,6 @@ export type Skill = {
   lvl: number;
 };
 
-// ▼ PDF(노션)에서 요약한 항목을 구조화 (필요 시 더 추가/수정)
 export const projects: Project[] = [
   {
     slug: "tradingview-tpsl-drag",
