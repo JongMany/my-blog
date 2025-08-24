@@ -35,6 +35,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
 import type { Project } from "../service/portfolio";
+import { imageSource } from "../utils/imgSource";
 
 type Props = {
   p: Project;
@@ -74,7 +75,7 @@ export default function ProjectCard({
           {showImage && p.thumb && imgOk && (
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
-                src={`/my-blog/portfolio/${p.thumb}`}
+                src={`${imageSource(p.thumb)}`}
                 alt=""
                 loading="lazy"
                 decoding="async"

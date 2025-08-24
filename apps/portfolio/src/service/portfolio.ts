@@ -65,6 +65,7 @@ export const projects: Project[] = [
     summary:
       "소켓 불안정 시 HTTP Polling 폴백, 주문/체결 오버레이 추가, iframe 구독 라이프사이클 누수 해결(useLayoutEffect).",
     tags: ["Resilience", "WebSocket", "Polling", "React"],
+    thumb: "/projects/http_fallback_thumbnail.png",
   },
   {
     slug: "vite-plugin-lit-hmr",
