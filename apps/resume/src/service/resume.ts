@@ -52,7 +52,7 @@ export const resume: ResumeData = {
     blog: "https://homebody-coder.tistory.com/",
     portfolio:
       "https://assorted-raft-812.notion.site/2440c6f9362d803b99f6eaa3cf0e85af",
-    photoUrl: "/resume/profile.jpg",
+    photoUrl: "/img/profile.jpeg",
   },
   experiences: [
     {

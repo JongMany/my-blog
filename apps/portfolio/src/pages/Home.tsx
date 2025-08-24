@@ -26,15 +26,16 @@ export default function Home() {
             className="text-balance text-3xl font-semibold sm:text-4xl"
             {...fadeUp}
           >
-            UX와 DX를 모두 신경쓰기 위해 노력합니다.
+            사용자 경험(UX)과 개발자 경험(DX)을 함께 고민하며, 기획부터 개발까지
+            책임감 있게 수행하는 프론트엔드 개발자입니다.
           </motion.h1>
           <motion.p
             className="mt-3 max-w-2xl text-[var(--muted-fg)]"
             {...fadeUp}
             transition={{ delay: 0.05 }}
           >
-            다양한 레퍼런스를 참고하여, 기획과 개발을 진행하는 프론트엔드
-            개발자입니다.
+            다양한 레퍼런스를 탐구하고 새로운 시도를 통해, 더 나은 서비스 경험을
+            만들어가는 데 집중합니다.
           </motion.p>
           <motion.div
             className="mt-6 flex flex-wrap gap-2"

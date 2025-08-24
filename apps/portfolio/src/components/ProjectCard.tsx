@@ -1,41 +1,8 @@
-// import { Link } from "react-router-dom";
-// import { motion } from "framer-motion";
-// import type { Project } from "../service/portfolio";
-
-// export default function ProjectCard({ p }: { p: Project }) {
-//   return (
-//     <li>
-//       <Link to={`/portfolio/project/${p.slug}`} className="block h-full">
-//         <motion.div
-//           whileHover={{ y: -4, scale: 1.01 }}
-//           transition={{ type: "spring", stiffness: 260, damping: 18 }}
-//           className="t-card h-full overflow-hidden p-4"
-//         >
-//           <div className="flex items-start justify-between gap-2">
-//             <div className="text-base font-medium">{p.title}</div>
-//             {p.project && <div className="text-xs ">{p.project}</div>}
-//           </div>
-//           <p className="mt-2 text-sm leading-5 line-clamp-2 min-h-[2.5rem]">
-//             {p.summary}
-//           </p>
-//           <div className="mt-3 flex flex-wrap gap-1.5">
-//             {p.tags.map((t) => (
-//               <span key={t} className="t-chip">
-//                 #{t}
-//               </span>
-//             ))}
-//           </div>
-//         </motion.div>
-//       </Link>
-//     </li>
-//   );
-// }
-// apps/portfolio/src/components/ProjectCard.tsx
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
 import type { Project } from "../service/portfolio";
-import { imageSource } from "../utils/imgSource";
+import { imageSource } from "@mfe/shared";
 
 type Props = {
   p: Project;
@@ -75,7 +42,7 @@ export default function ProjectCard({
           {showImage && p.thumb && imgOk && (
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
-                src={`${imageSource(p.thumb)}`}
+                src={`${imageSource(p.thumb, "portfolio", "http://localhost:3002")}`}
                 alt=""
                 loading="lazy"
                 decoding="async"

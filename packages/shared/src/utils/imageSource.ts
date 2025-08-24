@@ -4,6 +4,6 @@ export const imageSource = (
   devUrl: string
 ) => {
   return import.meta.env.MODE === "development"
-    ? `http://localhost:3002/${src}`
-    : `/my-blog/portfolio${src}`;
+    ? `${devUrl}/${src}`
+    : `/my-blog/${prefix}${src}`;
 };

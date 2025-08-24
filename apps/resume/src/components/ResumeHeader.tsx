@@ -4,6 +4,7 @@ import type { ResumeData } from "../service/resume";
 import { motion } from "framer-motion";
 import { fadeUp, stagger, vItem } from "./Motion";
 import { Card } from "./ui";
+import { imageSource } from "@mfe/shared";
 
 export default function ResumeHeader({
   profile,
@@ -28,7 +29,11 @@ export default function ResumeHeader({
         {profile.photoUrl && (
           <motion.img
             {...fadeUp}
-            src={profile.photoUrl}
+            src={imageSource(
+              profile.photoUrl,
+              "resume",
+              "http://localhost:3003"
+            )}
             alt={`${profile.name} 프로필`}
             className="size-20 rounded-2xl object-cover border border-[var(--border)]"
           />
