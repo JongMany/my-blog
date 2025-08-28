@@ -8,6 +8,10 @@
       "outputs": ["dist/**"],
       "env": ["VITE_BUILD_ID"]
     },
+    "build:blog-content": {
+      "inputs": ["apps/blog/content/**", "scripts/build-blog.mjs"],
+      "outputs": ["apps/blog/public/_blog/**"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },

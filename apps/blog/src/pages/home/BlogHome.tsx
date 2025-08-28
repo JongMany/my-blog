@@ -1,47 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// apps/blog/src/pages/home/BlogHome.tsx
+import * as React from "react";
+import { NavLink, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { listPosts } from "../../service/api";
+import { fetchBlogIndexFromHost, type BlogIndex } from "../../service/blogData";
 
-export default function Home() {
-  const { data: posts = [] } = useQuery({
-    queryKey: ["posts"],
-    queryFn: listPosts,
+export default function BlogHome() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["blogIndex"],
+    queryFn: fetchBlogIndexFromHost,
   });
-  const latest = posts.slice(0, 5);
+  console.log("data", data);
+
+  if (isLoading) return <div>불러오는 중…</div>;
+  if (error || !data) return <div>로드 실패</div>;
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium mb-3 mt-2">최근 글</h3>
-      {latest.length === 0 ? (
-        <p className="text-sm text-[var(--muted-fg)]">
-          아직 글이 없습니다. 오른쪽 상단의 “새 글 쓰기”로 시작해 보세요.
-        </p>
-      ) : (
-        <ul className="divide-y divide-[var(--border)]">
-          {latest.map((p) => (
-            <li key={p.id} className="py-3">
-              <Link
-                to={`/blog/post/${p.id}`}
-                className="font-medium hover:underline"
-              >
-                {p.title}
-              </Link>
-              <div className="mt-1 text-xs text-[var(--muted-fg)]">
-                {new Date(p.createdAt).toLocaleString()}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="pt-2">
-        <Link
-          to="/blog/posts"
-          className="inline-block rounded-md border border-[var(--border)] bg-[var(--card-bg)] px-3 py-1.5 text-sm hover:bg-[var(--hover-bg)]"
+    <div className="mx-auto max-w-4xl px-4 py-6">
+      <h1 className="text-2xl font-semibold">Blog</h1>
+      <nav className="mt-4 flex flex-wrap gap-2">
+        <NavLink
+          to="all"
+          className={({ isActive }) =>
+            `px-3 py-1 rounded ${isActive ? "bg-white text-black" : "border border-white/20"}`
+          }
         >
-          전체 글 보기 →
-        </Link>
+          전체
+        </NavLink>
+        {/* {data.categories.map((c) => (
+          <NavLink
+            key={c}
+            to={`c/${c}`}
+            className={({ isActive }) =>
+              `px-3 py-1 rounded ${isActive ? "bg-white text-black" : "border border-white/20"}`
+            }
+          >
+            {c}
+          </NavLink>
+        ))} */}
+      </nav>
+      <div className="mt-6">
+        <Outlet context={{ blogIndex: data }} />
       </div>
     </div>
   );
