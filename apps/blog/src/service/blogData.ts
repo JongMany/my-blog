@@ -1,19 +1,44 @@
 import { assetUrl } from "@mfe/shared";
 import { useQuery } from "@tanstack/react-query";
 
+export type BlogPostMeta = {
+  category: string;
+  title: string;
+  slug: string;
+
+  date: string; // 원본 ISO(초 포함)
+  updatedAt: string; // 원본 ISO(초 포함)
+  dateMinute: string; // 분 단위 ISO(초 제거)
+  updatedMinute: string;
+  dateParts: {
+    y: number;
+    m: number;
+    d: number;
+    hh: number;
+    mm: number;
+    tz: string;
+  } | null;
+  updatedParts: {
+    y: number;
+    m: number;
+    d: number;
+    hh: number;
+    mm: number;
+    tz: string;
+  } | null;
+  createdAtMs: number; // 정렬/필터 편의
+  updatedAtMs: number;
+
+  tags: string[];
+  summary: string;
+  cover: string | null;
+  path: string;
+};
+
 export type BlogIndex = {
-  all: Array<{
-    title: string;
-    summary: string;
-    category: string;
-    slug: string;
-    date: string;
-    updatedAt: string;
-    cover: string | null;
-    path: string; // MDX 파일 경로 등
-  }>;
-  byCategory: Record<string, BlogIndex["all"]>;
   categories: string[];
+  byCategory: Record<string, BlogPostMeta[]>;
+  all: BlogPostMeta[];
 };
 
 export async function fetchBlogIndexFromHost() {

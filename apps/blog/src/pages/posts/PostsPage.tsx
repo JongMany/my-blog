@@ -81,8 +81,7 @@ export default function PostPage() {
     <article className="prose prose-invert max-w-none">
       <h1 className="mb-2">{post.title}</h1>
       <p className="mt-0 text-sm opacity-70">
-        {post.category} · 작성 {new Date(post.date).toLocaleDateString()} · 수정{" "}
-        {new Date(post.updatedAt).toLocaleDateString()}
+        {post.category} · 작성 {fmt(post.date)} · 수정 {fmt(post.updatedAt)}
       </p>
 
       {/* ⬇️ 여기서 MDXProvider로 감싸면 끝! */}
@@ -96,3 +95,11 @@ export default function PostPage() {
     </article>
   );
 }
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
