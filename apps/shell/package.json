@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview --port 3000",
     "dev:mfe": "concurrently -k -n build,serve -c yellow,magenta \"vite build --watch\" \"vite preview --port 3000 --strictPort\"",
-    "build:ghp": "vite build --base=/my-blog/"
+    "build:ghp": "pnpm -w -F @srf/tokens build && vite build --base=/my-blog/"
   },
   "dependencies": {
     "@mfe/shared": "workspace:*",

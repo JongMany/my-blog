@@ -8,7 +8,7 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "build:ghp": "pnpm -F shell build:ghp && pnpm -F blog build:ghp && pnpm -F portfolio build:ghp && pnpm -F resume build:ghp && node scripts/collect-ghp.js",
+    "build:ghp": "pnpm -F shell build:ghp && pnpm -F blog build:ghp && pnpm -F portfolio build:ghp && pnpm -F resume build:ghp && node scripts/collect-ghp.js && node scripts/build-blog.js",
     "preview:ghp": "pnpm build:ghp && pnpm dlx http-server dist_ghp -p 5050 -c-1"
   },
   "devDependencies": {
