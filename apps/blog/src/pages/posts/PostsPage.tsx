@@ -8,39 +8,10 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
-// ⬇️ 추가
-import { MDXProvider } from "@mdx-js/react";
-import type { ComponentProps } from "react";
+import { useBlogIndex, fetchPostMdxFromHost } from "../../service/blogData";
+import { components, MDXTheme } from "../../components/MDXTheme";
 
-import {
-  useBlogIndex,
-  fetchPostMdxFromHost,
-  type BlogIndex,
-} from "../../service/blogData";
-
-// ⬇️ 추가: MDX 컴포넌트 오버라이드(스타일링)
-type ComponentsProp = ComponentProps<typeof MDXProvider>["components"];
-const components: NonNullable<ComponentsProp> = {
-  a: (props) => (
-    <a {...props} className="text-sky-400 underline-offset-4 hover:underline" />
-  ),
-  img: (props) => (
-    <img
-      {...props}
-      className="rounded-lg border border-white/10"
-      loading="lazy"
-    />
-  ),
-  pre: (props) => (
-    <pre
-      {...props}
-      className="rounded-lg border border-white/10 p-4 overflow-x-auto"
-    />
-  ),
-  code: (props) => <code {...props} className="rounded px-1 py-0.5" />,
-};
-
-// ⬇️ 추가: evaluate에 주입할 훅(버전 상관없이 오버라이드가 먹도록)
+// evaluate에 주입할 훅(버전 상관없이 오버라이드가 먹도록)
 const useMDXComponents = (existing?: any) => ({
   ...(existing || {}),
   ...components,
@@ -116,9 +87,9 @@ export default function PostPage() {
 
       {/* ⬇️ 여기서 MDXProvider로 감싸면 끝! */}
       {MDXComp ? (
-        <MDXProvider components={components}>
+        <MDXTheme>
           <MDXComp />
-        </MDXProvider>
+        </MDXTheme>
       ) : (
         <p>렌더링 준비 중…</p>
       )}
