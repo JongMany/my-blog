@@ -8,13 +8,19 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "content:build": "node ./scripts/build-blog.js",
     "build:ghp": "pnpm -F shell build:ghp && pnpm -F blog build:ghp && pnpm -F portfolio build:ghp && pnpm -F resume build:ghp && node scripts/collect-ghp.js && node scripts/build-blog.js",
-    "preview:ghp": "pnpm build:ghp && pnpm dlx http-server dist_ghp -p 5050 -c-1"
+    "preview:ghp": "pnpm build:ghp && pnpm dlx http-server dist_ghp -p 5050 -c-1",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@antdevx/vite-plugin-hmr-sync": "^1.1.2",
     "@module-federation/nextjs-mf": "^8.8.37",
+    "chardet": "^2.1.0",
     "concurrently": "^9.2.0",
+    "gray-matter": "^4.0.3",
+    "husky": "^9.1.7",
+    "iconv-lite": "^0.7.0",
     "prettier": "^3.6.0",
     "rimraf": "^6.0.1",
     "turbo": "^2.5.4",

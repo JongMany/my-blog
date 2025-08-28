@@ -1,7 +1,10 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import { execSync } from "node:child_process";
+// scripts/build-blog.cjs
+const fs = require("fs");
+const path = require("path");
+const matter = require("gray-matter");
+const { execSync } = require("node:child_process");
+const chardet = require("chardet");
+const iconv = require("iconv-lite");
 
 const root = path.resolve(process.cwd());
 const SRC = path.join(root, "apps/blog/content/blog");
@@ -9,7 +12,6 @@ const OUT = path.join(root, "apps/blog/public/_blog");
 const POSTS_DIR = path.join(OUT, "posts");
 const ASSETS_DIR = path.join(OUT, "assets");
 
-// 유틸
 function cleanDir(p) {
   fs.rmSync(p, { recursive: true, force: true });
   fs.mkdirSync(p, { recursive: true });
@@ -21,7 +23,18 @@ function isMdx(f) {
   return /\.mdx?$/i.test(f);
 }
 
-// git 최초 커밋일(작성일)과 마지막 커밋일(수정일) 가져오기 (없으면 파일 mtime fallback)
+function readTextSmart(abs) {
+  const buf = fs.readFileSync(abs);
+  // UTF-8 가능하면 그대로, 아니면 감지 후 iconv 디코드
+  const enc = chardet.detect(buf) || "UTF-8";
+  try {
+    return iconv.decode(buf, enc);
+  } catch {
+    // 최후 보루
+    return buf.toString("utf8");
+  }
+}
+
 function gitDate(kind, fileAbs) {
   try {
     const rel = path.relative(root, fileAbs);
@@ -40,15 +53,14 @@ function gitDate(kind, fileAbs) {
   }
 }
 
-// 커버/이미지 복사 (상대경로만, 같은 폴더 기준)
 function copyAssetNearby(postAbs, rel) {
   const src = path.resolve(path.dirname(postAbs), rel);
   if (!fs.existsSync(src)) return null;
   ensureDir(ASSETS_DIR);
-  const base = `${Date.now()}_${path.basename(src)}`; // 이름 충돌 피하기
+  const base = `${Date.now()}_${path.basename(src)}`;
   const dest = path.join(ASSETS_DIR, base);
   fs.copyFileSync(src, dest);
-  return `/_blog/assets/${base}`; // public 기준 경로
+  return `/_blog/assets/${base}`;
 }
 
 cleanDir(OUT);
@@ -62,11 +74,10 @@ for (const cat of fs.readdirSync(SRC)) {
   if (!fs.statSync(catDir).isDirectory()) continue;
 
   const files = fs.readdirSync(catDir).filter(isMdx);
-
   for (const file of files) {
     const abs = path.join(catDir, file);
-    const raw = fs.readFileSync(abs, "utf8");
-    const { data, content } = matter(raw);
+    const raw = readTextSmart(abs); // ← 여기서 인코딩 방어
+    const { data } = matter(raw);
 
     const slug = (data.slug || file.replace(/\.mdx?$/i, "")).toLowerCase();
     const created =
@@ -78,11 +89,9 @@ for (const cat of fs.readdirSync(SRC)) {
       gitDate("updated", abs) ||
       new Date(fs.statSync(abs).mtimeMs).toISOString();
 
-    // 커버 복사(옵션)
     let coverUrl = null;
     if (data.cover) coverUrl = copyAssetNearby(abs, data.cover);
 
-    // 원문 MDX 복사 (런타임에서 @mdx-js/runtime 으로 렌더)
     const outName = `${cat}__${slug}.mdx`;
     fs.writeFileSync(path.join(POSTS_DIR, outName), raw, "utf8");
 
@@ -90,12 +99,12 @@ for (const cat of fs.readdirSync(SRC)) {
       category: cat,
       title: data.title || slug,
       slug,
-      date: created, // 정렬용
-      updatedAt: updated, // 표기용
+      date: created,
+      updatedAt: updated,
       tags: data.tags || [],
       summary: data.summary || "",
-      cover: coverUrl, // null 또는 "/_blog/assets/xxxx.png"
-      path: `/_blog/posts/${outName}`, // MDX 원문 경로(펫치해서 런타임 렌더)
+      cover: coverUrl,
+      path: `/_blog/posts/${outName}`,
     };
 
     (categories[cat] ||= []).push(meta);
@@ -103,12 +112,10 @@ for (const cat of fs.readdirSync(SRC)) {
   }
 }
 
-// 정렬: 작성일 내림차순 (updatedAt은 표시에만 사용)
 const byDateDesc = (a, b) => String(b.date).localeCompare(String(a.date));
-for (const c of Object.keys(categories)) categories[c].sort(byDateDesc);
+Object.keys(categories).forEach((c) => categories[c].sort(byDateDesc));
 allPosts.sort(byDateDesc);
 
-// 인덱스 JSON
 const index = {
   categories: Object.keys(categories).sort(),
   byCategory: categories,
@@ -117,5 +124,5 @@ const index = {
 
 fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(index, null, 2));
 console.log(
-  `[blog] built: ${allPosts.length} posts in ${Object.keys(categories).length} categories -> apps/blog/public/_blog`
+  `[blog] built: ${allPosts.length} posts in ${Object.keys(categories).length} categories -> apps/blog/public/_blog`,
 );

@@ -5,11 +5,12 @@ import { Link, Route, Routes } from "react-router-dom";
 
 import BlogHome from "./pages/home/BlogHome";
 import BlogLayout from "./components/Layout";
-import PostsPage from "./pages/posts/PostsPage";
+import PostPage from "./pages/posts/PostsPage";
 import CategoriesPage from "./pages/categories/CategoriesPage";
 import CategoryPage from "./pages/category/CategoryPage";
 import PostDetail from "./pages/detail/PostDetail";
 import WritePage from "./pages/write/WritePage";
+import ListAll from "./pages/list/ListAll";
 
 export default function BlogApp() {
   return (
@@ -23,10 +24,10 @@ export default function BlogApp() {
         }
       />
       <Route
-        path="posts"
+        path="/:category/:slug"
         element={
           <BlogLayout>
-            <PostsPage />
+            <PostPage />
           </BlogLayout>
         }
       />
@@ -62,36 +63,14 @@ export default function BlogApp() {
           </BlogLayout>
         }
       />
+      <Route
+        path="all"
+        element={
+          <BlogLayout>
+            <ListAll />
+          </BlogLayout>
+        }
+      />
     </Routes>
   );
 }
-
-// function Post() {
-//   // const { slug = "" } = useParams();
-//   // const { data } = useQuery({
-//   //   queryKey: qk.post(slug),
-//   //   queryFn: async () => ({ id: slug, title: `Post ${slug}` }),
-//   // });
-//   const { data } = useQuery({
-//     queryKey: ["posts"],
-//     queryFn: async () => {
-//       const response = await fetch(
-//         "https://jsonplaceholder.typicode.com/posts"
-//       );
-//       return response.json();
-//     },
-//   });
-
-//   const theme = useAppStore((s) => s.theme);
-//   return (
-//     <div>
-//       <span>({theme})</span>
-//       {data?.slice(0, 10).map((item) => (
-//         <div>
-//           <h4>{item.title}</h4>
-//         </div>
-//       ))}
-//       {/* {data?.title} */}
-//     </div>
-//   );
-// }

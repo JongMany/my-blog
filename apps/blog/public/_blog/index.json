@@ -1,0 +1,33 @@
+{
+  "categories": [
+    "frontend"
+  ],
+  "byCategory": {
+    "frontend": [
+      {
+        "category": "frontend",
+        "title": "my-first-post",
+        "slug": "my-first-post",
+        "date": "2025-08-28T12:11:09+09:00",
+        "updatedAt": "2025-08-28T12:11:09+09:00",
+        "tags": [],
+        "summary": "",
+        "cover": null,
+        "path": "/_blog/posts/frontend__my-first-post.mdx"
+      }
+    ]
+  },
+  "all": [
+    {
+      "category": "frontend",
+      "title": "my-first-post",
+      "slug": "my-first-post",
+      "date": "2025-08-28T12:11:09+09:00",
+      "updatedAt": "2025-08-28T12:11:09+09:00",
+      "tags": [],
+      "summary": "",
+      "cover": null,
+      "path": "/_blog/posts/frontend__my-first-post.mdx"
+    }
+  ]
+}

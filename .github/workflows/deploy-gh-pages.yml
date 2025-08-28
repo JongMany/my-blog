@@ -51,7 +51,7 @@ jobs:
       - run: pnpm -w install --frozen-lockfile
 
       - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
-
+      - run: pnpm -w -F blog run content:build
       # ===== 빌드 =====
       - name: Build all (packages/infra changed)
         if: steps.changes.outputs.packages == 'true'

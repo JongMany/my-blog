@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 변경/스테이징된 md/mdx만 UTF-8로 변환
+pnpm -w node scripts/convert-mdx-to-utf8.js
+
+# 변환된 파일 다시 stage
+git add apps/blog/content/blog/**/*.mdx 2>/dev/null || true
+git add apps/blog/content/blog/**/*.md  2>/dev/null || true
