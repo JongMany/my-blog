@@ -10,6 +10,9 @@ import * as path from "node:path";
 import fg from "fast-glob";
 import matter from "gray-matter";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+
+import type { Plugin, ViteDevServer } from "vite";
+import type { IncomingMessage, ServerResponse } from "node:http";
 // const USER = "JongMany";
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";
@@ -71,7 +74,7 @@ export default defineConfig({
   },
 });
 
-async function buildIndexJSON() {
+async function buildIndexJSON(): Plugin {
   const files = await fg("**/*.{md,mdx}", { cwd: CONTENT_DIR, dot: false });
   const items = files.map((rel) => {
     const full = path.join(CONTENT_DIR, rel);
@@ -113,7 +116,7 @@ async function buildIndexJSON() {
 }
 
 // DEV 전용: /_blog/** 서빙 + /_blog/index.json 즉석 생성
-function blogContentDev() {
+function blogContentDev(): Plugin {
   return {
     name: "blog-content-dev",
     apply: "serve" as const,
@@ -153,7 +156,7 @@ function blogContentDev() {
 }
 
 // BUILD: 정적 복사 + index.json 파일 생성
-function blogIndexBuild() {
+function blogIndexBuild(): Plugin {
   return {
     name: "blog-index-build",
     apply: "build" as const,
