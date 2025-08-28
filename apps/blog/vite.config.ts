@@ -11,8 +11,8 @@ import fg from "fast-glob";
 import matter from "gray-matter";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-import type { Plugin, ViteDevServer } from "vite";
-import type { IncomingMessage, ServerResponse } from "node:http";
+import type { Plugin } from "vite";
+
 // const USER = "JongMany";
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";
@@ -74,7 +74,7 @@ export default defineConfig({
   },
 });
 
-async function buildIndexJSON(): Plugin {
+async function buildIndexJSON() {
   const files = await fg("**/*.{md,mdx}", { cwd: CONTENT_DIR, dot: false });
   const items = files.map((rel) => {
     const full = path.join(CONTENT_DIR, rel);
