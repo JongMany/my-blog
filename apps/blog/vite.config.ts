@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import fg from "fast-glob";
 import matter from "gray-matter";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+// import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import chardet from "chardet";
 import iconv from "iconv-lite";
@@ -29,12 +29,12 @@ export default defineConfig({
     tailwindcss(),
     mdx({ remarkPlugins: [remarkGfm] }),
     // ⬇️ dev에서 content/blog → /_blog/** 로 서빙
-    blogContentDev(),
-    blogContentBuild(),
+    // blogContentDev(),
+    // blogContentBuild(),
     // ⬇️ build에서 content/blog → dist/_blog/** 로 복사
-    viteStaticCopy({
-      targets: [{ src: "content/blog/**/*", dest: "_blog" }],
-    }),
+    // viteStaticCopy({
+    //   targets: [{ src: "content/blog/**/*", dest: "_blog" }],
+    // }),
     notifyOnRebuild({
       appName: "blog",
       hostUrl: "http://localhost:5173",

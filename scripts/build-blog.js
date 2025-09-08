@@ -1,3 +1,5 @@
+// scripts/build-blog.cjs
+/* eslint-disable no-console */
 const fs = require("fs");
 const path = require("path");
 const matter = require("gray-matter");
@@ -5,13 +7,14 @@ const { execSync } = require("node:child_process");
 const chardet = require("chardet");
 const iconv = require("iconv-lite");
 
+// --- 경로 설정 ---
 const root = path.resolve(process.cwd());
-const SRC = path.join(root, "apps/blog/content/blog");
-const OUT = path.join(root, "apps/blog/public/_blog");
-const POSTS_DIR = path.join(OUT, "posts");
-const ASSETS_DIR = path.join(OUT, "assets");
+const SRC = path.join(root, "apps/blog/content/blog"); // 카테고리/글 원본(.md|.mdx)
+const OUT = path.join(root, "apps/blog/public/_blog"); // 공개 산출물
+const POSTS_DIR = path.join(OUT, "posts"); // 변환된 MDX 원문(프론트매터 제거본)
+const ASSETS_DIR = path.join(OUT, "assets"); // 이미지 등 자산
 
-// ---------- utils ----------
+// --- 유틸 ---
 function cleanDir(p) {
   fs.rmSync(p, { recursive: true, force: true });
   fs.mkdirSync(p, { recursive: true });
@@ -23,7 +26,7 @@ function isMdx(f) {
   return /\.mdx?$/i.test(f);
 }
 
-// UTF-8 아닌 파일도 자동 감지/디코드
+// UTF-8이 아니어도 자동 감지/디코드
 function readTextSmart(abs) {
   const buf = fs.readFileSync(abs);
   const enc = chardet.detect(buf) || "UTF-8";
@@ -34,7 +37,16 @@ function readTextSmart(abs) {
   }
 }
 
-// Git 최초/최종 커밋일(ISO) 얻기; 없으면 파일시스템 시간 대체
+// BOM/개행/템플릿 더블 중괄호 등 사소한 정리
+function sanitizeMdx(src) {
+  return src
+    .replace(/^\uFEFF/, "") // BOM 제거
+    .replace(/\r\n/g, "\n") // CRLF → LF
+    .replace(/{{/g, "\\{\\{") // 템플릿 더블 중괄호 방어
+    .replace(/}}/g, "\\}\\}");
+}
+
+// Git 최초/최종 커밋일(ISO) 얻기(없으면 파일 시간 fallback)
 function gitDate(kind, fileAbs) {
   try {
     const rel = path.relative(root, fileAbs);
@@ -52,26 +64,16 @@ function gitDate(kind, fileAbs) {
     return null;
   }
 }
-
-// /_blog/assets/* 로 커버/붙임파일 복사
-function copyAssetNearby(postAbs, rel) {
-  const src = path.resolve(path.dirname(postAbs), rel);
-  if (!fs.existsSync(src)) return null;
-  ensureDir(ASSETS_DIR);
-  const base = `${Date.now()}_${path.basename(src)}`;
-  const dest = path.join(ASSETS_DIR, base);
-  fs.copyFileSync(src, dest);
-  return `/_blog/assets/${base}`;
+function toFallbackIso(ms) {
+  return new Date(ms).toISOString(); // UTC Z
 }
 
-// ---- 분 단위 헬퍼들 ----
-// ISO: "YYYY-MM-DDTHH:MM(:SS[.sss])?(Z|±hh:mm)" → "YYYY-MM-DDTHH:MM(Z|±hh:mm)"
+// ISO → 분 단위(초 제거) "YYYY-MM-DDTHH:MM±TZ"
 function isoToMinute(iso) {
   const m = String(iso).match(
     /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/,
   );
   if (m) return m[1] + m[2];
-  // fallback: JS Date로 변환 후 로컬 TZ로 다시 조립
   const d = new Date(iso);
   if (isNaN(d.getTime())) return String(iso);
   const pad = (n) => String(n).padStart(2, "0");
@@ -86,27 +88,66 @@ function isoToMinute(iso) {
   );
 }
 
-// ISO에서 y/m/d/hh/mm만 뽑은 파츠(커밋 타임존 기준)
+// ISO → y/m/d/hh/mm/tz 파츠
 function pickParts(iso) {
   const m = String(iso).match(
     /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/,
   );
   if (!m) return null;
-  return {
-    y: +m[1],
-    m: +m[2],
-    d: +m[3],
-    hh: +m[4],
-    mm: +m[5],
-    tz: m[6],
-  };
+  return { y: +m[1], m: +m[2], d: +m[3], hh: +m[4], mm: +m[5], tz: m[6] };
 }
 
-function toFallbackIso(ms) {
-  return new Date(ms).toISOString(); // Z(UTC)로 나옴
+// 파일을 /_blog/assets/<timestamp>_<name> 로 복사하고 URL 반환
+function copyAssetNearby(postAbs, rel) {
+  const src = path.resolve(path.dirname(postAbs), rel);
+  if (!fs.existsSync(src)) return null;
+  ensureDir(ASSETS_DIR);
+  const base = `${Date.now()}_${path.basename(src)}`;
+  const dest = path.join(ASSETS_DIR, base);
+  fs.copyFileSync(src, dest);
+  return `/_blog/assets/${base}`;
 }
 
-// ---------- build ----------
+// 본문 내 이미지 경로를 전부 /_blog/assets/* 로 치환(상대/"/_blog/xxx" 모두 대응)
+function rewriteInlineAssets(content, postAbs) {
+  let out = content;
+
+  // 1) Markdown 이미지: ![alt](href "title")
+  out = out.replace(
+    /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,
+    (m, alt, href) => {
+      // 외부 URL은 패스
+      if (/^https?:\/\//i.test(href)) return m;
+      // 이미 변환된 /_blog/assets/ 는 그대로
+      if (href.startsWith("/_blog/assets/")) return m;
+
+      // "/_blog/xxx" → 글 파일 기준 상대로 간주하여 복사
+      const candidate = href.startsWith("/_blog/")
+        ? href.replace(/^\/_blog\//, "")
+        : href;
+
+      const url = copyAssetNearby(postAbs, candidate);
+      return url ? `![${alt}](${url})` : m;
+    },
+  );
+
+  // 2) HTML 이미지: <img src="...">
+  out = out.replace(/<img\s+[^>]*src="([^"]+)"[^>]*>/gi, (m, src) => {
+    if (/^https?:\/\//i.test(src)) return m;
+    if (src.startsWith("/_blog/assets/")) return m;
+
+    const candidate = src.startsWith("/_blog/")
+      ? src.replace(/^\/_blog\//, "")
+      : src;
+
+    const url = copyAssetNearby(postAbs, candidate);
+    return url ? m.replace(src, url) : m;
+  });
+
+  return out;
+}
+
+// --- 빌드 시작 ---
 cleanDir(OUT);
 ensureDir(POSTS_DIR);
 
@@ -118,14 +159,17 @@ for (const cat of fs.readdirSync(SRC)) {
   if (!fs.statSync(catDir).isDirectory()) continue;
 
   const files = fs.readdirSync(catDir).filter(isMdx);
+
   for (const file of files) {
     const abs = path.join(catDir, file);
     const raw = readTextSmart(abs);
-    const { data } = matter(raw);
+
+    // 프론트매터 1개만 파싱 → content(본문)과 data(메타) 분리
+    const { data, content } = matter(raw);
 
     const slug = (data.slug || file.replace(/\.mdx?$/i, "")).toLowerCase();
 
-    // 원본 ISO (초 포함)
+    // 작성/수정 시간 (ISO, 초 포함)
     const createdIso =
       data.date ||
       gitDate("created", abs) ||
@@ -135,40 +179,65 @@ for (const cat of fs.readdirSync(SRC)) {
       gitDate("updated", abs) ||
       toFallbackIso(fs.statSync(abs).mtimeMs);
 
-    // 분 단위로 자른 ISO / 파츠 / 정렬키
+    // 파생 필드(분/파츠/정렬키)
     const createdMinute = isoToMinute(createdIso);
     const updatedMinute = isoToMinute(updatedIso);
     const createdParts = pickParts(createdIso);
     const updatedParts = pickParts(updatedIso);
-    const createdMs = Date.parse(createdIso);
-    const updatedMs = Date.parse(updatedIso);
+    const createdAtMs = Date.parse(createdIso);
+    const updatedAtMs = Date.parse(updatedIso);
 
+    // 커버 처리: 절대/이미 변환됨/auto/상대
     let coverUrl = null;
-    if (data.cover) coverUrl = copyAssetNearby(abs, data.cover);
+    if (data.cover) {
+      if (
+        /^https?:\/\//i.test(data.cover) ||
+        data.cover.startsWith("/_blog/assets/")
+      ) {
+        coverUrl = data.cover;
+      } else if (data.cover === "auto") {
+        const m = content.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
+        if (m) {
+          coverUrl = /^https?:\/\//i.test(m[1])
+            ? m[1]
+            : copyAssetNearby(abs, m[1].replace(/^\/_blog\//, ""));
+        }
+      } else if (data.cover.startsWith("/_blog/")) {
+        coverUrl = copyAssetNearby(abs, data.cover.replace(/^\/_blog\//, ""));
+      } else {
+        coverUrl = copyAssetNearby(abs, data.cover);
+      }
+    }
 
-    // 원문 MDX 복사 (런타임 평가)
+    // 본문 정리: 프론트매터 제거된 content만 저장 + 이미지 경로 재작성 + UTF-8 정리
+    const transformed = sanitizeMdx(rewriteInlineAssets(content, abs));
     const outName = `${cat}__${slug}.mdx`;
-    fs.writeFileSync(path.join(POSTS_DIR, outName), raw, "utf8");
+    fs.writeFileSync(path.join(POSTS_DIR, outName), transformed, "utf8");
 
+    // 메타(인덱스용)
     const meta = {
       category: cat,
-      title: data.title || slug, // ← title 없으면 파일명(slug)
+      title: data.title || slug,
       slug,
 
-      // 원본 ISO(초 포함)과 분 단위 파생 필드 모두 제공
+      // 시간 필드들
       date: createdIso,
       updatedAt: updatedIso,
       dateMinute: createdMinute,
       updatedMinute: updatedMinute,
-      dateParts: createdParts, // { y, m, d, hh, mm, tz }
+      dateParts: createdParts, // { y,m,d,hh,mm,tz }
       updatedParts: updatedParts,
-      createdAtMs: createdMs, // 정렬/필터에 편한 밀리초
-      updatedAtMs: updatedMs,
+      createdAtMs, // 정렬용 숫자
+      updatedAtMs,
 
       tags: data.tags || [],
       summary: data.summary || "",
-      cover: coverUrl,
-      path: `/_blog/posts/${outName}`,
+
+      cover: coverUrl, // null | '/_blog/assets/xxx' | 'https://...'
+      coverAlt: data.coverAlt || "", // 선택 메타
+      coverCaption: data.coverCaption || "", // 선택 메타
+
+      path: `/_blog/posts/${outName}`, // 런타임에서 fetch할 MDX 경로
     };
 
     (categories[cat] ||= []).push(meta);
@@ -177,9 +246,10 @@ for (const cat of fs.readdirSync(SRC)) {
 }
 
 // 정렬: 작성일(desc)
-const byDateDesc = (a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
-Object.keys(categories).forEach((c) => categories[c].sort(byDateDesc));
-allPosts.sort(byDateDesc);
+allPosts.sort((a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0));
+for (const c of Object.keys(categories)) {
+  categories[c].sort((a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0));
+}
 
 // 인덱스 JSON
 const index = {

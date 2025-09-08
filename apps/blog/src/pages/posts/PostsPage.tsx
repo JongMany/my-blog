@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { evaluate } from "@mdx-js/mdx";
+import { evaluate, UseMdxComponents } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -12,8 +12,7 @@ import { useBlogIndex, fetchPostMdxFromHost } from "../../service/blogData";
 import { components, MDXTheme } from "../../components/MDXTheme";
 
 // evaluate에 주입할 훅(버전 상관없이 오버라이드가 먹도록)
-const useMDXComponents = (existing?: any) => ({
-  ...(existing || {}),
+const useMDXComponents: UseMdxComponents = () => ({
   ...components,
 });
 
