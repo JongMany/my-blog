@@ -1,26 +1,26 @@
-import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@mdx-js/rollup";
 import remarkGfm from "remark-gfm";
-import * as fs from "node:fs";
+// import * as fs from "node:fs";
 import * as path from "node:path";
-import fg from "fast-glob";
-import matter from "gray-matter";
+// import fg from "fast-glob";
+// import matter from "gray-matter";
 // import { viteStaticCopy } from "vite-plugin-static-copy";
 
-import chardet from "chardet";
-import iconv from "iconv-lite";
-import type { IncomingMessage, ServerResponse } from "node:http";
+// import chardet from "chardet";
+// import iconv from "iconv-lite";
+// import type { IncomingMessage, ServerResponse } from "node:http";
 
 // const USER = "JongMany";
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";
 const BASE = isCI ? `/${REPO}/blog/` : "/";
 
-const CONTENT_DIR = path.resolve(__dirname, "content/blog");
+// const CONTENT_DIR = path.resolve(__dirname, "content/blog");
 
 export default defineConfig({
   base: BASE,
