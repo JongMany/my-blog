@@ -157,6 +157,7 @@ const allPosts = [];
 for (const cat of fs.readdirSync(SRC)) {
   const catDir = path.join(SRC, cat);
   if (!fs.statSync(catDir).isDirectory()) continue;
+  categories[cat] ||= [];
 
   const files = fs.readdirSync(catDir).filter(isMdx);
 

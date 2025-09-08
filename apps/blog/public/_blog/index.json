@@ -1,17 +1,167 @@
 {
   "categories": [
+    "backend",
+    "cleancode",
+    "devops",
     "frontend"
   ],
   "byCategory": {
+    "backend": [],
+    "cleancode": [],
+    "devops": [],
     "frontend": [
+      {
+        "category": "frontend",
+        "title": "React 19 변경점 요약5",
+        "slug": "2",
+        "date": "2025-09-08T05:13:38.792Z",
+        "updatedAt": "2025-09-08T05:13:38.792Z",
+        "dateMinute": "2025-09-08T05:13Z",
+        "updatedMinute": "2025-09-08T05:13Z",
+        "dateParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "updatedParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "createdAtMs": 1757308418792,
+        "updatedAtMs": 1757308418792,
+        "tags": [
+          "react",
+          "release"
+        ],
+        "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+        "cover": null,
+        "coverAlt": "React 19 요약 커버",
+        "coverCaption": "이미지 출처: 본인 제작",
+        "path": "/_blog/posts/frontend__2.mdx"
+      },
+      {
+        "category": "frontend",
+        "title": "React 19 변경점 요약4",
+        "slug": "3",
+        "date": "2025-09-08T05:13:36.977Z",
+        "updatedAt": "2025-09-08T05:13:36.977Z",
+        "dateMinute": "2025-09-08T05:13Z",
+        "updatedMinute": "2025-09-08T05:13Z",
+        "dateParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "updatedParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "createdAtMs": 1757308416977,
+        "updatedAtMs": 1757308416977,
+        "tags": [
+          "react",
+          "release"
+        ],
+        "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+        "cover": null,
+        "coverAlt": "React 19 요약 커버",
+        "coverCaption": "이미지 출처: 본인 제작",
+        "path": "/_blog/posts/frontend__3.mdx"
+      },
+      {
+        "category": "frontend",
+        "title": "React 19 변경점 요약3",
+        "slug": "4",
+        "date": "2025-09-08T05:13:34.899Z",
+        "updatedAt": "2025-09-08T05:13:34.899Z",
+        "dateMinute": "2025-09-08T05:13Z",
+        "updatedMinute": "2025-09-08T05:13Z",
+        "dateParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "updatedParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "createdAtMs": 1757308414899,
+        "updatedAtMs": 1757308414899,
+        "tags": [
+          "react",
+          "release"
+        ],
+        "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+        "cover": null,
+        "coverAlt": "React 19 요약 커버",
+        "coverCaption": "이미지 출처: 본인 제작",
+        "path": "/_blog/posts/frontend__4.mdx"
+      },
+      {
+        "category": "frontend",
+        "title": "React 19 변경점 요약2",
+        "slug": "5",
+        "date": "2025-09-08T05:13:33.325Z",
+        "updatedAt": "2025-09-08T05:13:33.325Z",
+        "dateMinute": "2025-09-08T05:13Z",
+        "updatedMinute": "2025-09-08T05:13Z",
+        "dateParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "updatedParts": {
+          "y": 2025,
+          "m": 9,
+          "d": 8,
+          "hh": 5,
+          "mm": 13,
+          "tz": "Z"
+        },
+        "createdAtMs": 1757308413325,
+        "updatedAtMs": 1757308413325,
+        "tags": [
+          "react",
+          "release"
+        ],
+        "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+        "cover": null,
+        "coverAlt": "React 19 요약 커버",
+        "coverCaption": "이미지 출처: 본인 제작",
+        "path": "/_blog/posts/frontend__5.mdx"
+      },
       {
         "category": "frontend",
         "title": "React 19 변경점 요약",
         "slug": "안녕 2222",
         "date": "2025-08-28T15:18:57+09:00",
-        "updatedAt": "2025-08-28T18:23:32+09:00",
+        "updatedAt": "2025-09-08T13:26:10+09:00",
         "dateMinute": "2025-08-28T15:18+09:00",
-        "updatedMinute": "2025-08-28T18:23+09:00",
+        "updatedMinute": "2025-09-08T13:26+09:00",
         "dateParts": {
           "y": 2025,
           "m": 8,
@@ -22,14 +172,14 @@
         },
         "updatedParts": {
           "y": 2025,
-          "m": 8,
-          "d": 28,
-          "hh": 18,
-          "mm": 23,
+          "m": 9,
+          "d": 8,
+          "hh": 13,
+          "mm": 26,
           "tz": "+09:00"
         },
         "createdAtMs": 1756361937000,
-        "updatedAtMs": 1756373012000,
+        "updatedAtMs": 1757305570000,
         "tags": [
           "react",
           "release"
@@ -45,12 +195,156 @@
   "all": [
     {
       "category": "frontend",
+      "title": "React 19 변경점 요약5",
+      "slug": "2",
+      "date": "2025-09-08T05:13:38.792Z",
+      "updatedAt": "2025-09-08T05:13:38.792Z",
+      "dateMinute": "2025-09-08T05:13Z",
+      "updatedMinute": "2025-09-08T05:13Z",
+      "dateParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "updatedParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "createdAtMs": 1757308418792,
+      "updatedAtMs": 1757308418792,
+      "tags": [
+        "react",
+        "release"
+      ],
+      "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+      "cover": null,
+      "coverAlt": "React 19 요약 커버",
+      "coverCaption": "이미지 출처: 본인 제작",
+      "path": "/_blog/posts/frontend__2.mdx"
+    },
+    {
+      "category": "frontend",
+      "title": "React 19 변경점 요약4",
+      "slug": "3",
+      "date": "2025-09-08T05:13:36.977Z",
+      "updatedAt": "2025-09-08T05:13:36.977Z",
+      "dateMinute": "2025-09-08T05:13Z",
+      "updatedMinute": "2025-09-08T05:13Z",
+      "dateParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "updatedParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "createdAtMs": 1757308416977,
+      "updatedAtMs": 1757308416977,
+      "tags": [
+        "react",
+        "release"
+      ],
+      "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+      "cover": null,
+      "coverAlt": "React 19 요약 커버",
+      "coverCaption": "이미지 출처: 본인 제작",
+      "path": "/_blog/posts/frontend__3.mdx"
+    },
+    {
+      "category": "frontend",
+      "title": "React 19 변경점 요약3",
+      "slug": "4",
+      "date": "2025-09-08T05:13:34.899Z",
+      "updatedAt": "2025-09-08T05:13:34.899Z",
+      "dateMinute": "2025-09-08T05:13Z",
+      "updatedMinute": "2025-09-08T05:13Z",
+      "dateParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "updatedParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "createdAtMs": 1757308414899,
+      "updatedAtMs": 1757308414899,
+      "tags": [
+        "react",
+        "release"
+      ],
+      "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+      "cover": null,
+      "coverAlt": "React 19 요약 커버",
+      "coverCaption": "이미지 출처: 본인 제작",
+      "path": "/_blog/posts/frontend__4.mdx"
+    },
+    {
+      "category": "frontend",
+      "title": "React 19 변경점 요약2",
+      "slug": "5",
+      "date": "2025-09-08T05:13:33.325Z",
+      "updatedAt": "2025-09-08T05:13:33.325Z",
+      "dateMinute": "2025-09-08T05:13Z",
+      "updatedMinute": "2025-09-08T05:13Z",
+      "dateParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "updatedParts": {
+        "y": 2025,
+        "m": 9,
+        "d": 8,
+        "hh": 5,
+        "mm": 13,
+        "tz": "Z"
+      },
+      "createdAtMs": 1757308413325,
+      "updatedAtMs": 1757308413325,
+      "tags": [
+        "react",
+        "release"
+      ],
+      "summary": "실무에 바로 쓰는 포인트만 뽑았습니다.",
+      "cover": null,
+      "coverAlt": "React 19 요약 커버",
+      "coverCaption": "이미지 출처: 본인 제작",
+      "path": "/_blog/posts/frontend__5.mdx"
+    },
+    {
+      "category": "frontend",
       "title": "React 19 변경점 요약",
       "slug": "안녕 2222",
       "date": "2025-08-28T15:18:57+09:00",
-      "updatedAt": "2025-08-28T18:23:32+09:00",
+      "updatedAt": "2025-09-08T13:26:10+09:00",
       "dateMinute": "2025-08-28T15:18+09:00",
-      "updatedMinute": "2025-08-28T18:23+09:00",
+      "updatedMinute": "2025-09-08T13:26+09:00",
       "dateParts": {
         "y": 2025,
         "m": 8,
@@ -61,14 +355,14 @@
       },
       "updatedParts": {
         "y": 2025,
-        "m": 8,
-        "d": 28,
-        "hh": 18,
-        "mm": 23,
+        "m": 9,
+        "d": 8,
+        "hh": 13,
+        "mm": 26,
         "tz": "+09:00"
       },
       "createdAtMs": 1756361937000,
-      "updatedAtMs": 1756373012000,
+      "updatedAtMs": 1757305570000,
       "tags": [
         "react",
         "release"

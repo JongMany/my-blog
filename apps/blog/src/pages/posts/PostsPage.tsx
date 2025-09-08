@@ -10,6 +10,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 import { useBlogIndex, fetchPostMdxFromHost } from "../../service/blogData";
 import { components, MDXTheme } from "../../components/MDXTheme";
+import Giscus from "../../components/Comments";
 
 // evaluate에 주입할 훅(버전 상관없이 오버라이드가 먹도록)
 const useMDXComponents: UseMdxComponents = () => ({
@@ -77,21 +78,26 @@ export default function PostPage() {
     return <p>로드 에러: {(mdxQuery.error as Error).message}</p>;
 
   return (
-    <article className="prose prose-invert max-w-none">
-      <h1 className="mb-2">{post.title}</h1>
-      <p className="mt-0 text-sm opacity-70">
-        {post.category} · 작성 {fmt(post.date)} · 수정 {fmt(post.updatedAt)}
-      </p>
+    <>
+      <article className="prose prose-invert max-w-none">
+        <h1 className="mb-2">{post.title}</h1>
+        <p className="mt-0 text-sm opacity-70">
+          {post.category} · 작성 {fmt(post.date)} · 수정 {fmt(post.updatedAt)}
+        </p>
 
-      {/* ⬇️ 여기서 MDXProvider로 감싸면 끝! */}
-      {MDXComp ? (
-        <MDXTheme>
-          <MDXComp />
-        </MDXTheme>
-      ) : (
-        <p>렌더링 준비 중…</p>
-      )}
-    </article>
+        {/* ⬇️ 여기서 MDXProvider로 감싸면 끝! */}
+        {MDXComp ? (
+          <MDXTheme>
+            <MDXComp />
+          </MDXTheme>
+        ) : (
+          <p>렌더링 준비 중…</p>
+        )}
+      </article>
+      <div>
+        <Giscus term={`blog/${post.category}/${post.slug}`} />
+      </div>
+    </>
   );
 }
 const fmt = (iso: string) =>
