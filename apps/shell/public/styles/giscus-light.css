@@ -436,6 +436,10 @@ textarea.gsc-comment-box-textarea {
   grid-template-columns: repeat(8, 36px);
   gap: 6px;
 }
+/* 비로그인 */
+.gsc-reactions-popover .m-2:has(> a) {
+  white-space: nowrap !important;
+}
 
 /* 이모지 버튼 */
 .gsc-emoji-button {
