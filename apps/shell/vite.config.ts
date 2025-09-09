@@ -92,6 +92,19 @@ export default defineConfig({
   publicDir: "public",
   plugins: [
     react(),
+    // giscus 스타일 cors에러
+    {
+      name: "giscus-cors",
+      apply: "serve",
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url?.startsWith("/styles/")) {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+          }
+          next();
+        });
+      },
+    },
     tailwindcss(),
     federation({
       name: "shell",

@@ -1,0 +1,559 @@
+/* ===== base tokens ===== */
+:root {
+  color-scheme: dark;
+  --gs-bg: #0b111a;
+  --gs-card: #0f1623;
+  --gs-line: rgba(255, 255, 255, 0.08);
+  --gs-text: #e5e7eb;
+  --gs-muted: #9aa4b2;
+  --gs-primary: #5b8eff;
+  --gs-primary-ink: #0b111a;
+  --gs-surface: #121a27;
+  --gs-radius: 14px;
+}
+
+/* ===== reset / layout ===== */
+.gsc-main {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Inter,
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    sans-serif;
+  color: var(--gs-text);
+}
+.gsc-header,
+.gsc-reactions,
+.gsc-comment-box,
+.gsc-comment-box-bottom {
+  border: 0 !important;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* 입력 UI */
+.gsc-comment-box-textarea {
+  border: 1px solid var(--gs-line) !important;
+  border-radius: 16px !important;
+  background: #0e1521 !important;
+  color: var(--gs-text) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  resize: none !important;
+  background-image: none !important;
+}
+.gsc-comment-box-textarea:focus {
+  box-shadow: 0 0 0 4px rgba(91, 142, 255, 0.18) !important;
+  border-color: rgba(91, 142, 255, 0.45) !important;
+}
+.gsc-comment-box-textarea-extras {
+  border-top: 0 !important;
+  background: transparent !important;
+}
+
+/* ===== tabs ===== */
+.gsc-comment-box-tabs {
+  border: 0 !important;
+  background: transparent !important;
+}
+.gsc-comment-box-tabs .mx-2 {
+  display: flex;
+  gap: 6px;
+  background: #0d131d;
+  padding: 4px;
+  border-radius: 9999px;
+  border: 1px solid var(--gs-line);
+  overflow: hidden;
+}
+.gsc-comment-box-tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--gs-muted);
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    transform 0.05s;
+}
+.gsc-comment-box-tabs button:not([aria-selected="true"]):hover {
+  background: rgba(91, 142, 255, 0.14);
+  color: #fff;
+}
+.gsc-comment-box-tabs button[aria-selected="true"] {
+  background: #17233a;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(91, 142, 255, 0.35);
+}
+
+/* ===== toolbar ===== */
+.gsc-comment-box-md-toolbar {
+  margin-left: auto;
+  gap: 6px;
+}
+.gsc-toolbar-item {
+  opacity: 0.9;
+  border-radius: 8px;
+}
+.gsc-toolbar-item:hover {
+  background: #141b26;
+  opacity: 1;
+}
+
+/* ===== submit 버튼 ===== */
+.gsc-comment-box-bottom {
+  padding: 10px 4px;
+}
+.gsc-comment-box-bottom .btn.btn-primary {
+  background: var(--gs-primary) !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(60, 109, 240, 0.26);
+  transition:
+    box-shadow 0.15s,
+    transform 0.05s,
+    filter 0.15s;
+}
+.gsc-comment-box-bottom .btn.btn-primary:hover {
+  box-shadow: 0 12px 28px rgba(60, 109, 240, 0.38);
+  filter: brightness(1.04);
+}
+.gsc-comment-box-bottom .btn.btn-primary:active {
+  transform: translateY(1px);
+}
+.gsc-comment-box-bottom .btn.btn-primary:disabled {
+  box-shadow: none;
+  opacity: 0.55;
+}
+
+/* ===== compact spacing ===== */
+.gsc-comment-box {
+  padding: 0 !important;
+}
+.gsc-comment-box-main {
+  padding-top: 2px !important;
+}
+.gsc-left-header em {
+  color: var(--gs-muted);
+}
+.gsc-left-header em {
+  font-style: normal;
+  opacity: 0.7;
+}
+.gsc-comments-count {
+  font-size: 14px;
+}
+/* --- Tab 버튼을 완전한 pill로 강제 & 기본 테두리/의사요소 제거 --- */
+.gsc-comment-box-tabs .mx-2 > button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 9999px !important; /* ← 이게 반달 이슈 해결의 핵심 */
+  box-shadow: none !important;
+  line-height: 1; /* 수직정렬 안정화 */
+}
+
+/* giscus 기본 탭 장식 제거(간혹 들어오는 before/after, 보더 라인) */
+.gsc-comment-box-tabs .mx-2 > button::before,
+.gsc-comment-box-tabs .mx-2 > button::after {
+  content: none !important;
+}
+
+/* 선택/호버 상태를 pill에 맞게 다시 지정 (우선순위 보장 위해 !important) */
+.gsc-comment-box-tabs .mx-2 > button[aria-selected="true"] {
+  background: #eaf1ff !important; /* dark에서는 당신이 쓰는 다크 색으로 */
+  color: #1f2937 !important;
+  box-shadow: inset 0 0 0 1px rgba(47, 108, 246, 0.35) !important;
+}
+.gsc-comment-box-tabs .mx-2 > button:not([aria-selected="true"]):hover {
+  background: rgba(47, 108, 246, 0.08) !important;
+  color: var(--gs-text) !important;
+}
+textarea.gsc-comment-box-textarea {
+  background-image: none !important; /* dashed 라인 제거 */
+}
+.gsc-comment-box,                /* 폼 전체 */
+.gsc-comment-box-tabs,           /* 탭 바 */
+.gsc-comment-box-main,           /* 에디터 영역 컨테이너 */
+.gsc-comment-box-bottom,         /* 버튼/로그인 영역 */
+.gsc-comment-box-textarea-extras,
+.gsc-reply-box,
+.gsc-comment-box-preview {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* giscus가 color-border-primary로 주입하는 테두리 컬러 무력화 */
+.gsc-comment-box.color-border-primary,
+.gsc-comment-box-tabs.color-border-primary,
+.gsc-comment-box-main.color-border-primary,
+.gsc-comment-box-bottom.color-border-primary {
+  border-color: transparent !important;
+}
+
+/* 혹시 ::before로 1px 경계선을 그리는 경우도 차단 */
+.gsc-comment-box-main::before,
+.gsc-comment-box-bottom::before {
+  content: none !important;
+}
+
+/* 정렬 토글(오래된 순 / 새로운 순) → 세그먼트 pill */
+.gsc-header .BtnGroup {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid var(--gs-line) !important;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #0d131d;
+  padding: 2px !important; /* 기존 4px → 2px */
+}
+.gsc-header .BtnGroup .btn {
+  border: 0 !important;
+  min-height: 26px !important;
+  line-height: 26px !important;
+  background: transparent !important;
+  color: var(--gs-muted) !important;
+  padding: 4px 12px;
+  font-weight: 600;
+}
+.gsc-header .BtnGroup-item--selected .btn {
+  background: rgba(91, 142, 255, 0.18) !important;
+  color: var(--gs-text) !important;
+  box-shadow: inset 0 0 0 1px rgba(91, 142, 255, 0.35);
+}
+.gsc-header .BtnGroup .btn:hover {
+  background: rgba(91, 142, 255, 0.12) !important;
+  color: var(--gs-text) !important;
+}
+
+/* 댓글 카드: 진한 남색 테두리 제거 + 다크 카드/섀도우 */
+.gsc-timeline {
+  margin-top: 6px;
+}
+.gsc-comment {
+  margin: 12px 0;
+}
+.gsc-comment > .color-bg-primary.border {
+  border: 1px solid var(--gs-line) !important;
+  background: var(--gs-card) !important;
+  border-radius: var(--gs-radius) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* 카드 내부 간격 */
+.gsc-comment-header {
+  padding: 10px 12px 6px;
+}
+.gsc-comment-content {
+  padding: 0 12px 8px;
+  line-height: 1.7;
+}
+.gsc-comment-footer {
+  padding: 0 12px 10px;
+}
+
+/* 아바타 살짝 라운드/그림자 */
+.gsc-comment-author .gsc-comment-author-avatar img {
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* 리액션/추천 버튼 */
+.gsc-upvote-button,
+.gsc-reactions-button {
+  border: 1px solid var(--gs-line);
+  border-radius: 9999px;
+  background: transparent;
+  padding: 4px 8px;
+  transition: background 0.15s;
+}
+.gsc-upvote-button:hover,
+.gsc-reactions-button:hover {
+  background: rgba(91, 142, 255, 0.12);
+}
+.gsc-upvote-button.has-reacted {
+  background: rgba(91, 142, 255, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(91, 142, 255, 0.35);
+}
+.gsc-social-reaction-summary-item-count {
+  font-weight: 600;
+}
+
+/* '답글 작성하기' 프롬프트를 인풋처럼 */
+.gsc-reply-box .form-control {
+  border: 1px solid var(--gs-line) !important;
+  border-radius: 12px !important;
+  background: #0e1521 !important;
+  color: var(--gs-text) !important;
+  padding: 10px 12px !important;
+  text-align: left;
+  transition:
+    border 0.15s,
+    box-shadow 0.15s;
+}
+.gsc-reply-box .form-control:hover {
+  border-color: rgba(91, 142, 255, 0.35) !important;
+}
+.gsc-reply-box .form-control:focus,
+.gsc-reply-box .form-control:focus-visible {
+  border-color: rgba(91, 142, 255, 0.45) !important;
+  box-shadow: 0 0 0 4px rgba(91, 142, 255, 0.18) !important;
+}
+
+/* 카드 주변 잔여 보더 라인/의사요소 제거(헤어라인 방지) */
+.gsc-comment > .color-bg-primary.border::before,
+.gsc-comment > .color-bg-primary.border::after {
+  content: none !important;
+}
+
+/* 링크/약한 텍스트 톤 */
+.gsc-comment a {
+  color: var(--gs-primary);
+}
+.gsc-comment .color-text-tertiary {
+  color: var(--gs-muted);
+}
+
+/* === Segmented control (오래된 순 / 새로운 순) — dark === */
+.gsc-header .BtnGroup {
+  --seg-bg: #0d131d;
+  --seg-border: var(--gs-line);
+  --seg-hover: rgba(91, 142, 255, 0.12);
+  --seg-ring: rgba(91, 142, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9999px;
+  background: var(--seg-bg);
+  border: 1px solid var(--seg-border) !important;
+  box-shadow: none !important;
+}
+
+/* GitHub 기본 경계선/여백 제거 */
+.gsc-header .BtnGroup > .BtnGroup-item {
+  margin: 0 !important;
+  border: 0 !important;
+}
+.gsc-header .BtnGroup > .BtnGroup-item + .BtnGroup-item {
+  border-left: 0 !important;
+}
+
+/* 버튼 기본형 */
+.gsc-header .BtnGroup .btn {
+  appearance: none;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--gs-muted) !important;
+  padding: 6px 14px;
+  min-height: 32px;
+  line-height: 32px;
+  border-radius: 9999px !important;
+  font-weight: 600;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
+}
+/* hover / focus / active */
+.gsc-header .BtnGroup .btn:hover {
+  background: var(--seg-hover) !important;
+  color: var(--gs-text) !important;
+}
+.gsc-header .BtnGroup .btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(91, 142, 255, 0.22) !important;
+}
+.gsc-header .BtnGroup .btn:active {
+  transform: translateY(1px);
+}
+
+/* 선택 상태 */
+.gsc-header .BtnGroup-item--selected .btn {
+  background: rgba(91, 142, 255, 0.18) !important;
+  color: var(--gs-text) !important;
+  box-shadow: inset 0 0 0 1px var(--seg-ring) !important;
+}
+
+/* 혹시 남는 장식 제거(반달 이슈 방지) */
+.gsc-header .BtnGroup .btn::before,
+.gsc-header .BtnGroup .btn::after {
+  content: none !important;
+}
+/* =========================================================
+   Reactions — 팝오버(피커) / 요약 버튼 / 업보트 버튼
+   ========================================================= */
+
+/* 팝오버 컨테이너 */
+.gsc-reactions-popover {
+  background: var(--gs-card) !important;
+  border: 1px solid var(--gs-line) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 20px 40px rgba(2, 6, 23, 0.18),
+    0 1px 0 rgba(2, 6, 23, 0.02) !important;
+  padding: 6px 6px 10px !important;
+  animation: giscus-pop 0.12s ease-out;
+  backdrop-filter: saturate(1.2);
+}
+
+/* 팝오버 화살표(작은 꼬리) */
+.gsc-reactions-popover.top::after,
+.gsc-reactions-popover.bottom::after,
+.gsc-reactions-popover.left::after,
+.gsc-reactions-popover.right::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--gs-card);
+  border: 1px solid var(--gs-line);
+  transform: rotate(45deg);
+  box-shadow: 0 3px 8px rgba(2, 6, 23, 0.08);
+}
+.gsc-reactions-popover.top::after {
+  bottom: -6px;
+  left: 20px;
+}
+.gsc-reactions-popover.bottom::after {
+  top: -6px;
+  left: 20px;
+}
+.gsc-reactions-popover.left::after {
+  right: -6px;
+  top: 16px;
+}
+.gsc-reactions-popover.right::after {
+  left: -6px;
+  top: 16px;
+}
+
+/* 팝오버 제목/구분선 미세 톤다운 */
+.gsc-reactions-popover > p {
+  margin: 4px 8px !important;
+  color: var(--gs-muted) !important;
+  font-weight: 600;
+}
+.gsc-reactions-popover .border-t {
+  border-color: var(--gs-line) !important;
+}
+
+/* 이모지 버튼 그리드 */
+.gsc-reactions-popover .m-2 {
+  margin: 6px !important;
+  display: grid !important;
+  grid-template-columns: repeat(8, 36px);
+  gap: 6px;
+}
+
+/* 이모지 버튼 */
+.gsc-emoji-button {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--gs-line);
+  background: transparent;
+  border-radius: 10px;
+  transition:
+    background 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.06s ease;
+}
+.gsc-emoji-button:hover {
+  background: var(--gs-surface);
+  box-shadow: 0 1px 0 rgba(2, 6, 23, 0.06) inset;
+  transform: translateY(-1px);
+}
+.gsc-emoji-button:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(47, 108, 246, 0.18);
+}
+.gsc-emoji-button.has-reacted {
+  background: rgba(47, 108, 246, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(47, 108, 246, 0.35);
+}
+.gsc-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* 댓글 카드 하단의 ‘직접 반응’ 요약 버튼(👍 1 같은) */
+.gsc-direct-reaction-buttons {
+  display: flex;
+  gap: 6px;
+}
+.gsc-direct-reaction-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--gs-line);
+  border-radius: 9999px;
+  background: transparent;
+  transition:
+    background 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.06s ease;
+}
+.gsc-direct-reaction-button:hover {
+  background: rgba(47, 108, 246, 0.08);
+}
+.gsc-direct-reaction-button:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(47, 108, 246, 0.18);
+}
+.gsc-direct-reaction-button.has-reacted {
+  background: rgba(47, 108, 246, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(47, 108, 246, 0.28);
+}
+.gsc-direct-reaction-button-emoji {
+  font-size: 14px;
+}
+.gsc-social-reaction-summary-item-count {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* 업보트/리액션 트리거 버튼(⬆/🙂)을 더 일관된 칩으로 */
+.gsc-upvote-button,
+.gsc-reactions-button {
+  border: 1px solid var(--gs-line) !important;
+  border-radius: 9999px !important;
+  background: transparent !important;
+  padding: 4px 8px !important;
+  transition:
+    background 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.06s ease;
+}
+.gsc-upvote-button:hover,
+.gsc-reactions-button:hover {
+  background: rgba(47, 108, 246, 0.08) !important;
+}
+.gsc-upvote-button.has-reacted {
+  background: rgba(47, 108, 246, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(47, 108, 246, 0.28) !important;
+}
+
+/* 살짝 나타나는 애니메이션 */
+@keyframes giscus-pop {
+  from {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
