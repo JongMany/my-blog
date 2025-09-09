@@ -234,9 +234,15 @@ export default function GiscusBox({
   const themeUrl = React.useMemo(() => {
     // https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-dark.css
     // https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-light.css
-    return prefersDark()
+
+    const devUrl = prefersDark()
       ? absUrl("styles/giscus-dark.css")
       : absUrl("styles/giscus-light.css");
+    const prodUrl = prefersDark()
+      ? "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-dark.css"
+      : "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-light.css";
+
+    return import.meta.env.MODE === "development" ? devUrl : prodUrl;
   }, []);
 
   React.useEffect(() => {
@@ -272,9 +278,14 @@ export default function GiscusBox({
   // 다크/라이트 전환 시 iFrame 테마 동기화
   React.useEffect(() => {
     const apply = () => {
-      const url = prefersDark()
+      const devUrl = prefersDark()
         ? absUrl("styles/giscus-dark.css")
         : absUrl("styles/giscus-light.css");
+      const prodUrl = prefersDark()
+        ? "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-dark.css"
+        : "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-light.css";
+
+      const url = import.meta.env.MODE === "development" ? devUrl : prodUrl;
       document
         .querySelector<HTMLIFrameElement>("iframe.giscus-frame")
         ?.contentWindow?.postMessage(
