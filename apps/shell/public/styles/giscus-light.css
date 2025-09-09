@@ -412,37 +412,11 @@ textarea.gsc-comment-box-textarea {
   padding: 6px 6px 10px !important;
   animation: giscus-pop 0.12s ease-out;
   backdrop-filter: saturate(1.2);
+  min-width: 356px;
 }
-
-/* 팝오버 화살표(작은 꼬리) */
-.gsc-reactions-popover.top::after,
-.gsc-reactions-popover.bottom::after,
-.gsc-reactions-popover.left::after,
-.gsc-reactions-popover.right::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: var(--gs-card);
-  border: 1px solid var(--gs-line);
-  transform: rotate(45deg);
-  box-shadow: 0 3px 8px rgba(2, 6, 23, 0.08);
-}
-.gsc-reactions-popover.top::after {
-  bottom: -6px;
-  left: 20px;
-}
-.gsc-reactions-popover.bottom::after {
-  top: -6px;
-  left: 20px;
-}
-.gsc-reactions-popover.left::after {
-  right: -6px;
-  top: 16px;
-}
-.gsc-reactions-popover.right::after {
-  left: -6px;
-  top: 16px;
+.gsc-reactions-popover.open.top:before {
+  border-top-color: var(--color-border-default, var(--gs-card));
+  bottom: -16px;
 }
 
 /* 팝오버 제목/구분선 미세 톤다운 */
