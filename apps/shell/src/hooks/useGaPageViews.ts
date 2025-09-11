@@ -5,6 +5,7 @@ export function useGaPageViews(measurementId: string) {
   const loc = useLocation();
   useEffect(() => {
     const gtag = (window as any).gtag as ((...args: any[]) => void) | undefined;
+    console.log(measurementId, gtag);
     if (!gtag || !measurementId) return;
 
     console.log(loc.pathname + loc.search + loc.hash);
