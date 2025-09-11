@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { BlogTotal, cn } from "@srf/ui";
 import ActivePill from "./ActivePill";
 import { useGaPageViews } from "../hooks/useGaPageViews";
+import { useGaJsonp } from "../hooks/useGaJsonP";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
@@ -17,6 +18,9 @@ export default function Layout({ children }: PropsWithChildren) {
   const [open, setOpen] = useState(false);
 
   useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  const siteStats = useGaJsonp("site");
+  const pageStats = useGaJsonp("page", "/blog/frontend/3");
+  console.log(siteStats, pageStats);
   useEffect(() => setOpen(false), [pathname]);
 
   // useEffect(() => {
