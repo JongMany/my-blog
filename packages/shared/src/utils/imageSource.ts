@@ -14,7 +14,7 @@ const mainHost = (app: AppPrefix) => {
 export const imageSource = (
   src: string,
   prefix: "portfolio" | "blog" | "" | "resume",
-  devUrl: string
+  devUrl: string,
 ) => {
   return import.meta.env.MODE === "development"
     ? `${devUrl}/${src}`

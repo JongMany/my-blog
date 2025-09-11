@@ -203,6 +203,7 @@
 //   );
 // }
 
+import { assetUrl } from "@mfe/shared";
 import * as React from "react";
 
 function getBaseHref() {
@@ -241,14 +242,12 @@ export default function GiscusBox({
     const prodUrl = prefersDark()
       ? "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-dark.css"
       : "https://cdn.jsdelivr.net/gh/JongMany/my-blog/apps/shell/public/styles/giscus-light.css";
-    // return import.meta.env.MODE === "development" ? devUrl : prodUrl;
-    return import.meta.env.DEV ? devUrl : prodUrl;
+    return import.meta.env.MODE === "development" ? devUrl : prodUrl;
   }, []);
 
   React.useEffect(() => {
     if (!ref.current) return;
     ref.current.innerHTML = "";
-    console.log("123");
 
     const s = document.createElement("script");
     s.src = "https://giscus.app/client.js";
