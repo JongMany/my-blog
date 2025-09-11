@@ -64,7 +64,7 @@ export function GaCounters({
       });
   }, [api, scope, resolvedPath, start, end]);
 
-  if (!data) return null;
+  if (!data) return <span>실패중..?</span>;
 
   return (
     <div

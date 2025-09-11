@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { cn } from "@srf/ui";
+import { BlogTotal, cn } from "@srf/ui";
 import ActivePill from "./ActivePill";
+import { useGaPageViews } from "../hooks/useGaPageViews";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
@@ -15,6 +16,7 @@ export default function Layout({ children }: PropsWithChildren) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
+  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
   useEffect(() => setOpen(false), [pathname]);
 
   // useEffect(() => {
@@ -31,7 +33,7 @@ export default function Layout({ children }: PropsWithChildren) {
     NAV.find((n) =>
       n.to === "/"
         ? pathname === "/"
-        : pathname === n.to || pathname.startsWith(`${n.to}/`)
+        : pathname === n.to || pathname.startsWith(`${n.to}/`),
     )?.label ?? "Menu";
 
   return (
@@ -56,7 +58,7 @@ export default function Layout({ children }: PropsWithChildren) {
               className={({ isActive }) =>
                 cn(
                   "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-                  isActive ? "shell:text-gray-1" : ""
+                  isActive ? "shell:text-gray-1" : "",
                 )
               }
               children={({ isActive }) => (
@@ -85,9 +87,9 @@ export default function Layout({ children }: PropsWithChildren) {
       </header>
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
-
       <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
         © {new Date().getFullYear()} · Vite + Module Federation
+        <BlogTotal />
       </footer>
     </div>
   );
@@ -152,7 +154,7 @@ function MobileNavDropdown({
         aria-controls="mobile-nav-menu"
         className={cn(
           "shell:inline-flex shell:items-center shell:gap-2 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3 shell:py-1.5 shell:text-sm",
-          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]"
+          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
         )}
         onClick={() => setOpen(true)}
       >
@@ -160,7 +162,7 @@ function MobileNavDropdown({
         <svg
           className={cn(
             "shell:size-4 shell:transition-transform",
-            open && "shell:rotate-180"
+            open && "shell:rotate-180",
           )}
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -181,7 +183,7 @@ function MobileNavDropdown({
               "shell:border-white/20 dark:shell:border-white/10",
               "shell:bg-white/80 dark:shell:bg-neutral-900/70 shell:backdrop-blur-md",
               "supports-[backdrop-filter]:shell:bg-white/60 supports-[backdrop-filter]:dark:shell:bg-neutral-900/50",
-              "shell:shadow-xl shell:ring-1 shell:ring-black/5"
+              "shell:shadow-xl shell:ring-1 shell:ring-black/5",
             )}
           >
             <nav className="shell:flex shell:flex-col">
@@ -206,7 +208,7 @@ function MobileNavDropdown({
                         "hover:shell:bg-white/50 dark:hover:shell:bg-white/5",
                         "shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
                         (rrActive || isActive) &&
-                          "shell:text-[var(--primary)] shell:font-medium"
+                          "shell:text-[var(--primary)] shell:font-medium",
                       )
                     }
                   >

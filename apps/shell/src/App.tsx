@@ -12,23 +12,23 @@ import BootRedirect from "./components/BootRedirect";
 export const BlogApp = withBoundary(
   lazyRemote(
     () => import("blog/BlogApp"), // ← federation remote
-    { retries: 6, baseDelay: 500, factor: 1.7 } // ← 취향대로
+    { retries: 6, baseDelay: 500, factor: 1.7 }, // ← 취향대로
   ),
-  { remoteOrigin: "http://localhost:3001" }
+  { remoteOrigin: "http://localhost:3001" },
 );
 export const PortfolioApp = withBoundary(
   lazyRemote(
     () => import("portfolio/App"), // ← federation remote
-    { retries: 6, baseDelay: 500, factor: 1.7 } // ← 취향대로
+    { retries: 6, baseDelay: 500, factor: 1.7 }, // ← 취향대로
   ),
-  { remoteOrigin: "http://localhost:3002" }
+  { remoteOrigin: "http://localhost:3002" },
 );
 export const ResumeApp = withBoundary(
   lazyRemote(
     () => import("resume/App"), // ← federation remote
-    { retries: 6, baseDelay: 500, factor: 1.7 } // ← 취향대로
+    { retries: 6, baseDelay: 500, factor: 1.7 }, // ← 취향대로
   ),
-  { remoteOrigin: "http://localhost:3003" }
+  { remoteOrigin: "http://localhost:3003" },
 );
 
 export default function App() {
