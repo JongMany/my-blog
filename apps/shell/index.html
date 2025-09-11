@@ -6,6 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
   </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-18LCQRWLKN"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-18LCQRWLKN");
+  </script>
+  <script>
+    // GA4
+    (function () {
+      var MID = window.__GA_MEASUREMENT_ID__ || "{{G-XXXXXXX}}"; // 배포 시 치환
+      if (!MID || window.gtag) return;
+
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + MID;
+      document.head.appendChild(s);
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () {
+        dataLayer.push(arguments);
+      };
+      gtag("js", new Date());
+      gtag("config", MID, { send_page_view: false });
+
+      // 모든 라우터/프레임워크 공통: 히스토리 변경 감지
+      var _push = history.pushState,
+        _replace = history.replaceState;
+      function send() {
+        gtag("event", "page_view", {
+          page_path: location.pathname + location.search,
+          page_title: document.title,
+          page_location: location.href,
+          send_to: MID,
+        });
+      }
+      history.pushState = function () {
+        _push.apply(this, arguments);
+        setTimeout(send, 0);
+      };
+      history.replaceState = function () {
+        _replace.apply(this, arguments);
+        setTimeout(send, 0);
+      };
+      window.addEventListener("popstate", send);
+      window.addEventListener("DOMContentLoaded", send); // 최초 진입
+    })();
+  </script>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
