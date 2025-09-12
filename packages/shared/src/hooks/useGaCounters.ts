@@ -56,6 +56,8 @@ export function useGaCounters({
     return u.toString();
   }, [api, scope, resolvedPath, start, end]);
 
+  console.log(url);
+
   // 중복요청 방지용 플래그
   const inFlight = useRef(false);
 

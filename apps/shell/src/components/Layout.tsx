@@ -18,7 +18,8 @@ export default function Layout({ children }: PropsWithChildren) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
-  // useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  console.log(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
   // const siteStats = useGaJsonp("site");
   // const pageStats = useGaJsonp("page", "/blog/frontend/3");
 
