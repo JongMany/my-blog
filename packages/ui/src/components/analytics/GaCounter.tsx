@@ -18,6 +18,14 @@ export function GaCounters({
   end = "today",
   className,
 }: Props) {
+  // const { loading, error, totals } = useGaCounters({
+  //   api,
+  //   scope,
+  //   path,
+  //   start,
+  //   end,
+  //   forceJsonp,
+  // });
   const [data, setData] = React.useState<{
     views: number;
     users: number;

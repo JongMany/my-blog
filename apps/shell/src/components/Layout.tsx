@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { BlogTotal, cn } from "@srf/ui";
 import ActivePill from "./ActivePill";
+import { useGaCounters } from "@mfe/shared";
 import { useGaPageViews } from "../hooks/useGaPageViews";
 import { useGaJsonp } from "../hooks/useGaJsonP";
 
@@ -17,10 +18,19 @@ export default function Layout({ children }: PropsWithChildren) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
-  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
-  const siteStats = useGaJsonp("site");
-  const pageStats = useGaJsonp("page", "/blog/frontend/3");
-  console.log(siteStats, pageStats);
+  // useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  // const siteStats = useGaJsonp("site");
+  // const pageStats = useGaJsonp("page", "/blog/frontend/3");
+
+  const d = useGaCounters({
+    scope: "site",
+    start: "2024-01-01", // 사이트 오픈일로 넉넉히
+    end: "today",
+    api:
+      import.meta.env.VITE_GA_API_URL ??
+      "https://script.google.com/macros/s/AKfycbyGtQznICkAvDQLIOh8nsKDRV1Ve9BNZGOfxndr1KzJWneeBNixQNb3L8f4ikPrbX6X/exec",
+  });
+
   useEffect(() => setOpen(false), [pathname]);
 
   // useEffect(() => {
