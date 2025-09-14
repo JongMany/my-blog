@@ -1,9 +1,9 @@
 export default function StatsStrip() {
   const stats = [
-    { k: "Apps", v: "3" },
-    { k: "Runtime", v: "1" },
-    { k: "Design", v: "Tailwind" },
-    { k: "Routing", v: "React Router" },
+    { k: "Experience", v: "3+ Years" },
+    { k: "Focus", v: "Frontend" },
+    { k: "Style", v: "Growth" },
+    { k: "Passion", v: "Learning" },
   ];
   return (
     <section className="shell:mx-auto shell:mt-10 shell:max-w-5xl">

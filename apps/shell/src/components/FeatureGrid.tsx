@@ -1,32 +1,33 @@
 import { Link } from "react-router-dom";
 
+const items = [
+  {
+    title: "Blog",
+    desc: "개발 노트, 회고, 실험 기록",
+    to: "/blog",
+    chip: "Remote",
+    emoji: "✍️",
+    gradient: "from-sky-400/20 to-cyan-400/10",
+  },
+  {
+    title: "Portfolio",
+    desc: "프로젝트와 성과를 한눈에",
+    to: "/portfolio",
+    chip: "Remote",
+    emoji: "🧩",
+    gradient: "from-violet-400/20 to-fuchsia-400/10",
+  },
+  {
+    title: "Resume",
+    desc: "요약 이력서 및 경력 하이라이트",
+    to: "/resume",
+    chip: "Remote",
+    emoji: "📄",
+    gradient: "from-emerald-400/20 to-lime-400/10",
+  },
+];
+
 export default function FeatureGrid() {
-  const items = [
-    {
-      title: "Blog",
-      desc: "개발 노트, 회고, 실험 기록",
-      to: "/blog",
-      chip: "Remote",
-      emoji: "✍️",
-      gradient: "from-sky-400/20 to-cyan-400/10",
-    },
-    {
-      title: "Portfolio",
-      desc: "프로젝트와 성과를 한눈에",
-      to: "/portfolio",
-      chip: "Remote",
-      emoji: "🧩",
-      gradient: "from-violet-400/20 to-fuchsia-400/10",
-    },
-    {
-      title: "Resume",
-      desc: "요약 이력서 및 경력 하이라이트",
-      to: "/resume",
-      chip: "Remote",
-      emoji: "📄",
-      gradient: "from-emerald-400/20 to-lime-400/10",
-    },
-  ];
   return (
     <section className="shell:mx-auto shell:mt-10 shell:grid shell:max-w-5xl shell:gap-4 shell:sm:grid-cols-2 shell:lg:grid-cols-3">
       {items.map((it) => (

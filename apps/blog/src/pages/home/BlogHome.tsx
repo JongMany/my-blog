@@ -9,7 +9,6 @@ export default function BlogHome() {
     queryKey: ["blogIndex"],
     queryFn: fetchBlogIndexFromHost,
   });
-  console.log("data", data);
 
   if (isLoading) return <div>불러오는 중…</div>;
   if (error || !data) return <div>로드 실패</div>;

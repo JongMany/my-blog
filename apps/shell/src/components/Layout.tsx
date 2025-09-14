@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { BlogTotal, cn } from "@srf/ui";
+import { cn } from "@srf/ui";
 import ActivePill from "./ActivePill";
-import { useGaCounters } from "@mfe/shared";
 import { useGaPageViews } from "../hooks/useGaPageViews";
-import { useGaJsonp } from "../hooks/useGaJsonP";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
@@ -18,31 +16,9 @@ export default function Layout({ children }: PropsWithChildren) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
-  console.log(import.meta.env.VITE_GA_MEASUREMENT_ID);
   useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
-  // const siteStats = useGaJsonp("site");
-  // const pageStats = useGaJsonp("page", "/blog/frontend/3");
-
-  const d = useGaCounters({
-    scope: "site",
-    start: "2024-01-01", // 사이트 오픈일로 넉넉히
-    end: "today",
-    api:
-      import.meta.env.VITE_GA_API_URL ??
-      "https://script.google.com/macros/s/AKfycbyGtQznICkAvDQLIOh8nsKDRV1Ve9BNZGOfxndr1KzJWneeBNixQNb3L8f4ikPrbX6X/exec",
-  });
 
   useEffect(() => setOpen(false), [pathname]);
-
-  // useEffect(() => {
-  //   if (!open) return;
-  //   const onClick = (e: MouseEvent) => {
-  //     const target = e.target as Node;
-  //     if (!navRef.current?.contains(target)) setOpen(false);
-  //   };
-  //   document.addEventListener("mousedown", onClick);
-  //   return () => document.removeEventListener("mousedown", onClick);
-  // }, [open]);
 
   const activeLabel =
     NAV.find((n) =>
@@ -103,8 +79,7 @@ export default function Layout({ children }: PropsWithChildren) {
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
       <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
-        © {new Date().getFullYear()} · Vite + Module Federation
-        <BlogTotal />
+        © {new Date().getFullYear()} · Frontend Developer
       </footer>
     </div>
   );
@@ -133,34 +108,8 @@ function MobileNavDropdown({
   const btnRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-  //   if (e.key === "Escape") {
-  //     setOpen(false);
-  //     btnRef.current?.focus();
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (!open) return;
-  //   const prev = document.body.style.overflow;
-  //   document.body.style.overflow = "hidden";
-  //   const t = setTimeout(() => {
-  //     rootRef.current
-  //       ?.querySelector<HTMLAnchorElement>("#mobile-nav-menu a")
-  //       ?.focus();
-  //   }, 0);
-  //   return () => {
-  //     document.body.style.overflow = prev;
-  //     clearTimeout(t);
-  //   };
-  // }, [open]);
-
   return (
-    <div
-      ref={rootRef}
-      className="shell:relative shell:z-[70] shell:md:hidden"
-      // onKeyDown={onKeyDown}
-    >
+    <div ref={rootRef} className="shell:relative shell:z-[70] shell:md:hidden">
       <button
         ref={btnRef}
         type="button"
@@ -211,10 +160,7 @@ function MobileNavDropdown({
                   <NavLink
                     key={n.to}
                     to={n.to}
-                    onClick={() => {
-                      console.log(n.to, n.end);
-                      // setOpen(false);
-                    }}
+                    onClick={() => setOpen(false)}
                     end={(n as any).end}
                     role="menuitem"
                     className={({ isActive: rrActive }) =>

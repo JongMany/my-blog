@@ -61,7 +61,6 @@ export async function fetchPostMdxFromHost(path: string) {
 export async function fetchBlogIndex() {
   // host 기준: /_blog/index.json 또는 /my-blog/blog/_blog/index.json
   const url = assetUrl("_blog/index.json", "blog");
-  console.log(url);
 
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`failed to load blog index: ${res.status}`);

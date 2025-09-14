@@ -29,7 +29,6 @@ export const useAuth = create<AuthState>()(
       },
       login: async (pw) => {
         if (!OWNER_PASS) {
-          console.warn("VITE_OWNER_PASS 미설정. 임시로 게스트만 허용.");
           return false;
         }
         if (pw === OWNER_PASS) {
@@ -47,8 +46,8 @@ export const useAuth = create<AuthState>()(
       },
       logout: () => set({ user: null }),
     }),
-    { name: "auth:v1" }
-  )
+    { name: "auth:v1" },
+  ),
 );
 
 /** 오너만 접근 허용 */

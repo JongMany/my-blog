@@ -64,7 +64,9 @@ export default function PostPage() {
         });
         if (!cancelled) setMDXComp(() => MDXContent as React.ComponentType);
       } catch (err: any) {
-        console.error("[MDX evaluate error]", err?.message, err?.position);
+        if (import.meta.env.DEV) {
+          console.error("[MDX evaluate error]", err?.message, err?.position);
+        }
       }
     })();
     return () => {
