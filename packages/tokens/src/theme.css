@@ -1,16 +1,164 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-primary-1: oklch(0.98 0.02 var(--primary-hue));
-  --color-primary-2: oklch(0.95 0.04 var(--primary-hue));
-  --color-primary-3: oklch(0.92 0.06 var(--primary-hue));
-  --color-primary-4: oklch(0.88 0.08 var(--primary-hue));
-  --color-primary-5: oklch(0.84 0.1 var(--primary-hue));
-  --color-primary-6: oklch(0.8 0.12 var(--primary-hue));
-  --color-primary-7: oklch(0.76 0.14 var(--primary-hue));
-  --color-primary-8: oklch(0.72 0.16 var(--primary-hue));
-  --color-primary-9: oklch(0.68 0.18 var(--primary-hue));
+  /* 
+   * Enhanced Design Token System
+   * Following Radix UI and Adobe Spectrum best practices
+   * 
+   * Structure:
+   * 1. Primitive tokens (gray-1, blue-9) - base color palette
+   * 2. Semantic tokens (color-text-primary) - purpose-driven 
+   * 3. Component tokens (button-background) - component-specific
+   */
+
+  /* ============================================================================ */
+  /* Primitive Color Tokens (Radix UI Compatible 12-step scales) */
+  /* ============================================================================ */
+
+  /* Gray Scale (Primary neutral) */
+  --gray-1: #fcfcfc;
+  --gray-2: #f9f9f9;
+  --gray-3: #f0f0f0;
+  --gray-4: #e8e8e8;
+  --gray-5: #e0e0e0;
+  --gray-6: #d9d9d9;
+  --gray-7: #cecece;
+  --gray-8: #bbbbbb;
+  --gray-9: #8d8d8d;
+  --gray-10: #838383;
+  --gray-11: #646464;
+  --gray-12: #202020;
+
+  /* Gray Alpha (Transparent grays) */
+  --gray-a-1: rgba(0, 0, 0, 0.012);
+  --gray-a-2: rgba(0, 0, 0, 0.024);
+  --gray-a-3: rgba(0, 0, 0, 0.059);
+  --gray-a-4: rgba(0, 0, 0, 0.09);
+  --gray-a-5: rgba(0, 0, 0, 0.122);
+  --gray-a-6: rgba(0, 0, 0, 0.149);
+  --gray-a-7: rgba(0, 0, 0, 0.192);
+  --gray-a-8: rgba(0, 0, 0, 0.267);
+  --gray-a-9: rgba(0, 0, 0, 0.447);
+  --gray-a-10: rgba(0, 0, 0, 0.486);
+  --gray-a-11: rgba(0, 0, 0, 0.608);
+  --gray-a-12: rgba(0, 0, 0, 0.875);
+
+  /* Blue Scale (Primary brand) */
+  --blue-1: #fbfdff;
+  --blue-2: #f4faff;
+  --blue-3: #e6f4fe;
+  --blue-4: #d5efff;
+  --blue-5: #c2e5ff;
+  --blue-6: #acd8fc;
+  --blue-7: #8ec8f6;
+  --blue-8: #5eb1ef;
+  --blue-9: #0090ff; /* 🎯 Main brand color */
+  --blue-10: #0588f0;
+  --blue-11: #0d74ce;
+  --blue-12: #113264;
+
+  /* Green Scale (Success) */
+  --green-1: #fbfefc;
+  --green-2: #f4fbf6;
+  --green-3: #e6f6eb;
+  --green-4: #d6f1df;
+  --green-5: #c4e8d1;
+  --green-6: #adddc0;
+  --green-7: #8eceaa;
+  --green-8: #5bb98b;
+  --green-9: #30a46c; /* 🎯 Success color */
+  --green-10: #2b9a66;
+  --green-11: #218358;
+  --green-12: #193b2d;
+
+  /* Red Scale (Error) */
+  --red-1: #fffcfc;
+  --red-2: #fff7f7;
+  --red-3: #feebec;
+  --red-4: #ffdbdc;
+  --red-5: #ffcdce;
+  --red-6: #fdbdbe;
+  --red-7: #f4a9aa;
+  --red-8: #eb8e90;
+  --red-9: #e5484d; /* 🎯 Error color */
+  --red-10: #dc3e42;
+  --red-11: #ce2c31;
+  --red-12: #641723;
+
+  /* Amber Scale (Warning) */
+  --amber-1: #fefdfb;
+  --amber-2: #fefbe9;
+  --amber-3: #fff7c2;
+  --amber-4: #ffee9c;
+  --amber-5: #fbe577;
+  --amber-6: #f3d673;
+  --amber-7: #e9c162;
+  --amber-8: #e2a336;
+  --amber-9: #ffc53d; /* 🎯 Warning color */
+  --amber-10: #ffba18;
+  --amber-11: #ab6400;
+  --amber-12: #4f3422;
+
+  /* ============================================================================ */
+  /* Semantic Design Tokens (Purpose-driven) */
+  /* ============================================================================ */
+
+  /* Background Colors */
+  --color-background-canvas: var(--gray-1); /* Main app background */
+  --color-background-panel: var(--gray-2); /* Cards, panels */
+  --color-background-surface: var(--gray-3); /* Interactive surfaces */
+  --color-background-hover: var(--gray-4); /* Hover states */
+  --color-background-pressed: var(--gray-5); /* Pressed states */
+  --color-background-selected: var(--gray-6); /* Selected states */
+  --color-background-overlay: var(--gray-a-8); /* Modal overlays */
+  --color-background-tooltip: var(--gray-12); /* Tooltips */
+
+  /* Border Colors */
+  --color-border-default: var(--gray-7); /* Default borders */
+  --color-border-hover: var(--gray-8); /* Border hover */
+  --color-border-focus: var(--blue-8); /* Focus rings */
+  --color-border-subtle: var(--gray-6); /* Subtle borders */
+  --color-border-strong: var(--gray-9); /* Strong borders */
+
+  /* Text Colors */
+  --color-text-primary: var(--gray-12); /* Primary text (high contrast) */
+  --color-text-secondary: var(--gray-11); /* Secondary text */
+  --color-text-tertiary: var(--gray-10); /* Tertiary text */
+  --color-text-placeholder: var(--gray-9); /* Placeholder text */
+  --color-text-disabled: var(--gray-8); /* Disabled text */
+  --color-text-inverse: var(--gray-1); /* Text on dark backgrounds */
+
+  /* Brand/Accent Colors */
+  --color-accent-subtle: var(--blue-3); /* Subtle accent background */
+  --color-accent-muted: var(--blue-4); /* Muted accent background */
+  --color-accent-surface: var(--blue-5); /* Accent surface */
+  --color-accent-hover: var(--blue-6); /* Accent hover */
+  --color-accent-pressed: var(--blue-7); /* Accent pressed */
+  --color-accent-solid: var(--blue-9); /* 🎯 Main brand color */
+  --color-accent-solid-hover: var(--blue-10); /* Brand hover */
+  --color-accent-text: var(--blue-11); /* Accent text */
+  --color-accent-contrast: var(--blue-12); /* High contrast accent */
+
+  /* Status Colors */
+  --color-success-subtle: var(--green-3);
+  --color-success-surface: var(--green-4);
+  --color-success-solid: var(--green-9);
+  --color-success-text: var(--green-11);
+
+  --color-warning-subtle: var(--amber-3);
+  --color-warning-surface: var(--amber-4);
+  --color-warning-solid: var(--amber-9);
+  --color-warning-text: var(--amber-11);
+
+  --color-error-subtle: var(--red-3);
+  --color-error-surface: var(--red-4);
+  --color-error-solid: var(--red-9);
+  --color-error-text: var(--red-11);
+
+  --color-info-subtle: var(--blue-3);
+  --color-info-surface: var(--blue-4);
+  --color-info-solid: var(--blue-9);
+  --color-info-text: var(--blue-11);
 
   /* Spacing */
   --spacing-0: 0;

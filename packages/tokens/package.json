@@ -13,7 +13,8 @@
   "scripts": {
     "rm:dist": "rm -rf dist/*",
     "build": "pnpm rm:dist && pnpm rollup -c && pnpm build-css-modules",
-    "build-css-modules": "node ./scripts/color-tokens.js && node ./scripts/color-roles-css.js && node ./scripts/color-css.js && node ./scripts/cursor-css.js && node ./scripts/scaling-css.js && node ./scripts/space-css.js && node ./scripts/radius-css.js && node ./scripts/typography-css.js && node ./scripts/shadow-css.js && node ./scripts/base-css.js &&  node ./scripts/generate-index-css.js"
+    "build-css-modules": "node ./scripts/color-tokens.js && node ./scripts/color-roles-css.js && node ./scripts/color-css.js && node ./scripts/semantic-css.js && node ./scripts/cursor-css.js && node ./scripts/scaling-css.js && node ./scripts/space-css.js && node ./scripts/radius-css.js && node ./scripts/typography-css.js && node ./scripts/shadow-css.js && node ./scripts/base-css.js &&  node ./scripts/generate-index-css.js",
+    "build-semantic": "node ./scripts/semantic-css.js"
   },
   "keywords": [],
   "author": "",
