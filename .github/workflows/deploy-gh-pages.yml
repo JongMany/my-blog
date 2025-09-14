@@ -1,34 +1,45 @@
+# GitHub Pages 배포 워크플로우 (선택적 MFE 빌드)
+# Micro Frontend 아키텍처를 사용하는 프로젝트의 최적화된 배포
 name: Deploy to GitHub Pages (Selective MFE)
 
+# 트리거 조건
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [main] # main 브랜치에 푸시 시 자동 실행
+  workflow_dispatch: # 수동 실행 허용
 
+# GitHub Pages 배포에 필요한 권한 설정
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-  actions: read
+  contents: read # 저장소 내용 읽기
+  pages: write # GitHub Pages 쓰기
+  id-token: write # OIDC 토큰 생성
+  actions: read # Actions 메타데이터 읽기
 
+# 동시 실행 제어 (같은 브랜치에서 여러 배포가 동시에 실행되는 것을 방지)
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # 메인 빌드 및 배포 작업
   build:
     runs-on: ubuntu-latest
     env:
-      CI: true
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM  || ''}}
+      CI: true # CI 환경임을 명시
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }} # Turbo 원격 캐시 토큰
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM  || ''}} # Turbo 팀 식별자
+      # MFE Apps configuration - 새 앱 추가 시 여기만 수정하면 됨
+      MFE_APPS: "blog portfolio resume"
     steps:
+      # 1️⃣ 소스 코드 체크아웃
       - uses: actions/checkout@v4
 
+      # 2️⃣ 변경된 파일 감지 (선택적 빌드를 위한 최적화)
       - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
+            # 패키지/인프라 변경 감지 (전체 빌드 트리거)
             packages:
               - 'packages/**'
               - 'pnpm-lock.yaml'
@@ -37,71 +48,104 @@ jobs:
               - 'scripts/**'
               - 'package.json'
               - '.github/workflows/**'
+            # 앱 변경 감지 (점진적 빌드 가능)
             apps:
               - 'apps/**'
 
+      # 3️⃣ PNPM 설정 (패키지 매니저)
       - uses: pnpm/action-setup@v4
         with: { run_install: false }
 
+      # 4️⃣ Node.js 환경 설정 및 의존성 캐싱
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
+      # 5️⃣ 의존성 설치 (lock 파일 기준으로 정확한 버전)
       - run: pnpm -w install --frozen-lockfile
 
-      - run: echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV
+      # 6️⃣ 빌드 환경 변수 설정 (런타임에 주입될 정보들)
+      - name: Set build environment variables
+        run: |
+          echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV          # Git 커밋 해시
+          echo "VITE_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV  # 빌드 시간 (UTC)
+          echo "VITE_BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV      # 브랜치 이름
+
+      # 7️⃣ 블로그 콘텐츠 빌드 (MDX → 정적 파일 변환)
       - run: pnpm -w -F blog run content:build
-      # ===== 빌드 =====
+      # 8️⃣ 스마트 빌드 전략 (변경 사항에 따른 선택적 빌드)
+
+      # 패키지/인프라 변경 시: 전체 빌드 (안전한 접근)
       - name: Build all (packages/infra changed)
         if: steps.changes.outputs.packages == 'true'
         run: pnpm -w turbo run build
 
+      # 점진적 빌드: 이전 커밋 이후 변경된 부분만 (의존성 포함)
       - name: Build only changed since last commit (with deps)
         if: steps.changes.outputs.packages != 'true' && github.event.before != '' && github.event.before != github.sha
         run: pnpm -w turbo run build --filter="...[${{ github.event.before }}]"
 
+      # 폴백: 비교 기준이 없는 경우 전체 빌드 (초기 푸시, force push 등)
       - name: Fallback full build if before empty or equal
         if: steps.changes.outputs.packages != 'true' && (github.event.before == '' || github.event.before == github.sha)
         run: pnpm -w turbo run build
 
-      # ===== 보충 빌드 (dist 없으면 해당 앱만) =====
-      - name: Ensure blog dist exists
-        run: test -f apps/blog/dist/assets/remoteEntry.js || pnpm -w -F blog build:ghp
-      - name: Ensure portfolio dist exists
-        run: test -f apps/portfolio/dist/assets/remoteEntry.js || pnpm -w -F portfolio build:ghp
-      - name: Ensure resume dist exists
-        run: test -f apps/resume/dist/assets/remoteEntry.js || pnpm -w -F resume build:ghp
+      # 9️⃣ 보충 빌드 (누락된 MFE 앱 개별 빌드)
+      - name: Ensure all app dists exist
+        run: |
+          # 각 MFE 앱의 빌드 결과물 확인 후 누락된 것만 빌드
+          for app in $MFE_APPS; do
+            if [ ! -f "apps/${app}/dist/assets/remoteEntry.js" ]; then
+              echo "🔧 Building missing ${app} app..."
+              pnpm -w -F ${app} build:ghp
+            else
+              echo "✅ ${app} app already built"
+            fi
+          done
 
-      # ===== 수집 + 검사 =====
-      - run: node scripts/collect-ghp.js
+      # 🔟 배포 아티팩트 수집 및 검증
 
+      # GitHub Pages 배포용 디렉토리 구성
+      - name: Collect deployment artifacts
+        run: node scripts/collect-ghp.js
+
+      # 필수 파일들이 올바르게 생성되었는지 검증
       - name: Sanity check
         run: |
+          echo "🔍 Checking required files..."
+
+          # GitHub Pages 필수 파일 확인
           test -f dist_ghp/.nojekyll
           test -f dist_ghp/index.html
-          test -f dist_ghp/blog/assets/remoteEntry.js
-          test -f dist_ghp/portfolio/assets/remoteEntry.js
-          test -f dist_ghp/resume/assets/remoteEntry.js
 
-      - uses: actions/upload-pages-artifact@v3
+          # 모든 MFE 앱의 진입점 확인
+          for app in $MFE_APPS; do
+            if test -f "dist_ghp/${app}/assets/remoteEntry.js"; then
+              echo "✅ ${app}/assets/remoteEntry.js found"
+            else
+              echo "❌ Missing ${app}/assets/remoteEntry.js"
+              exit 1
+            fi
+          done
+
+          echo "🎉 All required files are present!"
+
+      # GitHub Pages 배포용 아티팩트 업로드
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist_ghp
 
-      - name: Sanity check
-        run: |
-          test -f dist_ghp/.nojekyll
-          test -f dist_ghp/index.html
-          test -f dist_ghp/blog/assets/remoteEntry.js
-          test -f dist_ghp/portfolio/assets/remoteEntry.js
-          test -f dist_ghp/resume/assets/remoteEntry.js
-
+  # GitHub Pages 실제 배포 작업
   deploy:
-    needs: build
+    needs: build # build 작업이 성공적으로 완료된 후 실행
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: github-pages # GitHub Pages 환경 사용
+      url: ${{ steps.deployment.outputs.page_url }} # 배포된 사이트 URL
     steps:
-      - id: deployment
+      # 업로드된 아티팩트를 GitHub Pages에 배포
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
