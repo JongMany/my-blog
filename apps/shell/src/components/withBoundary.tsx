@@ -1,24 +1,23 @@
-// apps/shell/src/mfe/withBoundary.tsx
+// apps/shell/src/components/withBoundary.tsx
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { ErrorBoundary } from "./ErrorBoundary";
-import RemoteFallback from "./RemoteFallback";
+import { TossRemoteLoader } from "@srf/ui";
 
 type Options = {
   suspenseFallback?: React.ReactNode;
-  remoteOrigin?: string; // ex) "http://localhost:3003"
+  remoteOrigin?: string;
   onError?: (err: Error) => void;
+  appName?: string;
 };
 
 export function withBoundary(
   Comp: React.LazyExoticComponent<React.ComponentType>,
-  opts: Options = {}
+  opts: Options = {},
 ) {
-  const {
-    suspenseFallback = <div className="p-6">연결 중…</div>,
-    remoteOrigin,
-    onError,
-  } = opts;
+  const { suspenseFallback, remoteOrigin, onError, appName } = opts;
+
+  const defaultSuspenseFallback = <TossRemoteLoader appName={appName} />;
 
   return function Wrapped() {
     const [key, setKey] = React.useState(0);
@@ -26,25 +25,25 @@ export function withBoundary(
     const loc = useLocation();
 
     const retry = React.useCallback(() => {
-      // 리모트 import 캐시 이슈를 피하려면 키를 바꿔 재마운트
       setAttempts((n) => n + 1);
       setKey((k) => k + 1);
     }, []);
 
     return (
-      <React.Suspense fallback={suspenseFallback}>
+      <React.Suspense fallback={suspenseFallback || defaultSuspenseFallback}>
         <ErrorBoundary
           onError={(e) => onError?.(e)}
           onReset={() => {
-            // ErrorBoundary 내부 상태 리셋 시점 - 필요 시 로깅
+            // ErrorBoundary 내부 상태 리셋
           }}
-          resetKeys={[loc.key, key]} // 라우트 변화 or 수동 재시도 시 리셋
+          resetKeys={[loc.key, key]}
           fallback={(err) => (
-            <RemoteFallback
+            <TossRemoteLoader
+              appName={appName}
               error={err}
               onRetry={retry}
               attempts={attempts}
-              remoteOrigin={remoteOrigin}
+              maxAttempts={6}
             />
           )}
         >

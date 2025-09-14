@@ -1,0 +1,263 @@
+/* 토스 스타일 유려한 애니메이션 */
+
+/* 토스 브랜드 컬러 */
+:root {
+  --toss-blue: #3182f6;
+  --toss-blue-light: #4593fc;
+  --toss-gray-50: #f8fafc;
+  --toss-gray-100: #f1f5f9;
+  --toss-gray-200: #e2e8f0;
+  --toss-gray-300: #cbd5e1;
+  --toss-gray-400: #94a3b8;
+  --toss-gray-500: #64748b;
+  --toss-gray-600: #475569;
+  --toss-gray-700: #334155;
+  --toss-gray-800: #1e293b;
+  --toss-gray-900: #0f172a;
+}
+
+/* 부드러운 스피너 애니메이션 */
+@keyframes toss-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 토스 특유의 부드러운 등장 애니메이션 */
+@keyframes toss-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 부드러운 바운스 효과 */
+@keyframes toss-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* 토스 스타일 펄스 애니메이션 */
+@keyframes toss-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* 부드러운 스케일 애니메이션 */
+@keyframes toss-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 토스 스타일 글자별 등장 애니메이션 */
+@keyframes toss-char-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    filter: blur(4px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-2px) scale(1.05);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* 단어별 부드러운 등장 */
+@keyframes toss-word-fade {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* 토스 스타일 타이핑 효과 */
+@keyframes toss-typing {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* 커서 깜빡임 */
+@keyframes toss-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 토스 스타일 스피너 */
+.toss-spinner {
+  animation: toss-spin 1s linear infinite;
+  border: 2px solid var(--toss-gray-200);
+  border-top: 2px solid var(--toss-blue);
+  border-radius: 50%;
+}
+
+.dark .toss-spinner {
+  border-color: var(--toss-gray-700);
+  border-top-color: var(--toss-blue-light);
+}
+
+/* 토스 컨테이너 스타일 */
+.toss-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  border-radius: 24px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.08);
+  animation: toss-fade-in 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dark .toss-container {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* 토스 버튼 스타일 */
+.toss-button {
+  background: linear-gradient(
+    135deg,
+    var(--toss-blue) 0%,
+    var(--toss-blue-light) 100%
+  );
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 2px 8px rgba(49, 130, 246, 0.2);
+}
+
+.toss-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(49, 130, 246, 0.3);
+}
+
+.toss-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(49, 130, 246, 0.2);
+}
+
+/* 애니메이션 클래스들 */
+.animate-toss-fade-in {
+  animation: toss-fade-in 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animate-toss-bounce {
+  animation: toss-bounce 2s ease-in-out infinite;
+}
+
+.animate-toss-pulse {
+  animation: toss-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-toss-scale-in {
+  animation: toss-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 텍스트 애니메이션 클래스들 */
+.animate-toss-char-appear {
+  animation: toss-char-appear 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animate-toss-word-fade {
+  animation: toss-word-fade 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.toss-typing-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.toss-typing-text {
+  animation: toss-typing 2s cubic-bezier(0.23, 1, 0.32, 1);
+  display: inline-block;
+  overflow: hidden;
+}
+
+.toss-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--toss-blue);
+  margin-left: 2px;
+  animation: toss-cursor-blink 1s infinite;
+}
+
+/* 모션 감소 설정 */
+@media (prefers-reduced-motion: reduce) {
+  .toss-spinner,
+  .toss-container,
+  .animate-toss-fade-in,
+  .animate-toss-bounce,
+  .animate-toss-pulse,
+  .animate-toss-scale-in,
+  .animate-toss-char-appear,
+  .animate-toss-word-fade,
+  .toss-typing-text,
+  .toss-cursor {
+    animation: none;
+  }
+
+  .toss-button:hover {
+    transform: none;
+  }
+
+  .toss-typing-container {
+    white-space: normal;
+  }
+}

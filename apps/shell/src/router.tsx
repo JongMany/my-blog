@@ -16,15 +16,24 @@ const BASENAME = RAW_BASE.endsWith("/") ? RAW_BASE.slice(0, -1) : RAW_BASE;
 // ⬇️ 리모트: Routes-조각 export를 lazy load (기존과 동일)
 const BlogApp = withBoundary(
   lazyRemote(() => import("blog/BlogApp"), { retries: 6, baseDelay: 500 }),
-  { remoteOrigin: "http://localhost:3001" }
+  {
+    remoteOrigin: "http://localhost:3001",
+    appName: "블로그",
+  },
 );
 const PortfolioApp = withBoundary(
   lazyRemote(() => import("portfolio/App"), { retries: 6, baseDelay: 500 }),
-  { remoteOrigin: "http://localhost:3002" }
+  {
+    remoteOrigin: "http://localhost:3002",
+    appName: "포트폴리오",
+  },
 );
 const ResumeApp = withBoundary(
   lazyRemote(() => import("resume/App"), { retries: 6, baseDelay: 500 }),
-  { remoteOrigin: "http://localhost:3003" }
+  {
+    remoteOrigin: "http://localhost:3003",
+    appName: "이력서",
+  },
 );
 
 export const router = createBrowserRouter(
@@ -55,5 +64,5 @@ export const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: BASENAME }
+  { basename: BASENAME },
 );
