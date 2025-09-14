@@ -40,7 +40,7 @@ export function withBoundary(
           fallback={(err) => (
             <TossRemoteLoader
               appName={appName}
-              error={err}
+              error={err instanceof Error ? err : new Error(String(err))}
               onRetry={retry}
               attempts={attempts}
               maxAttempts={6}
