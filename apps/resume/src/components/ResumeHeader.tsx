@@ -32,7 +32,7 @@ export default function ResumeHeader({
             src={imageSource(
               profile.photoUrl,
               "resume",
-              "http://localhost:3003"
+              "http://localhost:3003",
             )}
             alt={`${profile.name} 프로필`}
             className="size-20 rounded-2xl object-cover border border-[var(--border)]"
