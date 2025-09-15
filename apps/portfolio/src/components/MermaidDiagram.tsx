@@ -47,7 +47,6 @@ export function MermaidDiagram({
         tertiaryBkg: "#edf2f7",
 
         // 텍스트 색상
-        primaryTextColor: "#2d3748",
         secondaryTextColor: "#4a5568",
 
         // 라인 색상
@@ -78,14 +77,8 @@ export function MermaidDiagram({
         htmlLabels: true,
       },
       mindmap: {
-        nodeSpacing: 50,
-        rankSpacing: 50,
         padding: 40,
         maxNodeWidth: 200,
-      },
-      graph: {
-        padding: 30,
-        htmlLabels: true,
       },
     });
 

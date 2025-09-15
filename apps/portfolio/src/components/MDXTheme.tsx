@@ -117,8 +117,8 @@ export const components: MDXMap = {
 
     for (const child of children) {
       if (React.isValidElement(child)) {
-        const className = child.props?.className || "";
-        const childChildren = child.props?.children || "";
+        const className = (child.props as any)?.className || "";
+        const childChildren = (child.props as any)?.children || "";
 
         if (
           className.includes("language-mermaid") ||
