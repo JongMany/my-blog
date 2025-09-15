@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
-import type { Project } from "../service/portfolio";
+import type { ProjectMeta } from "../service/portfolio";
 import { imageSource } from "@mfe/shared";
 
 type Props = {
-  p: Project;
+  p: ProjectMeta;
   maxTags?: number; // 태그 보여줄 최대 개수
   showImage?: boolean;
 };
@@ -39,11 +39,11 @@ export default function ProjectCard({
       >
         <motion.article {...anim} className="t-card h-full overflow-hidden">
           {/* 썸네일 (있을 때만) */}
-          {showImage && p.thumb && imgOk && (
+          {showImage && p.cover && imgOk && (
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
-                src={`${imageSource(p.thumb, "portfolio", "http://localhost:3002")}`}
-                alt=""
+                src={`${imageSource(p.cover, "portfolio", "http://localhost:3002")}`}
+                alt={p.coverAlt || ""}
                 loading="lazy"
                 decoding="async"
                 onError={() => setImgOk(false)}
@@ -71,7 +71,7 @@ export default function ProjectCard({
             <div className="flex items-start justify-between gap-2">
               <h3 className="text-base font-medium leading-tight">{p.title}</h3>
               {/* 썸네일이 없을 땐 텍스트 메타로 노출 */}
-              {!p.thumb && p.project && (
+              {!p.cover && p.project && (
                 <div className="text-xs text-[var(--muted-fg)]">
                   {p.project}
                 </div>

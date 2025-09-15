@@ -1,0 +1,262 @@
+---
+title: TradingView 차트 TP/SL 드래그 UX 확장
+summary: TradingView 라이브러리를 리버스 엔지니어링을 통해 TP/SL(익절/손절) 라인을 차트에서 직접 드래그해 설정하는 내부 인터페이스를 설계·구현. 렌더·히트테스트·이벤트 파이프라인 확장
+project: Coinness
+tags: [Coinness, 기획, 리버스 엔지니어링, TradingView, Web Components]
+date: 2025-01-15
+cover: /projects/thumbnails/tpsl.gif
+coverAlt: "TP/SL 드래그 설정 데모"
+coverCaption: "차트에서 직접 TP/SL 라인을 드래그하여 설정하는 모습"
+---
+
+## 개요
+
+공개 API 내에 TPSL 설정 기능이 부재하여 리버스 엔지니어링을 통해 TradingView 기반 차트에 드래그형 TP/SL 인터페이스를 직접 추가하였습니다.
+이를 통해 차트 위에서 시각적으로 TP/SL 설정을 할 수 있게 되었고, 실시간 수익,손실 피드백을 제공하여 거래 효율을 높였습니다
+
+## 배경/문제
+
+- **TradingView API 한계**
+  - 공식 API에서 체결 포지션 표시까지 지원하지만, TP/SL(익절/손절) 설정 API가 없었습니다
+  - onMove API에서 price 가격 데이터를 차트로부터 받아올 수 없었습니다
+- **UX 단절**
+  - 사용자가 차트에서 포지션을 보더라도 TP/SL 조정은 별도 폼 UI로 이동해야 하여 이 과정에서 맥락 전환 및 시간 소모가 발생할 수 있다고 판단하였습니다
+- **상호작용/피드백 부족**
+  - 차트 상에서 직접 조작 가능한 UI와 실시간 손익(P&L) 가이드가 부재하여 자신이 청산 위기에 놓여있는지 판단하기 어려웠습니다
+
+## 목표
+
+1. 차트 위에서 직접 TP/SL 버튼을 드래그해 설정/수정할 수 있는 인터페이스 제공
+2. 드래그 중 실시간 P&L 피드백을 제공
+3. React과 TradingView 사이의 이벤트 및 렌더링 파이프라인을 안전하게 연결
+
+## 역할
+
+- 문제 제안 및 드래그 기반 TP/SL을 제공하기 위한 기획을 하였습니다
+- Chrome 디버거로 번들 내부 구조를 분석하고 확장 포인트를 검증하여 라이브러리 코드를 수정하였습니다
+- 내부 메서드/렌더/히트테스트를 구현하고, 실 서비스에 운용할 수 있도록 안정화 작업을 실시했습니다
+- 산출물을 문서화하고 변경 내용을 발표를 통해 팀 내에 전파하였습니다
+
+## 해결 과정
+
+### 1. Reverse Engineering
+
+번들 내부의 `LineToolPosition`, `Renderer`, `PositionPaneView` 등 핵심 클래스를 분석하였습니다.
+히트테스트(hitTest) → 이벤트 → 렌더 흐름을 파악하여 수정 가능한 지점을 확인하였습니다.
+
+### 2. 내부 확장 포인트 설계
+
+공개 인터페이스와 내부 비즈니스 로직을 분리하여 설계했습니다.
+
+**공개 인터페이스:**
+
+- `onTpSl(callback)`: TP/SL 버튼 클릭 시 다이얼로그 오픈
+- `onMove(callback)`: 드래그 완료 시 **최종 가격** 전달
+- `setPnlFormula(fn)`: 실시간 P&L 계산 포뮬러 주입(롱/숏, 수량, 진입가 반영)
+
+**내부 비즈니스 (TradingView 비즈니스 코드):**
+
+- **Order Line**: `callOnMove(price)` 수정 → 내부에서 관리하던 `e.logical.price`를 onMove 공개 API에 전달하도록 수정
+- **Position Line**: `onTpSl`, `onMove`, `setPnlFormula` 메서드 **추가**.
+- **pane(렌더러)**: `tpslButton` 렌더 함수 등 UI 렌더 함수 추가, `hitTest` 로직 추가
+
+**TPSL 버튼 노출 규칙:**
+
+- 포지션 라인 근접도 기반 UI 노출
+- 드래그 시 가이드 라인 / 툴팁 / P&L 갱신
+
+### 3. 디버깅 시 고민했던 포인트
+
+```mermaid
+mindmap
+  root((성능 최적화))
+    Canvas 렌더링
+      60FPS 부드러운 애니메이션
+      메모리 효율적 그리기
+      좌표 변환 최적화
+    Hit Test 알고리즘
+      Pixel-perfect 감지
+      영역별 정밀 분기
+      이벤트 버블링 방지
+    실시간 업데이트
+      movingPoints 동기화
+      이익 및 손실 실시간 계산
+    React 통합
+      상태 동기화
+      콜백 최적화
+      리렌더링 최소화
+```
+
+## 마우스 인터랙션 플로우 (hittest)
+
+```mermaid
+flowchart TD
+    A[마우스 인터랙션] --> B[마우스 이동]
+    B --> C{포지션 라인 근처?}
+
+    C -->|Yes| D[tpslButtonVisible = true]
+    C -->|No| E[tpslButtonVisible = false]
+
+    D --> F[_drawTpSlButton<br/>버튼 렌더링]
+    F --> G{hitTest 호출<br/>어느 영역?}
+
+    G -->|TP/SL 버튼 클릭/드래그| H[ MovePoint 이벤트<br/>클릭 콜백/드래그 콜백]
+    G -->|Position 버튼| I[Position 버튼 이벤트<br/>클릭 콜백]
+
+    style A fill:#e1f5fe
+    style D fill:#c8e6c9
+    style E fill:#ffcdd2
+    style F fill:#fff3e0
+    style H fill:#f3e5f5
+    style I fill:#e8f5e8
+```
+
+- **마우스 이동** → 포지션 라인 근접 `hitTest` → TP/SL 버튼 노출.
+- **드래그 경로**: 버튼 드래그 → `movingPoints` 업데이트 → 가이드라인/예상 손익 표시 → `callOnMove(price)` → React `onMove(price)` → 주문 데이터 갱신.
+- **클릭 경로**: 버튼 클릭 → `callOnTpSl()` → React `onTpSl()` → **TP/SL 다이얼로그 오픈**.
+- API 호출 시나리오
+  - `onMove(price)` 수신 → UI에 `setText("Amending…")` 등 즉시 피드백.
+  - `buildUpdatedTpslOrder(price)` → 서버 `mutateAsync` 호출.
+  - 성공: `queryClient.setData`로 캐시 반영 및 라인 상태 확정.
+  - 실패: 에러 토스트/롤백 처리, 버튼 상태 복구.
+
+## 드래그 이벤트 상세 처리
+
+```mermaid
+flowchart TD
+    A[사용자 액션<br/>TP/SL 라인 드래그] --> B[TradingView 기본 동작<br/>드래그 UI 표시]
+
+    B --> C[라인 위치<br/>실시간 업데이트]
+    C --> D[ 드래그 완료<br/>처리]
+
+    D --> E[callOnMove 호출<br/>price 파라미터 전달]
+    E --> F[React onMove 콜백]
+
+    F --> G[API 업데이트<br/>setText: Amending...]
+    G --> H[buildUpdatedTpslOrder<br/>새 주문 데이터 생성]
+    H --> I[mutateAsync<br/>API 호출]
+
+    I --> J{API 호출 성공?}
+    J -->|성공| K[완료]
+    J -->|실패| L[롤백]
+
+    style A fill:#e3f2fd
+    style B fill:#f1f8e9
+    style C fill:#fff8e1
+    style D fill:#fce4ec
+    style E fill:#e8eaf6
+    style F fill:#e0f2f1
+    style G fill:#fff3e0
+    style H fill:#f3e5f5
+    style I fill:#e1f5fe
+    style K fill:#c8e6c9
+    style L fill:#ffcdd2
+```
+
+## 시스템 아키텍처 레이어
+
+```mermaid
+graph TB
+    subgraph "User Interface Layer"
+        A[사용자 드래그]
+        B[마우스 이벤트]
+    end
+
+    subgraph "TradingView Core Layer"
+        C[hitTest 호출]
+        D[영역별 이벤트 분기]
+        E[Canvas 렌더링]
+        F[_drawTpSlButton]
+        G[movingPoints 처리]
+    end
+
+    subgraph "Bridge Layer"
+        H[onTpSl 콜백<br/>다이얼로그 열기]
+        I[onMove 콜백<br/>드래그 완료]
+    end
+
+    subgraph "React Application Layer"
+        J[React 컴포넌트]
+        K[상태 관리]
+        L[API 호출]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    D --> H
+    D --> I
+    H --> J
+    I --> J
+    J --> K
+    K --> L
+
+    style A fill:#e3f2fd
+    style E fill:#f3e5f5
+    style F fill:#e8f5e8
+    style H fill:#fff3e0
+    style I fill:#e1f5fe
+    style J fill:#e8eaf6
+    style L fill:#c8e6c9
+```
+
+## 대략적인 수정 내용
+
+```mermaid
+graph TB
+    subgraph "TradingView Library"
+        A[charting_library.js]
+        B[lt-pane-views.js]
+    end
+
+    subgraph "charting_library.js 수정사항"
+        C[LineToolPosition Class]
+        D[onTpSl method 추가]
+        E[onMove method 추가]
+        F[setPnlFormula method 추가]
+        G[IPositionLineAdapter 확장]
+    end
+
+    subgraph "lt-pane-views.js 수정사항"
+        H[PositionPaneView Class]
+        I[_drawTpSlButton 렌더링]
+        J[_drawTpSlButtonWidthText P&L]
+        K[_drawPointOnLine 드래그 포인트]
+        L[_drawHorLines 수평선]
+        M[hitTest 영역별 감지]
+    end
+
+    A --> C
+    C --> D
+    C --> E
+    C --> F
+    C --> G
+
+    B --> H
+    H --> I
+    H --> J
+    H --> K
+    H --> L
+    H --> M
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style H fill:#fff3e0
+    style D fill:#c8e6c9
+    style E fill:#c8e6c9
+    style F fill:#c8e6c9
+    style I fill:#e1f5fe
+    style J fill:#e1f5fe
+    style K fill:#e1f5fe
+```
+
+## 결과
+
+- 차트 내에서 드래그 앤 드롭으로 TP/SL 설정 가능
+- 실시간 P&L 계산 및 시각적 피드백 제공
+- 사용자 거래 편의성 대폭 향상
+- 차트와 거래 기능의 완전한 통합으로 UX 개선

@@ -3,15 +3,26 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Layout from "../components/Layout";
-import { projects, experiences, skills } from "../service/portfolio";
+import { usePortfolioIndex, experiences, skills } from "../service/portfolio";
 import ProjectCard from "../components/ProjectCard";
 import { fadeUp, stagger, item } from "../components/Motion";
 import Timeline from "../components/Timeline";
 
 export default function Home() {
-  const top = projects.slice(0, 6);
+  const { data: portfolioIndex, isLoading } = usePortfolioIndex();
+  const top = portfolioIndex?.all.slice(0, 6) ?? [];
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center py-8">
+          <div className="text-sm text-[var(--muted-fg)]">로딩 중...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

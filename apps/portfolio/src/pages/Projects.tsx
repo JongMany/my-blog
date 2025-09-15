@@ -2,7 +2,7 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import { projects } from "../service/portfolio";
+import { usePortfolioIndex } from "../service/portfolio";
 import ProjectCard from "../components/ProjectCard";
 import { motion } from "framer-motion";
 import { stagger } from "../components/Motion";
@@ -60,6 +60,7 @@ const SearchBox = React.memo(function SearchBox({
 
 export default function Projects() {
   const [sp, setSp] = useSearchParams();
+  const { data: portfolioIndex, isLoading } = usePortfolioIndex();
 
   // URL 파라미터(초기화용만 사용)
   const initialQ = React.useMemo(() => sp.get("q") ?? "", []); // 최초 1회만
@@ -76,35 +77,43 @@ export default function Projects() {
       else n.delete(key);
       setSp(n, { replace: true });
     },
-    [sp, setSp]
+    [sp, setSp],
   );
   const toggleParam = React.useCallback(
     (key: string, value: string) => {
       const cur = sp.get(key) ?? "";
       setParam(key, cur === value ? undefined : value);
     },
-    [sp, setParam]
+    [sp, setParam],
   );
 
   // 태그/프로젝트 목록
   const allTags = React.useMemo(
-    () => Array.from(new Set(projects.flatMap((p) => p.tags))).sort(),
-    []
+    () =>
+      Array.from(
+        new Set(portfolioIndex?.all.flatMap((p) => p.tags) ?? []),
+      ).sort(),
+    [portfolioIndex],
   );
   const allProjects = React.useMemo(
     () =>
       Array.from(
-        new Set(projects.map((p) => p.project).filter(Boolean) as string[])
+        new Set(
+          (portfolioIndex?.all
+            .map((p) => p.project)
+            .filter(Boolean) as string[]) ?? [],
+        ),
       ).sort(),
-    []
+    [portfolioIndex],
   );
 
   const includesI = (s: string | undefined | null, q: string) =>
     (s ?? "").toLowerCase().includes(q.toLowerCase());
 
   const filtered = React.useMemo(() => {
+    if (!portfolioIndex) return [];
     const q = qText.trim();
-    return projects.filter((p) => {
+    return portfolioIndex.all.filter((p) => {
       const qHit =
         !q ||
         includesI(p.title, q) ||
@@ -114,7 +123,17 @@ export default function Projects() {
       const pHit = !proj || p.project === proj;
       return qHit && tHit && pHit;
     });
-  }, [qText, tag, proj]);
+  }, [portfolioIndex, qText, tag, proj]);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center py-8">
+          <div className="text-sm text-[var(--muted-fg)]">로딩 중...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
