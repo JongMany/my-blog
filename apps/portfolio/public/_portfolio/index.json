@@ -17,9 +17,11 @@
           "Web Components"
         ],
         "date": "2025-01-15T00:00:00.000Z",
-        "cover": null,
+        "cover": "/projects/thumbnails/gifs/tpsl.gif",
         "coverAlt": "TP/SL 드래그 설정 데모",
         "coverCaption": "차트에서 직접 TP/SL 라인을 드래그하여 설정하는 모습",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
         "slug": "tradingview-tpsl-drag",
         "path": "/_portfolio/projects/tradingview-tpsl-drag.mdx",
         "createdAtMs": 1736899200000
@@ -36,9 +38,11 @@
           "TradingView"
         ],
         "date": "2025-01-10T00:00:00.000Z",
-        "cover": null,
+        "cover": "/projects/thumbnails/gifs/order.gif",
         "coverAlt": "차트 내 주문 UI 데모",
         "coverCaption": "차트에서 직접 시장가/지정가 주문을 할 수 있는 UI",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
         "slug": "market-limit-order-ui",
         "path": "/_portfolio/projects/market-limit-order-ui.mdx",
         "createdAtMs": 1736467200000
@@ -60,6 +64,8 @@
         "cover": null,
         "coverAlt": "LLM 스트리밍 데모",
         "coverCaption": "실시간으로 토큰이 스트리밍되는 LLM 응답",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
         "slug": "sse-llm-streaming",
         "path": "/_portfolio/projects/sse-llm-streaming.mdx",
         "createdAtMs": 1734220800000
@@ -78,6 +84,8 @@
         "cover": null,
         "coverAlt": "TipTap 칩 변환 데모",
         "coverCaption": "assistant, user를 칩 UI로 자동 변환하는 모습",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
         "slug": "tiptap-chip",
         "path": "/_portfolio/projects/tiptap-chip.mdx",
         "createdAtMs": 1732060800000
@@ -97,9 +105,11 @@
         "Web Components"
       ],
       "date": "2025-01-15T00:00:00.000Z",
-      "cover": null,
+      "cover": "/projects/thumbnails/gifs/tpsl.gif",
       "coverAlt": "TP/SL 드래그 설정 데모",
       "coverCaption": "차트에서 직접 TP/SL 라인을 드래그하여 설정하는 모습",
+      "coverType": "gif",
+      "coverAspectRatio": "969",
       "slug": "tradingview-tpsl-drag",
       "path": "/_portfolio/projects/tradingview-tpsl-drag.mdx",
       "createdAtMs": 1736899200000
@@ -116,9 +126,11 @@
         "TradingView"
       ],
       "date": "2025-01-10T00:00:00.000Z",
-      "cover": null,
+      "cover": "/projects/thumbnails/gifs/order.gif",
       "coverAlt": "차트 내 주문 UI 데모",
       "coverCaption": "차트에서 직접 시장가/지정가 주문을 할 수 있는 UI",
+      "coverType": "gif",
+      "coverAspectRatio": "969",
       "slug": "market-limit-order-ui",
       "path": "/_portfolio/projects/market-limit-order-ui.mdx",
       "createdAtMs": 1736467200000
@@ -138,6 +150,8 @@
       "cover": null,
       "coverAlt": "LLM 스트리밍 데모",
       "coverCaption": "실시간으로 토큰이 스트리밍되는 LLM 응답",
+      "coverType": "gif",
+      "coverAspectRatio": "969",
       "slug": "sse-llm-streaming",
       "path": "/_portfolio/projects/sse-llm-streaming.mdx",
       "createdAtMs": 1734220800000
@@ -156,6 +170,8 @@
       "cover": null,
       "coverAlt": "TipTap 칩 변환 데모",
       "coverCaption": "assistant, user를 칩 UI로 자동 변환하는 모습",
+      "coverType": "gif",
+      "coverAspectRatio": "969",
       "slug": "tiptap-chip",
       "path": "/_portfolio/projects/tiptap-chip.mdx",
       "createdAtMs": 1732060800000

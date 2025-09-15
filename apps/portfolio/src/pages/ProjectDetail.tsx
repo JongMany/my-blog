@@ -12,6 +12,7 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { components, MDXTheme } from "../components/MDXTheme";
 import { useMemo, useState, useEffect } from "react";
+import { imageSource } from "@mfe/shared";
 
 // evaluate에 주입할 훅
 const useMDXComponents: UseMdxComponents = () => ({
@@ -132,7 +133,11 @@ export default function ProjectDetail() {
         {project.cover && (
           <div className="mb-8">
             <img
-              src={project.cover}
+              src={imageSource(
+                project.cover,
+                "portfolio",
+                "http://localhost:3002",
+              )}
               alt={project.coverAlt || project.title}
               className="w-full h-auto rounded-lg"
             />

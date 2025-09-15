@@ -1,19 +1,65 @@
 import { assetUrl } from "@mfe/shared";
 import { useQuery } from "@tanstack/react-query";
 
+// 썸네일 관련 유틸리티 함수들
+export const getThumbnailPath = (cover?: string): string => {
+  if (!cover) return "";
+
+  // 이미 절대 경로인 경우
+  if (cover.startsWith("/") || cover.startsWith("http")) {
+    return cover;
+  }
+
+  // 상대 경로인 경우 thumbnails 디렉토리 기준으로 변환
+  if (cover.includes(".")) {
+    const ext = cover.split(".").pop()?.toLowerCase();
+    if (ext === "gif") {
+      return `/projects/thumbnails/gifs/${cover}`;
+    } else if (["jpg", "jpeg", "png", "webp", "avif"].includes(ext || "")) {
+      return `/projects/thumbnails/images/${cover}`;
+    }
+  }
+
+  return `/projects/thumbnails/${cover}`;
+};
+
+export const getThumbnailAspectRatio = (aspectRatio?: string): string => {
+  switch (aspectRatio) {
+    case "16:9":
+      return "aspect-[16/9]";
+    case "4:3":
+      return "aspect-[4/3]";
+    case "1:1":
+      return "aspect-square";
+    case "auto":
+      return "aspect-auto";
+    default:
+      return "aspect-[16/9]";
+  }
+};
+
+export const getFallbackThumbnail = (): string => {
+  return "/projects/thumbnails/fallbacks/http_fallback_thumbnail.png";
+};
+
+export type ProjectThumbnail = {
+  cover?: string;
+  coverAlt?: string;
+  coverCaption?: string;
+  coverType?: "gif" | "image" | "video";
+  coverAspectRatio?: "16:9" | "4:3" | "1:1" | "auto";
+};
+
 export type ProjectMeta = {
   title: string;
   summary: string;
   project?: string;
   tags: string[];
   date: string;
-  cover?: string;
-  coverAlt?: string;
-  coverCaption?: string;
   slug: string;
   path: string;
   createdAtMs: number;
-};
+} & ProjectThumbnail;
 
 export type ProjectIndex = {
   all: ProjectMeta[];

@@ -141,7 +141,15 @@ const ASSET_CACHE = new Map(); // absPath -> url
 
 // 파일을 /_portfolio/assets/<name>__<stamp>.<ext> 로 복사하고 URL 반환
 function copyAssetNearby(projectAbs, rel) {
-  const src = path.resolve(path.dirname(projectAbs), rel);
+  let src;
+
+  // 썸네일 경로인 경우 public 폴더 기준으로 처리
+  if (rel.startsWith("/projects/thumbnails/")) {
+    src = path.join(root, "apps/portfolio/public", rel);
+  } else {
+    src = path.resolve(path.dirname(projectAbs), rel);
+  }
+
   if (!fs.existsSync(src)) return null;
   if (ASSET_CACHE.has(src)) return ASSET_CACHE.get(src);
 
@@ -261,6 +269,13 @@ for (const file of files) {
         abs,
         data.cover.replace(/^\/_portfolio\//, ""),
       );
+    } else if (data.cover.startsWith("/projects/thumbnails/")) {
+      // 썸네일 경로는 public 폴더 기준으로 처리
+      const publicPath = path.join(root, "apps/portfolio/public", data.cover);
+      if (fs.existsSync(publicPath)) {
+        // 썸네일은 복사하지 않고 원본 경로를 그대로 사용
+        coverUrl = data.cover;
+      }
     } else {
       coverUrl = copyAssetNearby(abs, data.cover);
     }
@@ -281,6 +296,8 @@ for (const file of files) {
     cover: coverUrl, // null | '/_portfolio/assets/xxx' | 'https://...'
     coverAlt: data.coverAlt || "", // 선택 메타
     coverCaption: data.coverCaption || "", // 선택 메타
+    coverType: data.coverType || null, // gif | image | video
+    coverAspectRatio: String(data.coverAspectRatio || "16:9"), // 16:9 | 4:3 | 1:1 | auto
     slug,
     path: `/_portfolio/projects/${outName}`, // 런타임에서 fetch할 MDX 경로
     createdAtMs, // 정렬용 숫자

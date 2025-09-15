@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
 import type { ProjectMeta } from "../service/portfolio";
+import {
+  getThumbnailPath,
+  getThumbnailAspectRatio,
+  getFallbackThumbnail,
+} from "../service/portfolio";
 import { imageSource } from "@mfe/shared";
 
 type Props = {
@@ -29,6 +34,23 @@ export default function ProjectCard({
   } as const;
 
   const [imgOk, setImgOk] = React.useState(true);
+  const [currentSrc, setCurrentSrc] = React.useState<string>("");
+
+  // 썸네일 경로 처리
+  React.useEffect(() => {
+    if (p.cover) {
+      // 원본 cover 경로를 그대로 사용 (imageSource에서 처리)
+      setCurrentSrc(p.cover);
+    }
+  }, [p.cover]);
+
+  const handleImageError = () => {
+    if (currentSrc !== getFallbackThumbnail()) {
+      setCurrentSrc(getFallbackThumbnail());
+    } else {
+      setImgOk(false);
+    }
+  };
 
   return (
     <li className="h-full">
@@ -39,14 +61,16 @@ export default function ProjectCard({
       >
         <motion.article {...anim} className="t-card h-full overflow-hidden">
           {/* 썸네일 (있을 때만) */}
-          {showImage && p.cover && imgOk && (
-            <div className="relative aspect-[16/9] overflow-hidden">
+          {showImage && p.cover && imgOk && currentSrc && (
+            <div
+              className={`relative ${getThumbnailAspectRatio(p.coverAspectRatio)} overflow-hidden`}
+            >
               <img
-                src={`${imageSource(p.cover, "portfolio", "http://localhost:3002")}`}
-                alt={p.coverAlt || ""}
+                src={`${imageSource(currentSrc, "portfolio", "http://localhost:3002")}`}
+                alt={p.coverAlt || p.title}
                 loading="lazy"
                 decoding="async"
-                onError={() => setImgOk(false)}
+                onError={handleImageError}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
               {/* 우상단 메타 칩 */}

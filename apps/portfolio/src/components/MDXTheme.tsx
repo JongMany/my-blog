@@ -1,5 +1,5 @@
 import { MDXProvider } from "@mdx-js/react";
-import { assetUrl } from "@mfe/shared";
+import { imageSource } from "@mfe/shared";
 import * as React from "react";
 import { MermaidDiagram } from "./MermaidDiagram";
 import { SimpleMermaid } from "./SimpleMermaid";
@@ -14,13 +14,18 @@ type MDXMap = NonNullable<ComponentsProp>;
 
 function fixAssetSrc(src?: string) {
   if (!src) return src;
-  if (src.startsWith("/_portfolio/") || src.startsWith("_portfolio/")) {
-    return assetUrl(src.replace(/^\//, ""), "portfolio");
+  
+  console.log("fixAssetSrc 호출됨:", src);
+
+  // 절대 URL인 경우 그대로 반환
+  if (/^https?:\/\//i.test(src)) {
+    return src;
   }
-  if (!/^https?:\/\//i.test(src) && !src.startsWith("/")) {
-    return assetUrl(`_portfolio/${src}`, "portfolio");
-  }
-  return src;
+
+  // 모든 경로를 imageSource로 처리
+  const result = imageSource(src, "portfolio", "http://localhost:3002");
+  console.log("imageSource 결과:", result);
+  return result;
 }
 
 export const components: MDXMap = {
@@ -62,14 +67,18 @@ export const components: MDXMap = {
   ),
 
   /* === Media === */
-  img: ({ src, ...p }) => (
-    <img
-      {...p}
-      src={fixAssetSrc(src)}
-      className="max-w-full h-auto rounded-lg mb-4"
-      loading="lazy"
-    />
-  ),
+  img: ({ src, ...p }) => {
+    const processedSrc = fixAssetSrc(src);
+    console.log("MDX 이미지 처리:", { src, processedSrc });
+    return (
+      <img
+        {...p}
+        src={processedSrc}
+        className="max-w-full h-auto rounded-lg mb-4"
+        loading="lazy"
+      />
+    );
+  },
 
   /* === Tables === */
   table: (p) => (
