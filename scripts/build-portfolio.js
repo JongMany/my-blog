@@ -293,6 +293,7 @@ for (const file of files) {
     project: data.project || null,
     tags: data.tags || [],
     date: createdIso,
+    order: data.order ?? null, // 정렬 순서 (낮을수록 앞에, 소수점 가능)
     cover: coverUrl, // null | '/_portfolio/assets/xxx' | 'https://...'
     coverAlt: data.coverAlt || "", // 선택 메타
     coverCaption: data.coverCaption || "", // 선택 메타
@@ -309,10 +310,30 @@ for (const file of files) {
   allProjects.push(meta);
 }
 
-// 정렬: 작성일(desc)
-allProjects.sort((a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0));
+// 정렬: order 필드 우선 (높을수록 앞에), 같으면 작성일(desc)
+allProjects.sort((a, b) => {
+  const orderA = a.order ?? 0; // order가 없으면 0으로 처리
+  const orderB = b.order ?? 0;
+
+  if (orderA !== orderB) {
+    return orderB - orderA; // order가 높을수록 앞에
+  }
+
+  // order가 같으면 날짜순 (최신이 앞)
+  return (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
+});
+
 for (const p of Object.keys(projects)) {
-  projects[p].sort((a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0));
+  projects[p].sort((a, b) => {
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+
+    if (orderA !== orderB) {
+      return orderB - orderA;
+    }
+
+    return (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
+  });
 }
 
 // 인덱스 JSON
