@@ -132,12 +132,16 @@ export const components: MDXMap = {
 
         // pre 태그인 경우 특별한 클래스 추가
         if (React.isValidElement(child) && child.type === "pre") {
+          const existingClassName =
+            (child.props as { className?: string })?.className || "";
           return (
             <div key={index} className="ml-6 mr-4 mb-4 first:mt-4">
-              {React.cloneElement(child, {
-                ...child.props,
-                className: `${child.props.className || ""} details-content`,
-              })}
+              {React.cloneElement(
+                child as React.ReactElement<{ className?: string }>,
+                {
+                  className: `${existingClassName} details-content`,
+                },
+              )}
             </div>
           );
         }
