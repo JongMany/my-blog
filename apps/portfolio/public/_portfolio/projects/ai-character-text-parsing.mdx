@@ -1,20 +1,7 @@
----
-title: AI 캐릭터 지능형 텍스트 파싱 시스템
-summary: AI 캐릭터 대화 에디터에서 {{assistant}}, {{user}} 형태의 템플릿 변수를 실시간으로 감지하여 시각적 칩 UI로 변환하는 지능형 텍스트 파싱 시스템을 개발했습니다.
-project: BubbleChat
-order: 3.2
-tags: [기능 개선]
-date: 2025-01-15
-cover: /projects/thumbnails/gifs/칩변환.gif
-coverAlt: "AI 캐릭터 지능형 텍스트 파싱 시스템 데모"
-coverCaption: "템플릿 변수 실시간 감지 및 시각적 칩 변환"
-coverType: gif
-coverAspectRatio: 16:9
----
 
 ## 개요
 
-AI 캐릭터 대화 에디터에서 {{assistant}}, {{user}} 형태의 템플릿 변수를 실시간으로 감지하여 시각적 칩 UI로 변환하는 지능형 텍스트 파싱 시스템을 개발했습니다.
+AI 캐릭터 대화 에디터에서 \{\{assistant\}\}, \{\{user\}\} 형태의 템플릿 변수를 실시간으로 감지하여 시각적 칩 UI로 변환하는 지능형 텍스트 파싱 시스템을 개발했습니다.
 
 ## 배경/문제
 
@@ -542,7 +529,7 @@ export const IntelligentTextEditor: React.FC<IntelligentTextEditorProps> = ({
 
   // 멘션 삽입
   const insertMention = useCallback((mentionType: 'assistant' | 'user') => {
-    const mentionText = `{{${mentionType}}}`;
+    const mentionText = `\{\{${mentionType\}\}}`;
     const result = BidirectionalConverter.handlePasteEvent(
       mentionText,
       htmlContent,
@@ -563,7 +550,7 @@ export const IntelligentTextEditor: React.FC<IntelligentTextEditorProps> = ({
       <div
         ref={editorRef}
         contentEditable
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        dangerouslySetInnerHTML=\{\{ __html: htmlContent \}\}
         onInput={handleInput}
         onSelect={handleSelectionChange}
         onPaste={handlePaste}
@@ -753,7 +740,7 @@ flowchart TD
 
 ### 1. 실시간 패턴 인식
 
-- **정규식 기반 감지**: `{{assistant}}`, `{{user}}` 패턴의 정확한 인식
+- **정규식 기반 감지**: `\{\{assistant\}\}`, `\{\{user\}\}` 패턴의 정확한 인식
 - **순차적 파싱**: 텍스트 순서를 보존하며 멘션과 일반 텍스트 분리
 - **타입 안전성**: TypeScript 기반 멘션 타입 검증
 
