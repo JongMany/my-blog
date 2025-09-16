@@ -94,6 +94,14 @@ jobs:
       # 9️⃣ 보충 빌드 (누락된 MFE 앱 개별 빌드)
       - name: Ensure all app dists exist
         run: |
+          # Shell 앱 빌드 (메인 앱)
+          if [ ! -d "apps/shell/dist" ]; then
+            echo "🔧 Building shell app..."
+            pnpm -w -F shell build:ghp
+          else
+            echo "✅ shell app already built"
+          fi
+
           # 각 MFE 앱의 빌드 결과물 확인 후 누락된 것만 빌드
           for app in $MFE_APPS; do
             if [ ! -f "apps/${app}/dist/assets/remoteEntry.js" ]; then

@@ -27,8 +27,12 @@ fs.mkdirSync(out);
 
 // 1) Shell → / (Pages의 /my-blog/에 해당)
 const shellDist = path.join(root, "apps/shell/dist");
-cpDir(shellDist, out, { skipIndex: false });
-ensure404(out); // 루트에 404.html = index.html (혹은 2번 단계의 전역 404로 대체)
+if (fs.existsSync(shellDist)) {
+  cpDir(shellDist, out, { skipIndex: false });
+  ensure404(out); // 루트에 404.html = index.html (혹은 2번 단계의 전역 404로 대체)
+} else {
+  console.warn("⚠️  apps/shell/dist not found, skipping shell build");
+}
 
 // 2) Remotes → /blog, /portfolio, /resume (index.html 제외)
 const blogDist = path.join(root, "apps/blog/dist");
