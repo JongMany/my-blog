@@ -52,7 +52,7 @@ export class TickHealthMonitor {
   private status: ConnectionStatus = ConnectionStatus.LIVE;
   private missCount: number = 0;
   private lastTickTime: number = 0;
-  private checkInterval: NodeJS.Timeout | null = null;
+  private checkInterval: number | null = null;
   private listeners: Set<(status: ConnectionStatus) => void> = new Set();
 
   // 상태 전환 기준
@@ -211,7 +211,7 @@ export class FallbackManager {
 ```typescript
 // HttpPoller.ts
 export class HttpPoller {
-  private pollInterval: NodeJS.Timeout | null = null;
+  private pollInterval: number | null = null;
   private isPolling = false;
   private pollRate = 2000; // 2초마다 폴링
   private connected = false;

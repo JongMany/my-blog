@@ -60,7 +60,7 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
 }) => {
   const [currentState, setCurrentState] = useState<ButtonState>(variant);
   const [isPressed, setIsPressed] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   // variant prop이 변경되면 상태 업데이트
   useEffect(() => {
