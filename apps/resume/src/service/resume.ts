@@ -2,6 +2,13 @@ export type Bullet = {
   text: string;
   tags?: string[];
   children?: Bullet[]; // ← 하위 불릿(들여쓰기) 지원
+  portfolioLinks?: PortfolioLink[]; // ← 포트폴리오 링크들
+};
+
+export type PortfolioLink = {
+  title: string;
+  url: string;
+  type?: "portfolio" | "demo" | "github" | "blog" | "other";
 };
 
 export type Experience = {
@@ -44,16 +51,14 @@ export const resume: ResumeData = {
     name: "이종민",
     tagline: "Frontend Developer",
     intro: [
-      "복잡한 기술적 문제를 깊이 있게 분석하고 해결하는 것을 즐기는 Frontend Developer입니다.",
-      "기능을 구현하는 것을 넘어서 내부 동작 원리까지 파악하여 근본적인 해결책을 찾아내는 것에 강점이 있습니다.",
-      "부족한 점을 인지하고 채워넣는 과정을 좋아합니다.",
-      "사용자 경험을 최우선으로 생각하며 개발 과정에서 사용성을 높일 수 있는 요소를 발견하면 이를 개선하려고 노력합니다.",
+      "사용자 경험을 최우선으로 생각하며, 복잡한 기술적 문제를 창의적으로 해결하는 Frontend Developer입니다.",
+      "암호화폐 거래소와 AI 채팅 플랫폼에서 핵심 기능을 개발하여 실제 사용자들의 만족도를 높였습니다.",
+      "기술의 본질을 이해하고, 더 나은 사용자 경험을 위해 지속적으로 개선하는 것을 추구합니다.",
     ],
     email: "blackberry1114@naver.com",
     github: "https://github.com/JongMany",
     blog: "https://homebody-coder.tistory.com/",
-    portfolio:
-      "https://zircon-muscle-434.notion.site/26d56c6d0b84803cab29cb0cb89ff948",
+    portfolio: "https://jongmany.github.io/portfolio/",
     personalSite: "https://jongmany.github.io/my-blog/",
     photoUrl: "/img/profile.jpeg",
   },
@@ -63,7 +68,7 @@ export const resume: ResumeData = {
       role: "Frontend Developer",
       period: "2025.07 - now",
       summary:
-        "국내 최대 암호화폐 및 가상자산 투자 정보 미디어 서비스인 코인니스 내의 암호화폐 거래소 서비스를 개발했습니다. 주로 차트 내 거래 서비스를 기획, 개발하여 거래 사용성을 개선했습니다.",
+        "암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다. 차트에서 바로 주문할 수 있는 직관적인 인터페이스와 실시간 데이터 처리로 거래 경험을 혁신했습니다.",
       stacks: [
         "Yarn",
         "React",
@@ -74,86 +79,74 @@ export const resume: ResumeData = {
       ],
       bullets: [
         {
-          text: "차트 트레이딩 기능 확장 (라이브러리 내 TP/SL 설정 인터페이스 추가)",
+          text: "TradingView 차트 내 TP/SL 드래그 UX 확장",
+          portfolioLinks: [
+            {
+              title: "드래그 UX 구현 과정",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-tpsl-drag",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "TradingView API 한계로 인한 익절/손절(TP/SL) 설정 API 부재 문제를 리버스 엔지니어링을 통해 해결",
+              text: "기존에 불가능했던 차트 내 익절/손절 설정을 드래그 앤 드롭으로 구현하여 거래 편의성 대폭 향상",
             },
             {
-              text: "Chrome DevTools를 활용해 번들링된 TradingView 라이브러리의 핵심 클래스 구조 파악 및 LineToolPosition 클래스 확장",
-            },
-            {
-              text: "onTpSl, setTpSlTooltip, onMove 메서드를 추가하여 드래그 앤 드롭 기반 TP/SL 설정 및 실시간 P&L 계산 기능 구현",
-            },
-            {
-              text: "PositionPaneView 클래스의 hitTest 메서드 확장으로 영역별 히트 테스트 및 TP/SL 버튼 렌더링 구현",
-            },
-            {
-              text: "IPositionLineAdapter 인터페이스에 새로운 메서드 시그니처 추가로 컴파일 타임 타입 안전성 확보",
+              text: "실시간 손익 계산으로 사용자가 거래 전 수익을 미리 확인할 수 있도록 개선",
             },
           ],
         },
         {
-          text: "차트 내 시장가/지정가 Panel UI 개발",
+          text: "차트 내 시장가/지정가 주문 UI 시스템",
+          portfolioLinks: [
+            {
+              title: "원클릭 거래 시스템 구현",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-chart-order-ui",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "iframe과 메인 앱 간 안정적인 상태 동기화 시스템 구축으로 차트에서 원클릭 거래 가능",
+              text: "차트에서 바로 시장가/지정가 주문이 가능한 원클릭 거래 시스템 구축",
             },
             {
-              text: "Lit 라이브러리 도입으로 Vanilla JS 대비 선언적 렌더링, 반응형 상태 관리, 생명주기 관리의 장점 확보",
-            },
-            {
-              text: "Orchestrator, View, Service, Infrastructure Layer로 모듈화된 아키텍처 설계",
-            },
-            {
-              text: "EventBus 패턴을 통한 iframe과 메인 앱 간 실시간 양방향 통신 구현",
+              text: "안정적인 실시간 데이터 동기화로 거래 오류 최소화 및 사용자 신뢰도 향상",
             },
           ],
         },
         {
-          text: "iframe 내 Lit 컴포넌트 주입을 위한 모듈 로딩 신뢰성 개선",
+          text: "WebSocket 자동 HTTP Fallback 시스템",
+          portfolioLinks: [
+            {
+              title: "Fallback 시스템 설계",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-http-fallback",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "iframe 전용 모듈 로더 개발로 커스텀 엘리먼트 등록 완료까지 Promise 기반 대기 메커니즘 구현",
+              text: "네트워크 불안정 시 자동으로 백업 시스템으로 전환하여 거래 중단 없는 서비스 제공",
             },
             {
-              text: "Vite manifest 기반 동적 경로 해석으로 환경별 해시 청크 경로 차이 해결",
-            },
-            {
-              text: "개발/배포 환경별 분기 로딩 전략으로 모든 환경에서 일관된 거래 패널 동작 보장",
+              text: "실시간 모니터링 도구로 문제 발생 시 즉시 대응 가능한 시스템 구축",
             },
           ],
         },
         {
-          text: "TradingView 관련 아키텍처 리팩토링",
-          children: [
+          text: "TradingView 아키텍처 리팩토링",
+          portfolioLinks: [
             {
-              text: "기존 단일 훅에 혼재된 위젯 초기화, 이벤트 처리, 상태 관리, 렌더링 로직을 관심사별 모듈로 분리",
-            },
-            {
-              text: "Adapter, Controller, Manager, Renderer로 역할 분담하여 코드 복잡도 감소 및 명확한 의존 관계 확립",
-            },
-          ],
-        },
-        {
-          text: "소켓 불안정 시 HTTP Fallback 자동화",
-          children: [
-            {
-              text: "소켓 주기 기반 헬스 체크 상태 머신 개발 (예상 틱 간격 15초, Soft 타임아웃 25초, Hard 타임아웃 180초)",
-            },
-            {
-              text: "연속 미스 카운트 기반 Stale/Dead 상태 전환 및 WebSocket → HTTP Polling 자동 전환 시스템 구현",
+              title: "아키텍처 리팩토링 과정",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-architecture-refactoring",
+              type: "portfolio",
             },
           ],
-        },
-        {
-          text: "소켓 통신 DevTools 개발",
           children: [
             {
-              text: "실시간 소켓 이벤트 모니터링 시스템으로 메시지 수집, 토픽별 필터링, 전송 속도 표시 기능 구현",
+              text: "복잡한 거래 로직을 명확한 구조로 재설계하여 개발 속도 향상 및 버그 감소",
             },
             {
-              text: "정지/재개 기능과 JSON 트리 뷰어로 개발 환경에서 실시간 디버깅 효율성 대폭 향상",
+              text: "실시간 디버깅 도구로 문제 해결 시간 단축 및 서비스 품질 향상",
             },
           ],
         },
@@ -163,7 +156,8 @@ export const resume: ResumeData = {
       company: "아데나 소프트웨어 (버블탭)",
       role: "Frontend Developer",
       period: "2024.10 - 2025.06",
-      summary: "AI 채팅 플랫폼 버블챗/팅글에서 프론트엔드 개발을 담당했습니다.",
+      summary:
+        "AI 채팅 플랫폼에서 사용자들이 더 자연스럽고 편리하게 AI와 대화할 수 있도록 핵심 기능들을 개발했습니다. 실시간 대화, 직관적인 에디터, 안정적인 미디어 처리로 사용자 만족도를 크게 향상시켰습니다.",
       stacks: [
         "Pnpm",
         "React",
@@ -174,96 +168,97 @@ export const resume: ResumeData = {
       ],
       bullets: [
         {
-          text: "에디터 UX 개선 (Tiptap 기반 특정 키워드 자동 칩 변환 시스템)",
+          text: "AI 캐릭터 지능형 텍스트 파싱 시스템",
+          portfolioLinks: [
+            {
+              title: "텍스트 파싱 알고리즘",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-text-parsing",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "{{ 트리거로 자동 suggestion 드롭다운 활성화 및 멘션 선택 시 칩 UI로 변환하는 시스템 구현",
+              text: "복잡한 템플릿 문법을 직관적인 시각적 칩으로 변환하여 사용자 학습 비용 대폭 감소",
             },
             {
-              text: "백스페이스 키로 칩 전체 삭제, 키보드 화살표로 칩 간 이동 및 선택 기능 구현",
-            },
-            {
-              text: "복사 붙여넣기 시에도 원본 형태 그대로 유지하여 {{assistant}}, {{user}}를 각각 '캐릭터', '나' 칩 UI로 시각화",
+              text: "키보드만으로도 편리하게 편집할 수 있는 UX로 창작자들의 생산성 향상",
             },
           ],
         },
         {
-          text: "LLM UX 개선작업 POC 진행 (SSE 기반 실시간 스트리밍 시스템)",
-          children: [
+          text: "SSE 기반 LLM 실시간 스트리밍 시스템",
+          portfolioLinks: [
             {
-              text: "토큰 단위 실시간 스트리밍으로 즉각적 피드백 제공 및 연결 상태 관리 (idle → connecting → streaming → done)",
+              title: "SSE 스트리밍 구현",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/llm-sse-streaming",
+              type: "portfolio",
             },
             {
-              text: "자동 재연결 및 에러 복구 메커니즘과 llm-ui 라이브러리를 통한 마크다운 및 코드 블록 실시간 렌더링",
+              title: "실시간 대화 데모",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/sse-llm-streaming",
+              type: "demo",
+            },
+          ],
+          children: [
+            {
+              text: "AI 응답을 실시간으로 스트리밍하여 마치 사람과 대화하는 것처럼 자연스러운 경험 제공",
+            },
+            {
+              text: "연결 문제 발생 시 자동으로 복구하여 끊김 없는 대화 환경 구축",
             },
           ],
         },
         {
-          text: "통합 로깅 아키텍처 설계 및 구축",
+          text: "AI 캐릭터 리워드 서비스 및 SSO 시스템",
+          portfolioLinks: [
+            {
+              title: "수익 분배 시스템 및 SSO 구현",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-reward-service",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "Abstract Factory 패턴 기반 통합 로깅 시스템 설계로 GA4, Airbridge, X Pixel, 네이버로그 통합 관리",
+              text: "투명한 수익 분배 시스템으로 창작자들의 동기 부여 및 플랫폼 콘텐츠 품질 향상",
             },
             {
-              text: "플랫폼 별 Logger 클래스 구현으로 신규 로깅 이벤트 구현 시간 단축",
+              text: "안정적인 결제 시스템으로 창작자와 사용자 모두 신뢰할 수 있는 환경 조성",
             },
           ],
         },
         {
-          text: "커뮤니티 가이드를 준수하기 위한 실시간 단어 검열 시스템 구현",
+          text: "실시간 텍스트 검열 시스템",
+          portfolioLinks: [
+            {
+              title: "Aho-Corasick 알고리즘 기반 실시간 필터링",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/realtime-text-filtering-system",
+              type: "portfolio",
+            },
+          ],
           children: [
             {
-              text: "AhoCorasick 문자열 매칭 알고리즘을 적용한 클래스 개발로 검열 처리 성능 향상",
+              text: "실시간 부적절한 콘텐츠 필터링으로 깨끗한 대화 환경 유지",
             },
             {
-              text: "싱글턴 패턴을 통해 검열 엔진 메모리 효율성 상승 및 실시간 사용자 피드백 제공",
+              text: "사용자 등급별 맞춤형 검열로 과도한 제재 없이 자유로운 소통 보장",
             },
           ],
         },
         {
-          text: "대규모 이미지 스크롤 최적화",
-          children: [
+          text: "다중 분석 플랫폼 통합 로그 수집 시스템",
+          portfolioLinks: [
             {
-              text: "tanstack/react-virtual 도입으로 뷰포트 기반 선택적 렌더링 구현",
-            },
-            {
-              text: "마우스 드래그, 휠 스크롤, 키보드 네비게이션 멀티 인터랙션 지원으로 100장 이상의 이미지에서도 부드러운 스크롤 달성",
-            },
-          ],
-        },
-        {
-          text: "창작자 수익 공유 신규 서비스 런칭",
-          children: [
-            {
-              text: "일별/주별/월별 수익 트렌드 분석 및 시각화, 콘텐츠별 상세 수익 내역 및 사용량 통계 제공",
-            },
-            {
-              text: "카테고리별 랭킹 세분화 및 React flushSync API를 활용한 동기 상태 관리로 API 호출 상태 관리",
-            },
-            {
-              text: "Single Flight 패턴 구현으로 동일 요청 통합 처리하여 창작자 생태계 활성화 및 플랫폼 콘텐츠 품질 향상",
+              title: "통합 로깅 아키텍처",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/multi-platform-analytics-integration",
+              type: "portfolio",
             },
           ],
-        },
-        {
-          text: "미디어 처리 최적화 (Web Worker 기반 이미지 변환 시스템)",
           children: [
             {
-              text: "Web Worker 기반 백그라운드 이미지 변환 시스템 구축으로 메인 스레드 분리",
+              text: "GA4, Airbridge, X Pixel, 네이버로그 등 4개 분석 플랫폼을 통합 관리하여 데이터 일관성 확보",
             },
             {
-              text: "postMessage 기반 안전한 데이터 전달 및 에러 핸들링으로 다중 이미지 변환 중에도 메인 스레드 블로킹 현상 해소",
-            },
-          ],
-        },
-        {
-          text: "웹 미디어 처리 최적화 (WebP 애니메이션 프레임 단위 제어 시스템)",
-          children: [
-            {
-              text: "webpxmux 라이브러리 기반 프레임 단위 제어 시스템으로 WebAssembly 런타임을 활용한 네이티브 성능의 WebP 파싱",
-            },
-            {
-              text: "각 프레임별 RGBA 픽셀 데이터 및 duration 정보 추출로 Animated WebP의 완전한 프레임 단위 제어 기능 구현",
+              text: "확장 가능한 로깅 아키텍처로 신규 분석 플랫폼 추가 시 개발 시간 단축",
             },
           ],
         },
@@ -301,10 +296,10 @@ export const resume: ResumeData = {
     "TanStack Query",
     "Zustand",
     "Tailwind CSS",
+    "Styled Components",
     "Lit",
     "WebSocket",
     "TradingView",
-    "Styled Components",
     "Pnpm",
     "Yarn",
   ],

@@ -1,26 +1,46 @@
 import React from "react";
 import { PillButton } from "./ui";
 
+const skillCategories = {
+  Frontend: [
+    "React",
+    "TypeScript",
+    "Vite",
+    "Tailwind CSS",
+    "Styled Components",
+  ],
+  "State Management": ["TanStack Query", "Zustand"],
+  Specialized: ["Lit", "WebSocket", "TradingView"],
+  "Package Managers": ["Pnpm", "Yarn"],
+};
+
 export default function SkillsCompact({ items }: { items: string[] }) {
   const [open, setOpen] = React.useState(false);
-  const visible = open ? items : items.slice(0, 8);
-  const more = items.length - visible.length;
+
+  // 카테고리별로 스킬 분류
+  const categorizedSkills = Object.entries(skillCategories)
+    .map(([category, skills]) => ({
+      category,
+      skills: skills.filter((skill) => items.includes(skill)),
+    }))
+    .filter((cat) => cat.skills.length > 0);
 
   return (
-    <div className="flex flex-wrap gap-1">
-      {visible.map((s) => (
-        <PillButton key={s} variant="soft" size="sm">
-          #{s}
-        </PillButton>
+    <div className="space-y-3">
+      {categorizedSkills.map(({ category, skills }) => (
+        <div key={category}>
+          <div className="mb-1 text-xs font-medium text-[var(--fg-muted)]">
+            {category}
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {skills.map((skill) => (
+              <PillButton key={skill} variant="soft" size="sm">
+                {skill}
+              </PillButton>
+            ))}
+          </div>
+        </div>
       ))}
-      {more > 0 && (
-        <button
-          onClick={() => setOpen(true)}
-          className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-xs text-[var(--fg)] hover:bg-[var(--hover-bg)]"
-        >
-          +{more}
-        </button>
-      )}
     </div>
   );
 }

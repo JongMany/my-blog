@@ -1,9 +1,10 @@
 import React from "react";
-import type { Bullet, Experience } from "../service/resume";
+import type { Bullet, Experience, PortfolioLink } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
 import { cn } from "@srf/ui";
+import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 
 /* ───────────── 유틸 ───────────── */
 function hash36(s: string) {
@@ -27,7 +28,7 @@ const tagsMatch = (sel: Set<string>, tags?: string[], mode: Mode = "OR") => {
 /** 매칭 항목(혹은 자식 중 매칭)이 하나라도 있으면 보존하는 필터 */
 function filterBullets(
   items: Bullet[],
-  pred: (b: Bullet) => boolean
+  pred: (b: Bullet) => boolean,
 ): Bullet[] {
   const out: Bullet[] = [];
   for (const b of items) {
@@ -42,7 +43,7 @@ function filterBullets(
 function Emphasis({ text }: { text: string }) {
   // 1,234 / 3.5% / 120ms / 2x 등도 캡처
   const parts = text.split(
-    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}\b)/g
+    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}\b)/g,
   );
   return (
     <>
@@ -53,9 +54,49 @@ function Emphasis({ text }: { text: string }) {
           </strong>
         ) : (
           <span key={i}>{p}</span>
-        )
+        ),
       )}
     </>
+  );
+}
+
+/** 포트폴리오 링크 아이콘 */
+function getLinkIcon(type?: string) {
+  switch (type) {
+    case "github":
+      return <Github className="w-3 h-3" />;
+    case "demo":
+      return <Play className="w-3 h-3" />;
+    case "blog":
+      return <FileText className="w-3 h-3" />;
+    case "portfolio":
+      return <ExternalLink className="w-3 h-3" />;
+    default:
+      return <Link className="w-3 h-3" />;
+  }
+}
+
+/** 포트폴리오 링크들 */
+function PortfolioLinks({ links }: { links: PortfolioLink[] }) {
+  if (!links?.length) return null;
+
+  return (
+    <div className="mt-2 flex flex-wrap gap-1.5">
+      {links.map((link, index) => (
+        <a
+          key={index}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--surface)] px-2 py-1 text-[11px] text-[var(--fg)] transition-all duration-150 hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 hover:text-[var(--primary)]"
+        >
+          <div className="flex items-center justify-center text-[var(--muted-fg)] transition-colors group-hover:text-[var(--primary)]">
+            {getLinkIcon(link.type)}
+          </div>
+          <span className="font-medium">{link.title}</span>
+        </a>
+      ))}
+    </div>
   );
 }
 
@@ -73,7 +114,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
       selSet.size
         ? filterBullets(item.bullets, (b) => tagsMatch(selSet, b.tags, mode))
         : item.bullets,
-    [item.bullets, selSet, mode]
+    [item.bullets, selSet, mode],
   );
 
   const topVisible = filtered;
@@ -81,7 +122,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
 
   const toggle = (s: string) =>
     setSel((cur) =>
-      cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]
+      cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s],
     );
 
   return (
@@ -122,7 +163,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
                   className={cn(
                     "px-2.5 py-1 text-[11px]",
                     on &&
-                      "border-transparent bg-[var(--primary)] text-[var(--primary-ink)]"
+                      "border-transparent bg-[var(--primary)] text-[var(--primary-ink)]",
                   )}
                 >
                   #{s}
@@ -142,7 +183,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
                     onClick={() => setMode("OR")}
                     className={cn(
                       "px-2 py-0.5 text-[11px]",
-                      mode === "OR" && "bg-[var(--hover-bg)]"
+                      mode === "OR" && "bg-[var(--hover-bg)]",
                     )}
                     aria-pressed={mode === "OR"}
                   >
@@ -152,7 +193,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
                     onClick={() => setMode("AND")}
                     className={cn(
                       "px-2 py-0.5 text-[11px]",
-                      mode === "AND" && "bg-[var(--hover-bg)]"
+                      mode === "AND" && "bg-[var(--hover-bg)]",
                     )}
                     aria-pressed={mode === "AND"}
                   >
@@ -209,19 +250,21 @@ function BulletList({
         const k = keyFor([...prefix, idx], b.text);
         return (
           <li key={k}>
-            <Emphasis text={b.text} />
-            {b.tags?.length ? (
-              <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
-                {b.tags.map((t) => (
-                  <span
-                    key={`${k}:tag:${t}`}
-                    className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[10px] text-[var(--muted-fg)]"
-                  >
-                    #{t}
-                  </span>
-                ))}
-              </span>
-            ) : null}
+            <div>
+              <Emphasis text={b.text} />
+              {b.tags?.length ? (
+                <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
+                  {b.tags.map((t) => (
+                    <span
+                      key={`${k}:tag:${t}`}
+                      className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[10px] text-[var(--muted-fg)]"
+                    >
+                      #{t}
+                    </span>
+                  ))}
+                </span>
+              ) : null}
+            </div>
             {b.children?.length ? (
               <div className="mt-1.5">
                 <BulletList
@@ -230,6 +273,9 @@ function BulletList({
                   prefix={[...prefix, idx]}
                 />
               </div>
+            ) : null}
+            {b.portfolioLinks?.length ? (
+              <PortfolioLinks links={b.portfolioLinks} />
             ) : null}
           </li>
         );
