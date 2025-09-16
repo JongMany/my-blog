@@ -1,0 +1,705 @@
+---
+title: TradingView 엔진 마이그레이션 및 WebView 렌더링
+summary: 기존 앱의 자체 구현 차트를 TradingView 엔진으로 완전 마이그레이션하고, HTML WebView 기반 렌더링 레이어를 설계하여 앱 차트를 개발했습니다.
+project: Coinness
+tags:
+  [
+    TradingView,
+    WebView,
+    Mobile,
+    Chart,
+    Migration,
+    JavaScript Bridge,
+    Cross-platform,
+  ]
+date: 2025-01-15
+cover: /projects/thumbnails/images/IMG_7467.png
+coverAlt: "TradingView WebView 렌더링 시스템 아키텍처"
+coverCaption: "앱 내 HTML WebView 기반 TradingView 차트 렌더링"
+coverType: image
+coverAspectRatio: 16:9
+---
+
+## 개요
+
+기존 앱의 자체 구현 차트를 **TradingView 엔진으로 완전 마이그레이션**하고, **HTML WebView 기반 렌더링 레이어**를 설계하여 앱 차트를 개발했습니다.
+
+## 배경
+
+- **기존 차트 엔진의 한계**: 자체 구현 차트의 성능 및 기능적 제약
+- **사용자 경험 일관성 부족**: 플랫폼별로 다른 차트 인터페이스와 기능
+- **임베딩 방식**: 앱 내 **HTML(WebView) 렌더링 레이어**를 설계해 **Vanilla JS**로 초기 통합
+
+## 목표
+
+1. **차트 엔진 통합**: TradingView를 기반으로 앱·웹 차트 일원화
+2. **사용자 경험 개선**: 플랫폼 간 일관된 차트 기능 제공
+
+## 내 역할
+
+- HTML 기반 차트 렌더링 시스템 유지보수
+- JavaScript Bridge를 통한 앱-웹뷰 양방향 통신 구현
+
+## 해결과정
+
+### WebView 기반 렌더링 시스템 구축
+
+#### HTML 기반 TradingView 통합
+
+HTML을 통해 TradingView를 앱 내에서 실행할 수 있는 WebView 환경을 구축했습니다.
+
+```html
+<!-- chart.html -->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradingView Chart</title>
+    <script
+      type="text/javascript"
+      src="https://s3.tradingview.com/tv.js"
+    ></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--chart-background, #1e1e1e);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      #tradingview_chart {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+      }
+
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #888;
+        font-size: 14px;
+      }
+
+      .error {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ff6b6b;
+        font-size: 14px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tradingview_chart">
+      <div class="loading">차트를 로딩 중입니다...</div>
+    </div>
+
+    <script>
+      class TradingViewWebView {
+        constructor() {
+          this.widget = null;
+          this.config = this.parseConfigFromURL();
+          this.setupNativeBridge();
+          this.initializeChart();
+        }
+
+        parseConfigFromURL() {
+          const urlParams = new URLSearchParams(window.location.search);
+          return {
+            symbol: urlParams.get("symbol") || "BTCUSDT",
+            theme: urlParams.get("theme") || "dark",
+            interval: urlParams.get("interval") || "1h",
+            height: urlParams.get("height") || "100%",
+            width: urlParams.get("width") || "100%",
+            locale: urlParams.get("locale") || "ko",
+            timezone: urlParams.get("timezone") || "Asia/Seoul",
+          };
+        }
+
+        setupNativeBridge() {
+          // iOS WKWebView Bridge
+          if (window.webkit && window.webkit.messageHandlers) {
+            this.nativeBridge = {
+              postMessage: (message) => {
+                window.webkit.messageHandlers.chartBridge.postMessage(message);
+              },
+            };
+          }
+          // Android WebView Bridge
+          else if (window.Android) {
+            this.nativeBridge = {
+              postMessage: (message) => {
+                window.Android.onChartEvent(JSON.stringify(message));
+              },
+            };
+          }
+          // 웹 환경 (개발/테스트용)
+          else {
+            this.nativeBridge = {
+              postMessage: (message) => {
+                console.log("Native Bridge Message:", message);
+              },
+            };
+          }
+        }
+
+        initializeChart() {
+          try {
+            this.widget = new TradingView.widget({
+              container_id: "tradingview_chart",
+              symbol: this.config.symbol,
+              interval: this.config.interval,
+              theme: this.config.theme,
+              style: "1",
+              locale: this.config.locale,
+              timezone: this.config.timezone,
+              height: this.config.height,
+              width: this.config.width,
+              autosize: true,
+              toolbar_bg: "transparent",
+              enable_publishing: false,
+              hide_side_toolbar: false,
+              allow_symbol_change: true,
+              details: true,
+              hotlist: true,
+              calendar: true,
+              studies: [
+                "RSI@tv-basicstudies",
+                "MACD@tv-basicstudies",
+                "Volume@tv-basicstudies",
+              ],
+              show_popup_button: true,
+              popup_width: "1000",
+              popup_height: "650",
+              container_id: "tradingview_chart",
+            });
+
+            this.setupChartEventListeners();
+            this.notifyNative("chart_ready", { symbol: this.config.symbol });
+          } catch (error) {
+            this.handleError(error);
+          }
+        }
+
+        setupChartEventListeners() {
+          this.widget.onChartReady(() => {
+            const chart = this.widget.chart();
+
+            // 심볼 변경 이벤트
+            chart.onSymbolChanged().subscribe(null, (symbol) => {
+              this.notifyNative("symbol_changed", { symbol: symbol });
+            });
+
+            // 인터벌 변경 이벤트
+            chart.onIntervalChanged().subscribe(null, (interval) => {
+              this.notifyNative("interval_changed", { interval: interval });
+            });
+
+            // 차트 클릭 이벤트
+            chart.onClick().subscribe(null, (param) => {
+              this.notifyNative("chart_clicked", {
+                time: param.time,
+                price: param.point.y,
+                index: param.point.x,
+              });
+            });
+
+            // 스터디 추가/제거 이벤트
+            chart.onStudyAdded().subscribe(null, (study) => {
+              this.notifyNative("study_added", { study: study });
+            });
+
+            chart.onStudyRemoved().subscribe(null, (study) => {
+              this.notifyNative("study_removed", { study: study });
+            });
+          });
+        }
+
+        notifyNative(event, data) {
+          if (this.nativeBridge) {
+            this.nativeBridge.postMessage({
+              event: event,
+              data: data,
+              timestamp: Date.now(),
+            });
+          }
+        }
+
+        handleError(error) {
+          console.error("TradingView Chart Error:", error);
+          document.getElementById("tradingview_chart").innerHTML =
+            '<div class="error">차트 로딩 중 오류가 발생했습니다.<br>' +
+            error.message +
+            "</div>";
+
+          this.notifyNative("chart_error", { error: error.message });
+        }
+
+        // 네이티브에서 호출되는 메서드들
+        updateSymbol(symbol) {
+          if (this.widget && this.widget.chart()) {
+            this.widget.chart().setSymbol(symbol);
+          }
+        }
+
+        updateTheme(theme) {
+          if (this.widget) {
+            this.widget.changeTheme(theme);
+          }
+        }
+
+        updateInterval(interval) {
+          if (this.widget && this.widget.chart()) {
+            this.widget.chart().setResolution(interval);
+          }
+        }
+
+        addStudy(studyName) {
+          if (this.widget && this.widget.chart()) {
+            this.widget.chart().createStudy(studyName);
+          }
+        }
+
+        removeStudy(studyId) {
+          if (this.widget && this.widget.chart()) {
+            this.widget.chart().removeEntity(studyId);
+          }
+        }
+      }
+
+      // 전역 인스턴스 생성
+      window.tradingViewWebView = new TradingViewWebView();
+
+      // 네이티브에서 호출할 수 있는 전역 함수들
+      window.updateChartSymbol = (symbol) => {
+        window.tradingViewWebView.updateSymbol(symbol);
+      };
+
+      window.updateChartTheme = (theme) => {
+        window.tradingViewWebView.updateTheme(theme);
+      };
+
+      window.updateChartInterval = (interval) => {
+        window.tradingViewWebView.updateInterval(interval);
+      };
+
+      window.addChartStudy = (studyName) => {
+        window.tradingViewWebView.addStudy(studyName);
+      };
+
+      window.removeChartStudy = (studyId) => {
+        window.tradingViewWebView.removeStudy(studyId);
+      };
+    </script>
+  </body>
+</html>
+```
+
+### 앱-차트(웹뷰) 통신 브릿지 구현
+
+#### iOS WKWebView Bridge
+
+```swift
+// ChartWebViewBridge.swift
+import WebKit
+
+class ChartWebViewBridge: NSObject, WKScriptMessageHandler {
+    private weak var webView: WKWebView?
+    private var chartDelegate: ChartWebViewDelegate?
+
+    init(webView: WKWebView, delegate: ChartWebViewDelegate) {
+        super.init()
+        self.webView = webView
+        self.chartDelegate = delegate
+        setupMessageHandler()
+    }
+
+    private func setupMessageHandler() {
+        webView?.configuration.userContentController.add(self, name: "chartBridge")
+    }
+
+    // JavaScript에서 호출되는 메시지 처리
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard let messageBody = message.body as? [String: Any],
+              let event = messageBody["event"] as? String,
+              let data = messageBody["data"] as? [String: Any] else {
+            return
+        }
+
+        handleChartEvent(event: event, data: data)
+    }
+
+    private func handleChartEvent(event: String, data: [String: Any]) {
+        switch event {
+        case "chart_ready":
+            chartDelegate?.onChartReady(symbol: data["symbol"] as? String)
+
+        case "symbol_changed":
+            chartDelegate?.onSymbolChanged(symbol: data["symbol"] as? String)
+
+        case "interval_changed":
+            chartDelegate?.onIntervalChanged(interval: data["interval"] as? String)
+
+        case "chart_clicked":
+            if let time = data["time"] as? Double,
+               let price = data["price"] as? Double {
+                chartDelegate?.onChartClicked(time: time, price: price)
+            }
+
+        case "study_added":
+            chartDelegate?.onStudyAdded(study: data["study"])
+
+        case "study_removed":
+            chartDelegate?.onStudyRemoved(study: data["study"])
+
+        case "chart_error":
+            chartDelegate?.onChartError(error: data["error"] as? String)
+
+        default:
+            print("Unknown chart event: \(event)")
+        }
+    }
+
+    // 네이티브에서 웹뷰로 명령 전송
+    func updateSymbol(_ symbol: String) {
+        webView?.evaluateJavaScript("window.updateChartSymbol('\(symbol)')")
+    }
+
+    func updateTheme(_ theme: String) {
+        webView?.evaluateJavaScript("window.updateChartTheme('\(theme)')")
+    }
+
+    func updateInterval(_ interval: String) {
+        webView?.evaluateJavaScript("window.updateChartInterval('\(interval)')")
+    }
+
+    func addStudy(_ studyName: String) {
+        webView?.evaluateJavaScript("window.addChartStudy('\(studyName)')")
+    }
+
+    func removeStudy(_ studyId: String) {
+        webView?.evaluateJavaScript("window.removeChartStudy('\(studyId)')")
+    }
+}
+
+protocol ChartWebViewDelegate: AnyObject {
+    func onChartReady(symbol: String?)
+    func onSymbolChanged(symbol: String?)
+    func onIntervalChanged(interval: String?)
+    func onChartClicked(time: Double, price: Double)
+    func onStudyAdded(study: Any?)
+    func onStudyRemoved(study: Any?)
+    func onChartError(error: String?)
+}
+```
+
+#### Android WebView Bridge
+
+```kotlin
+// ChartWebViewBridge.kt
+class ChartWebViewBridge(private val webView: WebView) {
+
+    init {
+        setupWebView()
+    }
+
+    private fun setupWebView() {
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            allowFileAccess = true
+            allowContentAccess = true
+        }
+
+        // JavaScript 인터페이스 추가
+        webView.addJavascriptInterface(ChartJavaScriptInterface(), "Android")
+    }
+
+    inner class ChartJavaScriptInterface {
+        @JavascriptInterface
+        fun onChartEvent(jsonData: String) {
+            try {
+                val jsonObject = JSONObject(jsonData)
+                val event = jsonObject.getString("event")
+                val data = jsonObject.getJSONObject("data")
+
+                handleChartEvent(event, data)
+            } catch (e: JSONException) {
+                Log.e("ChartBridge", "JSON parsing error", e)
+            }
+        }
+
+        private fun handleChartEvent(event: String, data: JSONObject) {
+            when (event) {
+                "chart_ready" -> {
+                    val symbol = data.optString("symbol")
+                    onChartReady(symbol)
+                }
+                "symbol_changed" -> {
+                    val symbol = data.optString("symbol")
+                    onSymbolChanged(symbol)
+                }
+                "interval_changed" -> {
+                    val interval = data.optString("interval")
+                    onIntervalChanged(interval)
+                }
+                "chart_clicked" -> {
+                    val time = data.optDouble("time")
+                    val price = data.optDouble("price")
+                    onChartClicked(time, price)
+                }
+                "study_added" -> {
+                    onStudyAdded(data.opt("study"))
+                }
+                "study_removed" -> {
+                    onStudyRemoved(data.opt("study"))
+                }
+                "chart_error" -> {
+                    val error = data.optString("error")
+                    onChartError(error)
+                }
+            }
+        }
+    }
+
+    // 네이티브에서 웹뷰로 명령 전송
+    fun updateSymbol(symbol: String) {
+        webView.post {
+            webView.evaluateJavascript("window.updateChartSymbol('$symbol')", null)
+        }
+    }
+
+    fun updateTheme(theme: String) {
+        webView.post {
+            webView.evaluateJavascript("window.updateChartTheme('$theme')", null)
+        }
+    }
+
+    fun updateInterval(interval: String) {
+        webView.post {
+            webView.evaluateJavascript("window.updateChartInterval('$interval')", null)
+        }
+    }
+
+    fun addStudy(studyName: String) {
+        webView.post {
+            webView.evaluateJavascript("window.addChartStudy('$studyName')", null)
+        }
+    }
+
+    fun removeStudy(studyId: String) {
+        webView.post {
+            webView.evaluateJavascript("window.removeChartStudy('$studyId')", null)
+        }
+    }
+
+    // 이벤트 콜백 (실제 구현에서는 인터페이스로 분리)
+    private fun onChartReady(symbol: String?) {
+        // 차트 준비 완료 처리
+    }
+
+    private fun onSymbolChanged(symbol: String?) {
+        // 심볼 변경 처리
+    }
+
+    private fun onIntervalChanged(interval: String?) {
+        // 인터벌 변경 처리
+    }
+
+    private fun onChartClicked(time: Double, price: Double) {
+        // 차트 클릭 처리
+    }
+
+    private fun onStudyAdded(study: Any?) {
+        // 스터디 추가 처리
+    }
+
+    private fun onStudyRemoved(study: Any?) {
+        // 스터디 제거 처리
+    }
+
+    private fun onChartError(error: String?) {
+        // 차트 오류 처리
+    }
+}
+```
+
+### 동적 파라미터 처리 시스템
+
+```typescript
+// ChartConfigManager.ts
+class ChartConfigManager {
+  private config: ChartConfig;
+  private urlParams: URLSearchParams;
+
+  constructor() {
+    this.urlParams = new URLSearchParams(window.location.search);
+    this.config = this.parseConfig();
+  }
+
+  private parseConfig(): ChartConfig {
+    return {
+      symbol: this.urlParams.get("symbol") || "BTCUSDT",
+      theme: this.urlParams.get("theme") || "dark",
+      interval: this.urlParams.get("interval") || "1h",
+      height: this.urlParams.get("height") || "100%",
+      width: this.urlParams.get("width") || "100%",
+      locale: this.urlParams.get("locale") || "ko",
+      timezone: this.urlParams.get("timezone") || "Asia/Seoul",
+      studies: this.parseStudies(),
+      toolbar: this.parseToolbarConfig(),
+      features: this.parseFeatures(),
+    };
+  }
+
+  private parseStudies(): string[] {
+    const studiesParam = this.urlParams.get("studies");
+    if (!studiesParam) return ["RSI@tv-basicstudies", "MACD@tv-basicstudies"];
+
+    return studiesParam.split(",").map((study) => study.trim());
+  }
+
+  private parseToolbarConfig(): ToolbarConfig {
+    return {
+      showToolbar: this.urlParams.get("showToolbar") !== "false",
+      showSideToolbar: this.urlParams.get("showSideToolbar") !== "false",
+      showPopupButton: this.urlParams.get("showPopupButton") !== "false",
+      allowSymbolChange: this.urlParams.get("allowSymbolChange") !== "false",
+    };
+  }
+
+  private parseFeatures(): FeatureConfig {
+    return {
+      details: this.urlParams.get("details") !== "false",
+      hotlist: this.urlParams.get("hotlist") !== "false",
+      calendar: this.urlParams.get("calendar") !== "false",
+      enablePublishing: this.urlParams.get("enablePublishing") === "true",
+    };
+  }
+
+  updateConfig(newConfig: Partial<ChartConfig>): void {
+    this.config = { ...this.config, ...newConfig };
+    this.updateURL();
+  }
+
+  private updateURL(): void {
+    const newParams = new URLSearchParams();
+
+    Object.entries(this.config).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (Array.isArray(value)) {
+          newParams.set(key, value.join(","));
+        } else {
+          newParams.set(key, String(value));
+        }
+      }
+    });
+
+    const newURL = `${window.location.pathname}?${newParams.toString()}`;
+    window.history.replaceState({}, "", newURL);
+  }
+
+  getConfig(): ChartConfig {
+    return { ...this.config };
+  }
+}
+```
+
+## 시스템 아키텍처
+
+```mermaid
+graph TB
+    subgraph "Native App Layer"
+        A[iOS App] --> B[WKWebView]
+        C[Android App] --> D[WebView]
+    end
+
+    subgraph "Bridge Layer"
+        B --> E[iOS Bridge]
+        D --> F[Android Bridge]
+    end
+
+    subgraph "WebView Layer"
+        E --> G[HTML Container]
+        F --> G
+        G --> H[TradingView Widget]
+        G --> I[Chart Config Manager]
+        G --> J[Event Handler]
+    end
+
+    subgraph "TradingView Engine"
+        H --> K[Chart Rendering]
+        H --> L[Data Feed]
+        H --> M[Studies & Indicators]
+        H --> N[Drawing Tools]
+    end
+
+    subgraph "Communication Flow"
+        O[User Interaction] --> P[Native Event]
+        P --> Q[Bridge Message]
+        Q --> R[JavaScript Call]
+        R --> S[TradingView API]
+        S --> T[Chart Update]
+        T --> U[Visual Feedback]
+    end
+
+    style A fill:#e3f2fd
+    style C fill:#e8f5e8
+    style G fill:#fff3e0
+    style H fill:#f3e5f5
+    style K fill:#ffebee
+```
+
+## 주요 기능
+
+### 1. WebView 기반 렌더링
+
+- **HTML 컨테이너**: TradingView를 앱 내에서 실행할 수 있는 WebView 환경
+- **동적 파라미터**: URL 쿼리 파라미터로 테마, 심볼, 인터벌 등 동적 설정
+- **반응형 디자인**: 다양한 화면 크기에 대응하는 차트 레이아웃
+
+### 2. 양방향 통신 브릿지
+
+- **iOS WKWebView**: WKScriptMessageHandler를 통한 메시지 처리
+- **Android WebView**: JavaScriptInterface를 통한 네이티브 통신
+- **이벤트 기반**: 차트 이벤트를 실시간으로 네이티브 앱에 전달
+
+### 3. 차트 기능 통합
+
+- **심볼 변경**: 네이티브에서 차트 심볼 동적 변경
+- **테마 전환**: 다크/라이트 테마 실시간 전환
+- **인터벌 조정**: 시간 프레임 동적 변경
+- **스터디 관리**: 인디케이터 추가/제거 기능
+
+### 4. 에러 처리 및 복구
+
+- **로딩 상태**: 차트 로딩 중 사용자 피드백
+- **에러 핸들링**: 차트 오류 시 적절한 에러 메시지 표시
+- **자동 복구**: 네트워크 오류 시 자동 재연결 시도
+
+## 결과
+
+- **차트 엔진 통합**: 앱과 웹의 차트 기능 완전 일원화
+- **사용자 경험 일관성**: 플랫폼 간 동일한 차트 인터페이스 제공
+- **개발 효율성**: 공통 차트 로직으로 유지보수 비용 절감
+- **성능 향상**: TradingView 엔진의 고성능 차트 렌더링 활용
+
+## 개선할 점
+
+- **React 기반 마이그레이션**: 앱/웹 차트의 코드베이스 일원화를 위해 React 기반 WebView 구조로 마이그레이션 설계 진행
+- **공통 UI/로직 재사용**: React 컴포넌트 기반으로 UI 로직 공유
+- **배포 단순화**: 통합된 빌드 프로세스로 배포 효율성 향상
+
+## 기술 스택
+
+- **Frontend**: HTML5, Vanilla JavaScript, TradingView Charting Library
+- **Mobile**: iOS WKWebView, Android WebView
+- **Bridge**: WKScriptMessageHandler (iOS), JavaScriptInterface (Android)
+- **Communication**: JSON-based Message Passing
+- **Configuration**: URL Query Parameters, Dynamic Config Management
