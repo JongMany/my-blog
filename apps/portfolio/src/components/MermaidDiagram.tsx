@@ -276,10 +276,11 @@ export function MermaidDiagram({
 
       {/* 다이어그램 컨테이너 */}
       <div
-        className="relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
+        className="relative border border-gray-200 rounded-lg bg-gray-50"
         style={{
           minHeight: "300px",
-          maxHeight: "600px",
+          maxHeight: "800px",
+          overflow: "auto",
         }}
       >
         <div
@@ -290,8 +291,7 @@ export function MermaidDiagram({
             justifyContent: "center",
             alignItems: "center",
             minHeight: "300px",
-            maxHeight: "600px",
-            overflow: "hidden",
+            padding: "20px",
             transform: `scale(${zoom}) translate(${translate.x / zoom}px, ${translate.y / zoom}px)`,
             transformOrigin: "center center",
             transition: isDragging ? "none" : "transform 0.1s ease-out",
