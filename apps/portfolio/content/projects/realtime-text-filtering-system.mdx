@@ -47,6 +47,12 @@ coverAspectRatio: 16:9
 
 ## 해결과정
 
+### 실시간 검열 데모
+
+![실시간 검열 시스템 데모](/projects/thumbnails/gifs/realtime-filtering-demo.gif)
+
+_사용자가 입력하는 즉시 부적절한 단어를 감지하고 시각적으로 표시하는 모습_
+
 ### Aho-Corasick 알고리즘 구현
 
 수천 개의 금지 단어를 효율적으로 검색하기 위한 고성능 알고리즘을 파악하여 적용했습니다.
@@ -56,6 +62,68 @@ coverAspectRatio: 16:9
 - **효율적 탐색**: 텍스트를 한 번만 읽으면서 모든 금지 단어를 동시에 찾음
 - **상태 기계**: Trie 구조와 실패 링크를 활용한 효율적인 상태 전환
 - **시간 복잡도**: O(n + m + z) - n(텍스트 길이) + m(패턴 총 길이) + z(매칭 수)
+
+<details>
+<summary>🔍 Aho-Corasick 알고리즘 구현 코드 보기</summary>
+
+```typescript
+class AhoCorasick {
+  private root: TrieNode;
+  private failureLinks: Map<TrieNode, TrieNode>;
+
+  constructor(patterns: string[]) {
+    this.root = new TrieNode();
+    this.failureLinks = new Map();
+    this.buildTrie(patterns);
+    this.buildFailureLinks();
+  }
+
+  private buildTrie(patterns: string[]): void {
+    for (const pattern of patterns) {
+      let node = this.root;
+      for (const char of pattern) {
+        if (!node.children.has(char)) {
+          node.children.set(char, new TrieNode());
+        }
+        node = node.children.get(char)!;
+      }
+      node.isEndOfPattern = true;
+      node.pattern = pattern;
+    }
+  }
+
+  search(text: string): Match[] {
+    const matches: Match[] = [];
+    let current = this.root;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+
+      while (current && !current.children.has(char)) {
+        current = current.failure!;
+      }
+
+      current = current?.children.get(char) || this.root;
+
+      let node = current;
+      while (node) {
+        if (node.isEndOfPattern) {
+          matches.push({
+            pattern: node.pattern!,
+            start: i - node.pattern!.length + 1,
+            end: i,
+          });
+        }
+        node = node.failure!;
+      }
+    }
+
+    return matches;
+  }
+}
+```
+
+</details>
 
 #### 메모리 효율성 최적화
 
