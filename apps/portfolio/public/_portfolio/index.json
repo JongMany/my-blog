@@ -1,16 +1,15 @@
 {
   "projects": [
-    "AI Character Platform",
-    "AI Chat Platform",
+    "BubbleChat",
     "Bubblechat",
     "Coinness"
   ],
   "byProject": {
-    "AI Character Platform": [
+    "BubbleChat": [
       {
         "title": "AI 캐릭터 대화방 수정/삭제 시스템",
         "summary": "AI 캐릭터와의 대화 기록을 효율적으로 관리할 수 있는 대화방 수정/삭제 시스템을 개발했습니다. React Query의 Optimistic Update를 활용하여 즉각적인 UI 반영과 데이터 일관성을 보장했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "React Query",
           "Optimistic Update",
@@ -32,7 +31,7 @@
       {
         "title": "AI 캐릭터 멀티 이미지 구매 및 업로드 시스템",
         "summary": "AI 캐릭터 플랫폼에서 사용자가 트리거 이미지를 구매하고 업로드할 수 있는 기능을 구현했습니다. React 18의 flushSync를 활용해 이미지 구매 API를 중복 호출을 원천 차단하고, 구매 즉시 채팅 배경 동기화로 결제 안정성과 사용자 경험을 개선했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "React 18",
           "flushSync",
@@ -55,7 +54,7 @@
       {
         "title": "AI 캐릭터 키워드북 시스템",
         "summary": "AI 캐릭터가 대화 중 특정 키워드를 인식했을 때 미리 정의된 배경 정보나 설정을 자동으로 불러와 더욱 일관성 있고 풍부한 대화를 제공하는 키워드북 시스템을 개발했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "AI",
           "Keyword System",
@@ -78,7 +77,7 @@
       {
         "title": "AI 캐릭터 콘텐츠 좋아요/즐겨찾기 통합 시스템",
         "summary": "AI 캐릭터, 유니버스, 씬, 포스트 등 다양한 콘텐츠 타입에 대한 좋아요 및 즐겨찾기 기능을 통합 관리하는 시스템을 개발했습니다. React Query의 Optimistic Update와 뮤테이션 상태 관리를 통해 즉각적인 사용자 피드백과 중복 요청 방지를 구현했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "React Query",
           "Optimistic Update",
@@ -101,7 +100,7 @@
       {
         "title": "AI 캐릭터 리워드 서비스 및 SSO 시스템",
         "summary": "AI 캐릭터 창작자와 플랫폼 간 투명한 수익 분배 시스템을 구축하여 창작자 생태계 활성화와 지속 가능한 플랫폼 성장을 동시에 달성하는 리워드 서비스를 개발했습니다. 이 과정에서 채팅 서비스와 리워드 서비스 간 단일 로그인(SSO)을 구현하였습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "Reward System",
           "SSO",
@@ -124,7 +123,7 @@
       {
         "title": "AI 캐릭터 지능형 텍스트 파싱 시스템",
         "summary": "AI 캐릭터 대화 에디터에서 {{assistant}}, {{user}} 형태의 템플릿 변수를 실시간으로 감지하여 시각적 칩 UI로 변환하는 지능형 텍스트 파싱 시스템을 개발했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "Text Parsing",
           "Regex",
@@ -147,7 +146,7 @@
       {
         "title": "다국어 번역키 검증을 위한 커스텀 ESLint Rule 개발",
         "summary": "다국어 서비스에서 번역키 누락으로 인한 UI 깨짐을 방지하기 위해 AST 파싱 기반 커스텀 ESLint Rule을 개발했습니다. 개발 중 실시간으로 번역키 존재 여부를 검증하여 프로덕션 배포 전 모든 번역 문제를 사전에 차단했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "ESLint Rule",
           "AST Parsing",
@@ -168,9 +167,33 @@
         "createdAtMs": 1736899200000
       },
       {
+        "title": "SSE 기반 LLM 실시간 스트리밍 시스템",
+        "summary": "AI 캐릭터와 대화할 수 있는 플랫폼에서 LLM(Large Language Model) 응답을 실시간 스트리밍으로 제공하여 사용자 경험을 개선하기 위해 PoC를 진행했습니다. 기존 JSON 기반 일괄 응답 방식에서 SSE(Server-Sent Events) 기반 토큰 단위 스트리밍 방식으로 전환하여 체감 응답 속도를 대폭 개선했습니다.",
+        "project": "BubbleChat",
+        "tags": [
+          "SSE",
+          "LLM",
+          "Streaming",
+          "Real-time",
+          "AI",
+          "Chat",
+          "User Experience",
+          "React"
+        ],
+        "date": "2025-01-15T00:00:00.000Z",
+        "cover": null,
+        "coverAlt": "SSE 기반 LLM 실시간 스트리밍 데모",
+        "coverCaption": "토큰 단위 실시간 스트리밍으로 AI 응답 즉시 확인",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
+        "slug": "llm-sse-streaming",
+        "path": "/_portfolio/projects/llm-sse-streaming.mdx",
+        "createdAtMs": 1736899200000
+      },
+      {
         "title": "다중 분석 플랫폼 통합 로그 수집 시스템",
         "summary": "GA4, Airbridge, Naver Log, X Pixel 등 4개의 서로 다른 분석 플랫폼에 동일한 사용자 이벤트를 일관성 있게 전송하는 통합 로그 수집 시스템을 구축했습니다. 객체지향 설계 패턴과 TypeScript 타입 시스템을 활용하여 확장 가능하고 안전한 아키텍처를 구현했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "Analytics Integration",
           "TypeScript",
@@ -193,7 +216,7 @@
       {
         "title": "실시간 텍스트 검열 시스템",
         "summary": "사용자가 입력하는 모든 텍스트에서 부적절한 단어를 실시간으로 감지하고 차단하는 자동 검열 시스템을 구축했습니다. Aho-Corasick 알고리즘을 활용한 고성능 다중 패턴 매칭과 사용자 등급별 차등 검열 로직을 구현했습니다.",
-        "project": "AI Character Platform",
+        "project": "BubbleChat",
         "tags": [
           "Text Filtering",
           "Aho-Corasick Algorithm",
@@ -211,32 +234,6 @@
         "coverAspectRatio": "969",
         "slug": "realtime-text-filtering-system",
         "path": "/_portfolio/projects/realtime-text-filtering-system.mdx",
-        "createdAtMs": 1736899200000
-      }
-    ],
-    "AI Chat Platform": [
-      {
-        "title": "SSE 기반 LLM 실시간 스트리밍 시스템",
-        "summary": "AI 캐릭터와 대화할 수 있는 플랫폼에서 LLM(Large Language Model) 응답을 실시간 스트리밍으로 제공하여 사용자 경험을 개선하기 위해 PoC를 진행했습니다. 기존 JSON 기반 일괄 응답 방식에서 SSE(Server-Sent Events) 기반 토큰 단위 스트리밍 방식으로 전환하여 체감 응답 속도를 대폭 개선했습니다.",
-        "project": "AI Chat Platform",
-        "tags": [
-          "SSE",
-          "LLM",
-          "Streaming",
-          "Real-time",
-          "AI",
-          "Chat",
-          "User Experience",
-          "React"
-        ],
-        "date": "2025-01-15T00:00:00.000Z",
-        "cover": null,
-        "coverAlt": "SSE 기반 LLM 실시간 스트리밍 데모",
-        "coverCaption": "토큰 단위 실시간 스트리밍으로 AI 응답 즉시 확인",
-        "coverType": "gif",
-        "coverAspectRatio": "969",
-        "slug": "llm-sse-streaming",
-        "path": "/_portfolio/projects/llm-sse-streaming.mdx",
         "createdAtMs": 1736899200000
       }
     ],
@@ -469,7 +466,7 @@
     {
       "title": "AI 캐릭터 대화방 수정/삭제 시스템",
       "summary": "AI 캐릭터와의 대화 기록을 효율적으로 관리할 수 있는 대화방 수정/삭제 시스템을 개발했습니다. React Query의 Optimistic Update를 활용하여 즉각적인 UI 반영과 데이터 일관성을 보장했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "React Query",
         "Optimistic Update",
@@ -491,7 +488,7 @@
     {
       "title": "AI 캐릭터 멀티 이미지 구매 및 업로드 시스템",
       "summary": "AI 캐릭터 플랫폼에서 사용자가 트리거 이미지를 구매하고 업로드할 수 있는 기능을 구현했습니다. React 18의 flushSync를 활용해 이미지 구매 API를 중복 호출을 원천 차단하고, 구매 즉시 채팅 배경 동기화로 결제 안정성과 사용자 경험을 개선했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "React 18",
         "flushSync",
@@ -514,7 +511,7 @@
     {
       "title": "AI 캐릭터 키워드북 시스템",
       "summary": "AI 캐릭터가 대화 중 특정 키워드를 인식했을 때 미리 정의된 배경 정보나 설정을 자동으로 불러와 더욱 일관성 있고 풍부한 대화를 제공하는 키워드북 시스템을 개발했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "AI",
         "Keyword System",
@@ -537,7 +534,7 @@
     {
       "title": "AI 캐릭터 콘텐츠 좋아요/즐겨찾기 통합 시스템",
       "summary": "AI 캐릭터, 유니버스, 씬, 포스트 등 다양한 콘텐츠 타입에 대한 좋아요 및 즐겨찾기 기능을 통합 관리하는 시스템을 개발했습니다. React Query의 Optimistic Update와 뮤테이션 상태 관리를 통해 즉각적인 사용자 피드백과 중복 요청 방지를 구현했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "React Query",
         "Optimistic Update",
@@ -560,7 +557,7 @@
     {
       "title": "AI 캐릭터 리워드 서비스 및 SSO 시스템",
       "summary": "AI 캐릭터 창작자와 플랫폼 간 투명한 수익 분배 시스템을 구축하여 창작자 생태계 활성화와 지속 가능한 플랫폼 성장을 동시에 달성하는 리워드 서비스를 개발했습니다. 이 과정에서 채팅 서비스와 리워드 서비스 간 단일 로그인(SSO)을 구현하였습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "Reward System",
         "SSO",
@@ -583,7 +580,7 @@
     {
       "title": "AI 캐릭터 지능형 텍스트 파싱 시스템",
       "summary": "AI 캐릭터 대화 에디터에서 {{assistant}}, {{user}} 형태의 템플릿 변수를 실시간으로 감지하여 시각적 칩 UI로 변환하는 지능형 텍스트 파싱 시스템을 개발했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "Text Parsing",
         "Regex",
@@ -606,7 +603,7 @@
     {
       "title": "다국어 번역키 검증을 위한 커스텀 ESLint Rule 개발",
       "summary": "다국어 서비스에서 번역키 누락으로 인한 UI 깨짐을 방지하기 위해 AST 파싱 기반 커스텀 ESLint Rule을 개발했습니다. 개발 중 실시간으로 번역키 존재 여부를 검증하여 프로덕션 배포 전 모든 번역 문제를 사전에 차단했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "ESLint Rule",
         "AST Parsing",
@@ -629,7 +626,7 @@
     {
       "title": "SSE 기반 LLM 실시간 스트리밍 시스템",
       "summary": "AI 캐릭터와 대화할 수 있는 플랫폼에서 LLM(Large Language Model) 응답을 실시간 스트리밍으로 제공하여 사용자 경험을 개선하기 위해 PoC를 진행했습니다. 기존 JSON 기반 일괄 응답 방식에서 SSE(Server-Sent Events) 기반 토큰 단위 스트리밍 방식으로 전환하여 체감 응답 속도를 대폭 개선했습니다.",
-      "project": "AI Chat Platform",
+      "project": "BubbleChat",
       "tags": [
         "SSE",
         "LLM",
@@ -653,7 +650,7 @@
     {
       "title": "다중 분석 플랫폼 통합 로그 수집 시스템",
       "summary": "GA4, Airbridge, Naver Log, X Pixel 등 4개의 서로 다른 분석 플랫폼에 동일한 사용자 이벤트를 일관성 있게 전송하는 통합 로그 수집 시스템을 구축했습니다. 객체지향 설계 패턴과 TypeScript 타입 시스템을 활용하여 확장 가능하고 안전한 아키텍처를 구현했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "Analytics Integration",
         "TypeScript",
@@ -676,7 +673,7 @@
     {
       "title": "실시간 텍스트 검열 시스템",
       "summary": "사용자가 입력하는 모든 텍스트에서 부적절한 단어를 실시간으로 감지하고 차단하는 자동 검열 시스템을 구축했습니다. Aho-Corasick 알고리즘을 활용한 고성능 다중 패턴 매칭과 사용자 등급별 차등 검열 로직을 구현했습니다.",
-      "project": "AI Character Platform",
+      "project": "BubbleChat",
       "tags": [
         "Text Filtering",
         "Aho-Corasick Algorithm",

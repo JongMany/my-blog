@@ -14,7 +14,7 @@ type MDXMap = NonNullable<ComponentsProp>;
 
 function fixAssetSrc(src?: string) {
   if (!src) return src;
-  
+
   console.log("fixAssetSrc 호출됨:", src);
 
   // 절대 URL인 경우 그대로 반환
@@ -115,6 +115,48 @@ export const components: MDXMap = {
   /* === Horizontal Rule === */
   hr: (p) => <hr {...p} className="my-8 border-gray-300" />,
 
+  /* === Details/Summary (Toggle) === */
+  details: ({ children, ...p }) => (
+    <details
+      {...p}
+      className="my-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+    >
+      {React.Children.map(children, (child, index) => {
+        if (
+          index === 0 &&
+          React.isValidElement(child) &&
+          child.type === "summary"
+        ) {
+          return child;
+        }
+
+        // pre 태그인 경우 특별한 클래스 추가
+        if (React.isValidElement(child) && child.type === "pre") {
+          return (
+            <div key={index} className="ml-6 mr-4 mb-4 first:mt-4">
+              {React.cloneElement(child, {
+                ...child.props,
+                className: `${child.props.className || ""} details-content`,
+              })}
+            </div>
+          );
+        }
+
+        return (
+          <div key={index} className="ml-6 mr-4 mb-4 first:mt-4">
+            {child}
+          </div>
+        );
+      })}
+    </details>
+  ),
+  summary: (p) => (
+    <summary
+      {...p}
+      className="cursor-pointer bg-gray-50 dark:bg-gray-800 px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors select-none"
+    />
+  ),
+
   /* === Mermaid Diagrams === */
   pre: (p) => {
     const children = React.Children.toArray(p.children);
@@ -163,10 +205,17 @@ export const components: MDXMap = {
       console.log("❌ Mermaid가 아닌 코드 블록");
     }
 
+    // details 안에 있는 pre인지 확인 (부모가 details인지 체크)
+    const isInsideDetails = p.className?.includes("details-content") || false;
+
     return (
       <pre
         {...p}
-        className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"
+        className={`bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4 ml-4 m-2 ${
+          isInsideDetails
+            ? "border-l-4 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20"
+            : ""
+        }`}
       />
     );
   },
