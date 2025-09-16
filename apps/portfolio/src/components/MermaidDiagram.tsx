@@ -96,6 +96,66 @@ export function MermaidDiagram({
           if (svgElement) {
             svgElement.style.cursor = "grab";
             svgElement.style.userSelect = "none";
+
+            // 마인드맵인 경우 파스텔 색상 적용
+            if (mermaidCode.trim().startsWith("mindmap")) {
+              console.log("마인드맵 감지 - 파스텔 색상 적용");
+
+              // 모든 노드에 파스텔 색상 적용
+              const nodes = svgElement.querySelectorAll("g.node");
+              nodes.forEach((node, index) => {
+                const path = node.querySelector("path");
+                const circle = node.querySelector("circle");
+                const text = node.querySelector("text");
+
+                if (path) {
+                  // 루트 노드 (첫 번째 노드)
+                  if (index === 0) {
+                    path.setAttribute("fill", "#dbeafe"); // 파스텔 블루
+                    path.setAttribute("stroke", "#93c5fd"); // 파스텔 블루 테두리
+                  } else {
+                    path.setAttribute("fill", "#f0f9ff"); // 연한 파스텔 블루
+                    path.setAttribute("stroke", "#a8d8ff"); // 파스텔 블루 테두리
+                  }
+                }
+
+                if (circle) {
+                  if (index === 0) {
+                    circle.setAttribute("fill", "#dbeafe"); // 파스텔 블루
+                    circle.setAttribute("stroke", "#93c5fd"); // 파스텔 블루 테두리
+                  } else {
+                    circle.setAttribute("fill", "#f0f9ff"); // 연한 파스텔 블루
+                    circle.setAttribute("stroke", "#a8d8ff"); // 파스텔 블루 테두리
+                  }
+                }
+
+                if (text) {
+                  if (index === 0) {
+                    text.setAttribute("fill", "#1e3a8a"); // 진한 파스텔 블루 텍스트
+                  } else {
+                    text.setAttribute("fill", "#1e40af"); // 진한 파스텔 블루 텍스트
+                  }
+                }
+              });
+
+              // 연결선에 파스텔 색상 적용
+              const paths = svgElement.querySelectorAll("path.edge");
+              paths.forEach((path) => {
+                path.setAttribute("stroke", "#bfdbfe"); // 파스텔 블루 라인
+                path.setAttribute("stroke-width", "2");
+              });
+
+              // 인라인 스타일도 오버라이드
+              const styleElement = svgElement.querySelector("style");
+              if (styleElement) {
+                const originalStyle = styleElement.textContent || "";
+                const newStyle = originalStyle
+                  .replace(/fill:hsl\([^)]+\)/g, "fill:#f0f9ff")
+                  .replace(/stroke:hsl\([^)]+\)/g, "stroke:#bfdbfe")
+                  .replace(/fill:#2d3748/g, "fill:#1e40af");
+                styleElement.textContent = newStyle;
+              }
+            }
           }
         }
       } catch (error) {
