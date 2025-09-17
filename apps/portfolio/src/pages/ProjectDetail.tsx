@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
+import { SEO } from "../components/SEO";
 import {
   usePortfolioIndex,
   fetchProjectMdxFromHost,
@@ -106,6 +107,14 @@ export default function ProjectDetail() {
 
   return (
     <Layout>
+      <SEO
+        title={project.title}
+        description={project.summary}
+        keywords={project.tags.join(", ")}
+        url={`https://jongmany.github.io/my-blog/portfolio/project/${project.slug}`}
+        type="article"
+        image={project.thumbnail ? imageSource(project.thumbnail) : undefined}
+      />
       <article className="max-w-4xl mx-auto">
         {/* 프로젝트 헤더 */}
         <header className="mb-8">

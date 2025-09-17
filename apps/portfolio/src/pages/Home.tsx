@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Layout from "../components/Layout";
+import { SEO } from "../components/SEO";
 import { usePortfolioIndex, experiences, skills } from "../service/portfolio";
 import ProjectCard from "../components/ProjectCard";
 import { fadeUp, stagger, item } from "../components/Motion";
@@ -26,6 +27,11 @@ export default function Home() {
 
   return (
     <Layout>
+      <SEO
+        title="Frontend Developer 프로젝트 모음"
+        description="TradingView 차트 주문 시스템, AI 캐릭터 텍스트 파싱, WebSocket Fallback 시스템 등 다양한 프론트엔드 프로젝트를 확인하세요."
+        keywords="포트폴리오, 프론트엔드 개발자, React, TypeScript, TradingView, AI, WebSocket, 프로젝트"
+      />
       <div className="space-y-8">
         {/* Hero */}
         <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8">
