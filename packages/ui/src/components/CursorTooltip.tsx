@@ -122,8 +122,10 @@ export function CursorTooltip({
       tooltipElement.style.left = `${position.left}px`;
       tooltipElement.style.zIndex = "9999";
       tooltipElement.style.pointerEvents = "auto";
+      tooltipElement.style.backgroundColor = "white";
+      tooltipElement.style.opacity = "1";
       tooltipElement.className = `
-        px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
+        px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white bg-opacity-100 shadow-2xl max-w-xs
         ${tooltipClassName}
       `;
 
