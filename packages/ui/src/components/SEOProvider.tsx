@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-interface SEOProps {
+interface SEOData {
   title?: string;
   description?: string;
   keywords?: string;
@@ -11,41 +11,31 @@ interface SEOProps {
   siteName?: string;
 }
 
-const defaultSEO = {
-  title: "이종민 - Frontend Developer | 포트폴리오 & 블로그",
-  description: "사용자 경험을 최우선으로 생각하는 Frontend Developer 이종민입니다. 암호화폐 거래소와 AI 채팅 플랫폼에서 핵심 기능을 개발한 경험을 공유합니다.",
-  keywords: "프론트엔드 개발자, React, TypeScript, 포트폴리오, 블로그, 이종민, Frontend Developer",
-  image: "https://jongmany.github.io/my-blog/img/profile.jpeg",
-  url: "https://jongmany.github.io/my-blog/",
-  type: "website" as const,
-  author: "이종민",
-  siteName: "이종민 포트폴리오",
-};
+interface SEOContextType {
+  seoData: SEOData;
+  updateSEO: (data: SEOData) => void;
+}
 
-export function SEO({
-  title,
-  description,
-  keywords,
-  image,
-  url,
-  type,
-  author,
-  siteName,
-}: SEOProps) {
+const SEOContext = createContext<SEOContextType | null>(null);
+
+export function SEOProvider({ children }: { children: React.ReactNode }) {
+  const [seoData, setSeoData] = useState<SEOData>({
+    title: "이종민 - Frontend Developer | 포트폴리오 & 블로그",
+    description: "사용자 경험을 최우선으로 생각하는 Frontend Developer 이종민입니다. 암호화폐 거래소와 AI 채팅 플랫폼에서 핵심 기능을 개발한 경험을 공유합니다.",
+    keywords: "프론트엔드 개발자, React, TypeScript, 포트폴리오, 블로그, 이종민, Frontend Developer",
+    image: "https://jongmany.github.io/my-blog/img/profile.jpeg",
+    url: "https://jongmany.github.io/my-blog/",
+    type: "website",
+    author: "이종민",
+    siteName: "이종민 포트폴리오",
+  });
+
+  const updateSEO = (data: SEOData) => {
+    setSeoData(prev => ({ ...prev, ...data }));
+  };
+
+  // SEO 데이터가 변경될 때마다 DOM 업데이트
   useEffect(() => {
-    // SEO 데이터를 문자열로 변환하여 의존성 비교를 안정화
-    const seoData = {
-      title: title ? `${title} | ${siteName || defaultSEO.siteName}` : defaultSEO.title,
-      description: description || defaultSEO.description,
-      keywords: keywords || defaultSEO.keywords,
-      image: image || defaultSEO.image,
-      url: url || defaultSEO.url,
-      type: type || defaultSEO.type,
-      author: author || defaultSEO.author,
-      siteName: siteName || defaultSEO.siteName,
-    };
-
-    // 직접 DOM 조작으로 SEO 메타데이터 업데이트
     const updateDocumentHead = () => {
       // Title 업데이트
       if (seoData.title) {
@@ -106,17 +96,19 @@ export function SEO({
     };
 
     updateDocumentHead();
-  }, [
-    title,
-    description,
-    keywords,
-    image,
-    url,
-    type,
-    author,
-    siteName,
-  ]);
+  }, [seoData]);
 
-  // 이 컴포넌트는 UI를 렌더링하지 않고 SEO 데이터만 업데이트
-  return null;
+  return (
+    <SEOContext.Provider value={{ seoData, updateSEO }}>
+      {children}
+    </SEOContext.Provider>
+  );
+}
+
+export function useSEO() {
+  const context = useContext(SEOContext);
+  if (!context) {
+    throw new Error('useSEO must be used within a SEOProvider');
+  }
+  return context;
 }

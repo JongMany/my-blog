@@ -1,7 +1,6 @@
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
-import { Helmet } from "react-helmet-async";
 
 import BlogLayout from "./components/Layout";
 import PostPage from "./pages/posts/PostsPage";
@@ -16,7 +15,6 @@ export default function BlogApp() {
         title="Frontend Developer 기술 블로그"
         description="프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다."
         keywords="기술 블로그, 프론트엔드 개발자, React, TypeScript, TradingView, AI, 개발 노하우"
-        Helmet={Helmet}
       />
       <Routes>
         <Route path="/" element={<BlogLayout />}>

@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
 import { SEO } from "@srf/ui";
-import { Helmet } from "react-helmet-async";
 import {
   usePortfolioIndex,
   fetchProjectMdxFromHost,
@@ -120,7 +119,6 @@ export default function ProjectDetail() {
             ? `https://jongmany.github.io/my-blog/portfolio${getThumbnailPath(project.cover)}`
             : undefined
         }
-        Helmet={Helmet}
       />
       <article className="max-w-4xl mx-auto">
         {/* 프로젝트 헤더 */}
