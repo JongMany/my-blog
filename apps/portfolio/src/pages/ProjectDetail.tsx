@@ -120,6 +120,7 @@ export default function ProjectDetail() {
             ? `https://jongmany.github.io/my-blog/portfolio${getThumbnailPath(project.cover)}`
             : undefined
         }
+        Helmet={Helmet}
       />
       <article className="max-w-4xl mx-auto">
         {/* 프로젝트 헤더 */}
