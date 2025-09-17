@@ -163,23 +163,25 @@ export function CursorTooltip({
               </motion.div>
             </AnimatePresence>
           ) : (
-            <div
-              style={{
-                position: "fixed",
-                top: position.top,
-                left: position.left,
-                zIndex: 9999,
-                pointerEvents: "auto",
-              }}
-              onMouseEnter={handleTooltipMouseEnter}
-              onMouseLeave={handleTooltipMouseLeave}
-              className={`
+            ((
+              <div
+                style={{
+                  position: "fixed",
+                  top: position.top,
+                  left: position.left,
+                  zIndex: 9999,
+                  pointerEvents: "auto",
+                }}
+                onMouseEnter={handleTooltipMouseEnter}
+                onMouseLeave={handleTooltipMouseLeave}
+                className={`
                 px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
                 ${tooltipClassName}
               `}
-            >
-              {content}
-            </div>
+              >
+                {content}
+              </div>
+            ) as React.ReactElement)
           ),
           document.body,
         )}
