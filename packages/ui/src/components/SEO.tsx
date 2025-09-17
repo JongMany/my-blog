@@ -51,33 +51,39 @@ export function SEO({
     return null; // Helmet이 제공되지 않으면 아무것도 렌더링하지 않음
   }
 
-  return (
-    <Helmet>
-      {/* 기본 메타데이터 */}
-      <title>{seo.title}</title>
-      <meta name="description" content={seo.description} />
-      <meta name="keywords" content={seo.keywords} />
-      <meta name="author" content={seo.author} />
+  try {
+    return (
+      <Helmet>
+        {/* 기본 메타데이터 */}
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <meta name="keywords" content={seo.keywords} />
+        <meta name="author" content={seo.author} />
 
-      {/* Open Graph 메타데이터 */}
-      <meta property="og:title" content={seo.title} />
-      <meta property="og:description" content={seo.description} />
-      <meta property="og:type" content={seo.type} />
-      <meta property="og:url" content={seo.url} />
-      <meta property="og:image" content={seo.image} />
-      <meta property="og:site_name" content={seo.siteName} />
-      <meta property="og:locale" content="ko_KR" />
+        {/* Open Graph 메타데이터 */}
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:type" content={seo.type} />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:image" content={seo.image} />
+        <meta property="og:site_name" content={seo.siteName} />
+        <meta property="og:locale" content="ko_KR" />
 
-      {/* Twitter Card 메타데이터 */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={seo.title} />
-      <meta name="twitter:description" content={seo.description} />
-      <meta name="twitter:image" content={seo.image} />
+        {/* Twitter Card 메타데이터 */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={seo.image} />
 
-      {/* 추가 SEO 메타데이터 */}
-      <meta name="robots" content="index, follow" />
-      <meta name="theme-color" content="#000000" />
-      <link rel="canonical" href={seo.url} />
-    </Helmet>
-  );
+        {/* 추가 SEO 메타데이터 */}
+        <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="canonical" href={seo.url} />
+      </Helmet>
+    );
+  } catch (error) {
+    // MFE 환경에서 HelmetProvider 컨텍스트 오류 시 fallback
+    console.warn("SEO component failed to render:", error);
+    return null;
+  }
 }
