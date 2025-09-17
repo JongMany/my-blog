@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface CursorTooltipProps {
@@ -27,6 +26,7 @@ export function CursorTooltip({
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
@@ -111,81 +111,57 @@ export function CursorTooltip({
     setIsVisible(false);
   };
 
+  // 툴팁을 DOM에 추가/제거
   useEffect(() => {
+    if (isVisible && tooltipRef.current) {
+      document.body.appendChild(tooltipRef.current);
+    }
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      if (tooltipRef.current && tooltipRef.current.parentNode) {
+        tooltipRef.current.parentNode.removeChild(tooltipRef.current);
+      }
     };
-  }, []);
+  }, [isVisible]);
 
   return (
-    <div className={`relative inline-block ${className}`}>
-      <div
-        ref={triggerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseMove={handleMouseMove}
-        className="cursor-help"
-      >
-        {children}
+    <>
+      <div className={`relative inline-block ${className}`}>
+        <div
+          ref={triggerRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onMouseMove={handleMouseMove}
+          className="cursor-help"
+        >
+          {children}
+        </div>
       </div>
 
-      {isVisible &&
-        createPortal(
-          animate ? (
-            <AnimatePresence>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 8 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 8 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                  duration: 0.25,
-                }}
-                style={{
-                  position: "fixed",
-                  top: position.top,
-                  left: position.left,
-                  zIndex: 9999,
-                  pointerEvents: "auto",
-                }}
-                onMouseEnter={handleTooltipMouseEnter}
-                onMouseLeave={handleTooltipMouseLeave}
-                className={`
-                  px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
-                  ${tooltipClassName}
-                `}
-              >
-                {content}
-              </motion.div>
-            </AnimatePresence>
-          ) : (
-            ((
-              <div
-                style={{
-                  position: "fixed",
-                  top: position.top,
-                  left: position.left,
-                  zIndex: 9999,
-                  pointerEvents: "auto",
-                }}
-                onMouseEnter={handleTooltipMouseEnter}
-                onMouseLeave={handleTooltipMouseLeave}
-                className={`
-                px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
-                ${tooltipClassName}
-              `}
-              >
-                {content}
-              </div>
-            ) as React.ReactElement)
-          ),
-          document.body,
-        )}
-    </div>
+      {isVisible && (
+        <div
+          ref={tooltipRef}
+          style={{
+            position: "fixed",
+            top: position.top,
+            left: position.left,
+            zIndex: 9999,
+            pointerEvents: "auto",
+          }}
+          onMouseEnter={handleTooltipMouseEnter}
+          onMouseLeave={handleTooltipMouseLeave}
+          className={`
+            px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
+            ${tooltipClassName}
+          `}
+        >
+          {content}
+        </div>
+      )}
+    </>
   );
 }
 
