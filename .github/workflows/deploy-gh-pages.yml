@@ -63,7 +63,11 @@ jobs:
           cache: pnpm
 
       # 5️⃣ 의존성 설치 (lock 파일 기준으로 정확한 버전)
-      - run: pnpm -w install --frozen-lockfile
+      - name: Install dependencies
+        run: |
+          # 캐시 무효화 후 설치
+          pnpm store prune
+          pnpm -w install --no-frozen-lockfile
 
       # 6️⃣ 빌드 환경 변수 설정 (런타임에 주입될 정보들)
       - name: Set build environment variables
