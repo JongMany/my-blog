@@ -6,6 +6,7 @@ let motion: any = null;
 let AnimatePresence: any = null;
 
 try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const framerMotion = require("framer-motion");
   motion = framerMotion.motion;
   AnimatePresence = framerMotion.AnimatePresence;
@@ -34,7 +35,7 @@ export function CursorTooltip({
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const updatePosition = () => {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -138,7 +139,7 @@ export function CursorTooltip({
 
       {isVisible &&
         createPortal(
-          motion && AnimatePresence && animate ? (
+          (motion && AnimatePresence && animate ? (
             <AnimatePresence>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 8 }}
@@ -185,7 +186,7 @@ export function CursorTooltip({
             >
               {content}
             </div>
-          ),
+          )) as React.ReactElement,
           document.body,
         )}
     </div>
