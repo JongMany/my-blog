@@ -44,6 +44,7 @@
   },
   "peerDependencies": {
     "react": "^18 || ^19",
-    "react-dom": "^18 || ^19"
+    "react-dom": "^18 || ^19",
+    "react-helmet-async": "^2.0.5"
   }
 }

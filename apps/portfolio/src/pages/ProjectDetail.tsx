@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
-import { SEO } from "../components/SEO";
+import { SEO } from "@srf/ui";
+import { Helmet } from "react-helmet-async";
 import {
   usePortfolioIndex,
   fetchProjectMdxFromHost,
