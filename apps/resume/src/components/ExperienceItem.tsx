@@ -3,7 +3,7 @@ import type { Bullet, Experience, PortfolioLink } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
-import { cn } from "@srf/ui";
+import { cn, SimpleCursorTooltip, CursorTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 
 /* ───────────── 유틸 ───────────── */
@@ -74,6 +74,110 @@ function getLinkIcon(type?: string) {
     default:
       return <Link className="w-3 h-3" />;
   }
+}
+
+/** 기술 스택 툴팁 정보 */
+const techTooltips: Record<
+  string,
+  { description: string; category: string; experience?: string }
+> = {
+  React: {
+    description: "사용자 인터페이스를 구축하기 위한 JavaScript 라이브러리",
+    category: "Frontend Framework",
+    experience: "3년+",
+  },
+  TypeScript: {
+    description: "JavaScript에 정적 타입을 추가한 프로그래밍 언어",
+    category: "Programming Language",
+    experience: "3년+",
+  },
+  TradingView: {
+    description: "금융 차트 및 트레이딩 플랫폼 개발을 위한 라이브러리",
+    category: "Financial Technology",
+    experience: "2년+",
+  },
+  WebSocket: {
+    description: "실시간 양방향 통신을 위한 프로토콜",
+    category: "Real-time Communication",
+    experience: "2년+",
+  },
+  "Node.js": {
+    description: "JavaScript 런타임 환경으로 서버사이드 개발",
+    category: "Backend Runtime",
+    experience: "2년+",
+  },
+  PostgreSQL: {
+    description: "오픈소스 관계형 데이터베이스 관리 시스템",
+    category: "Database",
+    experience: "2년+",
+  },
+  Redis: {
+    description: "인메모리 데이터 구조 저장소",
+    category: "Cache & Database",
+    experience: "1년+",
+  },
+  Docker: {
+    description: "컨테이너 기반 애플리케이션 배포 플랫폼",
+    category: "DevOps",
+    experience: "1년+",
+  },
+  AWS: {
+    description: "아마존 웹 서비스 클라우드 플랫폼",
+    category: "Cloud Platform",
+    experience: "1년+",
+  },
+  GraphQL: {
+    description: "API를 위한 쿼리 언어 및 런타임",
+    category: "API Technology",
+    experience: "1년+",
+  },
+  Jest: {
+    description: "JavaScript 테스팅 프레임워크",
+    category: "Testing",
+    experience: "2년+",
+  },
+  Cypress: {
+    description: "엔드투엔드 테스팅 프레임워크",
+    category: "Testing",
+    experience: "1년+",
+  },
+};
+
+/** 기술 스택 툴팁 컴포넌트 */
+function TechTooltip({ tech }: { tech: string }) {
+  const tooltipInfo = techTooltips[tech];
+
+  if (!tooltipInfo) {
+    return <span className="font-medium">#{tech}</span>;
+  }
+
+  return (
+    <CursorTooltip
+      content={
+        <div className="space-y-2">
+          <h3 className="font-semibold text-sm text-gray-900">{tech}</h3>
+          <p className="text-xs text-gray-600 leading-relaxed">
+            {tooltipInfo.description}
+          </p>
+          <div className="flex gap-1.5">
+            <span className="px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded-md border border-blue-100">
+              {tooltipInfo.category}
+            </span>
+            {tooltipInfo.experience && (
+              <span className="px-2 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-100">
+                {tooltipInfo.experience}
+              </span>
+            )}
+          </div>
+        </div>
+      }
+      delay={300}
+    >
+      <span className="font-medium cursor-help hover:text-[var(--primary)] transition-colors">
+        #{tech}
+      </span>
+    </CursorTooltip>
+  );
 }
 
 /** 포트폴리오 링크들 */
@@ -166,7 +270,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
                       "border-transparent bg-[var(--primary)] text-[var(--primary-ink)]",
                   )}
                 >
-                  #{s}
+                  <TechTooltip tech={s} />
                 </PillButton>
               );
             })}
@@ -255,12 +359,15 @@ function BulletList({
               {b.tags?.length ? (
                 <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
                   {b.tags.map((t) => (
-                    <span
+                    <SimpleCursorTooltip
                       key={`${k}:tag:${t}`}
-                      className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[10px] text-[var(--muted-fg)]"
+                      text={`${t} 관련 작업`}
+                      delay={200}
                     >
-                      #{t}
-                    </span>
+                      <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[10px] text-[var(--muted-fg)] cursor-help hover:text-[var(--primary)] transition-colors">
+                        #{t}
+                      </span>
+                    </SimpleCursorTooltip>
                   ))}
                 </span>
               ) : null}
