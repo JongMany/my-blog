@@ -1,19 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-
-// framer-motion을 조건부로 import
-let motion: any = null;
-let AnimatePresence: any = null;
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const framerMotion = require("framer-motion");
-  motion = framerMotion.motion;
-  AnimatePresence = framerMotion.AnimatePresence;
-} catch (error) {
-  // framer-motion이 설치되지 않은 경우
-  console.warn("framer-motion not found, animations will be disabled");
-}
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CursorTooltipProps {
   children: React.ReactNode;
@@ -24,6 +11,11 @@ interface CursorTooltipProps {
   animate?: boolean;
 }
 
+interface Position {
+  top: number;
+  left: number;
+}
+
 export function CursorTooltip({
   children,
   content,
@@ -32,10 +24,12 @@ export function CursorTooltip({
   tooltipClassName = "",
   animate = true,
 }: CursorTooltipProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   const updatePosition = () => {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -139,7 +133,7 @@ export function CursorTooltip({
 
       {isVisible &&
         createPortal(
-          (motion && AnimatePresence && animate ? (
+          animate ? (
             <AnimatePresence>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 8 }}
@@ -161,9 +155,9 @@ export function CursorTooltip({
                 onMouseEnter={handleTooltipMouseEnter}
                 onMouseLeave={handleTooltipMouseLeave}
                 className={`
-                px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
-                ${tooltipClassName}
-              `}
+                  px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
+                  ${tooltipClassName}
+                `}
               >
                 {content}
               </motion.div>
@@ -186,7 +180,7 @@ export function CursorTooltip({
             >
               {content}
             </div>
-          )) as React.ReactElement,
+          ),
           document.body,
         )}
     </div>
