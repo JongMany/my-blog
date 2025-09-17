@@ -5,6 +5,7 @@ import { SEO } from "../components/SEO";
 import {
   usePortfolioIndex,
   fetchProjectMdxFromHost,
+  getThumbnailPath,
 } from "../service/portfolio";
 import { evaluate, UseMdxComponents } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
@@ -113,7 +114,11 @@ export default function ProjectDetail() {
         keywords={project.tags.join(", ")}
         url={`https://jongmany.github.io/my-blog/portfolio/project/${project.slug}`}
         type="article"
-        image={project.thumbnail ? imageSource(project.thumbnail) : undefined}
+        image={
+          project.cover
+            ? `https://jongmany.github.io/my-blog/portfolio${getThumbnailPath(project.cover)}`
+            : undefined
+        }
       />
       <article className="max-w-4xl mx-auto">
         {/* 프로젝트 헤더 */}
