@@ -104,6 +104,18 @@ export function CursorTooltip({
     }
   };
 
+  const handleTooltipMouseEnter = () => {
+    // 툴팁에 마우스가 들어오면 숨김 타이머 취소
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  const handleTooltipMouseLeave = () => {
+    // 툴팁에서 마우스가 나가면 툴팁 숨김
+    setIsVisible(false);
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -128,28 +140,30 @@ export function CursorTooltip({
         createPortal(
           motion && AnimatePresence && animate ? (
             <AnimatePresence>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 8 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 8 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                  duration: 0.25,
-                }}
-                style={{
-                  position: "fixed",
-                  top: position.top,
-                  left: position.left,
-                  zIndex: 9999,
-                  pointerEvents: "none",
-                }}
-                className={`
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 8 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+                duration: 0.25,
+              }}
+              style={{
+                position: "fixed",
+                top: position.top,
+                left: position.left,
+                zIndex: 9999,
+                pointerEvents: "auto",
+              }}
+              onMouseEnter={handleTooltipMouseEnter}
+              onMouseLeave={handleTooltipMouseLeave}
+              className={`
                 px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
                 ${tooltipClassName}
               `}
-              >
+            >
                 {content}
               </motion.div>
             </AnimatePresence>
@@ -160,12 +174,14 @@ export function CursorTooltip({
                 top: position.top,
                 left: position.left,
                 zIndex: 9999,
-                pointerEvents: "none",
+                pointerEvents: "auto",
               }}
+              onMouseEnter={handleTooltipMouseEnter}
+              onMouseLeave={handleTooltipMouseLeave}
               className={`
-              px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
-              ${tooltipClassName}
-            `}
+                px-4 py-3 text-sm text-gray-800 rounded-xl border border-gray-200 bg-white shadow-2xl max-w-xs
+                ${tooltipClassName}
+              `}
             >
               {content}
             </div>
