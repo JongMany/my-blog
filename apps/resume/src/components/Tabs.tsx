@@ -1,6 +1,7 @@
 // apps/resume/src/components/TopTabs.tsx
 import { cn } from "@srf/ui";
 import React from "react";
+import { useResume } from "../contexts/ResumeContext";
 
 export default function TopTabs({
   items,
@@ -13,6 +14,7 @@ export default function TopTabs({
 }) {
   const [active, setActive] = React.useState(items[0]?.id);
   const lockRef = React.useRef<number | null>(null); // 클릭/스크롤 중 IO 업데이트 잠금
+  const { isDetailed, toggleViewMode } = useResume();
 
   // IO: 화면 상단 기준선(오프셋 보정)에 가장 가까운 섹션을 active로
   React.useEffect(() => {
@@ -25,12 +27,12 @@ export default function TopTabs({
           .sort(
             (a, b) =>
               Math.abs(a.boundingClientRect.top - offset) -
-              Math.abs(b.boundingClientRect.top - offset)
+              Math.abs(b.boundingClientRect.top - offset),
           )[0];
 
         if (visible?.target?.id) setActive(visible.target.id);
       },
-      { rootMargin: `-${offset}px 0px -70% 0px`, threshold: [0] }
+      { rootMargin: `-${offset}px 0px -70% 0px`, threshold: [0] },
     );
 
     items.forEach(({ id }) => {
@@ -79,29 +81,118 @@ export default function TopTabs({
   return (
     <div className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[color-mix(in_oklab,var(--bg),transparent)] shadow-[0_1px_0_0_var(--border)]">
       <div className="mx-auto max-w-screen-xl px-4 py-2">
-        <nav
-          aria-label="섹션 탭"
-          className="flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] p-1"
-        >
-          {items.map((it) => {
-            const on = active === it.id;
-            return (
+        {/* 데스크톱 레이아웃 */}
+        <div className="hidden md:flex items-center justify-between gap-4">
+          {/* 섹션 탭 */}
+          <nav
+            aria-label="섹션 탭"
+            className="flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] p-1"
+          >
+            {items.map((it) => {
+              const on = active === it.id;
+              return (
+                <button
+                  key={it.id}
+                  onClick={() => go(it.id)}
+                  className={cn(
+                    "px-3.5 py-1.5 text-sm rounded-full transition",
+                    on
+                      ? "bg-[var(--primary)] text-[var(--primary-ink)]"
+                      : "hover:bg-[var(--hover-bg)]",
+                  )}
+                  aria-current={on ? "page" : undefined}
+                >
+                  {it.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* 이력서 보기 모드 토글 */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-500">보기 모드:</span>
+            <div className="flex rounded-full border border-[var(--border)] bg-[var(--surface)] p-1">
               <button
-                key={it.id}
-                onClick={() => go(it.id)}
+                onClick={toggleViewMode}
                 className={cn(
-                  "px-3.5 py-1.5 text-sm rounded-full transition",
-                  on
+                  "px-3 py-1 text-xs rounded-full transition",
+                  isDetailed
                     ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-                    : "hover:bg-[var(--hover-bg)]"
+                    : "hover:bg-[var(--hover-bg)]",
                 )}
-                aria-current={on ? "page" : undefined}
               >
-                {it.label}
+                자세한 버전
               </button>
-            );
-          })}
-        </nav>
+              <button
+                onClick={toggleViewMode}
+                className={cn(
+                  "px-3 py-1 text-xs rounded-full transition",
+                  !isDetailed
+                    ? "bg-[var(--primary)] text-[var(--primary-ink)]"
+                    : "hover:bg-[var(--hover-bg)]",
+                )}
+              >
+                간단한 버전
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 모바일 레이아웃 */}
+        <div className="md:hidden space-y-2">
+          {/* 섹션 탭 - 모바일에서는 더 작게 */}
+          <nav
+            aria-label="섹션 탭"
+            className="flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] p-1"
+          >
+            {items.map((it) => {
+              const on = active === it.id;
+              return (
+                <button
+                  key={it.id}
+                  onClick={() => go(it.id)}
+                  className={cn(
+                    "px-2.5 py-1 text-xs rounded-full transition flex-1",
+                    on
+                      ? "bg-[var(--primary)] text-[var(--primary-ink)]"
+                      : "hover:bg-[var(--hover-bg)]",
+                  )}
+                  aria-current={on ? "page" : undefined}
+                >
+                  {it.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* 이력서 보기 모드 토글 - 모바일에서는 더 작게 */}
+          <div className="flex items-center justify-center">
+            <div className="flex rounded-full border border-[var(--border)] bg-[var(--surface)] p-1">
+              <button
+                onClick={toggleViewMode}
+                className={cn(
+                  "px-2.5 py-1 text-xs rounded-full transition",
+                  isDetailed
+                    ? "bg-[var(--primary)] text-[var(--primary-ink)]"
+                    : "hover:bg-[var(--hover-bg)]",
+                )}
+              >
+                자세한
+              </button>
+              <button
+                onClick={toggleViewMode}
+                className={cn(
+                  "px-2.5 py-1 text-xs rounded-full transition",
+                  !isDetailed
+                    ? "bg-[var(--primary)] text-[var(--primary-ink)]"
+                    : "hover:bg-[var(--hover-bg)]",
+                )}
+              >
+                간단한
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

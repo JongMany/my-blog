@@ -13,9 +13,35 @@ import { Card } from "../components/ui";
 import "../styles/print.css";
 import SkillsCompact from "../components/SkillsCompact";
 import Contact from "../components/Contact";
+import { useResume } from "../contexts/ResumeContext";
+import {
+  filterExperienceForCompact,
+  filterEducationForCompact,
+  filterActivityForCompact,
+  filterSkillsForCompact,
+} from "../utils/resumeFilter";
 
 export default function ResumePage() {
   const { profile, experiences, education, activities, skills } = resume;
+  const { isDetailed } = useResume();
+
+  // 토글 상태에 따라 데이터 필터링
+  const filteredExperiences = isDetailed
+    ? experiences
+    : experiences.map(filterExperienceForCompact);
+
+  const filteredEducation = isDetailed
+    ? education
+    : education.map(filterEducationForCompact);
+
+  const filteredActivities = isDetailed
+    ? activities
+    : activities.map(filterActivityForCompact);
+
+  const filteredSkills = isDetailed
+    ? skills
+    : filterSkillsForCompact(skills || []);
+
   const toc = [
     { id: "experience", label: "경력" },
     { id: "education", label: "교육" },
@@ -35,10 +61,10 @@ export default function ResumePage() {
           <aside className="lg:col-span-3">
             <div className="lg:sticky lg:top-24 space-y-4">
               <Contact profile={profile} />
-              {skills?.length ? (
+              {filteredSkills?.length ? (
                 <Card className="p-4">
                   <div className="mb-2 font-medium">Skills</div>
-                  <SkillsCompact items={skills} />
+                  <SkillsCompact items={filteredSkills} />
                 </Card>
               ) : null}
             </div>
@@ -53,7 +79,7 @@ export default function ResumePage() {
                 animate="show"
                 className="grid gap-3"
               >
-                {experiences.map((e, i) => (
+                {filteredExperiences.map((e, i) => (
                   <ExperienceItem key={i} item={e} />
                 ))}
               </motion.div>
@@ -66,7 +92,7 @@ export default function ResumePage() {
                 animate="show"
                 className="grid gap-3"
               >
-                {education.map((e, i) => (
+                {filteredEducation.map((e, i) => (
                   <EducationItem key={i} item={e} />
                 ))}
               </motion.div>
@@ -79,7 +105,7 @@ export default function ResumePage() {
                 animate="show"
                 className="grid gap-3"
               >
-                {activities.map((a, i) => (
+                {filteredActivities.map((a, i) => (
                   <ActivityItem key={i} item={a} />
                 ))}
               </motion.div>
