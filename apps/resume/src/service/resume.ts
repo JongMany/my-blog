@@ -312,8 +312,8 @@ export const resume: ResumeData = {
       },
       portfolioLinks: [
         {
-          title: "스승의 날 프로젝트 보기",
-          url: "https://jongmany.github.io/portfolio/project/teachers-day",
+          title: "스승의 날 프로젝트 포트폴리오",
+          url: "https://jongmany.github.io/my-blog/portfolio/project/teachers-day",
           type: "portfolio",
         },
       ],
@@ -335,8 +335,8 @@ export const resume: ResumeData = {
       },
       portfolioLinks: [
         {
-          title: "Ready To Work 프로젝트 보기",
-          url: "https://jongmany.github.io/portfolio/project/ready-to-work",
+          title: "Ready To Work 프로젝트 포트폴리오",
+          url: "https://jongmany.github.io/my-blog/portfolio/project/ready-to-work",
           type: "portfolio",
         },
       ],
