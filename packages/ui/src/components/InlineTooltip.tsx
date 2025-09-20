@@ -44,7 +44,6 @@ export function InlineTooltip({
       }
     };
   }, []);
-  console.log(isVisible);
 
   const tooltipContent = (
     <AnimatePresence>
@@ -54,11 +53,12 @@ export function InlineTooltip({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.2 }}
-          className="fixed z-[9999] max-w-sm"
+          className="fixed max-w-sm"
           style={{
             bottom: "12px",
             right: "12px",
             pointerEvents: "none",
+            zIndex: 100,
           }}
         >
           <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-lg shadow-lg p-3">

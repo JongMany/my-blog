@@ -1,5 +1,3 @@
-import TPSL from "@/assets/tpsl.gif";
-
 export type Bullet = {
   text: string;
   tags?: string[];
@@ -81,19 +79,19 @@ export const resume: ResumeData = {
         "Tailwindcss",
       ],
       keywordImageMap: {
-        "TP/SL 드래그 UX": TPSL,
-        TradingView: "/src/assets/tpsl.gif",
-        차트: "/src/assets/tpsl.gif",
-        "TP/SL": "/src/assets/tpsl.gif",
-        드래그: "/src/assets/tpsl.gif",
-        WebSocket: "/src/assets/socket-devtools.gif",
-        실시간: "/src/assets/socket-devtools.gif",
-        Fallback: "/src/assets/socket-devtools.gif",
-        HTTP: "/src/assets/socket-devtools.gif",
-        모니터링: "/src/assets/socket-devtools.gif",
-        리팩토링: "/src/assets/socket-devtools.gif",
-        아키텍처: "/src/assets/socket-devtools.gif",
-        디버깅: "/src/assets/socket-devtools.gif",
+        "TP/SL 드래그 UX": "/assets/tpsl.gif",
+        TradingView: "/assets/tpsl.gif",
+        차트: "/assets/tpsl.gif",
+        "TP/SL": "/assets/tpsl.gif",
+        드래그: "/assets/tpsl.gif",
+        WebSocket: "/assets/socket-devtools.gif",
+        실시간: "/assets/socket-devtools.gif",
+        Fallback: "/assets/socket-devtools.gif",
+        HTTP: "/assets/socket-devtools.gif",
+        모니터링: "/assets/socket-devtools.gif",
+        리팩토링: "/assets/socket-devtools.gif",
+        아키텍처: "/assets/socket-devtools.gif",
+        디버깅: "/assets/socket-devtools.gif",
       },
       bullets: [
         {

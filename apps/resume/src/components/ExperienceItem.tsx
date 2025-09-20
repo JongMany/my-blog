@@ -6,6 +6,7 @@ import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
 import { cn, SimpleCursorTooltip, CursorTooltip, InlineTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
+import { imageSource } from "@mfe/shared";
 
 /* ───────────── 유틸 ───────────── */
 function hash36(s: string) {
@@ -86,7 +87,11 @@ function Emphasis({
               content={
                 <div className="p-2">
                   <img
-                    src={keywordImageMap[keyword]}
+                    src={imageSource(
+                      keywordImageMap?.[keyword] || "",
+                      "resume",
+                      "http://localhost:3003",
+                    )}
                     alt={keyword}
                     className="max-w-xs max-h-48 object-contain rounded"
                   />
