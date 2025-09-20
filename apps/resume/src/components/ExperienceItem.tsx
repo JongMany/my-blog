@@ -93,10 +93,6 @@ function Emphasis({
     parts.push(processedText.slice(lastIndex));
   }
 
-  console.log("Original text:", text);
-  console.log("Processed text:", processedText);
-  console.log("Parts:", parts);
-
   return (
     <>
       {parts.map((p, i) => {
@@ -118,7 +114,7 @@ function Emphasis({
                       "http://localhost:3003",
                     )}
                     alt={keyword}
-                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] max-h-48 object-cover rounded"
+                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] max-h-60 object-cover rounded"
                   />
                 </div>
               }

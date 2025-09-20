@@ -191,28 +191,13 @@ export const resume: ResumeData = {
         "Styled-Component",
       ],
       keywordImageMap: {
-        AI: "/src/assets/chatroom.png",
-        캐릭터: "/src/assets/chatroom.png",
-        채팅: "/src/assets/chatroom.png",
-        검열: "/src/assets/realtime-filtering-demo.gif",
-        "Aho-Corasick": "/src/assets/realtime-filtering-demo.gif",
-        필터링: "/src/assets/realtime-filtering-demo.gif",
-        LLM: "/src/assets/sse-streaming.gif",
-        SSE: "/src/assets/sse-streaming.gif",
-        스트리밍: "/src/assets/sse-streaming.gif",
-        ESLint: "/src/assets/transform-eslint-after.png",
-        i18n: "/src/assets/transform-eslint-after.png",
-        키워드북: "/src/assets/keyword-book.gif",
-        좋아요: "/src/assets/like-favorite.png",
-        즐겨찾기: "/src/assets/like-favorite.png",
-        이미지: "/src/assets/multi-image-purchase.png",
-        구매: "/src/assets/multi-image-purchase.png",
-        업로드: "/src/assets/multi-image-upload.png",
-        리워드: "/src/assets/reward.png",
+        "트리거 단어 칩 변환 알고리즘": "/assets/chip-transform.gif",
+        "실시간 텍스트 검열 시스템": "/assets/realtime-filtering-demo.gif",
+        "LLM 실시간 스트리밍 시스템": "/assets/sse-streaming.gif",
       },
       bullets: [
         {
-          text: "트리거 단어 칩 변환 알고리즘 개발",
+          text: "[트리거 단어 칩 변환 알고리즘] 개발",
           portfolioLinks: [
             {
               title: "트리거 단어를 칩으로 변환",
@@ -230,7 +215,7 @@ export const resume: ResumeData = {
           ],
         },
         {
-          text: "SSE 기반 LLM 실시간 스트리밍 시스템",
+          text: "SSE 기반 [LLM 실시간 스트리밍 시스템] 개발",
           portfolioLinks: [
             {
               title: "SSE 스트리밍 구현",
@@ -266,7 +251,7 @@ export const resume: ResumeData = {
         //   ],
         // },
         {
-          text: "실시간 텍스트 검열 시스템",
+          text: "[실시간 텍스트 검열 시스템] 개발",
           portfolioLinks: [
             {
               title: "Aho-Corasick 알고리즘 기반 실시간 필터링",

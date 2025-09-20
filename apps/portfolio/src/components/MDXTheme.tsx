@@ -195,18 +195,9 @@ export const components: MDXMap = {
       }
     }
 
-    console.log("pre 컴포넌트 렌더링:", {
-      hasMermaidElement: !!mermaidElement,
-      mermaidClassName,
-      mermaidChildren: mermaidChildren.substring(0, 50) + "...",
-      allChildren: children,
-    });
-
     if (mermaidElement) {
-      console.log("✅ Mermaid 다이어그램 감지됨!");
       return <MermaidDiagram>{mermaidChildren}</MermaidDiagram>;
     } else {
-      console.log("❌ Mermaid가 아닌 코드 블록");
     }
 
     // details 안에 있는 pre인지 확인 (부모가 details인지 체크)

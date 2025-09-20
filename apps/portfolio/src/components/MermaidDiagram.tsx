@@ -28,8 +28,6 @@ export function MermaidDiagram({
           ? children.join("")
           : String(children);
 
-    console.log("MermaidDiagram 렌더링 시도:", mermaidCode);
-
     // Mermaid 초기화 - 파스텔톤 스타일
     mermaid.initialize({
       startOnLoad: false,
@@ -89,7 +87,6 @@ export function MermaidDiagram({
         const { svg } = await mermaid.render(id, mermaidCode);
         if (ref.current) {
           ref.current.innerHTML = svg;
-          console.log("Mermaid 다이어그램 렌더링 성공:", id);
 
           // 줌 컨트롤 추가
           const svgElement = ref.current.querySelector("svg");
