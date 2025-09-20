@@ -3,7 +3,7 @@ import type { Bullet, Experience, PortfolioLink } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
-import { cn, SimpleCursorTooltip, CursorTooltip } from "@srf/ui";
+import { cn, SimpleCursorTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 
 /* ───────────── 유틸 ───────────── */
@@ -14,29 +14,6 @@ function hash36(s: string) {
 }
 function keyFor(path: number[], text: string) {
   return `${path.join(".")}:${hash36(text.trim())}`;
-}
-
-type Mode = "OR" | "AND";
-const tagsMatch = (sel: Set<string>, tags?: string[], mode: Mode = "OR") => {
-  if (sel.size === 0) return true;
-  if (!tags?.length) return false;
-  return mode === "OR"
-    ? tags.some((t) => sel.has(t))
-    : [...sel].every((t) => tags.includes(t));
-};
-
-/** 매칭 항목(혹은 자식 중 매칭)이 하나라도 있으면 보존하는 필터 */
-function filterBullets(
-  items: Bullet[],
-  pred: (b: Bullet) => boolean,
-): Bullet[] {
-  const out: Bullet[] = [];
-  for (const b of items) {
-    const kids = b.children ? filterBullets(b.children, pred) : undefined;
-    const keep = pred(b) || (kids && kids.length > 0);
-    if (keep) out.push({ ...b, children: kids });
-  }
-  return out;
 }
 
 /** 숫자/약어 강조 */
@@ -76,110 +53,6 @@ function getLinkIcon(type?: string) {
   }
 }
 
-/** 기술 스택 툴팁 정보 */
-const techTooltips: Record<
-  string,
-  { description: string; category: string; experience?: string }
-> = {
-  React: {
-    description: "사용자 인터페이스를 구축하기 위한 JavaScript 라이브러리",
-    category: "Frontend Framework",
-    experience: "3년+",
-  },
-  TypeScript: {
-    description: "JavaScript에 정적 타입을 추가한 프로그래밍 언어",
-    category: "Programming Language",
-    experience: "3년+",
-  },
-  TradingView: {
-    description: "금융 차트 및 트레이딩 플랫폼 개발을 위한 라이브러리",
-    category: "Financial Technology",
-    experience: "2년+",
-  },
-  WebSocket: {
-    description: "실시간 양방향 통신을 위한 프로토콜",
-    category: "Real-time Communication",
-    experience: "2년+",
-  },
-  "Node.js": {
-    description: "JavaScript 런타임 환경으로 서버사이드 개발",
-    category: "Backend Runtime",
-    experience: "2년+",
-  },
-  PostgreSQL: {
-    description: "오픈소스 관계형 데이터베이스 관리 시스템",
-    category: "Database",
-    experience: "2년+",
-  },
-  Redis: {
-    description: "인메모리 데이터 구조 저장소",
-    category: "Cache & Database",
-    experience: "1년+",
-  },
-  Docker: {
-    description: "컨테이너 기반 애플리케이션 배포 플랫폼",
-    category: "DevOps",
-    experience: "1년+",
-  },
-  AWS: {
-    description: "아마존 웹 서비스 클라우드 플랫폼",
-    category: "Cloud Platform",
-    experience: "1년+",
-  },
-  GraphQL: {
-    description: "API를 위한 쿼리 언어 및 런타임",
-    category: "API Technology",
-    experience: "1년+",
-  },
-  Jest: {
-    description: "JavaScript 테스팅 프레임워크",
-    category: "Testing",
-    experience: "2년+",
-  },
-  Cypress: {
-    description: "엔드투엔드 테스팅 프레임워크",
-    category: "Testing",
-    experience: "1년+",
-  },
-};
-
-/** 기술 스택 툴팁 컴포넌트 */
-function TechTooltip({ tech }: { tech: string }) {
-  const tooltipInfo = techTooltips[tech];
-
-  if (!tooltipInfo) {
-    return <span className="font-medium">#{tech}</span>;
-  }
-
-  return (
-    <CursorTooltip
-      content={
-        <div className="space-y-2">
-          <h3 className="font-semibold text-sm text-gray-900">{tech}</h3>
-          <p className="text-xs text-gray-600 leading-relaxed">
-            {tooltipInfo.description}
-          </p>
-          <div className="flex gap-1.5">
-            <span className="px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded-md border border-blue-100">
-              {tooltipInfo.category}
-            </span>
-            {tooltipInfo.experience && (
-              <span className="px-2 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-100">
-                {tooltipInfo.experience}
-              </span>
-            )}
-          </div>
-        </div>
-      }
-      delay={300}
-    >
-      <span className="font-medium cursor-help hover:text-[var(--primary)] transition-colors">
-        #{tech}
-      </span>
-    </CursorTooltip>
-  );
-}
-
 /** 포트폴리오 링크들 */
 function PortfolioLinks({ links }: { links: PortfolioLink[] }) {
   if (!links?.length) return null;
@@ -207,27 +80,9 @@ function PortfolioLinks({ links }: { links: PortfolioLink[] }) {
 /* ───────────── 컴포넌트 ───────────── */
 export default function ExperienceItem({ item }: { item: Experience }) {
   const [open, setOpen] = React.useState(true);
-  const [mode, setMode] = React.useState<Mode>("OR");
-  const [sel, setSel] = React.useState<string[]>([]);
 
-  const selSet = React.useMemo(() => new Set(sel), [sel]);
-
-  // 선택된 태그가 있으면 중첩까지 필터링, 없으면 원본 유지
-  const filtered = React.useMemo(
-    () =>
-      selSet.size
-        ? filterBullets(item.bullets, (b) => tagsMatch(selSet, b.tags, mode))
-        : item.bullets,
-    [item.bullets, selSet, mode],
-  );
-
-  const topVisible = filtered;
+  const topVisible = item.bullets;
   const collapsed = open ? topVisible : topVisible.slice(0, 3);
-
-  const toggle = (s: string) =>
-    setSel((cur) =>
-      cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s],
-    );
 
   return (
     <motion.article variants={vItem} className="relative pl-4 avoid-break">
@@ -252,60 +107,19 @@ export default function ExperienceItem({ item }: { item: Experience }) {
           </p>
         )}
 
-        {/* 스택 필터 바 (토글 + 리셋 + OR/AND) */}
+        {/* 스택 표시 (읽기 전용) */}
         {item.stacks?.length ? (
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {item.stacks.map((s) => {
-              const on = sel.includes(s);
-              return (
-                <PillButton
-                  key={s}
-                  size="sm"
-                  variant="soft"
-                  aria-pressed={on}
-                  onClick={() => toggle(s)}
-                  className={cn(
-                    "px-2.5 py-1 text-[11px]",
-                    on &&
-                      "border-transparent bg-[var(--primary)] text-[var(--primary-ink)]",
-                  )}
-                >
-                  <TechTooltip tech={s} />
-                </PillButton>
-              );
-            })}
-            {sel.length > 0 && (
-              <>
-                <button
-                  onClick={() => setSel([])}
-                  className="ml-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[11px] hover:bg-[var(--hover-bg)]"
-                >
-                  초기화
-                </button>
-                <div className="ml-2 inline-flex overflow-hidden rounded-full border border-[var(--border)]">
-                  <button
-                    onClick={() => setMode("OR")}
-                    className={cn(
-                      "px-2 py-0.5 text-[11px]",
-                      mode === "OR" && "bg-[var(--hover-bg)]",
-                    )}
-                    aria-pressed={mode === "OR"}
-                  >
-                    OR
-                  </button>
-                  <button
-                    onClick={() => setMode("AND")}
-                    className={cn(
-                      "px-2 py-0.5 text-[11px]",
-                      mode === "AND" && "bg-[var(--hover-bg)]",
-                    )}
-                    aria-pressed={mode === "AND"}
-                  >
-                    AND
-                  </button>
-                </div>
-              </>
-            )}
+            {item.stacks.map((s) => (
+              <PillButton
+                key={s}
+                size="sm"
+                variant="soft"
+                className="px-2.5 py-1 text-[11px]"
+              >
+                #{s}
+              </PillButton>
+            ))}
           </div>
         ) : null}
 
