@@ -44,6 +44,7 @@ export type ResumeData = {
   education: Education[];
   activities: Activity[];
   skills?: string[];
+  keywordImageMap?: Record<string, string>;
 };
 
 export const resume: ResumeData = {
@@ -79,7 +80,7 @@ export const resume: ResumeData = {
       ],
       bullets: [
         {
-          text: "TradingView 차트 내 TP/SL 드래그 UX 확장",
+          text: "TradingView 차트 내 [TP/SL 드래그 UX] 확장",
           portfolioLinks: [
             {
               title: "드래그 UX 구현 과정",
@@ -155,7 +156,7 @@ export const resume: ResumeData = {
     {
       company: "아데나 소프트웨어 (버블탭)",
       role: "Frontend Developer",
-      period: "2024.10 - 2025.06",
+      period: "2024.10 - 2025.07",
       summary:
         "AI 채팅 플랫폼에서 사용자들이 더 자연스럽고 편리하게 AI와 대화할 수 있도록 핵심 기능들을 개발했습니다. 실시간 대화, 직관적인 에디터, 안정적인 미디어 처리로 사용자 만족도를 크게 향상시켰습니다.",
       stacks: [
@@ -168,20 +169,20 @@ export const resume: ResumeData = {
       ],
       bullets: [
         {
-          text: "AI 캐릭터 지능형 텍스트 파싱 시스템",
+          text: "트리거 단어 칩 변환 알고리즘 개발",
           portfolioLinks: [
             {
-              title: "텍스트 파싱 알고리즘",
+              title: "트리거 단어를 칩으로 변환",
               url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-text-parsing",
               type: "portfolio",
             },
           ],
           children: [
             {
-              text: "복잡한 템플릿 문법을 직관적인 시각적 칩으로 변환하여 사용자 학습 비용 대폭 감소",
+              text: "트리거 단어를 직관적인 시각적 칩으로 변환하여 생성 시 가독성 향상",
             },
             {
-              text: "키보드만으로도 편리하게 편집할 수 있는 UX로 창작자들의 생산성 향상",
+              text: "키보드만으로도 편리하게 편집할 수 있는 UX를 통해 창작자들의 생산성 향상",
             },
           ],
         },
@@ -193,39 +194,34 @@ export const resume: ResumeData = {
               url: "https://jongmany.github.io/my-blog/portfolio/project/llm-sse-streaming",
               type: "portfolio",
             },
-            {
-              title: "실시간 대화 데모",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/sse-llm-streaming",
-              type: "demo",
-            },
           ],
           children: [
             {
-              text: "AI 응답을 실시간으로 스트리밍하여 마치 사람과 대화하는 것처럼 자연스러운 경험 제공",
+              text: "AI 응답을 실시간으로 스트리밍하여 자연스러운 대화 경험 제공",
             },
             {
               text: "연결 문제 발생 시 자동으로 복구하여 끊김 없는 대화 환경 구축",
             },
           ],
         },
-        {
-          text: "AI 캐릭터 리워드 서비스 및 SSO 시스템",
-          portfolioLinks: [
-            {
-              title: "수익 분배 시스템 및 SSO 구현",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-reward-service",
-              type: "portfolio",
-            },
-          ],
-          children: [
-            {
-              text: "투명한 수익 분배 시스템으로 창작자들의 동기 부여 및 플랫폼 콘텐츠 품질 향상",
-            },
-            {
-              text: "안정적인 결제 시스템으로 창작자와 사용자 모두 신뢰할 수 있는 환경 조성",
-            },
-          ],
-        },
+        // {
+        //   text: "AI 캐릭터 리워드 서비스 및 SSO 시스템",
+        //   portfolioLinks: [
+        //     {
+        //       title: "수익 분배 시스템 및 SSO 구현",
+        //       url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-reward-service",
+        //       type: "portfolio",
+        //     },
+        //   ],
+        //   children: [
+        //     {
+        //       text: "투명한 수익 분배 시스템으로 창작자들의 동기 부여 및 플랫폼 콘텐츠 품질 향상",
+        //     },
+        //     {
+        //       text: "안정적인 결제 시스템으로 창작자와 사용자 모두 신뢰할 수 있는 환경 조성",
+        //     },
+        //   ],
+        // },
         {
           text: "실시간 텍스트 검열 시스템",
           portfolioLinks: [
@@ -303,4 +299,37 @@ export const resume: ResumeData = {
     "Pnpm",
     "Yarn",
   ],
+  keywordImageMap: {
+    "TP/SL 드래그 UX": "/projects/thumbnails/gifs/tpsl.gif",
+    TradingView: "/projects/thumbnails/gifs/tpsl.gif",
+    차트: "/projects/thumbnails/gifs/tpsl.gif",
+    "TP/SL": "/projects/thumbnails/gifs/tpsl.gif",
+    드래그: "/projects/thumbnails/gifs/tpsl.gif",
+    WebSocket: "/projects/thumbnails/gifs/socket-devtools.gif",
+    실시간: "/projects/thumbnails/gifs/socket-devtools.gif",
+    Fallback: "/projects/thumbnails/gifs/socket-devtools.gif",
+    HTTP: "/projects/thumbnails/gifs/socket-devtools.gif",
+    모니터링: "/projects/thumbnails/gifs/socket-devtools.gif",
+    리팩토링: "/projects/thumbnails/gifs/socket-devtools.gif",
+    아키텍처: "/projects/thumbnails/gifs/socket-devtools.gif",
+    디버깅: "/projects/thumbnails/gifs/socket-devtools.gif",
+    AI: "/projects/thumbnails/images/chatroom.png",
+    캐릭터: "/projects/thumbnails/images/chatroom.png",
+    채팅: "/projects/thumbnails/images/chatroom.png",
+    검열: "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
+    "Aho-Corasick": "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
+    필터링: "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
+    LLM: "/projects/thumbnails/gifs/sse-streaming.gif",
+    SSE: "/projects/thumbnails/gifs/sse-streaming.gif",
+    스트리밍: "/projects/thumbnails/gifs/sse-streaming.gif",
+    ESLint: "/projects/thumbnails/images/transform-eslint-after.png",
+    i18n: "/projects/thumbnails/images/transform-eslint-after.png",
+    키워드북: "/projects/thumbnails/gifs/keyword-book.gif",
+    좋아요: "/projects/thumbnails/gifs/like-favorite.png",
+    즐겨찾기: "/projects/thumbnails/gifs/like-favorite.png",
+    이미지: "/projects/thumbnails/images/multi-image-purchase.png",
+    구매: "/projects/thumbnails/images/multi-image-purchase.png",
+    업로드: "/projects/thumbnails/images/multi-image-upload.png",
+    리워드: "/projects/thumbnails/images/reward.png",
+  },
 };

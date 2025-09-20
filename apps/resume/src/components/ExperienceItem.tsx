@@ -1,9 +1,10 @@
 import React from "react";
 import type { Bullet, Experience, PortfolioLink } from "../service/resume";
+import { resume } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
-import { cn, SimpleCursorTooltip } from "@srf/ui";
+import { cn, SimpleCursorTooltip, CursorTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 
 /* ───────────── 유틸 ───────────── */
@@ -16,23 +17,101 @@ function keyFor(path: number[], text: string) {
   return `${path.join(".")}:${hash36(text.trim())}`;
 }
 
-/** 숫자/약어 강조 */
+/** 키워드-이미지 매핑 (resume 데이터에서 가져옴) */
+const keywordImageMap = resume.keywordImageMap || {};
+
+/** 숫자/약어 강조 + 대괄호 키워드 툴팁 */
 function Emphasis({ text }: { text: string }) {
-  // 1,234 / 3.5% / 120ms / 2x 등도 캡처
-  const parts = text.split(
-    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}\b)/g,
+  // 대괄호 패턴: [키워드] 형태
+  const bracketPattern = /\[([^\]]+)\]/g;
+
+  // 숫자/약어 패턴
+  const numberPattern =
+    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}\b)/g;
+
+  // 대괄호를 먼저 처리
+  let processedText = text;
+  const bracketMatches: Array<{ keyword: string; placeholder: string }> = [];
+
+  let match;
+  let matchIndex = 0;
+  while ((match = bracketPattern.exec(text)) !== null) {
+    const placeholder = `__BRACKET_${matchIndex}__`;
+    bracketMatches.push({
+      keyword: match[1],
+      placeholder: placeholder,
+    });
+    processedText = processedText.replace(match[0], placeholder);
+    matchIndex++;
+  }
+
+  // 플레이스홀더를 툴팁 마커로 교체
+  bracketMatches.forEach((bracketMatch) => {
+    if (keywordImageMap[bracketMatch.keyword]) {
+      const marker = `__TOOLTIP_${bracketMatch.keyword}__`;
+      processedText = processedText.replace(bracketMatch.placeholder, marker);
+    } else {
+      processedText = processedText.replace(
+        bracketMatch.placeholder,
+        bracketMatch.keyword,
+      );
+    }
+  });
+  console.log(processedText);
+
+  // 툴팁 마커와 숫자/약어 패턴으로 분할
+  const tooltipPattern = /__TOOLTIP_[^_]+__/g;
+  const combinedPattern = new RegExp(
+    `(${tooltipPattern.source}|${numberPattern.source})`,
+    "g",
   );
+  const parts = processedText.split(combinedPattern);
   return (
     <>
-      {parts.map((p, i) =>
-        /\d/.test(p) || /%$|ms$|s$|x$/.test(p) || /^[A-Z]{2,}$/.test(p) ? (
-          <strong key={i} className="font-medium text-[var(--fg)]">
-            {p}
-          </strong>
-        ) : (
-          <span key={i}>{p}</span>
-        ),
-      )}
+      {parts.map((p, i) => {
+        if (!p) return null;
+
+        // 툴팁 마커인 경우
+        const tooltipMatch = p.match(/^__TOOLTIP_(.+)__$/);
+        if (tooltipMatch) {
+          const keyword = tooltipMatch[1];
+          return (
+            <CursorTooltip
+              key={i}
+              content={
+                <div className="p-2">
+                  <img
+                    src={keywordImageMap[keyword]}
+                    alt={keyword}
+                    className="max-w-xs max-h-48 object-contain rounded"
+                  />
+                </div>
+              }
+              delay={300}
+              className="inline-block"
+            >
+              <span
+                className="font-medium cursor-help hover:text-[var(--primary)] transition-colors underline decoration-dotted"
+                style={{ display: "inline" }}
+              >
+                {keyword}
+              </span>
+            </CursorTooltip>
+          );
+        }
+
+        // 숫자/약어인 경우 강조
+        if (/\d/.test(p) || /%$|ms$|s$|x$/.test(p) || /^[A-Z]{2,}$/.test(p)) {
+          return (
+            <strong key={i} className="font-medium text-[var(--fg)]">
+              {p}
+            </strong>
+          );
+        }
+
+        // 일반 텍스트
+        return <span key={i}>{p}</span>;
+      })}
     </>
   );
 }
@@ -168,7 +247,7 @@ function BulletList({
         const k = keyFor([...prefix, idx], b.text);
         return (
           <li key={k}>
-            <div>
+            <div className="flex gap-[0.5]">
               <Emphasis text={b.text} />
               {b.tags?.length ? (
                 <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
