@@ -20,7 +20,7 @@ export const routes: RouteObject = {
     { path: "categories", element: <CategoriesPage /> },
     { path: "categories/:slug", element: <CategoryPage /> },
     { path: "post/:id", element: <PostDetail /> },
-    { path: "write", element: <WritePage /> },
+    // { path: "write", element: <WritePage /> },
   ],
 };
 

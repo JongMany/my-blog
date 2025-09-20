@@ -67,14 +67,14 @@ export default function Layout({ children }: PropsWithChildren) {
           activeLabel={activeLabel}
         />
 
-        <div className="shell:ml-auto shell:flex shell:items-center shell:gap-2">
+        {/* <div className="shell:ml-auto shell:flex shell:items-center shell:gap-2">
           <Link
             to="/blog/write"
             className="shell:t-btn shell:t-btn--primary shell:text-sm"
           >
             새 글 쓰기
           </Link>
-        </div>
+        </div> */}
       </header>
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>

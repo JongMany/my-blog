@@ -61,12 +61,12 @@ export default function BlogLayout({ children }: React.PropsWithChildren) {
         </div>
 
         {/* 새 글 쓰기 버튼 (필요 없으면 제거해도 됨) */}
-        <Link
+        {/* <Link
           to="/blog/write"
           className="shrink-0 rounded-md border border-[var(--border)] bg-[var(--card-bg)] px-3 py-1.5 text-sm hover:bg-[var(--hover-bg)]"
         >
           새 글 쓰기
-        </Link>
+        </Link> */}
       </div>
 
       {/* 본문 카드 */}
