@@ -113,36 +113,9 @@ export default function SkillsCompact({ items }: { items: string[] }) {
               }
 
               return (
-                <CursorTooltip
-                  key={skill}
-                  content={
-                    <div className="space-y-3">
-                      <div>
-                        <h3 className="font-bold text-base text-gray-900 mb-1">
-                          {skill}
-                        </h3>
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {skillInfo.description}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-lg border border-blue-200">
-                          {skillInfo.category}
-                        </span>
-                        {skillInfo.experience && (
-                          <span className="px-3 py-1.5 text-xs font-medium bg-green-100 text-green-800 rounded-lg border border-green-200">
-                            {skillInfo.experience}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  }
-                  delay={300}
-                >
-                  <PillButton variant="soft" size="sm" className="cursor-help">
-                    {skill}
-                  </PillButton>
-                </CursorTooltip>
+                <PillButton variant="soft" size="xs" className="cursor-help">
+                  {skill}
+                </PillButton>
               );
             })}
           </div>

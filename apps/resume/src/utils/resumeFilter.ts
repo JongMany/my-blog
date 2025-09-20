@@ -1,4 +1,10 @@
-import { Experience, Education, Activity, Bullet } from "../service/resume";
+import {
+  Experience,
+  Education,
+  Activity,
+  Bullet,
+  SideProject,
+} from "../service/resume";
 
 // 간단한 버전에서 경력 항목을 필터링하는 함수
 export function filterExperienceForCompact(experience: Experience): Experience {
@@ -20,6 +26,23 @@ export function filterEducationForCompact(education: Education): Education {
     ...education,
     // 간단한 버전에서는 note 제거 (부가 정보)
     note: undefined,
+  };
+}
+
+// 간단한 버전에서 사이드 프로젝트 항목을 필터링하는 함수
+export function filterSideProjectForCompact(
+  sideProject: SideProject,
+): SideProject {
+  return {
+    ...sideProject,
+    // 간단한 버전에서는 bullets를 최대 2개로 제한하고, 하위 bullets는 제거
+    bullets: sideProject.bullets.slice(0, 2).map((bullet) => ({
+      ...bullet,
+      children: undefined, // 하위 bullets 제거
+      tags: bullet.tags?.slice(0, 2), // 태그도 최대 2개로 제한
+    })),
+    // summary는 유지 (요약 정보는 중요)
+    // portfolioLinks는 유지 (링크는 중요)
   };
 }
 

@@ -21,7 +21,7 @@ export default function Contact({
   return (
     <Card className="p-4">
       <div className="font-medium">Contact</div>
-      <div className="mt-2 grid gap-1 text-sm">
+      <div className="mt-2 grid gap-1 text-xs ml-1">
         <a
           className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
           href={`mailto:${profile.email}`}

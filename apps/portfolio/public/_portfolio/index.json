@@ -1,7 +1,8 @@
 {
   "projects": [
     "BubbleChat",
-    "Coinness"
+    "Coinness",
+    "사이드 프로젝트"
   ],
   "byProject": {
     "BubbleChat": [
@@ -184,6 +185,26 @@
         "slug": "llm-sse-streaming",
         "path": "/_portfolio/projects/llm-sse-streaming.mdx",
         "createdAtMs": 1736899200000
+      }
+    ],
+    "사이드 프로젝트": [
+      {
+        "title": "스승의 날",
+        "summary": "스승의 날을 기념하여 교수님께 편지를 작성하는 프로젝트를 추가했습니다.",
+        "project": "사이드 프로젝트",
+        "tags": [
+          "사이드 프로젝트"
+        ],
+        "date": "2023-05-11T00:00:00.000Z",
+        "order": 1,
+        "cover": "/projects/thumbnails/images/teachers-day-main.png",
+        "coverAlt": "메인 화면",
+        "coverCaption": "스승의 날 프로젝트 메인",
+        "coverType": "image",
+        "coverAspectRatio": "969",
+        "slug": "teachers-day",
+        "path": "/_portfolio/projects/teachers-day.mdx",
+        "createdAtMs": 1683763200000
       }
     ],
     "Coinness": [
@@ -621,6 +642,24 @@
       "slug": "websocket-http-fallback",
       "path": "/_portfolio/projects/websocket-http-fallback.mdx",
       "createdAtMs": 1736899200000
+    },
+    {
+      "title": "스승의 날",
+      "summary": "스승의 날을 기념하여 교수님께 편지를 작성하는 프로젝트를 추가했습니다.",
+      "project": "사이드 프로젝트",
+      "tags": [
+        "사이드 프로젝트"
+      ],
+      "date": "2023-05-11T00:00:00.000Z",
+      "order": 1,
+      "cover": "/projects/thumbnails/images/teachers-day-main.png",
+      "coverAlt": "메인 화면",
+      "coverCaption": "스승의 날 프로젝트 메인",
+      "coverType": "image",
+      "coverAspectRatio": "969",
+      "slug": "teachers-day",
+      "path": "/_portfolio/projects/teachers-day.mdx",
+      "createdAtMs": 1683763200000
     }
   ]
 }

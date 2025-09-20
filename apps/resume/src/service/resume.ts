@@ -29,6 +29,16 @@ export type Education = {
   note?: string;
 };
 export type Activity = { title: string; period?: string; bullets: string[] };
+
+export type SideProject = {
+  title: string;
+  period?: string;
+  summary?: string;
+  stacks?: string[];
+  bullets: Bullet[];
+  keywordImageMap?: Record<string, string>;
+  portfolioLinks?: PortfolioLink[];
+};
 export type ResumeData = {
   profile: {
     name: string;
@@ -42,6 +52,7 @@ export type ResumeData = {
     photoUrl?: string;
   };
   experiences: Experience[];
+  sideProjects?: SideProject[];
   education: Education[];
   activities: Activity[];
   skills?: string[];
@@ -286,6 +297,32 @@ export const resume: ResumeData = {
               text: "확장 가능한 로깅 아키텍처로 신규 분석 플랫폼 추가 시 개발 시간 단축",
             },
           ],
+        },
+      ],
+    },
+  ],
+  sideProjects: [
+    {
+      title: "[스승의 날 프로젝트]",
+      period: "2023.05.11 - 2024.05.14",
+      summary:
+        "스승의 날의 맞이하여 연구실 내의 인원들이 교수님께 편지를 쓸 수 있도록 웹페이지 형태로 구현하였습니다.",
+      keywordImageMap: {
+        "스승의 날 프로젝트": "/assets/teachers-day-main.png",
+      },
+      portfolioLinks: [
+        {
+          title: "스승의 날 프로젝트 보기",
+          url: "https://jongmany.github.io/portfolio/project/teachers-day",
+          type: "portfolio",
+        },
+      ],
+      bullets: [
+        {
+          text: "학생들은 원하는 카네이션 편지지를 선택하고 편지를 작성하게 되면 교수님의 정장에 카네이션 표시",
+        },
+        {
+          text: "이미지의 특정 영역을 선택하여 해당 영역에 카네이션을 달 수 있도록 구현",
         },
       ],
     },

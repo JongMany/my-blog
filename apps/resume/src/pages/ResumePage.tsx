@@ -2,6 +2,7 @@ import { resume } from "../service/resume";
 import ResumeHeader from "../components/ResumeHeader";
 import Section from "../components/Section";
 import ExperienceItem from "../components/ExperienceItem";
+import SideProjectItem from "../components/SideProjectItem";
 import EducationItem from "../components/EducationItem";
 import ActivityItem from "../components/ActivityItem";
 import PageTOC from "../components/PageTOC";
@@ -16,19 +17,25 @@ import Contact from "../components/Contact";
 import { useResume } from "../contexts/ResumeContext";
 import {
   filterExperienceForCompact,
+  filterSideProjectForCompact,
   filterEducationForCompact,
   filterActivityForCompact,
   filterSkillsForCompact,
 } from "../utils/resumeFilter";
 
 export default function ResumePage() {
-  const { profile, experiences, education, activities, skills } = resume;
+  const { profile, experiences, sideProjects, education, activities, skills } =
+    resume;
   const { isDetailed } = useResume();
 
   // 토글 상태에 따라 데이터 필터링
   const filteredExperiences = isDetailed
     ? experiences
     : experiences.map(filterExperienceForCompact);
+
+  const filteredSideProjects = isDetailed
+    ? sideProjects
+    : sideProjects?.map(filterSideProjectForCompact);
 
   const filteredEducation = isDetailed
     ? education
@@ -44,6 +51,7 @@ export default function ResumePage() {
 
   const toc = [
     { id: "experience", label: "경력" },
+    { id: "side-projects", label: "사이드 프로젝트" },
     { id: "education", label: "교육" },
     { id: "activities", label: "대내외 활동" },
   ];
@@ -84,6 +92,21 @@ export default function ResumePage() {
                 ))}
               </motion.div>
             </Section>
+
+            {filteredSideProjects && filteredSideProjects.length > 0 && (
+              <Section id="side-projects" title="사이드 프로젝트">
+                <motion.div
+                  variants={stagger}
+                  initial="hidden"
+                  animate="show"
+                  className="grid gap-3"
+                >
+                  {filteredSideProjects.map((project, i) => (
+                    <SideProjectItem key={i} item={project} />
+                  ))}
+                </motion.div>
+              </Section>
+            )}
 
             <Section id="education" title="교육">
               <motion.div
