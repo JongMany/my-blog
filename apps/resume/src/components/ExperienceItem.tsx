@@ -53,7 +53,7 @@ function Emphasis({
 
   // 플레이스홀더를 툴팁 마커로 교체
   bracketMatches.forEach((bracketMatch) => {
-    if (keywordImageMap[bracketMatch.keyword]) {
+    if (keywordImageMap?.[bracketMatch.keyword]) {
       const marker = `__TOOLTIP_${bracketMatch.keyword}__`;
       processedText = processedText.replace(bracketMatch.placeholder, marker);
     } else {
@@ -63,7 +63,6 @@ function Emphasis({
       );
     }
   });
-  console.log(processedText);
 
   // 툴팁 마커와 숫자/약어 패턴으로 분할
   const tooltipPattern = /__TOOLTIP_[^_]+__/g;
@@ -72,6 +71,7 @@ function Emphasis({
     "g",
   );
   const parts = processedText.split(combinedPattern);
+
   return (
     <>
       {parts.map((p, i) => {
@@ -85,7 +85,7 @@ function Emphasis({
             <InlineTooltip
               key={i}
               content={
-                <div className="p-2">
+                <div>
                   <img
                     src={imageSource(
                       keywordImageMap?.[keyword] || "",
@@ -93,7 +93,7 @@ function Emphasis({
                       "http://localhost:3003",
                     )}
                     alt={keyword}
-                    className="max-w-xs max-h-48 object-contain rounded"
+                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] max-h-48 object-cover rounded"
                   />
                 </div>
               }
