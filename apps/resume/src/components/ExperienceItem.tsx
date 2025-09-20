@@ -119,7 +119,7 @@ function Emphasis({
               }
               delay={300}
             >
-              <span className="font-medium cursor-help hover:text-[var(--primary)] transition-colors underline decoration-dotted">
+              <span className="font-medium cursor-help text-[var(--primary)] opacity-60 hover:opacity-100 transition-opacity  ">
                 {keyword}
               </span>
             </InlineTooltip>
