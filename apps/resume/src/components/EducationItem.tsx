@@ -19,7 +19,7 @@ export default function EducationItem({ item }: { item: Education }) {
             {item.period}
           </span>
         </div>
-        <div className="mt-2 text-sm text-[var(--muted-fg)] flex flex-col">
+        <div className="mt-2 ml-2 text-xs text-[var(--muted-fg)] flex flex-col">
           {item.gpaMajor && <span className="mr-3">{item.gpaMajor}</span>}
           {item.gpaOverall && <span>{item.gpaOverall}</span>}
           {item.note && <span className="ml-3">{item.note}</span>}

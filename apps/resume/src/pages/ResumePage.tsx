@@ -61,7 +61,7 @@ export default function ResumePage() {
       <ScrollProgress />
       <TopTabs items={toc} />
 
-      <div className="mx-auto max-w-screen-xl px-4">
+      <div className="mx-auto max-w-screen-xl px-3 sm:px-4">
         <ResumeHeader profile={profile} />
 
         <div className="grid gap-4 lg:grid-cols-12">

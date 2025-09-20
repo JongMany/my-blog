@@ -326,6 +326,29 @@ export const resume: ResumeData = {
         },
       ],
     },
+    {
+      title: "[Ready To Work 프로젝트]",
+      period: "2024.05.11 - 2024.05.14",
+      summary: `Ready To Work 프로젝트는 “회사가 채용 프로세스를 간소화하면서 검증된 인재를 채용할 수 없을까?” 라는 질문으로부터 시작된 프로젝트입니다.`,
+      keywordImageMap: {
+        "Ready To Work 프로젝트": "/assets/rtw-excel-upload.png",
+      },
+      portfolioLinks: [
+        {
+          title: "Ready To Work 프로젝트 보기",
+          url: "https://jongmany.github.io/portfolio/project/ready-to-work",
+          type: "portfolio",
+        },
+      ],
+      bullets: [
+        {
+          text: "D3.js를 통해 LLM 기반의 가설 좌표를 시각화",
+        },
+        {
+          text: "일상 생활 속 다양한 질문들에 대해 얼마나 넓고 깊게 대답 하는지를 LLM 기반의 AI로 분석하여 점수화",
+        },
+      ],
+    },
   ],
   education: [
     {

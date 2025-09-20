@@ -15,7 +15,7 @@ export default function ActivityItem({ item }: { item: Activity }) {
             </span>
           )}
         </div>
-        <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
+        <ul className="mt-2 list-disc pl-5 space-y-1 text-xs">
           {item.bullets.map((b, i) => (
             <li key={i}>{b}</li>
           ))}

@@ -19,14 +19,14 @@ export default function Contact({
   };
 }) {
   return (
-    <Card className="p-4">
-      <div className="font-medium">Contact</div>
-      <div className="mt-2 grid gap-1 text-xs ml-1">
+    <Card className="p-3 sm:p-4">
+      <div className="font-medium text-sm sm:text-base">Contact</div>
+      <div className="mt-2 grid gap-1 text-[10px] sm:text-xs ml-1">
         <a
           className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
           href={`mailto:${profile.email}`}
         >
-          <Mail size={16} />
+          <Mail size={14} className="sm:w-4 sm:h-4" />
           {profile.email}
         </a>
         {profile.github && (
@@ -36,7 +36,7 @@ export default function Contact({
             target="_blank"
             rel="noreferrer"
           >
-            <Github size={16} /> GitHub
+            <Github size={14} className="sm:w-4 sm:h-4" /> GitHub
           </a>
         )}
         {profile.blog && (
@@ -46,7 +46,7 @@ export default function Contact({
             target="_blank"
             rel="noreferrer"
           >
-            <BookOpen size={16} /> Blog
+            <BookOpen size={14} className="sm:w-4 sm:h-4" /> Blog
           </a>
         )}
         {profile.portfolio && (
@@ -55,7 +55,7 @@ export default function Contact({
             to={"/portfolio"}
             rel="noreferrer"
           >
-            <LinkIcon size={16} /> Portfolio
+            <LinkIcon size={14} className="sm:w-4 sm:h-4" /> Portfolio
           </Link>
         )}
       </div>

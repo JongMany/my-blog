@@ -19,7 +19,7 @@ function keyFor(path: number[], text: string) {
 
 // 키워드-이미지 매핑은 각 experience 객체에서 가져옴
 
-/** 숫자/약어 강조 + 대괄호 키워드 툴팁 */
+/** 대괄호 키워드 툴팁 */
 function Emphasis({
   text,
   keywordImageMap,
@@ -29,10 +29,6 @@ function Emphasis({
 }) {
   // 대괄호 패턴: [키워드] 형태
   const bracketPattern = /\[([^\]]+)\]/g;
-
-  // 숫자/약어 패턴 (중복 매칭 방지)
-  const numberPattern =
-    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}(?=\s|$))/g;
 
   // 대괄호를 먼저 처리
   let processedText = text;
@@ -63,15 +59,9 @@ function Emphasis({
     }
   });
 
-  // 툴팁 마커와 숫자/약어 패턴으로 분할 (split 대신 matchAll 사용)
+  // 툴팁 마커 패턴으로 분할
   const tooltipPattern = /__TOOLTIP_[^_]+__/g;
-  const combinedPattern = new RegExp(
-    `(${tooltipPattern.source}|${numberPattern.source})`,
-    "g",
-  );
-
-  // split 대신 matchAll로 정확한 분할
-  const matches = Array.from(processedText.matchAll(combinedPattern));
+  const matches = Array.from(processedText.matchAll(tooltipPattern));
   const parts: string[] = [];
   let lastIndex = 0;
 
@@ -119,19 +109,10 @@ function Emphasis({
               }
               delay={300}
             >
-              <span className="font-medium cursor-help text-[var(--primary)] opacity-60 hover:opacity-100 transition-opacity  ">
+              <span className="font-medium cursor-help text-[var(--primary)] opacity-60 hover:opacity-100 transition-opacity">
                 {keyword}
               </span>
             </InlineTooltip>
-          );
-        }
-
-        // 숫자/약어인 경우 강조
-        if (/\d/.test(p) || /%$|ms$|s$|x$/.test(p) || /^[A-Z]{2,}$/.test(p)) {
-          return (
-            <strong key={i} className="font-medium text-[var(--fg)]">
-              {p}
-            </strong>
           );
         }
 

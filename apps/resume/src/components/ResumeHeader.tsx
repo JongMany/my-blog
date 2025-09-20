@@ -12,7 +12,7 @@ export default function ResumeHeader({
   profile: ResumeData["profile"];
 }) {
   return (
-    <Card className="relative overflow-hidden p-6 sm:p-8">
+    <Card className="relative overflow-hidden p-4 sm:p-6 md:p-8">
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden
@@ -25,7 +25,7 @@ export default function ResumeHeader({
             "linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.3), transparent)",
         }}
       />
-      <div className="flex items-start gap-8">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
         {profile.photoUrl && (
           <motion.img
             {...fadeUp}
@@ -35,13 +35,13 @@ export default function ResumeHeader({
               "http://localhost:3003",
             )}
             alt={`${profile.name} 프로필`}
-            className="size-40 rounded-2xl object-cover border border-[var(--border)]"
+            className="size-24 sm:size-32 md:size-40 rounded-2xl object-cover border border-[var(--border)] flex-shrink-0"
           />
         )}
-        <div className="min-w-0">
+        <div className="min-w-0 text-left">
           <motion.h1
             {...fadeUp}
-            className="text-2xl font-semibold tracking-tight"
+            className="text-xl sm:text-2xl font-semibold tracking-tight"
           >
             {profile.name}
           </motion.h1>
@@ -58,7 +58,7 @@ export default function ResumeHeader({
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mt-3 space-y-1.5 text-[12px]"
+            className="mt-3 space-y-1.5 text-[11px] sm:text-[12px]"
           >
             {profile.intro.map((t, i) => (
               <motion.li variants={vItem} key={i}>
