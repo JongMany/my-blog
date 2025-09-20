@@ -31,9 +31,9 @@ function Emphasis({
   // 대괄호 패턴: [키워드] 형태
   const bracketPattern = /\[([^\]]+)\]/g;
 
-  // 숫자/약어 패턴
+  // 숫자/약어 패턴 (중복 매칭 방지)
   const numberPattern =
-    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}\b)/g;
+    /(\b\d{1,3}(?:,\d{3})+(?:\.\d+)?%?|\b\d+(?:\.\d+)?(?:ms|s|x|%)?|\b[A-Z]{2,}(?=\s|$))/g;
 
   // 대괄호를 먼저 처리
   let processedText = text;
@@ -64,13 +64,38 @@ function Emphasis({
     }
   });
 
-  // 툴팁 마커와 숫자/약어 패턴으로 분할
+  // 툴팁 마커와 숫자/약어 패턴으로 분할 (split 대신 matchAll 사용)
   const tooltipPattern = /__TOOLTIP_[^_]+__/g;
   const combinedPattern = new RegExp(
     `(${tooltipPattern.source}|${numberPattern.source})`,
     "g",
   );
-  const parts = processedText.split(combinedPattern);
+
+  // split 대신 matchAll로 정확한 분할
+  const matches = Array.from(processedText.matchAll(combinedPattern));
+  const parts: string[] = [];
+  let lastIndex = 0;
+
+  matches.forEach((match) => {
+    if (match.index !== undefined) {
+      // 매칭 전 텍스트 추가
+      if (match.index > lastIndex) {
+        parts.push(processedText.slice(lastIndex, match.index));
+      }
+      // 매칭된 부분 추가
+      parts.push(match[0]);
+      lastIndex = match.index + match[0].length;
+    }
+  });
+
+  // 마지막 남은 텍스트 추가
+  if (lastIndex < processedText.length) {
+    parts.push(processedText.slice(lastIndex));
+  }
+
+  console.log("Original text:", text);
+  console.log("Processed text:", processedText);
+  console.log("Parts:", parts);
 
   return (
     <>

@@ -80,18 +80,8 @@ export const resume: ResumeData = {
       ],
       keywordImageMap: {
         "TP/SL 드래그 UX": "/assets/tpsl.gif",
-        TradingView: "/assets/tpsl.gif",
-        차트: "/assets/tpsl.gif",
-        "TP/SL": "/assets/tpsl.gif",
-        드래그: "/assets/tpsl.gif",
-        WebSocket: "/assets/socket-devtools.gif",
-        실시간: "/assets/socket-devtools.gif",
-        Fallback: "/assets/socket-devtools.gif",
-        HTTP: "/assets/socket-devtools.gif",
-        모니터링: "/assets/socket-devtools.gif",
-        리팩토링: "/assets/socket-devtools.gif",
-        아키텍처: "/assets/socket-devtools.gif",
-        디버깅: "/assets/socket-devtools.gif",
+        "웹소켓 디버깅 툴": "/assets/socket-devtools.gif",
+        "시장가/지정가 주문 UI": "/assets/limit-order-panel.gif",
       },
       bullets: [
         {
@@ -113,7 +103,7 @@ export const resume: ResumeData = {
           ],
         },
         {
-          text: "차트 내 시장가/지정가 주문 UI 시스템",
+          text: "차트 내 [시장가/지정가 주문 UI] 시스템",
           portfolioLinks: [
             {
               title: "원클릭 거래 시스템 구현",
@@ -131,7 +121,7 @@ export const resume: ResumeData = {
           ],
         },
         {
-          text: "WebSocket 자동 HTTP Fallback 시스템",
+          text: "웹소켓 불안정 시 HTTP Polling Fallback 시스템 개발",
           portfolioLinks: [
             {
               title: "Fallback 시스템 설계",
@@ -160,6 +150,24 @@ export const resume: ResumeData = {
           children: [
             {
               text: "복잡한 거래 로직을 명확한 구조로 재설계하여 개발 속도 향상 및 버그 감소",
+            },
+            {
+              text: "실시간 디버깅 도구로 문제 해결 시간 단축 및 서비스 품질 향상",
+            },
+          ],
+        },
+        {
+          text: "[웹소켓 디버깅 툴] 개발",
+          portfolioLinks: [
+            {
+              title: "웹소켓 디버깅 툴 개발",
+              url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-devtools",
+              type: "portfolio",
+            },
+          ],
+          children: [
+            {
+              text: "특정 웹소켓 통신 불안정 시의 디버깅 속도를 향상시키기 위한 디버깅 툴 개발",
             },
             {
               text: "실시간 디버깅 도구로 문제 해결 시간 단축 및 서비스 품질 향상",
