@@ -122,7 +122,7 @@ export default function ResumePage() {
           </main>
 
           {/* 오른쪽 TOC(스티키) */}
-          <aside className="lg:block lg:col-span-2">
+          <aside className="hidden lg:block lg:col-span-2">
             <div className="lg:sticky lg:top-24">
               <PageTOC items={toc} />
             </div>
