@@ -1,3 +1,5 @@
+import TPSL from "@/assets/tpsl.gif";
+
 export type Bullet = {
   text: string;
   tags?: string[];
@@ -18,6 +20,7 @@ export type Experience = {
   summary?: string; // ← 경력 요약(문단)
   stacks?: string[]; // 칩으로 표시
   bullets: Bullet[]; // 중첩 불릿
+  keywordImageMap?: Record<string, string>; // 키워드-이미지 매핑
 };
 export type Education = {
   school: string;
@@ -44,7 +47,6 @@ export type ResumeData = {
   education: Education[];
   activities: Activity[];
   skills?: string[];
-  keywordImageMap?: Record<string, string>;
 };
 
 export const resume: ResumeData = {
@@ -78,6 +80,21 @@ export const resume: ResumeData = {
         "Zustand",
         "Tailwindcss",
       ],
+      keywordImageMap: {
+        "TP/SL 드래그 UX": TPSL,
+        TradingView: "/src/assets/tpsl.gif",
+        차트: "/src/assets/tpsl.gif",
+        "TP/SL": "/src/assets/tpsl.gif",
+        드래그: "/src/assets/tpsl.gif",
+        WebSocket: "/src/assets/socket-devtools.gif",
+        실시간: "/src/assets/socket-devtools.gif",
+        Fallback: "/src/assets/socket-devtools.gif",
+        HTTP: "/src/assets/socket-devtools.gif",
+        모니터링: "/src/assets/socket-devtools.gif",
+        리팩토링: "/src/assets/socket-devtools.gif",
+        아키텍처: "/src/assets/socket-devtools.gif",
+        디버깅: "/src/assets/socket-devtools.gif",
+      },
       bullets: [
         {
           text: "TradingView 차트 내 [TP/SL 드래그 UX] 확장",
@@ -167,6 +184,26 @@ export const resume: ResumeData = {
         "Zustand",
         "Styled-Component",
       ],
+      keywordImageMap: {
+        AI: "/src/assets/chatroom.png",
+        캐릭터: "/src/assets/chatroom.png",
+        채팅: "/src/assets/chatroom.png",
+        검열: "/src/assets/realtime-filtering-demo.gif",
+        "Aho-Corasick": "/src/assets/realtime-filtering-demo.gif",
+        필터링: "/src/assets/realtime-filtering-demo.gif",
+        LLM: "/src/assets/sse-streaming.gif",
+        SSE: "/src/assets/sse-streaming.gif",
+        스트리밍: "/src/assets/sse-streaming.gif",
+        ESLint: "/src/assets/transform-eslint-after.png",
+        i18n: "/src/assets/transform-eslint-after.png",
+        키워드북: "/src/assets/keyword-book.gif",
+        좋아요: "/src/assets/like-favorite.png",
+        즐겨찾기: "/src/assets/like-favorite.png",
+        이미지: "/src/assets/multi-image-purchase.png",
+        구매: "/src/assets/multi-image-purchase.png",
+        업로드: "/src/assets/multi-image-upload.png",
+        리워드: "/src/assets/reward.png",
+      },
       bullets: [
         {
           text: "트리거 단어 칩 변환 알고리즘 개발",
@@ -299,37 +336,4 @@ export const resume: ResumeData = {
     "Pnpm",
     "Yarn",
   ],
-  keywordImageMap: {
-    "TP/SL 드래그 UX": "/projects/thumbnails/gifs/tpsl.gif",
-    TradingView: "/projects/thumbnails/gifs/tpsl.gif",
-    차트: "/projects/thumbnails/gifs/tpsl.gif",
-    "TP/SL": "/projects/thumbnails/gifs/tpsl.gif",
-    드래그: "/projects/thumbnails/gifs/tpsl.gif",
-    WebSocket: "/projects/thumbnails/gifs/socket-devtools.gif",
-    실시간: "/projects/thumbnails/gifs/socket-devtools.gif",
-    Fallback: "/projects/thumbnails/gifs/socket-devtools.gif",
-    HTTP: "/projects/thumbnails/gifs/socket-devtools.gif",
-    모니터링: "/projects/thumbnails/gifs/socket-devtools.gif",
-    리팩토링: "/projects/thumbnails/gifs/socket-devtools.gif",
-    아키텍처: "/projects/thumbnails/gifs/socket-devtools.gif",
-    디버깅: "/projects/thumbnails/gifs/socket-devtools.gif",
-    AI: "/projects/thumbnails/images/chatroom.png",
-    캐릭터: "/projects/thumbnails/images/chatroom.png",
-    채팅: "/projects/thumbnails/images/chatroom.png",
-    검열: "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
-    "Aho-Corasick": "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
-    필터링: "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
-    LLM: "/projects/thumbnails/gifs/sse-streaming.gif",
-    SSE: "/projects/thumbnails/gifs/sse-streaming.gif",
-    스트리밍: "/projects/thumbnails/gifs/sse-streaming.gif",
-    ESLint: "/projects/thumbnails/images/transform-eslint-after.png",
-    i18n: "/projects/thumbnails/images/transform-eslint-after.png",
-    키워드북: "/projects/thumbnails/gifs/keyword-book.gif",
-    좋아요: "/projects/thumbnails/gifs/like-favorite.png",
-    즐겨찾기: "/projects/thumbnails/gifs/like-favorite.png",
-    이미지: "/projects/thumbnails/images/multi-image-purchase.png",
-    구매: "/projects/thumbnails/images/multi-image-purchase.png",
-    업로드: "/projects/thumbnails/images/multi-image-upload.png",
-    리워드: "/projects/thumbnails/images/reward.png",
-  },
 };

@@ -4,7 +4,7 @@ import { resume } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
-import { cn, SimpleCursorTooltip, CursorTooltip } from "@srf/ui";
+import { cn, SimpleCursorTooltip, CursorTooltip, InlineTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 
 /* ───────────── 유틸 ───────────── */
@@ -17,11 +17,16 @@ function keyFor(path: number[], text: string) {
   return `${path.join(".")}:${hash36(text.trim())}`;
 }
 
-/** 키워드-이미지 매핑 (resume 데이터에서 가져옴) */
-const keywordImageMap = resume.keywordImageMap || {};
+// 키워드-이미지 매핑은 각 experience 객체에서 가져옴
 
 /** 숫자/약어 강조 + 대괄호 키워드 툴팁 */
-function Emphasis({ text }: { text: string }) {
+function Emphasis({
+  text,
+  keywordImageMap,
+}: {
+  text: string;
+  keywordImageMap?: Record<string, string>;
+}) {
   // 대괄호 패턴: [키워드] 형태
   const bracketPattern = /\[([^\]]+)\]/g;
 
@@ -76,7 +81,7 @@ function Emphasis({ text }: { text: string }) {
         if (tooltipMatch) {
           const keyword = tooltipMatch[1];
           return (
-            <CursorTooltip
+            <InlineTooltip
               key={i}
               content={
                 <div className="p-2">
@@ -88,15 +93,11 @@ function Emphasis({ text }: { text: string }) {
                 </div>
               }
               delay={300}
-              className="inline-block"
             >
-              <span
-                className="font-medium cursor-help hover:text-[var(--primary)] transition-colors underline decoration-dotted"
-                style={{ display: "inline" }}
-              >
+              <span className="font-medium cursor-help hover:text-[var(--primary)] transition-colors underline decoration-dotted">
                 {keyword}
               </span>
-            </CursorTooltip>
+            </InlineTooltip>
           );
         }
 
@@ -204,7 +205,12 @@ export default function ExperienceItem({ item }: { item: Experience }) {
 
         {/* 최상위 불릿(접기/펼치기 지원) */}
         <div className="mt-3">
-          <BulletList items={collapsed} level={0} prefix={[]} />
+          <BulletList
+            items={collapsed}
+            level={0}
+            prefix={[]}
+            keywordImageMap={item.keywordImageMap}
+          />
         </div>
 
         {topVisible.length > 3 && (
@@ -229,10 +235,12 @@ function BulletList({
   items,
   level,
   prefix,
+  keywordImageMap,
 }: {
   items: Bullet[];
   level: number;
   prefix: number[];
+  keywordImageMap?: Record<string, string>;
 }) {
   const listClass =
     level === 0
@@ -247,8 +255,8 @@ function BulletList({
         const k = keyFor([...prefix, idx], b.text);
         return (
           <li key={k}>
-            <div className="flex gap-[0.5]">
-              <Emphasis text={b.text} />
+            <div className="flex gap-1">
+              <Emphasis text={b.text} keywordImageMap={keywordImageMap} />
               {b.tags?.length ? (
                 <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
                   {b.tags.map((t) => (
@@ -271,6 +279,7 @@ function BulletList({
                   items={b.children}
                   level={level + 1}
                   prefix={[...prefix, idx]}
+                  keywordImageMap={keywordImageMap}
                 />
               </div>
             ) : null}

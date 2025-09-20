@@ -16,7 +16,7 @@
         "order": 4.7,
         "cover": "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
         "coverAlt": "실시간 텍스트 검열 시스템",
-        "coverCaption": "Aho-Corasick 알고리즘을 활용한 고성능 실시간 텍스트 검열",
+        "coverCaption": "Aho-Corasick 알고리즘을 활용한 실시간 텍스트 검열",
         "coverType": "image",
         "coverAspectRatio": "969",
         "slug": "realtime-text-filtering-system",
@@ -278,6 +278,24 @@
         "createdAtMs": 1736899200000
       },
       {
+        "title": "WebSocket 개발자 도구",
+        "summary": "WebSocket 통신의 복잡한 실시간 데이터 플로우를 시각화하고 디버깅할 수 있는 전용 개발자 도구를 구축하여 개발 효율성과 문제 해결 속도를 대폭 향상시켰습니다.",
+        "project": "Coinness",
+        "tags": [
+          "DX 개선"
+        ],
+        "date": "2025-01-15T00:00:00.000Z",
+        "order": 3.5,
+        "cover": "/projects/thumbnails/gifs/socket-devtools.gif",
+        "coverAlt": "WebSocket 개발자 도구 데모",
+        "coverCaption": "실시간 WebSocket 메시지 모니터링 및 디버깅 도구",
+        "coverType": "gif",
+        "coverAspectRatio": "969",
+        "slug": "websocket-devtools",
+        "path": "/_portfolio/projects/websocket-devtools.mdx",
+        "createdAtMs": 1736899200000
+      },
+      {
         "title": "WebSocket 자동 HTTP Fallback 시스템",
         "summary": "WebSocket 연결 불안정으로 인한 실시간 데이터 손실을 방지하기 위해 자동 HTTP Fallback 시스템을 개발하여 거래 플랫폼의 데이터 연속성과 안정성을 보장했습니다.",
         "project": "Coinness",
@@ -293,24 +311,6 @@
         "coverAspectRatio": "969",
         "slug": "websocket-http-fallback",
         "path": "/_portfolio/projects/websocket-http-fallback.mdx",
-        "createdAtMs": 1736899200000
-      },
-      {
-        "title": "WebSocket 개발자 도구",
-        "summary": "WebSocket 통신의 복잡한 실시간 데이터 플로우를 시각화하고 디버깅할 수 있는 전용 개발자 도구를 구축하여 개발 효율성과 문제 해결 속도를 대폭 향상시켰습니다.",
-        "project": "Coinness",
-        "tags": [
-          "DX 개선"
-        ],
-        "date": "2025-01-15T00:00:00.000Z",
-        "order": 1.5,
-        "cover": "/projects/thumbnails/gifs/socket-devtools.gif",
-        "coverAlt": "WebSocket 개발자 도구 데모",
-        "coverCaption": "실시간 WebSocket 메시지 모니터링 및 디버깅 도구",
-        "coverType": "gif",
-        "coverAspectRatio": "969",
-        "slug": "websocket-devtools",
-        "path": "/_portfolio/projects/websocket-devtools.mdx",
         "createdAtMs": 1736899200000
       }
     ]
@@ -417,7 +417,7 @@
       "order": 4.7,
       "cover": "/projects/thumbnails/gifs/realtime-filtering-demo.gif",
       "coverAlt": "실시간 텍스트 검열 시스템",
-      "coverCaption": "Aho-Corasick 알고리즘을 활용한 고성능 실시간 텍스트 검열",
+      "coverCaption": "Aho-Corasick 알고리즘을 활용한 실시간 텍스트 검열",
       "coverType": "image",
       "coverAspectRatio": "969",
       "slug": "realtime-text-filtering-system",
@@ -494,6 +494,24 @@
       "coverAspectRatio": "969",
       "slug": "ai-character-like-favorite-system",
       "path": "/_portfolio/projects/ai-character-like-favorite-system.mdx",
+      "createdAtMs": 1736899200000
+    },
+    {
+      "title": "WebSocket 개발자 도구",
+      "summary": "WebSocket 통신의 복잡한 실시간 데이터 플로우를 시각화하고 디버깅할 수 있는 전용 개발자 도구를 구축하여 개발 효율성과 문제 해결 속도를 대폭 향상시켰습니다.",
+      "project": "Coinness",
+      "tags": [
+        "DX 개선"
+      ],
+      "date": "2025-01-15T00:00:00.000Z",
+      "order": 3.5,
+      "cover": "/projects/thumbnails/gifs/socket-devtools.gif",
+      "coverAlt": "WebSocket 개발자 도구 데모",
+      "coverCaption": "실시간 WebSocket 메시지 모니터링 및 디버깅 도구",
+      "coverType": "gif",
+      "coverAspectRatio": "969",
+      "slug": "websocket-devtools",
+      "path": "/_portfolio/projects/websocket-devtools.mdx",
       "createdAtMs": 1736899200000
     },
     {
@@ -602,24 +620,6 @@
       "coverAspectRatio": "969",
       "slug": "websocket-http-fallback",
       "path": "/_portfolio/projects/websocket-http-fallback.mdx",
-      "createdAtMs": 1736899200000
-    },
-    {
-      "title": "WebSocket 개발자 도구",
-      "summary": "WebSocket 통신의 복잡한 실시간 데이터 플로우를 시각화하고 디버깅할 수 있는 전용 개발자 도구를 구축하여 개발 효율성과 문제 해결 속도를 대폭 향상시켰습니다.",
-      "project": "Coinness",
-      "tags": [
-        "DX 개선"
-      ],
-      "date": "2025-01-15T00:00:00.000Z",
-      "order": 1.5,
-      "cover": "/projects/thumbnails/gifs/socket-devtools.gif",
-      "coverAlt": "WebSocket 개발자 도구 데모",
-      "coverCaption": "실시간 WebSocket 메시지 모니터링 및 디버깅 도구",
-      "coverType": "gif",
-      "coverAspectRatio": "969",
-      "slug": "websocket-devtools",
-      "path": "/_portfolio/projects/websocket-devtools.mdx",
       "createdAtMs": 1736899200000
     }
   ]
