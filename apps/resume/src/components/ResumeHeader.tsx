@@ -25,7 +25,7 @@ export default function ResumeHeader({
             "linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.3), transparent)",
         }}
       />
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-8">
         {profile.photoUrl && (
           <motion.img
             {...fadeUp}
@@ -35,7 +35,7 @@ export default function ResumeHeader({
               "http://localhost:3003",
             )}
             alt={`${profile.name} 프로필`}
-            className="size-20 rounded-2xl object-cover border border-[var(--border)]"
+            className="size-40 rounded-2xl object-cover border border-[var(--border)]"
           />
         )}
         <div className="min-w-0">
@@ -58,7 +58,7 @@ export default function ResumeHeader({
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mt-3 space-y-1.5 text-sm"
+            className="mt-3 space-y-1.5 text-[12px]"
           >
             {profile.intro.map((t, i) => (
               <motion.li variants={vItem} key={i}>

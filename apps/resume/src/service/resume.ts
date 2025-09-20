@@ -52,9 +52,10 @@ export const resume: ResumeData = {
     name: "이종민",
     tagline: "Frontend Developer",
     intro: [
-      "사용자 경험을 최우선으로 생각하며, 복잡한 기술적 문제를 창의적으로 해결하는 Frontend Developer입니다.",
+      "사용자 경험을 최우선으로 생각하며, 복잡한 기술적 문제를 해결하는 Frontend Developer입니다.",
       "암호화폐 거래소와 AI 채팅 플랫폼에서 핵심 기능을 개발하여 실제 사용자들의 만족도를 높였습니다.",
       "기술의 본질을 이해하고, 더 나은 사용자 경험을 위해 지속적으로 개선하는 것을 추구합니다.",
+      "부족한 점을 인지하고 채워넣는 과정을 좋아합니다.",
     ],
     email: "blackberry1114@naver.com",
     github: "https://github.com/JongMany",
@@ -69,7 +70,7 @@ export const resume: ResumeData = {
       role: "Frontend Developer",
       period: "2025.07 - now",
       summary:
-        "암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다. 차트에서 바로 주문할 수 있는 직관적인 인터페이스와 실시간 데이터 처리로 거래 경험을 혁신했습니다.",
+        "국내 최대 암호화폐 및 가상자산 투자 정보 미디어 서비스인 코인니스 내의 암호화폐 거래소 서비스를 개발했습니다. 암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다.",
       stacks: [
         "Yarn",
         "React",
@@ -170,7 +171,7 @@ export const resume: ResumeData = {
               text: "특정 웹소켓 통신 불안정 시의 디버깅 속도를 향상시키기 위한 디버깅 툴 개발",
             },
             {
-              text: "실시간 디버깅 도구로 문제 해결 시간 단축 및 서비스 품질 향상",
+              text: "토픽, 크기, 속도를 실시간으로 관찰하여 특정 토픽의 병목 지점 확인",
             },
           ],
         },

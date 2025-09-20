@@ -1,10 +1,9 @@
 import React from "react";
 import type { Bullet, Experience, PortfolioLink } from "../service/resume";
-import { resume } from "../service/resume";
 import { motion } from "framer-motion";
 import { vItem } from "./Motion";
 import { Card, Button, Meta, PillButton } from "./ui";
-import { cn, SimpleCursorTooltip, CursorTooltip, InlineTooltip } from "@srf/ui";
+import { cn, SimpleCursorTooltip, InlineTooltip } from "@srf/ui";
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
 import { imageSource } from "@mfe/shared";
 
@@ -114,7 +113,7 @@ function Emphasis({
                       "http://localhost:3003",
                     )}
                     alt={keyword}
-                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] max-h-60 object-cover rounded"
+                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] min-h-48 object-cover rounded"
                   />
                 </div>
               }
@@ -164,7 +163,7 @@ function PortfolioLinks({ links }: { links: PortfolioLink[] }) {
   if (!links?.length) return null;
 
   return (
-    <div className="mt-2 flex flex-wrap gap-1.5">
+    <div className="mt-1 flex flex-wrap gap-1.5">
       {links.map((link, index) => (
         <a
           key={index}
@@ -208,9 +207,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
 
         {/* 요약 */}
         {item.summary && (
-          <p className="mt-2 text-[13.5px] md:text-sm text-[var(--fg)]">
-            {item.summary}
-          </p>
+          <p className="mt-2 text-[12.5px] text-[var(--fg)]">{item.summary}</p>
         )}
 
         {/* 스택 표시 (읽기 전용) */}
@@ -272,11 +269,11 @@ function BulletList({
     level === 0
       ? "list-disc marker:text-[var(--primary)] pl-5 space-y-1.5"
       : level === 1
-        ? "list-[circle] pl-5 space-y-1"
-        : "list-[square] pl-5 space-y-1";
+        ? "list-[circle] pl-5 space-y-1 text-[12px]"
+        : "list-[square] pl-5 space-y-1 text-[12px]";
 
   return (
-    <ul className={cn(listClass, "text-[13.5px] md:text-sm")}>
+    <ul className={cn("text-[13px]", listClass)}>
       {items.map((b, idx) => {
         const k = keyFor([...prefix, idx], b.text);
         return (
