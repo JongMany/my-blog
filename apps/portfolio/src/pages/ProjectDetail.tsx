@@ -63,7 +63,6 @@ export default function ProjectDetail() {
         if (!cancelled) setMDXComp(() => MDXContent as React.ComponentType);
       } catch (err: any) {
         if (import.meta.env.DEV) {
-          console.error("[MDX evaluate error]", err?.message, err?.position);
         }
       }
     })();

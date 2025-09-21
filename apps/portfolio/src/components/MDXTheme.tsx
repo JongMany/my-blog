@@ -15,8 +15,6 @@ type MDXMap = NonNullable<ComponentsProp>;
 function fixAssetSrc(src?: string) {
   if (!src) return src;
 
-  console.log("fixAssetSrc 호출됨:", src);
-
   // 절대 URL인 경우 그대로 반환
   if (/^https?:\/\//i.test(src)) {
     return src;
@@ -24,7 +22,6 @@ function fixAssetSrc(src?: string) {
 
   // 모든 경로를 imageSource로 처리
   const result = imageSource(src, "portfolio", "http://localhost:3002");
-  console.log("imageSource 결과:", result);
   return result;
 }
 
@@ -69,7 +66,6 @@ export const components: MDXMap = {
   /* === Media === */
   img: ({ src, ...p }) => {
     const processedSrc = fixAssetSrc(src);
-    console.log("MDX 이미지 처리:", { src, processedSrc });
     return (
       <img
         {...p}

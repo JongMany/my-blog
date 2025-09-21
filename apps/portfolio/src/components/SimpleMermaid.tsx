@@ -11,8 +11,6 @@ export function SimpleMermaid({ children }: SimpleMermaidProps) {
   useEffect(() => {
     if (!ref.current) return;
 
-    console.log("SimpleMermaid 렌더링 시도:", children);
-
     // Mermaid 초기화
     mermaid.initialize({
       startOnLoad: false,
@@ -26,10 +24,8 @@ export function SimpleMermaid({ children }: SimpleMermaidProps) {
         const { svg } = await mermaid.render(id, children);
         if (ref.current) {
           ref.current.innerHTML = svg;
-          console.log("SimpleMermaid 렌더링 성공!");
         }
       } catch (error) {
-        console.error("SimpleMermaid 렌더링 오류:", error);
         if (ref.current) {
           ref.current.innerHTML = `<div style="color: red; padding: 20px; border: 1px solid red;">Mermaid 오류: ${error}</div>`;
         }

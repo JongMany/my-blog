@@ -153,9 +153,7 @@ export function CursorTooltip({
               tooltipElementRef.current,
             );
           }
-        } catch (error) {
-          console.warn("Tooltip removal error:", error);
-        }
+        } catch (error) {}
         tooltipElementRef.current = null;
       }
     }
@@ -171,9 +169,7 @@ export function CursorTooltip({
               tooltipElementRef.current,
             );
           }
-        } catch (error) {
-          console.warn("Tooltip cleanup error:", error);
-        }
+        } catch (error) {}
         tooltipElementRef.current = null;
       }
     };

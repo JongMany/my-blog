@@ -18,7 +18,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
   };
   const timeout = options.timeout ?? 300;
 
-  console.log("🎬 Hero transition initialized with options:", options);
 
   // Closure variables to share state between in/out
   let fromNode: HTMLElement | null = null;
@@ -27,14 +26,12 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
   return {
     in: async (element, context) => {
       const toNode = element;
-      console.log("🎬 Hero IN transition started for element:", toNode);
 
       // Find all hero elements in the incoming page
       const heroEls = Array.from(toNode.querySelectorAll("[data-hero-key]"));
-      console.log("🎬 Found hero elements:", heroEls.length, heroEls);
 
       if (heroEls.length === 0) {
-        console.log("🎬 No hero elements found, skipping animation");
+
         return {
           spring,
           tick: () => {}, // No hero elements, skip animation
@@ -42,19 +39,19 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       }
 
       // Wait for fromNode to be set by out transition
-      console.log("🎬 Waiting for fromNode...");
+
       const hasFromNode = await new Promise<boolean>((resolve) => {
         if (fromNode) {
           // fromNode already set by out transition
-          console.log("🎬 fromNode already available:", fromNode);
+
           resolve(true);
         } else {
           // Store resolver for out transition to call
-          console.log("🎬 fromNode not available, waiting...");
+
           resolver = resolve;
           // Timeout fallback
           setTimeout(() => {
-            console.log("🎬 Timeout waiting for fromNode");
+
             resolver = null;
             resolve(false);
           }, timeout);
@@ -62,7 +59,7 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       });
 
       if (!hasFromNode || !fromNode) {
-        console.log("🎬 No fromNode available, skipping animation");
+
         fromNode = null;
         return {
           spring,
@@ -71,16 +68,16 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       }
 
       // Calculate animations for matching hero elements
-      console.log("🎬 Calculating hero animations...");
+
       const heroAnimations = heroEls
         .map((heroEl) => {
           const key = heroEl.getAttribute("data-hero-key");
-          console.log("🎬 Processing hero element with key:", key);
+
 
           if (!key) return null;
 
           const fromEl = getHeroEl(fromNode!, key);
-          console.log("🎬 Found matching fromEl:", fromEl);
+
 
           if (!fromEl) return null;
 
@@ -94,7 +91,7 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
           const dw = fromRect.width / toRect.width;
           const dh = fromRect.height / toRect.height;
 
-          console.log("🎬 Animation params:", {
+
             dx,
             dy,
             dw,
@@ -135,17 +132,17 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
 
       // Reset fromNode for next transition
       fromNode = null;
-      console.log("🎬 Hero animations calculated:", heroAnimations.length);
+
 
       if (heroAnimations.length === 0) {
-        console.log("🎬 No matching hero elements, skipping animation");
+
         return {
           spring,
           tick: () => {}, // No matching hero elements
         };
       }
 
-      console.log(
+
         "🎬 Returning hero animation with",
         heroAnimations.length,
         "elements",
@@ -154,7 +151,7 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       return {
         spring,
         prepare: () => {
-          console.log("🎬 Preparing hero animation...");
+
           heroAnimations.forEach(({ toEl }) => {
             toEl.style.position = "relative";
             toEl.style.transformOrigin = "top left";
@@ -168,7 +165,7 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
           });
         },
         onEnd: () => {
-          console.log("🎬 Hero animation ended, resetting styles...");
+
           // Reset all hero elements
           heroAnimations.forEach(
             ({
@@ -188,23 +185,23 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       };
     },
     out: async (element) => {
-      console.log("🎬 Hero OUT transition started for element:", element);
+
 
       return {
         onStart: () => {
-          console.log("🎬 Hero OUT onStart - storing fromNode");
+
           // Store fromNode
           fromNode = element;
 
           // If there's a waiting resolver, resolve it
           if (resolver) {
-            console.log("🎬 Resolving waiting promise");
+
             resolver(true);
             resolver = null;
           }
         },
         prepare: (element) => {
-          console.log("🎬 Hero OUT prepare - preparing outgoing element");
+
           prepareOutgoing(element);
           element.style.opacity = "0";
         },

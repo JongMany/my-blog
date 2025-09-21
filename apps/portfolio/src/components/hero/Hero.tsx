@@ -8,8 +8,6 @@ interface HeroProps {
 }
 
 export const Hero = ({ children, key, ...props }: HeroProps): ReactElement => {
-  console.log("🎬 Hero component rendered with key:", key);
-
   return (
     <div data-hero-key={key} {...props}>
       {children}

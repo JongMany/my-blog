@@ -96,8 +96,6 @@ export function MermaidDiagram({
 
             // 마인드맵인 경우 파스텔 색상 적용
             if (mermaidCode.trim().startsWith("mindmap")) {
-              console.log("마인드맵 감지 - 파스텔 색상 적용");
-
               // 모든 노드에 파스텔 색상 적용
               const nodes = svgElement.querySelectorAll("g.node");
               nodes.forEach((node, index) => {
@@ -156,7 +154,6 @@ export function MermaidDiagram({
           }
         }
       } catch (error) {
-        console.error("Mermaid 렌더링 오류:", error);
         if (ref.current) {
           ref.current.innerHTML = `<div class="text-red-500 p-4 border border-red-500 rounded">Mermaid 다이어그램 렌더링 오류: ${error}</div>`;
         }
@@ -172,14 +169,6 @@ export function MermaidDiagram({
   useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
-
-      console.log("드래그 이동:", {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        dragStart,
-        zoom,
-        isDragging,
-      });
 
       // 컨테이너 크기 계산
       const container = ref.current?.parentElement;
@@ -205,18 +194,11 @@ export function MermaidDiagram({
           Math.min(maxTranslateY, e.clientY - dragStart.y),
         );
 
-        console.log("줌 > 1 이동:", {
-          newX,
-          newY,
-          maxTranslateX,
-          maxTranslateY,
-        });
         setTranslate({ x: newX, y: newY });
       } else {
         // 줌이 1 이하일 때도 드래그는 가능하지만 이동 범위 제한
         const newX = e.clientX - dragStart.x;
         const newY = e.clientY - dragStart.y;
-        console.log("줌 <= 1 이동:", { newX, newY });
         setTranslate({ x: newX, y: newY });
       }
     };
@@ -245,7 +227,6 @@ export function MermaidDiagram({
         setIsCtrlPressed(true);
         // Ctrl 키가 눌렸을 때 페이지 스크롤 방지
         document.body.style.overflow = "hidden";
-        console.log("Ctrl 키 눌림 - 스크롤 차단");
       }
     };
 
@@ -255,7 +236,6 @@ export function MermaidDiagram({
         // Ctrl 키가 떼어졌을 때 페이지 스크롤 복원 (드래그 중이 아닐 때만)
         if (!isDragging) {
           document.body.style.overflow = "";
-          console.log("Ctrl 키 떼어짐 - 스크롤 복원");
         }
       }
     };
@@ -277,7 +257,6 @@ export function MermaidDiagram({
     // 마우스 왼쪽 버튼만 드래그 허용
     if (e.button !== 0) return;
 
-    console.log("드래그 시작:", { x: e.clientX, y: e.clientY, translate });
     setIsDragging(true);
     setDragStart({ x: e.clientX - translate.x, y: e.clientY - translate.y });
 
@@ -291,10 +270,6 @@ export function MermaidDiagram({
       e.preventDefault();
       const delta = e.deltaY > 0 ? 0.9 : 1.1;
       setZoom((prev) => Math.max(0.1, Math.min(3, prev * delta)));
-      console.log("Ctrl + 휠 줌:", {
-        delta,
-        newZoom: Math.max(0.1, Math.min(3, zoom * delta)),
-      });
     }
     // Ctrl 없이 휠 스크롤은 페이지 스크롤로 동작 (하지만 Ctrl이 눌려있으면 이미 스크롤이 차단됨)
   };
