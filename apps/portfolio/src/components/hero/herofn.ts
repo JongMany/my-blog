@@ -18,7 +18,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
   };
   const timeout = options.timeout ?? 300;
 
-
   // Closure variables to share state between in/out
   let fromNode: HTMLElement | null = null;
   let resolver: ((value: boolean) => void) | null = null;
@@ -31,7 +30,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       const heroEls = Array.from(toNode.querySelectorAll("[data-hero-key]"));
 
       if (heroEls.length === 0) {
-
         return {
           spring,
           tick: () => {}, // No hero elements, skip animation
@@ -39,19 +37,15 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       }
 
       // Wait for fromNode to be set by out transition
-
       const hasFromNode = await new Promise<boolean>((resolve) => {
         if (fromNode) {
           // fromNode already set by out transition
-
           resolve(true);
         } else {
           // Store resolver for out transition to call
-
           resolver = resolve;
           // Timeout fallback
           setTimeout(() => {
-
             resolver = null;
             resolve(false);
           }, timeout);
@@ -59,7 +53,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       });
 
       if (!hasFromNode || !fromNode) {
-
         fromNode = null;
         return {
           spring,
@@ -68,16 +61,13 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       }
 
       // Calculate animations for matching hero elements
-
       const heroAnimations = heroEls
         .map((heroEl) => {
           const key = heroEl.getAttribute("data-hero-key");
 
-
           if (!key) return null;
 
           const fromEl = getHeroEl(fromNode!, key);
-
 
           if (!fromEl) return null;
 
@@ -90,15 +80,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
           const dy = fromRect.top - toRect.top - context.scrollOffset.y;
           const dw = fromRect.width / toRect.width;
           const dh = fromRect.height / toRect.height;
-
-
-            dx,
-            dy,
-            dw,
-            dh,
-            fromRect,
-            toRect,
-          });
 
           // Store original styles
           const originalTransform = toEl.style.transform;
@@ -133,25 +114,16 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       // Reset fromNode for next transition
       fromNode = null;
 
-
       if (heroAnimations.length === 0) {
-
         return {
           spring,
           tick: () => {}, // No matching hero elements
         };
       }
 
-
-        "🎬 Returning hero animation with",
-        heroAnimations.length,
-        "elements",
-      );
-
       return {
         spring,
         prepare: () => {
-
           heroAnimations.forEach(({ toEl }) => {
             toEl.style.position = "relative";
             toEl.style.transformOrigin = "top left";
@@ -165,7 +137,6 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
           });
         },
         onEnd: () => {
-
           // Reset all hero elements
           heroAnimations.forEach(
             ({
@@ -185,23 +156,18 @@ export const hero = (options: HeroOptions = {}): SggoiTransition => {
       };
     },
     out: async (element) => {
-
-
       return {
         onStart: () => {
-
           // Store fromNode
           fromNode = element;
 
           // If there's a waiting resolver, resolve it
           if (resolver) {
-
             resolver(true);
             resolver = null;
           }
         },
         prepare: (element) => {
-
           prepareOutgoing(element);
           element.style.opacity = "0";
         },
