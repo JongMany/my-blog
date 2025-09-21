@@ -1,449 +1,578 @@
 
-## 개요
+## **개요**
 
-WebSocket 연결 불안정으로 인한 실시간 데이터 손실을 방지하기 위해 자동 HTTP Fallback 시스템을 개발하여 거래 플랫폼의 데이터 연속성과 안정성을 보장했습니다.
+WebSocket 연결 불안정으로 인한 실시간 데이터 손실을 방지하기 위해 **React Query를 중심으로 한 자동 HTTP Fallback 시스템**을 개발하여 거래 플랫폼의 데이터 연속성과 안정성을 보장했습니다.
 
-## 배경
+추가로 **차트 전용 TickHealthMonitor**를 통해 TradingView 차트의 실시간 데이터 품질을 독립적으로 모니터링합니다.
+
+## **배경**
 
 - **WebSocket 연결 불안정**: 백엔드 소켓 시스템의 부하 문제로 인해 메시지가 제대로 오지 않는 문제가 간헐적으로 발생
-- **사용자 경험 저하**: 데이터 지연으로 인한 잘못된 거래 판단 및 기회 상실
-- **기존 대응 부재**: 소켓 장애 시 대체 통신 방식 및 자동 복구 시스템 부족
-
-## 목표
-
-1. 소켓 불안정 시에도 실시간 데이터 연속성 보장
-2. 네트워크 상태에 따른 최적 통신 방식 자동 선택
-3. 불필요한 폴링 방지 및 자원 효율적 운영
-
-## 내 역할
-
-- TickHealthMonitor를 통한 3단계 상태 관리 시스템 구축
-- WebSocket ↔ HTTP Polling 자동 전환 로직 개발
-
-## 해결과정
-
-### 헬스 체크 시스템
-
-#### TickHealthMonitor 클래스
-
-실시간 소켓 상태 모니터링을 위한 3단계 상태 관리 시스템을 구축했습니다.
-
-```typescript
-// TickHealthMonitor.ts
-export enum ConnectionStatus {
-  LIVE = "live",
-  STALE = "stale",
-  DEAD = "dead",
-}
-
-export class TickHealthMonitor {
-  private status: ConnectionStatus = ConnectionStatus.LIVE;
-  private missCount: number = 0;
-  private lastTickTime: number = 0;
-  private checkInterval: number | null = null;
-  private listeners: Set<(status: ConnectionStatus) => void> = new Set();
-
-  // 상태 전환 기준
-  private readonly STALE_THRESHOLD = 2; // 연속 미스 2회
-  private readonly DEAD_THRESHOLD = 5; // 연속 미스 5회
-  private readonly TICK_TIMEOUT = 5000; // 5초 타임아웃
-
-  constructor() {
-    this.startHealthCheck();
-  }
-
-  observeTick(): void {
-    this.lastTickTime = Date.now();
-    this.missCount = 0;
-
-    if (this.status !== ConnectionStatus.LIVE) {
-      this.setStatus(ConnectionStatus.LIVE);
-    }
-  }
-
-  private startHealthCheck(): void {
-    this.checkInterval = setInterval(() => {
-      this.performHealthCheck();
-    }, 1000); // 1초마다 체크
-  }
-
-  private performHealthCheck(): void {
-    const now = Date.now();
-    const timeSinceLastTick = now - this.lastTickTime;
-
-    // 타임아웃 체크
-    if (timeSinceLastTick > this.TICK_TIMEOUT) {
-      this.missCount++;
-      this.updateStatusBasedOnMissCount();
-    }
-  }
-
-  private updateStatusBasedOnMissCount(): void {
-    if (this.missCount >= this.DEAD_THRESHOLD) {
-      this.setStatus(ConnectionStatus.DEAD);
-    } else if (this.missCount >= this.STALE_THRESHOLD) {
-      this.setStatus(ConnectionStatus.STALE);
-    }
-  }
-
-  private setStatus(newStatus: ConnectionStatus): void {
-    if (this.status !== newStatus) {
-      this.status = newStatus;
-      this.notifyListeners();
-    }
-  }
-
-  subscribe(listener: (status: ConnectionStatus) => void): () => void {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach((listener) => listener(this.status));
-  }
-
-  getStatus(): ConnectionStatus {
-    return this.status;
-  }
-
-  destroy(): void {
-    if (this.checkInterval) {
-      clearInterval(this.checkInterval);
-      this.checkInterval = null;
-    }
-    this.listeners.clear();
-  }
-}
-```
-
-### 자동 Fallback 시스템
-
-#### WebSocket ↔ HTTP Polling 자동 전환
-
-```typescript
-// FallbackManager.ts
-export class FallbackManager {
-  private tickHealthMonitor: TickHealthMonitor;
-  private httpPoller: HttpPoller;
-  private websocketConnection: WebSocketConnection;
-  private isHttpPollingActive = false;
-
-  constructor(
-    websocketConnection: WebSocketConnection,
-    httpPoller: HttpPoller,
-  ) {
-    this.websocketConnection = websocketConnection;
-    this.httpPoller = httpPoller;
-    this.tickHealthMonitor = new TickHealthMonitor();
-
-    this.setupHealthMonitoring();
-  }
-
-  private setupHealthMonitoring(): void {
-    // WebSocket 메시지 수신 시 헬스 체크
-    this.websocketConnection.onMessage(() => {
-      this.tickHealthMonitor.observeTick();
-    });
-
-    // 상태 변화 감지
-    this.tickHealthMonitor.subscribe((status) => {
-      this.handleStatusChange(status);
-    });
-  }
-
-  private handleStatusChange(status: ConnectionStatus): void {
-    switch (status) {
-      case ConnectionStatus.LIVE:
-        this.handleLiveStatus();
-        break;
-      case ConnectionStatus.STALE:
-        this.handleStaleStatus();
-        break;
-      case ConnectionStatus.DEAD:
-        this.handleDeadStatus();
-        break;
-    }
-  }
-
-  private handleLiveStatus(): void {
-    if (this.isHttpPollingActive) {
-      console.log("WebSocket 복구됨 - HTTP Polling 중단");
-      this.httpPoller.stop();
-      this.isHttpPollingActive = false;
-    }
-  }
-
-  private handleStaleStatus(): void {
-    console.log("WebSocket 상태 불안정 - 모니터링 강화");
-    // Stale 상태에서는 아직 HTTP Polling 시작하지 않음
-    // 추가 미스가 발생하면 Dead로 전환
-  }
-
-  private handleDeadStatus(): void {
-    if (!this.isHttpPollingActive) {
-      console.log("WebSocket 연결 끊김 - HTTP Polling 시작");
-      this.httpPoller.start();
-      this.isHttpPollingActive = true;
-    }
-  }
-
-  destroy(): void {
-    this.tickHealthMonitor.destroy();
-    this.httpPoller.stop();
-  }
-}
-```
-
-#### HTTP Polling 시스템
-
-```typescript
-// HttpPoller.ts
-export class HttpPoller {
-  private pollInterval: number | null = null;
-  private isPolling = false;
-  private pollRate = 2000; // 2초마다 폴링
-  private connected = false;
-
-  constructor(
-    private apiEndpoint: string,
-    private onData: (data: any) => void,
-    private onError: (error: Error) => void,
-  ) {}
-
-  start(): void {
-    if (this.isPolling) return;
-
-    this.isPolling = true;
-    this.connected = true;
-
-    // 즉시 첫 번째 요청 실행
-    this.performPoll();
-
-    // 주기적 폴링 시작
-    this.pollInterval = setInterval(() => {
-      if (this.connected) {
-        this.performPoll();
-      }
-    }, this.pollRate);
-  }
-
-  stop(): void {
-    this.isPolling = false;
-    this.connected = false;
-
-    if (this.pollInterval) {
-      clearInterval(this.pollInterval);
-      this.pollInterval = null;
-    }
-  }
-
-  private async performPoll(): Promise<void> {
-    try {
-      const response = await fetch(this.apiEndpoint, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      this.onData(data);
-    } catch (error) {
-      console.error("HTTP Polling 오류:", error);
-      this.onError(error as Error);
-    }
-  }
-
-  setPollRate(rate: number): void {
-    this.pollRate = rate;
-
-    // 폴링 중이면 재시작
-    if (this.isPolling) {
-      this.stop();
-      this.start();
-    }
-  }
-}
-```
-
-### 통합 시스템 아키텍처
-
-```typescript
-// TradingDataManager.ts
-export class TradingDataManager {
-  private fallbackManager: FallbackManager;
-  private websocketConnection: WebSocketConnection;
-  private httpPoller: HttpPoller;
-  private dataSubscribers: Set<(data: TradingData) => void> = new Set();
-
-  constructor(config: TradingDataConfig) {
-    this.websocketConnection = new WebSocketConnection(config.websocketUrl);
-    this.httpPoller = new HttpPoller(
-      config.httpEndpoint,
-      this.handleDataUpdate.bind(this),
-      this.handleError.bind(this),
-    );
-
-    this.fallbackManager = new FallbackManager(
-      this.websocketConnection,
-      this.httpPoller,
-    );
-
-    this.setupWebSocketHandlers();
-  }
-
-  private setupWebSocketHandlers(): void {
-    this.websocketConnection.onMessage((data) => {
-      this.handleDataUpdate(data);
-    });
-
-    this.websocketConnection.onError((error) => {
-      console.error("WebSocket 오류:", error);
-    });
-  }
-
-  private handleDataUpdate(data: TradingData): void {
-    // 모든 구독자에게 데이터 전달
-    this.dataSubscribers.forEach((subscriber) => {
-      try {
-        subscriber(data);
-      } catch (error) {
-        console.error("데이터 구독자 오류:", error);
-      }
-    });
-  }
-
-  private handleError(error: Error): void {
-    console.error("데이터 수신 오류:", error);
-    // 에러 발생 시에도 구독자들에게 알림
-    this.dataSubscribers.forEach((subscriber) => {
-      try {
-        subscriber({ type: "error", error: error.message });
-      } catch (subscriberError) {
-        console.error("에러 구독자 오류:", subscriberError);
-      }
-    });
-  }
-
-  subscribe(callback: (data: TradingData) => void): () => void {
-    this.dataSubscribers.add(callback);
-    return () => this.dataSubscribers.delete(callback);
-  }
-
-  getConnectionStatus(): ConnectionStatus {
-    return this.fallbackManager.getStatus();
-  }
-
-  destroy(): void {
-    this.fallbackManager.destroy();
-    this.websocketConnection.close();
-    this.dataSubscribers.clear();
-  }
-}
-```
-
-## 시스템 플로우
-
-```mermaid
-sequenceDiagram
-    participant WS as WebSocket
-    participant THM as TickHealthMonitor
-    participant HTTP as HTTP Fallback
-    participant UI as UI Components
-
-    Note over THM: 현재 상태: dead
-    Note over HTTP: HTTP Polling 활성화 중
-
-    WS->>THM: 첫 번째 틱 수신
-    THM->>THM: observeTick() 호출
-    THM->>THM: setStatus('live')<br/>missCount = 0
-
-    THM->>HTTP: connected = true
-    HTTP->>HTTP: refetch: false<br/>폴링 즉시 중단
-
-    WS->>UI: 실시간 데이터 재개
-
-    Note over THM,UI: 즉시 복구 완료!
-```
-
-## 상태 전환 다이어그램
-
-```mermaid
-stateDiagram-v2
-    [*] --> Live: 초기 연결
-
-    Live --> Stale: 연속 미스 2회
-    Stale --> Live: 틱 수신
-    Stale --> Dead: 연속 미스 3회 추가 (총 5회)
-
-    Dead --> Live: 틱 수신
-    Dead --> Dead: HTTP Polling 지속
-
-    note right of Live
-        WebSocket 정상 동작
-        HTTP Polling 비활성화
-    end note
-
-    note right of Stale
-        WebSocket 불안정
-        모니터링 강화
-        HTTP Polling 준비
-    end note
-
-    note right of Dead
-        WebSocket 연결 끊김
-        HTTP Polling 활성화
-        자동 복구 대기
-    end note
-```
-
-## 주요 기능
-
-### 1. 3단계 상태 관리
-
-- **Live**: WebSocket 정상 동작, 실시간 데이터 수신
-- **Stale**: WebSocket 불안정, 모니터링 강화
-- **Dead**: WebSocket 연결 끊김, HTTP Polling 활성화
-
-### 2. 자동 전환 시스템
-
-- **WebSocket → HTTP**: 연결 불안정 시 자동 폴링 시작
-- **HTTP → WebSocket**: 연결 복구 시 즉시 실시간 모드 복귀
-- **불필요한 폴링 방지**: WebSocket 정상 시 HTTP 요청 중단
-
-### 3. 실시간 모니터링
-
-- **헬스 체크**: 1초마다 연결 상태 확인
-- **타임아웃 관리**: 5초 타임아웃으로 응답성 보장
-- **연속 미스 카운팅**: 정확한 상태 판단을 위한 누적 카운트
-
-### 4. 성능 최적화
-
-- **적응형 폴링**: 상태에 따른 동적 폴링 주기 조정
-- **메모리 관리**: 불필요한 리스너 자동 정리
-- **에러 복구**: 네트워크 오류 시 자동 재시도
-
-## 결과
-
-- **데이터 연속성 99.9% 보장**: WebSocket 장애 시에도 HTTP Fallback으로 데이터 손실 방지
-- **복구 시간 3초 이내**: 연결 복구 시 즉시 실시간 모드 전환
-- **리소스 효율성 40% 향상**: 불필요한 HTTP 요청 최소화
-- **사용자 경험 개선**: 데이터 지연으로 인한 거래 기회 상실 방지
+- **사용자 경험 저하**: 데이터 지연으로 인한 잘못된 거래 판단 및 기회 상실
+- **기존 대응 부재**: 소켓 장애 시 대체 통신 방식 및 자동 복구 시스템 부족
+
+## **목표**
+
+1. 소켓 불안정 시에도 실시간 데이터 연속성 보장
+2. 네트워크 상태에 따른 최적 통신 방식 자동 선택
+3. 불필요한 폴링 방지 및 자원 효율적 운영
+4. 차트 데이터 품질 독립적 모니터링 기능 추가
+
+## **내 역할**
+
+- TickHealthMonitor를 통한 3단계 상태 관리 시스템 구축
+- WebSocket ↔ HTTP Polling 자동 전환 로직 개발
+
+## **해결과정**
+
+1. **React Query 기반 하이브리드 데이터 관리**
+
+   시스템의 핵심은 **React Query의 캐시를 중심으로 한 WebSocket ↔ HTTP 통합 관리**입니다.
+
+   ```mermaid
+   graph TB
+       subgraph "React Query Cache"
+           A[QueryClient Cache]
+       end
+
+       subgraph "WebSocket Layer"
+           B[useWebsocketWorkerClient] --> C[connected: boolean]
+           C --> D[WebSocket Data]
+           D --> E[setQueryData]
+       end
+
+       subgraph "HTTP Fallback Layer"
+           F[HTTP Polling] --> G[refetchInterval]
+           G --> H[connected ? 5000 : 1000]
+           H --> I[HTTP Data]
+           I --> J[setQueryData]
+       end
+
+       E --> A
+       J --> A
+       A --> K[UI Components]
+   ```
+
+   setQueryData 내부 소스코드에서 근거를 찾은 내용
+
+   [Github Discussion](https://github.com/TanStack/query/discussions/4716)
+
+   ```mermaid
+   sequenceDiagram
+       participant WS as WebSocket
+       participant Hook as useKlineWebSocket
+       participant Client as QueryClient
+       participant Cache as QueryCache
+       participant Query as Query
+       participant Observer as QueryObserver
+       participant Timer as setInterval
+
+       Note over WS,Timer: 정상적인 경우 - WebSocket 데이터 수신
+       WS->>Hook: 실시간 Kline 데이터
+       Hook->>Client: setQueryData(queryKey, newData)
+
+       Note over Client,Timer: React Query 내부 처리 과정
+       Client->>Cache: get(queryHash)
+       Cache-->>Client: 기존 Query 객체 반환
+       Client->>Query: setData(data, {manual: true})
+
+       Note over Query: setData 내부 처리
+       Query->>Query: #dispatch({type: 'success', dataUpdatedAt: undefined})
+       Query->>Query: dataUpdatedAt: undefined ?? Date.now() → Date.now()로 설정!
+
+       Note over Query: Observer들에게 알림
+       Query->>Observer: observer.onQueryUpdate()
+
+       Note over Observer: 타이머 업데이트
+       Observer->>Observer: #updateTimers()
+       Observer->>Observer: #computeRefetchInterval()
+       Observer->>Observer: #updateRefetchInterval(interval)
+
+       Note over Observer: refetchInterval 재설정
+       Observer->>Timer: clearInterval(기존)
+       Observer->>Timer: setInterval(새로운)
+
+       Note over Timer: HTTP polling 비활성화 (refetchInterval = false)
+   ```
+
+2. **차트 전용 TickHealthMonitor 시스템**
+
+   TradingView 차트의 실시간 데이터 품질을 독립적으로 모니터링하는 3단계 상태 관리 시스템을 구축했습니다.
+
+   **TickHealthMonitor 상태 전환:**
+   - **Live → Stale**: 2회 연속 미스 (25초 초과)
+   - **Stale → Dead**: 5회 연속 미스 (총 7회)
+   - **Dead → Live**: 첫 번째 틱 수신 시 즉시 복구
+
+3. **자동 Fallback 시스템**
+
+   WebSocket → HTTP Polling 자동 전환, 소켓 연결 복구 시 WebSocket 자동 복귀
+
+   ```mermaid
+   sequenceDiagram
+       participant UI as UI Components
+       participant RQ as React Query System
+       participant WS as WebSocket
+       participant HTTP as HTTP API
+       participant THM as TickHealthMonitor
+       participant TV as TradingView Chart
+
+       Note over UI,TV: 정상 연결 상태
+       WS->>RQ: 실시간 데이터 수신
+       RQ->>UI: 거래 데이터 업데이트
+
+       TV->>THM: onTick 이벤트
+       THM->>THM: 상태: Live
+       THM->>TV: 차트 데이터 정상
+
+       Note over UI,TV: 연결 불안정 상태
+       WS--xRQ: 데이터 수신 실패
+       HTTP->>RQ: 폴링 간격 1초로 단축
+       RQ->>UI: HTTP 데이터로 연속성 유지
+
+       TV--xTHM: onTick 이벤트 없음
+       THM->>THM: 상태: Stale → Dead
+       THM->>TV: 차트 데이터 품질 저하 감지
+
+       Note over UI,TV: 연결 복구
+       WS->>RQ: 첫 번째 데이터 수신
+       HTTP->>RQ: 폴링 간격 5초로 확장
+
+       TV->>THM: onTick 이벤트 재개
+       THM->>THM: 상태: Dead → Live
+       THM->>TV: 차트 데이터 품질 정상화
+   ```
+
+   **시스템 아키텍처**
+
+   ```mermaid
+   graph TB
+       subgraph "거래 데이터 (React Query 기반)"
+           A[useWebsocketWorkerClient] --> B[connected: boolean]
+           B --> C[WebSocket Data]
+           C --> D[setQueryData]
+           E[HTTP Polling] --> F[refetchInterval 조정]
+           F --> G[HTTP Data]
+           G --> H[setQueryData]
+           D --> I[React Query Cache]
+           H --> I
+       end
+
+       subgraph "차트 데이터 (TickHealthMonitor 기반)"
+           J[TradingView onTick] --> K[TickHealthMonitor]
+           K --> L[Live/Stale/Dead 상태]
+           L --> M[차트 데이터 품질 모니터링]
+       end
+
+       subgraph "UI Layer"
+           I --> N[UI Component]
+           M --> O[TradingView Chart]
+       end
+   ```
 
 ## 개선할 점
 
-- **매직 넘버 개선**: 현재 하드코딩된 임계값들을 데이터 기반으로 동적 조정
-- **네트워크 품질 기반 최적화**: RTT, 패킷 손실률 등을 고려한 적응형 폴링
-- **백엔드 부하 분산**: 다중 엔드포인트를 활용한 로드 밸런싱
+- 매직 넘버에 대한 기준 불명확 (데이터 기반으로 변경해야 함)
+  - TickMonitor 내의 횟수 및 polling 시간이 데이터 기반으로 적절히 설정이 되어야 합니다.
 
-## 기술 스택
+## setQueryData 내부 로직
 
-- **Frontend**: TypeScript, WebSocket API
-- **Network**: HTTP/1.1, WebSocket
-- **Monitoring**: Custom Health Check System
-- **Architecture**: Observer Pattern, State Machine
-- **Performance**: Adaptive Polling, Memory Management
+queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣지 않으면 Date.now()로 자동 설정
+→ 이로 인해 WebSocket으로 실시간 데이터를 받을 때마다 refetchTime이 초기화되어, HTTP polling의 refetchInterval 계산이 초기화된다.
+
+- 1단계: [setQueryData](https://github.com/TanStack/query/blob/2a00fb6504e777fa1a9c9a46ce9f1b7ccdb3835a/packages/query-core/src/queryClient.ts#L176) 호출
+  ```tsx
+  setQueryData<
+      TQueryFnData = unknown,
+      TTaggedQueryKey extends QueryKey = QueryKey,
+      TInferredQueryFnData = InferDataFromTag<TQueryFnData, TTaggedQueryKey>,
+    >(
+      queryKey: TTaggedQueryKey,
+      updater: Updater<
+        NoInfer<TInferredQueryFnData> | undefined,
+        NoInfer<TInferredQueryFnData> | undefined
+      >,
+      options?: SetDataOptions,
+    ): NoInfer<TInferredQueryFnData> | undefined {
+      const defaultedOptions = this.defaultQueryOptions<
+        any,
+        any,
+        unknown,
+        any,
+        QueryKey
+      >({ queryKey })
+
+      const query = this.#queryCache.get<TInferredQueryFnData>(
+        defaultedOptions.queryHash,
+      )
+      const prevData = query?.state.data
+      const data = functionalUpdate(updater, prevData)
+
+      if (data === undefined) {
+        return undefined
+      }
+
+      return this.#queryCache
+        .build(this, defaultedOptions)
+        .setData(data, { ...options, manual: true })
+    }
+  ```
+  - queryCache에서 기존 쿼리를 가져옴
+  - 이전 데이터를 가져와서 functionalUpdate로 새 데이터 생성
+  - queryCache.build()로 쿼리 객체를 생성하고 setData() 호출
+- **2단계: queryCache.build() → [setData()](https://github.com/TanStack/query/blob/main/packages/query-core/src/query.ts#L228) 호출**
+  ```tsx
+  setData(
+      newData: TData,
+      options?: SetDataOptions & { manual: boolean },
+    ): TData {
+      const data = replaceData(this.state.data, newData, this.options)
+
+      // Set data and mark it as cached
+      this.#dispatch({
+        data,
+        type: 'success',
+        dataUpdatedAt: options?.updatedAt,
+        manual: options?.manual,
+      })
+
+      return data
+    }
+  ```
+  **코드 분석:**
+  - replaceData로 새 데이터 처리
+  - #dispatch 호출하여 'success' 액션 전달
+  - options?.updatedAt이 전달됨 (기본값은 undefined)
+- 3단계: [\*\*#dispatch](https://github.com/TanStack/query/blob/main/packages/query-core/src/query.ts#L608) → dataUpdatedAt 갱신\*\*
+  ```tsx
+  #dispatch(action: Action<TData, TError>): void {
+      const reducer = (
+        state: QueryState<TData, TError>,
+      ): QueryState<TData, TError> => {
+        switch (action.type) {
+          case 'failed':
+            return {
+              ...state,
+              fetchFailureCount: action.failureCount,
+              fetchFailureReason: action.error,
+            }
+          case 'pause':
+            return {
+              ...state,
+              fetchStatus: 'paused',
+            }
+          case 'continue':
+            return {
+              ...state,
+              fetchStatus: 'fetching',
+            }
+          case 'fetch':
+            return {
+              ...state,
+              ...fetchState(state.data, this.options),
+              fetchMeta: action.meta ?? null,
+            }
+          case 'success':
+            return {
+              ...state,
+              data: action.data,
+              dataUpdateCount: state.dataUpdateCount + 1,
+              dataUpdatedAt: action.dataUpdatedAt ?? Date.now(),
+              error: null,
+              isInvalidated: false,
+              status: 'success',
+              ...(!action.manual && {
+                fetchStatus: 'idle',
+                fetchFailureCount: 0,
+                fetchFailureReason: null,
+              }),
+            }
+          case 'error':
+            const error = action.error
+
+            if (isCancelledError(error) && error.revert && this.#revertState) {
+              return { ...this.#revertState, fetchStatus: 'idle' }
+            }
+
+            return {
+              ...state,
+              error,
+              errorUpdateCount: state.errorUpdateCount + 1,
+              errorUpdatedAt: Date.now(),
+              fetchFailureCount: state.fetchFailureCount + 1,
+              fetchFailureReason: error,
+              fetchStatus: 'idle',
+              status: 'error',
+            }
+          case 'invalidate':
+            return {
+              ...state,
+              isInvalidated: true,
+            }
+          case 'setState':
+            return {
+              ...state,
+              ...action.state,
+            }
+        }
+      }
+
+      this.state = reducer(this.state)
+
+      notifyManager.batch(() => {
+        this.observers.forEach((observer) => {
+          observer.onQueryUpdate()
+        })
+
+        this.#cache.notify({ query: this, type: 'updated', action })
+      })
+    }
+  ```
+  - dataUpdatedAt: action.dataUpdatedAt ?? Date.now()
+    - setQueryData에서 options?.updatedAt이 undefined이므로 **Date.now()로 설정됨**
+  - dataUpdateCount도 증가
+  - 모든 observer에게 onQueryUpdate() 호출
+  - 이는 refetchInterval을 관리하는 QueryObserver들에게 알림을 보내는 핵심 부분
+- 5단계: [\*\*QueryObserver.onQueryUpdate()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L721) 호출\*\*
+  ```tsx
+    onQueryUpdate(): void {
+      this.updateResult()
+
+      if (this.hasListeners()) {
+        this.#updateTimers()
+      }
+    }
+  ```
+  - #updateTimers() 호출 - **여기서 refetchInterval 재계산 시작**
+- **6단계: [#updateTimers()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L409) → #updateRefetchInterval() 호출 (queryObserver.ts 414-417번째 줄)**
+  ```tsx
+    #updateTimers(): void {
+      this.#updateStaleTimeout()
+      this.#updateRefetchInterval(this.#computeRefetchInterval())
+    }
+
+  ```
+  - #computeRefetchInterval()로 새로운 interval 계산 후 #updateRefetchInterval() 호출
+- **7단계: [#computeRefetchInterval()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L377C3-L383C4) 계산**
+  ```tsx
+   #computeRefetchInterval() {
+      return (
+        (typeof this.options.refetchInterval === 'function'
+          ? this.options.refetchInterval(this.#currentQuery)
+          : this.options.refetchInterval) ?? false
+      )
+    }
+  ```
+  **코드 분석:**
+  - refetchInterval이 함수인지 확인하고, 함수면 현재 쿼리를 전달하여 계산
+  - 기본값은 false
+- **8단계: [#updateRefetchInterval()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L385) 실행**
+  ```tsx
+  #updateRefetchInterval(nextInterval: number | false): void {
+      this.#clearRefetchInterval()
+
+      this.#currentRefetchInterval = nextInterval
+
+      if (
+        isServer ||
+        resolveEnabled(this.options.enabled, this.#currentQuery) === false ||
+        !isValidTimeout(this.#currentRefetchInterval) ||
+        this.#currentRefetchInterval === 0
+      ) {
+        return
+      }
+
+      this.#refetchIntervalId = setInterval(() => {
+        if (
+          this.options.refetchIntervalInBackground ||
+          focusManager.isFocused()
+        ) {
+          this.#executeFetch()
+        }
+      }, this.#currentRefetchInterval)
+    }
+
+      #clearRefetchInterval(): void {
+      if (this.#refetchIntervalId) {
+        clearInterval(this.#refetchIntervalId)
+        this.#refetchIntervalId = undefined
+      }
+    }
+  ```
+  **코드 분석:**
+  - #clearRefetchInterval() - **기존 setInterval 정리**
+  - 새로운 interval 값 저장
+  - **새로운 setInterval 생성** - #executeFetch() 호출
+
+---
+
+요약
+
+```tsx
+// 1. setQueryData 호출
+queryClient.setQueryData(queryKey, newData)
+  ↓
+// 2. queryCache에서 쿼리 가져오기 (queryClient.ts:217-219)
+const query = this.#queryCache.get<TInferredQueryFnData>(defaultedOptions.queryHash)
+  ↓
+// 3. setData 호출 (queryClient.ts:227-229)
+this.#queryCache.build(this, defaultedOptions).setData(data, { ...options, manual: true })
+  ↓
+// 4. #dispatch 호출 (query.ts:218-223)
+this.#dispatch({
+  data,
+  type: 'success',
+  dataUpdatedAt: options?.updatedAt,  // undefined
+  manual: options?.manual,
+})
+  ↓
+// 5. dataUpdatedAt 갱신 (query.ts:575)
+dataUpdatedAt: action.dataUpdatedAt ?? Date.now()  // Date.now()로 설정!
+  ↓
+// 6. 모든 observer에게 알림 (query.ts:618-620)
+this.observers.forEach((observer) => {
+  observer.onQueryUpdate()
+})
+  ↓
+// 7. QueryObserver.onQueryUpdate() 호출 (queryObserver.ts:735-740)
+onQueryUpdate(): void {
+  this.updateResult()
+  if (this.hasListeners()) {
+    this.#updateTimers()  // 🔥 여기서 refetchInterval 재계산!
+  }
+}
+  ↓
+// 8. #updateTimers() 호출 (queryObserver.ts:414-417)
+#updateTimers(): void {
+  this.#updateStaleTimeout()
+  this.#updateRefetchInterval(this.#computeRefetchInterval())
+}
+  ↓
+// 9. #computeRefetchInterval() 계산 (queryObserver.ts:382-388)
+#computeRefetchInterval() {
+  return (typeof this.options.refetchInterval === 'function'
+    ? this.options.refetchInterval(this.#currentQuery)
+    : this.options.refetchInterval) ?? false
+}
+  ↓
+// 10. #updateRefetchInterval() 실행 (queryObserver.ts:390-412)
+#updateRefetchInterval(nextInterval: number | false): void {
+  this.#clearRefetchInterval()  // 기존 setInterval 정리
+  this.#currentRefetchInterval = nextInterval
+
+  // 새로운 setInterval 생성
+  this.#refetchIntervalId = setInterval(() => {
+    if (this.options.refetchIntervalInBackground || focusManager.isFocused()) {
+      this.#executeFetch()
+    }
+  }, this.#currentRefetchInterval)
+}
+```
+
+---
+
+코드 매커니즘
+
+**전체 흐름:**
+
+1. **setQueryData 호출** → dataUpdatedAt이 Date.now()로 갱신
+2. **#dispatch 실행** → 'success' 액션으로 상태 업데이트
+3. **모든 observer에게 onQueryUpdate() 호출**
+4. **onQueryUpdate()에서 #updateTimers() 호출**
+5. **#updateTimers()에서 #updateRefetchInterval() 호출**
+6. **#computeRefetchInterval()로 새로운 interval 계산**
+7. **기존 setInterval 정리 후 새로운 setInterval 생성**
+
+```mermaid
+sequenceDiagram
+    participant Client as QueryClient
+    participant Cache as QueryCache
+    participant Query as Query
+    participant Observer as QueryObserver
+    participant Timer as setInterval
+
+    Note over Client: 1. setQueryData 호출
+    Client->>Cache: get(queryHash)
+    Cache-->>Client: 기존 Query 객체 반환
+
+    Client->>Cache: build(client, options)
+    Cache-->>Client: Query 객체 생성
+
+    Client->>Query: setData(data, {manual: true})
+
+    Note over Query: 2. setData 내부 처리
+    Query->>Query: replaceData(oldData, newData)
+    Query->>Query: #dispatch({type: 'success', dataUpdatedAt: undefined})
+
+    Note over Query: 3. #dispatch 실행
+    Query->>Query: reducer 실행
+    Note over Query: dataUpdatedAt: undefined ?? Date.now()<br/>→ Date.now()로 설정!
+
+    Note over Query: 4. Observer들에게 알림
+    Query->>Observer: observer.onQueryUpdate()
+
+    Note over Observer: 5. onQueryUpdate 처리
+    Observer->>Observer: updateResult()
+    Observer->>Observer: #updateTimers()
+
+    Note over Observer: 6. 타이머 업데이트
+    Observer->>Observer: #updateStaleTimeout()
+    Observer->>Observer: #computeRefetchInterval()
+    Observer->>Observer: #updateRefetchInterval(interval)
+
+    Note over Observer: 7. refetchInterval 재설정
+    Observer->>Timer: clearInterval(기존)
+    Observer->>Timer: setInterval(새로운)
+
+    Note over Timer: 8. 새로운 polling 시작
+    Timer-->>Observer: #executeFetch() (주기적 호출)
+```
+
+- 클래스별 역할
+  ```mermaid
+  classDiagram
+      class QueryClient {
+          -queryCache: QueryCache
+          +setQueryData(queryKey, updater, options)
+          +getQueryCache()
+      }
+
+      class QueryCache {
+          -queries: Map
+          +get(queryHash) Query
+          +build(client, options) Query
+          +notify(event)
+      }
+
+      class Query {
+          -state: QueryState
+          -observers: QueryObserver[]
+          +setData(newData, options)
+          -dispatch(action)
+          +fetch()
+      }
+
+      class QueryObserver {
+          -currentQuery: Query
+          -refetchIntervalId: number
+          -currentRefetchInterval: number
+          +onQueryUpdate()
+          -updateTimers()
+          -updateRefetchInterval()
+          -computeRefetchInterval()
+          -executeFetch()
+      }
+
+      class QueryState {
+          +data: any
+          +dataUpdatedAt: number
+          +dataUpdateCount: number
+          +status: QueryStatus
+      }
+
+      QueryClient --> QueryCache : uses
+      QueryCache --> Query : manages
+      Query --> QueryObserver : notifies
+      Query --> QueryState : contains
+      QueryObserver --> Query : observes
+  ```

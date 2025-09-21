@@ -94,6 +94,7 @@ export const resume: ResumeData = {
         "TP/SL 드래그 UX": "/assets/tpsl.gif",
         "웹소켓 디버깅 툴": "/assets/socket-devtools.gif",
         "시장가/지정가 주문 UI": "/assets/limit-order-panel.gif",
+        "HTTP Polling Fallback 시스템": "/assets/websocket-fallback.png",
       },
       bullets: [
         {
@@ -133,7 +134,7 @@ export const resume: ResumeData = {
           ],
         },
         {
-          text: "웹소켓 불안정 시 HTTP Polling Fallback 시스템 개발",
+          text: "웹소켓 불안정 시 [HTTP Polling Fallback 시스템] 개발",
           portfolioLinks: [
             {
               title: "Fallback 시스템 설계",
