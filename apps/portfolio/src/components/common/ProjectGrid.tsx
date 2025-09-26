@@ -21,10 +21,10 @@ export function ProjectGrid({
   }
 
   return (
-    <motion.ul      
+    <motion.ul
       variants={stagger}
       initial="hidden"
-      whileInView="show"
+      animate="show"
       className={className}
     >
       {projects.map((project) => (

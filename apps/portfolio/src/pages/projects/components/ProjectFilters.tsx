@@ -1,6 +1,8 @@
 import React from "react";
 import { SearchBox, FilterChips } from "../../../components/common";
 import type { ProjectMeta } from "../../../service/portfolio";
+import { extractAllTags, extractAllProjects } from "../utils/extractors";
+import { UI_CONSTANTS } from "../constants/ui";
 
 interface ProjectFiltersProps {
   portfolioIndex: { all: ProjectMeta[] } | undefined;
@@ -29,22 +31,12 @@ export function ProjectFilters({
 }: ProjectFiltersProps) {
   // 태그/프로젝트 목록
   const allTags = React.useMemo(
-    () =>
-      Array.from(
-        new Set(portfolioIndex?.all.flatMap((p) => p.tags) ?? []),
-      ).sort(),
+    () => extractAllTags(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
 
   const allProjects = React.useMemo(
-    () =>
-      Array.from(
-        new Set(
-          (portfolioIndex?.all
-            .map((p) => p.project)
-            .filter(Boolean) as string[]) ?? [],
-        ),
-      ).sort(),
+    () => extractAllProjects(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
 
@@ -55,6 +47,7 @@ export function ProjectFilters({
         initial={searchQuery}
         onChangeText={onSearchChange}
         onCommit={onSearchCommit}
+        placeholder={UI_CONSTANTS.SEARCH_PLACEHOLDER}
       />
 
       {/* 프로젝트 칩 필터 */}
@@ -63,7 +56,7 @@ export function ProjectFilters({
         activeItem={selectedProject}
         onItemClick={onProjectChange}
         onClearClick={onProjectClear}
-        clearLabel="모든 프로젝트"
+        clearLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
       />
 
       {/* 태그 칩 필터 */}
@@ -72,8 +65,8 @@ export function ProjectFilters({
         activeItem={selectedTag}
         onItemClick={onTagChange}
         onClearClick={onTagClear}
-        clearLabel="전체 태그"
-        itemPrefix="#"
+        clearLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
+        itemPrefix={UI_CONSTANTS.TAG_PREFIX}
       />
     </div>
   );

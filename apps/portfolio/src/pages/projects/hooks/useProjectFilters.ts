@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState } from "react";
 import type { ProjectMeta } from "../../../service/portfolio";
+import { filterProjects } from "../utils/filters";
 
 export function useProjectFilters(
   portfolioIndex: { all: ProjectMeta[] } | undefined,
@@ -34,23 +35,10 @@ export function useProjectFilters(
     [sp, setParam],
   );
 
-  // 필터링 로직
-  const includesI = (s: string | undefined | null, q: string) =>
-    (s ?? "").toLowerCase().includes(q.toLowerCase());
-
+  // 필터링된 프로젝트 목록
   const filtered = useMemo(() => {
     if (!portfolioIndex) return [];
-    const q = qText.trim();
-    return portfolioIndex.all.filter((p) => {
-      const qHit =
-        !q ||
-        includesI(p.title, q) ||
-        includesI(p.summary, q) ||
-        includesI(p.project ?? "", q);
-      const tHit = !tag || (p.tags ?? []).includes(tag);
-      const pHit = !proj || p.project === proj;
-      return qHit && tHit && pHit;
-    });
+    return filterProjects(portfolioIndex.all, qText, tag, proj);
   }, [portfolioIndex, qText, tag, proj]);
 
   return {

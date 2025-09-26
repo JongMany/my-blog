@@ -1,6 +1,7 @@
 import { ProjectGrid } from "../../../components/common";
 import { ProjectCard } from "../../../components/project-card";
 import type { ProjectMeta } from "../../../service/portfolio";
+import { MESSAGE_CONSTANTS } from "../constants/messages";
 
 interface ProjectListProps {
   projects: ProjectMeta[];
@@ -9,7 +10,7 @@ interface ProjectListProps {
 
 export function ProjectList({
   projects,
-  emptyMessage = "조건에 맞는 프로젝트가 없습니다.",
+  emptyMessage = MESSAGE_CONSTANTS.EMPTY_MESSAGE,
 }: ProjectListProps) {
   return (
     <ProjectGrid

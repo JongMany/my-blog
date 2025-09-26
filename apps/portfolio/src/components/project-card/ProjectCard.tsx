@@ -9,6 +9,12 @@ import {
 } from "../../service/portfolio";
 import { imageSource } from "@mfe/shared";
 
+// 호버 애니메이션만 (인뷰 애니메이션은 ProjectGrid에서 처리)
+const hoverAnim = {
+  whileHover: { y: -4, scale: 1.01 },
+  transition: { type: "spring", stiffness: 260, damping: 18 },
+} as const;
+
 type Props = {
   p: ProjectMeta;
   maxTags?: number; // 태그 보여줄 최대 개수
@@ -23,15 +29,6 @@ export default function ProjectCard({
   const tags = p.tags ?? [];
   const visible = tags.slice(0, maxTags);
   const more = tags.length - visible.length;
-
-  // 인뷰 페이드업 + 호버 살짝 양감
-  const anim = {
-    initial: { opacity: 0, y: 8 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-10% 0px" },
-    whileHover: { y: -4, scale: 1.01 },
-    transition: { type: "spring", stiffness: 260, damping: 18 },
-  } as const;
 
   const [imgOk, setImgOk] = React.useState(true);
   const [currentSrc, setCurrentSrc] = React.useState<string>("");
@@ -59,7 +56,10 @@ export default function ProjectCard({
         className="group block h-full focus-visible:outline-none focus-visible:[box-shadow:var(--ring)]"
         aria-label={`${p.title} 상세 보기`}
       >
-        <motion.article {...anim} className="t-card h-full overflow-hidden">
+        <motion.article
+          {...hoverAnim}
+          className="t-card h-full overflow-hidden"
+        >
           {/* 썸네일 (있을 때만) */}
           {showImage && p.cover && imgOk && currentSrc && (
             <div

@@ -3,7 +3,7 @@ export const easeOutCb = cubicBezier(0.16, 1, 0.3, 1);
 export const fadeUp = {
   initial: { opacity: 0, y: 12 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-10% 0px" },
+  viewport: { margin: "-10% 0px" },
   transition: { duration: 0.5, ease: easeOutCb } as const,
 };
 export const vItem = {
