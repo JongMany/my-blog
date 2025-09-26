@@ -1,8 +1,8 @@
 import React from "react";
-import type { Activity } from "../service/resume";
+import type { Activity } from "../../../service";
 import { motion } from "framer-motion";
-import { vItem } from "./Motion";
-import { Card } from "./ui";
+import { vItem } from "../../../constants";
+import { Card } from "../../../components/card";
 export default function ActivityItem({ item }: { item: Activity }) {
   return (
     <motion.div variants={vItem}>

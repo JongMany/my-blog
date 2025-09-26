@@ -4,7 +4,7 @@ import {
   Activity,
   Bullet,
   SideProject,
-} from "../service/resume";
+} from "../service";
 
 // 간단한 버전에서 경력 항목을 필터링하는 함수
 export function filterExperienceForCompact(experience: Experience): Experience {

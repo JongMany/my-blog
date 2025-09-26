@@ -1,6 +1,6 @@
 // apps/resume/src/components/PageTOC.tsx
 import React from "react";
-import { Card } from "./ui";
+import { Card } from "../card";
 import { cn } from "@srf/ui";
 
 type TocItem = { id: string; label: string };
@@ -32,7 +32,7 @@ export default function PageTOC({
           .sort(
             (a, b) =>
               Math.abs(a.boundingClientRect.top - offset) -
-              Math.abs(b.boundingClientRect.top - offset)
+              Math.abs(b.boundingClientRect.top - offset),
           )[0];
         if (visible?.target?.id) {
           const id = visible.target.id;
@@ -42,7 +42,7 @@ export default function PageTOC({
           }
         }
       },
-      { rootMargin: `-${offset}px 0px -70% 0px`, threshold: [0] }
+      { rootMargin: `-${offset}px 0px -70% 0px`, threshold: [0] },
     );
 
     items.forEach(({ id }) => {
@@ -96,7 +96,7 @@ export default function PageTOC({
                 "w-full rounded-full px-3 py-1.5 text-left text-sm transition",
                 is
                   ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-                  : "bg-[var(--surface)] hover:bg-[var(--hover-bg)]"
+                  : "bg-[var(--surface)] hover:bg-[var(--hover-bg)]",
               )}
               aria-current={is ? "true" : undefined}
             >

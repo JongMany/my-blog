@@ -1,6 +1,5 @@
 import React from "react";
-import { PillButton } from "./ui";
-import { CursorTooltip } from "@srf/ui";
+import { PillButton } from "../../../components/button";
 
 const skillCategories = {
   Frontend: [

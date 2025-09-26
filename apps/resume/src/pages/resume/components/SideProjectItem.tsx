@@ -1,9 +1,15 @@
 import React from "react";
-import type { SideProject } from "../service/resume";
+import type { SideProject } from "../../../service";
 import { motion } from "framer-motion";
-import { vItem } from "./Motion";
-import { Card, Button, Meta, PillButton } from "./ui";
-import { Emphasis, BulletList, PortfolioLinks } from "./common";
+import { vItem } from "../../../constants";
+import { Card } from "../../../components/card";
+import { Button, PillButton } from "../../../components/button";
+import { Meta } from "../../../components/badge";
+import {
+  Emphasis,
+  BulletList,
+  PortfolioLinks,
+} from "../../../components/common";
 
 /* ───────────── 컴포넌트 ───────────── */
 export default function SideProjectItem({ item }: { item: SideProject }) {

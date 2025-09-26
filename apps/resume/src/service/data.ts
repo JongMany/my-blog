@@ -1,62 +1,4 @@
-export type Bullet = {
-  text: string;
-  tags?: string[];
-  children?: Bullet[]; // ← 하위 불릿(들여쓰기) 지원
-  portfolioLinks?: PortfolioLink[]; // ← 포트폴리오 링크들
-};
-
-export type PortfolioLink = {
-  title: string;
-  url: string;
-  type?: "portfolio" | "demo" | "github" | "blog" | "other";
-};
-
-export type Experience = {
-  company: string;
-  role: string;
-  period: string;
-  summary?: string; // ← 경력 요약(문단)
-  stacks?: string[]; // 칩으로 표시
-  bullets: Bullet[]; // 중첩 불릿
-  keywordImageMap?: Record<string, string>; // 키워드-이미지 매핑
-};
-export type Education = {
-  school: string;
-  degree?: string;
-  period: string;
-  gpaMajor?: string;
-  gpaOverall?: string;
-  note?: string;
-};
-export type Activity = { title: string; period?: string; bullets: string[] };
-
-export type SideProject = {
-  title: string;
-  period?: string;
-  summary?: string;
-  stacks?: string[];
-  bullets: Bullet[];
-  keywordImageMap?: Record<string, string>;
-  portfolioLinks?: PortfolioLink[];
-};
-export type ResumeData = {
-  profile: {
-    name: string;
-    tagline: string;
-    intro: string[];
-    email: string;
-    github?: string;
-    blog?: string;
-    portfolio?: string;
-    personalSite?: string;
-    photoUrl?: string;
-  };
-  experiences: Experience[];
-  sideProjects?: SideProject[];
-  education: Education[];
-  activities: Activity[];
-  skills?: string[];
-};
+import type { ResumeData } from "./types";
 
 export const resume: ResumeData = {
   profile: {
@@ -81,7 +23,7 @@ export const resume: ResumeData = {
       role: "Frontend Developer",
       period: "2025.07 - now",
       summary:
-        "국내 최대 암호화폐 및 가상자산 투자 정보 미디어 서비스인 코인니스 내의 암호화폐 거래소 서비스를 개발했습니다. 암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다.",
+        "국내 최대 암호화폐 및 가상자산 투자 정보 미디어 서비스인 코인니스 내의 암호화폐 거래소 서비스를 개발했습니다. 암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다.",
       stacks: [
         "Yarn",
         "React",
@@ -245,24 +187,6 @@ export const resume: ResumeData = {
             },
           ],
         },
-        // {
-        //   text: "AI 캐릭터 리워드 서비스 및 SSO 시스템",
-        //   portfolioLinks: [
-        //     {
-        //       title: "수익 분배 시스템 및 SSO 구현",
-        //       url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-reward-service",
-        //       type: "portfolio",
-        //     },
-        //   ],
-        //   children: [
-        //     {
-        //       text: "투명한 수익 분배 시스템으로 창작자들의 동기 부여 및 플랫폼 콘텐츠 품질 향상",
-        //     },
-        //     {
-        //       text: "안정적인 결제 시스템으로 창작자와 사용자 모두 신뢰할 수 있는 환경 조성",
-        //     },
-        //   ],
-        // },
         {
           text: "[실시간 텍스트 검열 시스템] 개발",
           portfolioLinks: [
@@ -330,7 +254,7 @@ export const resume: ResumeData = {
     {
       title: "[Ready To Work 프로젝트]",
       period: "2024.05.11 - 2024.05.14",
-      summary: `Ready To Work 프로젝트는 “회사가 채용 프로세스를 간소화하면서 검증된 인재를 채용할 수 없을까?” 라는 질문으로부터 시작된 프로젝트입니다.`,
+      summary: `Ready To Work 프로젝트는 "회사가 채용 프로세스를 간소화하면서 검증된 인재를 채용할 수 없을까?" 라는 질문으로부터 시작된 프로젝트입니다.`,
       keywordImageMap: {
         "Ready To Work 프로젝트": "/assets/rtw-excel-upload.png",
       },

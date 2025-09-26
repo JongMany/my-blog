@@ -1,0 +1,1 @@
+export { useResumeData } from "./useResumeData";

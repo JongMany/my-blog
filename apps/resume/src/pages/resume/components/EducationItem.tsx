@@ -1,9 +1,9 @@
 // apps/resume/src/components/EducationItem.tsx
 import React from "react";
-import type { Education } from "../service/resume";
+import type { Education } from "../../../service";
 import { motion } from "framer-motion";
-import { vItem } from "./Motion";
-import { Card } from "./ui";
+import { vItem } from "../../../constants";
+import { Card } from "../../../components/card";
 export default function EducationItem({ item }: { item: Education }) {
   return (
     <motion.div variants={vItem}>

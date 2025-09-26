@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { SEO } from "@srf/ui";
 import "./App.css";
-import ResumePage from "./pages/ResumePage";
+import { ResumePage } from "./pages/resume";
 import { ResumeProvider } from "./contexts/ResumeContext";
 
 export default function ResumeApp() {

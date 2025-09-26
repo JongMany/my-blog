@@ -1,9 +1,9 @@
 // apps/resume/src/components/ResumeHeader.tsx
-
-import type { ResumeData } from "../service/resume";
+import React from "react";
+import type { ResumeData } from "../../../service";
 import { motion } from "framer-motion";
-import { fadeUp, stagger, vItem } from "./Motion";
-import { Card } from "./ui";
+import { fadeUp, stagger, vItem } from "../../../constants";
+import { Card } from "../../../components/card";
 import { imageSource } from "@mfe/shared";
 
 export default function ResumeHeader({
