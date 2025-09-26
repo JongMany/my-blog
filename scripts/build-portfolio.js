@@ -7,94 +7,134 @@ const chardet = require("chardet");
 const iconv = require("iconv-lite");
 const crypto = require("crypto");
 
-// --- 경로 설정 ---
-const root = path.resolve(process.cwd());
-const SRC = path.join(root, "apps/portfolio/content/projects"); // 프로젝트 원본(.mdx)
-const OUT = path.join(root, "apps/portfolio/public/_portfolio"); // 공개 산출물
-const PROJECTS_DIR = path.join(OUT, "projects"); // 변환된 MDX 원문(프론트매터 제거본)
-const ASSETS_DIR = path.join(OUT, "assets"); // 이미지 등 자산
+// ============================================================================
+// 상수 정의
+// ============================================================================
 
-// --- 유틸 ---
-function cleanDir(p) {
-  fs.rmSync(p, { recursive: true, force: true });
-  fs.mkdirSync(p, { recursive: true });
-}
-function ensureDir(p) {
-  fs.mkdirSync(p, { recursive: true });
-}
-function isMdx(f) {
-  return /\.mdx?$/i.test(f);
+const CONFIG = {
+  // 경로 설정
+  SRC_DIR: "apps/portfolio/content/projects",
+  OUT_DIR: "apps/portfolio/public/_portfolio",
+  PROJECTS_DIR: "projects",
+  ASSETS_DIR: "assets",
+  THUMBNAILS_DIR: "projects/thumbnails",
+
+  // 파일 확장자
+  MDX_EXTENSIONS: /\.mdx?$/i,
+
+  // 인코딩 설정
+  DEFAULT_ENCODING: "UTF-8",
+  FALLBACK_ENCODINGS: ["CP949", "EUC-KR", "WINDOWS-1252"],
+
+  // Git 설정
+  GIT_DATE_FORMATS: {
+    created: "git log --diff-filter=A --follow --format=%aI -1 -- ",
+    updated: "git log --follow --format=%aI -1 -- ",
+  },
+  GIT_REV_FORMAT: "git log -1 --format=%h -- ",
+  GIT_TIMESTAMP_FORMAT: "git log -1 --format=%ct -- ",
+
+  // 정렬 설정
+  SORT_ORDER: "desc", // 최신순
+  DEFAULT_ORDER: 0, // order 필드가 없을 때 기본값
+};
+
+const ERROR_MESSAGES = {
+  FILE_NOT_FOUND: "파일을 찾을 수 없습니다",
+  INVALID_ENCODING: "인코딩을 감지할 수 없습니다",
+  GIT_COMMAND_FAILED: "Git 명령어 실행 실패",
+  ASSET_COPY_FAILED: "자산 파일 복사 실패",
+  BUILD_FAILED: "빌드 실패",
+};
+
+// ============================================================================
+// 타입 정의 (JSDoc)
+// ============================================================================
+
+/**
+ * @typedef {Object} DateParts
+ * @property {number} y - year
+ * @property {number} m - month
+ * @property {number} d - day
+ * @property {number} hh - hour
+ * @property {number} mm - minute
+ * @property {string} tz - timezone
+ */
+
+/**
+ * @typedef {Object} ProjectMeta
+ * @property {string} title
+ * @property {string} summary
+ * @property {string|null} project
+ * @property {string[]} tags
+ * @property {string} date
+ * @property {number|null} order
+ * @property {string|null} cover
+ * @property {string} coverAlt
+ * @property {string} coverCaption
+ * @property {string|null} coverType
+ * @property {string} coverAspectRatio
+ * @property {string} slug
+ * @property {string} path
+ * @property {number} createdAtMs
+ */
+
+/**
+ * @typedef {Object} PortfolioIndex
+ * @property {string[]} projects
+ * @property {Record<string, ProjectMeta[]>} byProject
+ * @property {ProjectMeta[]} all
+ */
+
+/**
+ * @typedef {Object} BuildResult
+ * @property {PortfolioIndex} index
+ * @property {number} projectCount
+ * @property {number} projectGroupCount
+ */
+
+// ============================================================================
+// 유틸리티 함수들 (순수 함수)
+// ============================================================================
+
+/**
+ * 파일 확장자가 MDX인지 확인
+ * @param {string} filename
+ * @returns {boolean}
+ */
+function isMdxFile(filename) {
+  return CONFIG.MDX_EXTENSIONS.test(filename);
 }
 
-// UTF-8이 아니어도 자동 감지/디코드
-function readTextSmart(abs) {
-  const buf = fs.readFileSync(abs);
-  const enc = chardet.detect(buf) || "UTF-8";
-  try {
-    return iconv.decode(buf, enc);
-  } catch {
-    return buf.toString("utf8");
+/**
+ * 안전한 디렉토리 생성
+ * @param {string} dirPath
+ * @returns {void}
+ */
+function ensureDirectory(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
 }
 
-// BOM/개행/템플릿 더블 중괄호 등 사소한 정리
-function sanitizeMdx(src) {
-  return src
-    .replace(/^\uFEFF/, "") // BOM 제거
-    .replace(/\r\n/g, "\n") // CRLF → LF
-    .replace(/{{/g, "\\{\\{") // 템플릿 더블 중괄호 방어
-    .replace(/}}/g, "\\}\\}");
+/**
+ * 디렉토리 정리 (기존 내용 삭제 후 재생성)
+ * @param {string} dirPath
+ * @returns {void}
+ */
+function cleanDirectory(dirPath) {
+  if (fs.existsSync(dirPath)) {
+    fs.rmSync(dirPath, { recursive: true, force: true });
+  }
+  fs.mkdirSync(dirPath, { recursive: true });
 }
 
-// Git 최초/최종 커밋일(ISO) 얻기(없으면 파일 시간 fallback)
-function gitDate(kind, fileAbs) {
-  try {
-    const rel = path.relative(root, fileAbs);
-    const fmt =
-      kind === "created"
-        ? "git log --diff-filter=A --follow --format=%aI -1 -- "
-        : "git log --follow --format=%aI -1 -- ";
-    const out = execSync(fmt + JSON.stringify(rel), {
-      stdio: ["ignore", "pipe", "ignore"],
-    })
-      .toString()
-      .trim();
-    return out || null;
-  } catch {
-    return null;
-  }
-}
-
-// Git 마지막 커밋 정보(스탬프용)
-function gitShortRev(fileAbs) {
-  try {
-    const rel = path.relative(root, fileAbs);
-    const out = execSync("git log -1 --format=%h -- " + JSON.stringify(rel), {
-      stdio: ["ignore", "pipe", "ignore"],
-      encoding: "utf8",
-    }).trim();
-    return out || null;
-  } catch {
-    return null;
-  }
-}
-function gitCommitTs(fileAbs) {
-  try {
-    const rel = path.relative(root, fileAbs);
-    const out = execSync("git log -1 --format=%ct -- " + JSON.stringify(rel), {
-      stdio: ["ignore", "pipe", "ignore"],
-      encoding: "utf8",
-    }).trim();
-    return out || null; // unix seconds
-  } catch {
-    return null;
-  }
-}
-function contentHash12(fileAbs) {
-  const buf = fs.readFileSync(fileAbs);
-  return crypto.createHash("sha1").update(buf).digest("hex").slice(0, 12);
-}
-function slugifyBase(name) {
+/**
+ * 파일명을 안전한 slug로 변환
+ * @param {string} name
+ * @returns {string}
+ */
+function slugify(name) {
   return name
     .normalize("NFKD")
     .replace(/[^\w.-]+/g, "-")
@@ -103,249 +143,700 @@ function slugifyBase(name) {
     .toLowerCase();
 }
 
-function toFallbackIso(ms) {
-  return new Date(ms).toISOString(); // UTC Z
+/**
+ * 파일 내용의 해시값 생성 (12자리)
+ * @param {string} filePath
+ * @returns {string}
+ */
+function getContentHash(filePath) {
+  const buffer = fs.readFileSync(filePath);
+  return crypto.createHash("sha1").update(buffer).digest("hex").slice(0, 12);
 }
 
-// ISO → 분 단위(초 제거) "YYYY-MM-DDTHH:MM±TZ"
-function isoToMinute(iso) {
-  const m = String(iso).match(
+/**
+ * UTF-8이 아닌 텍스트를 감지
+ * @param {string} text
+ * @returns {boolean}
+ */
+function hasBrokenUtf8(text) {
+  return text.includes("\uFFFD");
+}
+
+// ============================================================================
+// 인코딩 처리 함수들
+// ============================================================================
+
+/**
+ * 파일의 인코딩을 자동 감지
+ * @param {string} filePath
+ * @returns {string}
+ */
+function detectEncoding(filePath) {
+  const buffer = fs.readFileSync(filePath);
+  return chardet.detect(buffer) || CONFIG.DEFAULT_ENCODING;
+}
+
+/**
+ * 파일을 UTF-8로 읽기
+ * @param {string} filePath
+ * @returns {string}
+ */
+function readTextFile(filePath) {
+  const buffer = fs.readFileSync(filePath);
+  const encoding = detectEncoding(filePath);
+
+  try {
+    const text = iconv.decode(buffer, encoding);
+    if (!hasBrokenUtf8(text)) {
+      return text;
+    }
+  } catch (error) {
+    console.warn(`인코딩 변환 실패 (${encoding}): ${filePath}`);
+  }
+
+  // fallback: UTF-8로 직접 읽기
+  return buffer.toString("utf8");
+}
+
+/**
+ * MDX 내용 정리 (BOM 제거, 개행 정규화 등)
+ * @param {string} content
+ * @returns {string}
+ */
+function sanitizeMdxContent(content) {
+  return content
+    .replace(/^\uFEFF/, "") // BOM 제거
+    .replace(/\r\n/g, "\n") // CRLF → LF
+    .replace(/{{/g, "\\{\\{") // 템플릿 더블 중괄호 방어
+    .replace(/}}/g, "\\}\\}");
+}
+
+// ============================================================================
+// Git 관련 함수들
+// ============================================================================
+
+/**
+ * Git 명령어 실행 (안전한 실행)
+ * @param {string} command
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function executeGitCommand(command, filePath) {
+  try {
+    const relativePath = path.relative(process.cwd(), filePath);
+    const fullCommand = command + JSON.stringify(relativePath);
+
+    const result = execSync(fullCommand, {
+      stdio: ["ignore", "pipe", "ignore"],
+      encoding: "utf8",
+    }).trim();
+
+    return result || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * 파일의 Git 생성일 가져오기
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function getGitCreatedDate(filePath) {
+  return executeGitCommand(CONFIG.GIT_DATE_FORMATS.created, filePath);
+}
+
+/**
+ * 파일의 Git 수정일 가져오기
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function getGitUpdatedDate(filePath) {
+  return executeGitCommand(CONFIG.GIT_DATE_FORMATS.updated, filePath);
+}
+
+/**
+ * 파일의 Git 커밋 해시 가져오기
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function getGitCommitHash(filePath) {
+  return executeGitCommand(CONFIG.GIT_REV_FORMAT, filePath);
+}
+
+/**
+ * 파일의 Git 커밋 타임스탬프 가져오기
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function getGitCommitTimestamp(filePath) {
+  return executeGitCommand(CONFIG.GIT_TIMESTAMP_FORMAT, filePath);
+}
+
+// ============================================================================
+// 날짜 처리 함수들
+// ============================================================================
+
+/**
+ * 밀리초를 ISO 문자열로 변환
+ * @param {number} milliseconds
+ * @returns {string}
+ */
+function millisecondsToIso(milliseconds) {
+  return new Date(milliseconds).toISOString();
+}
+
+/**
+ * ISO 문자열을 분 단위로 변환 (초 제거)
+ * @param {string} isoString
+ * @returns {string}
+ */
+function isoToMinute(isoString) {
+  const match = String(isoString).match(
     /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/,
   );
-  if (m) return m[1] + m[2];
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return String(iso);
+
+  if (match) {
+    return match[1] + match[2];
+  }
+
+  // fallback: Date 객체로 파싱
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) {
+    return String(isoString);
+  }
+
   const pad = (n) => String(n).padStart(2, "0");
-  const tzMin = -d.getTimezoneOffset();
-  const sign = tzMin >= 0 ? "+" : "-";
-  const abs = Math.abs(tzMin);
-  const th = pad((abs / 60) | 0);
-  const tm = pad(abs % 60);
+  const timezoneOffset = -date.getTimezoneOffset();
+  const sign = timezoneOffset >= 0 ? "+" : "-";
+  const abs = Math.abs(timezoneOffset);
+  const hours = pad(Math.floor(abs / 60));
+  const minutes = pad(abs % 60);
+
   return (
-    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
-    `T${pad(d.getHours())}:${pad(d.getMinutes())}${sign}${th}:${tm}`
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}${sign}${hours}:${minutes}`
   );
 }
 
-// ISO → y/m/d/hh/mm/tz 파츠
-function pickParts(iso) {
-  const m = String(iso).match(
+/**
+ * ISO 문자열을 날짜 파트로 분해
+ * @param {string} isoString
+ * @returns {DateParts|null}
+ */
+function parseDateParts(isoString) {
+  const match = String(isoString).match(
     /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/,
   );
-  if (!m) return null;
-  return { y: +m[1], m: +m[2], d: +m[3], hh: +m[4], mm: +m[5], tz: m[6] };
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    y: parseInt(match[1], 10),
+    m: parseInt(match[2], 10),
+    d: parseInt(match[3], 10),
+    hh: parseInt(match[4], 10),
+    mm: parseInt(match[5], 10),
+    tz: match[6],
+  };
 }
 
-// 같은 소스 이미지를 중복 복사하지 않기 위한 캐시
-const ASSET_CACHE = new Map(); // absPath -> url
+// ============================================================================
+// 자산 처리 함수들
+// ============================================================================
 
-// 파일을 /_portfolio/assets/<name>__<stamp>.<ext> 로 복사하고 URL 반환
-function copyAssetNearby(projectAbs, rel) {
-  let src;
+/**
+ * 자산 파일의 스탬프 생성
+ * @param {string} filePath
+ * @returns {string}
+ */
+function generateAssetStamp(filePath) {
+  const gitTimestamp = getGitCommitTimestamp(filePath);
+  const gitHash = getGitCommitHash(filePath);
 
-  // 썸네일 경로인 경우 public 폴더 기준으로 처리
-  if (rel.startsWith("/projects/thumbnails/")) {
-    src = path.join(root, "apps/portfolio/public", rel);
-  } else {
-    src = path.resolve(path.dirname(projectAbs), rel);
+  if (gitTimestamp && gitHash) {
+    return `${gitTimestamp}-${gitHash}`;
   }
 
-  if (!fs.existsSync(src)) return null;
-  if (ASSET_CACHE.has(src)) return ASSET_CACHE.get(src);
-
-  ensureDir(ASSETS_DIR);
-  const { name, ext } = path.parse(src);
-
-  // 스탬프 우선순위: git (시각+해시) → 내용해시 → 파일 mtime(초)
-  const ts = gitCommitTs(src);
-  const rev = gitShortRev(src);
-  const stamp =
-    (ts && rev && `${ts}-${rev}`) ||
-    contentHash12(src) ||
-    Math.floor(fs.statSync(src).mtimeMs / 1000);
-
-  const safe = `${slugifyBase(name)}__${stamp}${ext}`;
-  const dest = path.join(ASSETS_DIR, safe);
-  if (!fs.existsSync(dest)) {
-    fs.copyFileSync(src, dest);
+  const contentHash = getContentHash(filePath);
+  if (contentHash) {
+    return contentHash;
   }
-  const url = `/_portfolio/assets/${safe}`;
-  ASSET_CACHE.set(src, url);
+
+  const stats = fs.statSync(filePath);
+  return Math.floor(stats.mtimeMs / 1000).toString();
+}
+
+/**
+ * 자산 파일을 안전한 이름으로 변환
+ * @param {string} filePath
+ * @returns {string}
+ */
+function generateAssetFilename(filePath) {
+  const { name, ext } = path.parse(filePath);
+  const stamp = generateAssetStamp(filePath);
+  const safeName = slugify(name);
+
+  return `${safeName}__${stamp}${ext}`;
+}
+
+/**
+ * 자산 파일 복사 (중복 방지)
+ * @param {string} sourcePath
+ * @param {string} targetDir
+ * @param {Map<string, string>} cache
+ * @returns {string|null}
+ */
+function copyAsset(sourcePath, targetDir, cache) {
+  if (!fs.existsSync(sourcePath)) {
+    return null;
+  }
+
+  if (cache.has(sourcePath)) {
+    return cache.get(sourcePath);
+  }
+
+  ensureDirectory(targetDir);
+  const filename = generateAssetFilename(sourcePath);
+  const targetPath = path.join(targetDir, filename);
+
+  if (!fs.existsSync(targetPath)) {
+    fs.copyFileSync(sourcePath, targetPath);
+  }
+
+  const url = `/_portfolio/assets/${filename}`;
+  cache.set(sourcePath, url);
   return url;
 }
 
-// 본문 내 이미지 경로를 전부 /_portfolio/assets/* 로 치환(상대/"/_portfolio/xxx" 모두 대응)
-function rewriteInlineAssets(content, projectAbs) {
-  let out = content;
+/**
+ * 썸네일 경로 처리 (public 폴더 기준)
+ * @param {string} thumbnailPath
+ * @param {string} root
+ * @returns {string|null}
+ */
+function processThumbnailPath(thumbnailPath, root) {
+  if (!thumbnailPath.startsWith(`/${CONFIG.THUMBNAILS_DIR}/`)) {
+    return null;
+  }
 
-  // 1) Markdown 이미지: ![alt](href "title")
-  out = out.replace(
+  const publicPath = path.join(root, "apps/portfolio/public", thumbnailPath);
+  return fs.existsSync(publicPath) ? thumbnailPath : null;
+}
+
+/**
+ * MDX 내용의 이미지 경로를 자산 URL로 변환
+ * @param {string} content
+ * @param {string} projectPath
+ * @param {string} assetsDir
+ * @param {Map<string, string>} assetCache
+ * @param {string} root
+ * @returns {string}
+ */
+function transformImagePaths(
+  content,
+  projectPath,
+  assetsDir,
+  assetCache,
+  root,
+) {
+  let transformed = content;
+
+  // Markdown 이미지: ![alt](href "title")
+  transformed = transformed.replace(
     /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,
-    (m, alt, href) => {
-      // 외부 URL은 패스
-      if (/^https?:\/\//i.test(href)) return m;
-      // 이미 변환된 /_portfolio/assets/ 는 그대로
-      if (href.startsWith("/_portfolio/assets/")) return m;
+    (match, alt, href) => {
+      // 외부 URL은 그대로 유지
+      if (/^https?:\/\//i.test(href)) {
+        return match;
+      }
 
-      // "/_portfolio/xxx" → 프로젝트 파일 기준 상대로 간주하여 복사
+      // 이미 변환된 경로는 그대로 유지
+      if (href.startsWith("/_portfolio/assets/")) {
+        return match;
+      }
+
+      // 썸네일 경로 처리
+      if (href.startsWith(`/${CONFIG.THUMBNAILS_DIR}/`)) {
+        const thumbnailUrl = processThumbnailPath(href, root);
+        return thumbnailUrl ? `![${alt}](${thumbnailUrl})` : match;
+      }
+
+      // 상대 경로를 절대 경로로 변환
       const candidate = href.startsWith("/_portfolio/")
         ? href.replace(/^\/_portfolio\//, "")
         : href;
 
-      const url = copyAssetNearby(projectAbs, candidate);
-      return url ? `![${alt}](${url})` : m;
+      const sourcePath = path.resolve(path.dirname(projectPath), candidate);
+      const assetUrl = copyAsset(sourcePath, assetsDir, assetCache);
+
+      return assetUrl ? `![${alt}](${assetUrl})` : match;
     },
   );
 
-  // 2) HTML 이미지: <img src="...">
-  out = out.replace(/<img\s+[^>]*src="([^"]+)"[^>]*>/gi, (m, src) => {
-    if (/^https?:\/\//i.test(src)) return m;
-    if (src.startsWith("/_portfolio/assets/")) return m;
+  // HTML 이미지: <img src="...">
+  transformed = transformed.replace(
+    /<img\s+[^>]*src="([^"]+)"[^>]*>/gi,
+    (match, src) => {
+      if (/^https?:\/\//i.test(src) || src.startsWith("/_portfolio/assets/")) {
+        return match;
+      }
 
-    const candidate = src.startsWith("/_portfolio/")
-      ? src.replace(/^\/_portfolio\//, "")
-      : src;
+      // 썸네일 경로 처리
+      if (src.startsWith(`/${CONFIG.THUMBNAILS_DIR}/`)) {
+        const thumbnailUrl = processThumbnailPath(src, root);
+        return thumbnailUrl ? match.replace(src, thumbnailUrl) : match;
+      }
 
-    const url = copyAssetNearby(projectAbs, candidate);
-    return url ? m.replace(src, url) : m;
-  });
+      const candidate = src.startsWith("/_portfolio/")
+        ? src.replace(/^\/_portfolio\//, "")
+        : src;
 
-  return out;
+      const sourcePath = path.resolve(path.dirname(projectPath), candidate);
+      const assetUrl = copyAsset(sourcePath, assetsDir, assetCache);
+
+      return assetUrl ? match.replace(src, assetUrl) : match;
+    },
+  );
+
+  return transformed;
 }
 
-// --- 빌드 시작 ---
-cleanDir(OUT);
-ensureDir(PROJECTS_DIR);
+// ============================================================================
+// 프로젝트 처리 함수들
+// ============================================================================
 
-const projects = {};
-const allProjects = [];
+/**
+ * 프로젝트의 커버 이미지 URL 생성
+ * @param {Object} frontmatter
+ * @param {string} content
+ * @param {string} projectPath
+ * @param {string} assetsDir
+ * @param {Map<string, string>} assetCache
+ * @param {string} root
+ * @returns {string|null}
+ */
+function generateCoverUrl(
+  frontmatter,
+  content,
+  projectPath,
+  assetsDir,
+  assetCache,
+  root,
+) {
+  const { cover } = frontmatter;
 
-const files = fs.readdirSync(SRC).filter(isMdx);
+  if (!cover) {
+    return null;
+  }
 
-for (const file of files) {
-  const abs = path.join(SRC, file);
-  const raw = readTextSmart(abs);
+  // 외부 URL 또는 이미 변환된 경로
+  if (/^https?:\/\//i.test(cover) || cover.startsWith("/_portfolio/assets/")) {
+    return cover;
+  }
 
-  // 프론트매터 1개만 파싱 → content(본문)과 data(메타) 분리
-  const { data, content } = matter(raw);
+  // 자동 감지: 첫 번째 이미지 사용
+  if (cover === "auto") {
+    const imageMatch = content.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
+    if (imageMatch) {
+      const href = imageMatch[1];
+      if (/^https?:\/\//i.test(href)) {
+        return href;
+      }
 
-  const slug = (data.slug || file.replace(/\.mdx?$/i, "")).toLowerCase();
+      // 썸네일 경로 처리
+      if (href.startsWith(`/${CONFIG.THUMBNAILS_DIR}/`)) {
+        return processThumbnailPath(href, root);
+      }
 
-  // 작성/수정 시간 (ISO, 초 포함)
+      const candidate = href.startsWith("/_portfolio/")
+        ? href.replace(/^\/_portfolio\//, "")
+        : href;
+
+      const sourcePath = path.resolve(path.dirname(projectPath), candidate);
+      return copyAsset(sourcePath, assetsDir, assetCache);
+    }
+    return null;
+  }
+
+  // 썸네일 경로 처리
+  if (cover.startsWith(`/${CONFIG.THUMBNAILS_DIR}/`)) {
+    return processThumbnailPath(cover, root);
+  }
+
+  // 상대 경로 처리
+  const candidate = cover.startsWith("/_portfolio/")
+    ? cover.replace(/^\/_portfolio\//, "")
+    : cover;
+
+  const sourcePath = path.resolve(path.dirname(projectPath), candidate);
+  return copyAsset(sourcePath, assetsDir, assetCache);
+}
+
+/**
+ * 프로젝트 메타데이터 생성
+ * @param {Object} frontmatter
+ * @param {string} content
+ * @param {string} projectPath
+ * @param {string} slug
+ * @param {string} assetsDir
+ * @param {Map<string, string>} assetCache
+ * @param {string} root
+ * @returns {ProjectMeta}
+ */
+function createProjectMeta(
+  frontmatter,
+  content,
+  projectPath,
+  slug,
+  assetsDir,
+  assetCache,
+  root,
+) {
+  const stats = fs.statSync(projectPath);
+
+  // 날짜 정보 생성
   const createdIso =
-    data.date ||
-    gitDate("created", abs) ||
-    toFallbackIso(fs.statSync(abs).ctimeMs);
-  const updatedIso =
-    data.updatedAt ||
-    gitDate("updated", abs) ||
-    toFallbackIso(fs.statSync(abs).mtimeMs);
+    frontmatter.date ||
+    getGitCreatedDate(projectPath) ||
+    millisecondsToIso(stats.ctimeMs);
 
-  // 파생 필드(분/파츠/정렬키)
+  const updatedIso =
+    frontmatter.updatedAt ||
+    getGitUpdatedDate(projectPath) ||
+    millisecondsToIso(stats.mtimeMs);
+
+  // 파생 필드들
   const createdMinute = isoToMinute(createdIso);
   const updatedMinute = isoToMinute(updatedIso);
-  const createdParts = pickParts(createdIso);
-  const updatedParts = pickParts(updatedIso);
+  const createdParts = parseDateParts(createdIso);
+  const updatedParts = parseDateParts(updatedIso);
   const createdAtMs = Date.parse(createdIso);
   const updatedAtMs = Date.parse(updatedIso);
 
-  // 커버 처리: 절대/이미 변환됨/auto/상대
-  let coverUrl = null;
-  if (data.cover) {
-    if (
-      /^https?:\/\//i.test(data.cover) ||
-      data.cover.startsWith("/_portfolio/assets/")
-    ) {
-      coverUrl = data.cover;
-    } else if (data.cover === "auto") {
-      const m = content.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
-      if (m) {
-        coverUrl = /^https?:\/\//i.test(m[1])
-          ? m[1]
-          : copyAssetNearby(abs, m[1].replace(/^\/_portfolio\//, ""));
-      }
-    } else if (data.cover.startsWith("/_portfolio/")) {
-      coverUrl = copyAssetNearby(
-        abs,
-        data.cover.replace(/^\/_portfolio\//, ""),
-      );
-    } else if (data.cover.startsWith("/projects/thumbnails/")) {
-      // 썸네일 경로는 public 폴더 기준으로 처리
-      const publicPath = path.join(root, "apps/portfolio/public", data.cover);
-      if (fs.existsSync(publicPath)) {
-        // 썸네일은 복사하지 않고 원본 경로를 그대로 사용
-        coverUrl = data.cover;
-      }
-    } else {
-      coverUrl = copyAssetNearby(abs, data.cover);
-    }
-  }
+  // 커버 이미지 URL
+  const coverUrl = generateCoverUrl(
+    frontmatter,
+    content,
+    projectPath,
+    assetsDir,
+    assetCache,
+    root,
+  );
 
-  // 본문 정리: 프론트매터 제거된 content만 저장 + 이미지 경로 재작성 + UTF-8 정리
-  const transformed = sanitizeMdx(rewriteInlineAssets(content, abs));
-  const outName = `${slug}.mdx`;
-  fs.writeFileSync(path.join(PROJECTS_DIR, outName), transformed, "utf8");
-
-  // 메타(인덱스용)
-  const meta = {
-    title: data.title || slug,
-    summary: data.summary || "",
-    project: data.project || null,
-    tags: data.tags || [],
+  return {
+    title: frontmatter.title || slug,
+    summary: frontmatter.summary || "",
+    project: frontmatter.project || null,
+    tags: frontmatter.tags || [],
     date: createdIso,
-    order: data.order ?? null, // 정렬 순서 (낮을수록 앞에, 소수점 가능)
-    cover: coverUrl, // null | '/_portfolio/assets/xxx' | 'https://...'
-    coverAlt: data.coverAlt || "", // 선택 메타
-    coverCaption: data.coverCaption || "", // 선택 메타
-    coverType: data.coverType || null, // gif | image | video
-    coverAspectRatio: String(data.coverAspectRatio || "16:9"), // 16:9 | 4:3 | 1:1 | auto
+    order: frontmatter.order ?? null,
+    cover: coverUrl,
+    coverAlt: frontmatter.coverAlt || "",
+    coverCaption: frontmatter.coverCaption || "",
+    coverType: frontmatter.coverType || null,
+    coverAspectRatio: String(frontmatter.coverAspectRatio || "16:9"),
     slug,
-    path: `/_portfolio/projects/${outName}`, // 런타임에서 fetch할 MDX 경로
-    createdAtMs, // 정렬용 숫자
+    path: `/_portfolio/projects/${slug}.mdx`,
+    createdAtMs,
   };
-
-  // 프로젝트별 그룹핑
-  const projectName = data.project || "기타";
-  (projects[projectName] ||= []).push(meta);
-  allProjects.push(meta);
 }
 
-// 정렬: order 필드 우선 (높을수록 앞에), 같으면 작성일(desc)
-allProjects.sort((a, b) => {
-  const orderA = a.order ?? 0; // order가 없으면 0으로 처리
-  const orderB = b.order ?? 0;
+/**
+ * 프로젝트 파일 처리
+ * @param {string} projectPath
+ * @param {string} projectsDir
+ * @param {string} assetsDir
+ * @param {Map<string, string>} assetCache
+ * @param {string} root
+ * @returns {ProjectMeta}
+ */
+function processProjectFile(
+  projectPath,
+  projectsDir,
+  assetsDir,
+  assetCache,
+  root,
+) {
+  const rawContent = readTextFile(projectPath);
+  const { data: frontmatter, content } = matter(rawContent);
 
-  if (orderA !== orderB) {
-    return orderB - orderA; // order가 높을수록 앞에
+  const slug = (
+    frontmatter.slug || path.basename(projectPath, path.extname(projectPath))
+  ).toLowerCase();
+
+  // 메타데이터 생성
+  const meta = createProjectMeta(
+    frontmatter,
+    content,
+    projectPath,
+    slug,
+    assetsDir,
+    assetCache,
+    root,
+  );
+
+  // 콘텐츠 변환 및 저장
+  const transformedContent = sanitizeMdxContent(
+    transformImagePaths(content, projectPath, assetsDir, assetCache, root),
+  );
+
+  const outputFilename = `${slug}.mdx`;
+  const outputPath = path.join(projectsDir, outputFilename);
+
+  fs.writeFileSync(outputPath, transformedContent, "utf8");
+
+  return meta;
+}
+
+// ============================================================================
+// 메인 빌드 함수들
+// ============================================================================
+
+/**
+ * 프로젝트 파일들 처리
+ * @param {string} srcDir
+ * @param {string} projectsDir
+ * @param {string} assetsDir
+ * @param {string} root
+ * @returns {Object}
+ */
+function processProjects(srcDir, projectsDir, assetsDir, root) {
+  const projects = {};
+  const allProjects = [];
+  const assetCache = new Map();
+
+  const files = fs.readdirSync(srcDir).filter(isMdxFile);
+
+  for (const file of files) {
+    const projectPath = path.join(srcDir, file);
+    const meta = processProjectFile(
+      projectPath,
+      projectsDir,
+      assetsDir,
+      assetCache,
+      root,
+    );
+
+    // 프로젝트별 그룹핑
+    const projectName = meta.project || "기타";
+    (projects[projectName] ||= []).push(meta);
+    allProjects.push(meta);
   }
 
-  // order가 같으면 날짜순 (최신이 앞)
-  return (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
-});
+  return { projects, allProjects };
+}
 
-for (const p of Object.keys(projects)) {
-  projects[p].sort((a, b) => {
-    const orderA = a.order ?? 0;
-    const orderB = b.order ?? 0;
+/**
+ * 프로젝트 정렬 (order 필드 우선, 날짜 순)
+ * @param {ProjectMeta[]} projects
+ * @returns {ProjectMeta[]}
+ */
+function sortProjects(projects) {
+  return [...projects].sort((a, b) => {
+    const orderA = a.order ?? CONFIG.DEFAULT_ORDER;
+    const orderB = b.order ?? CONFIG.DEFAULT_ORDER;
 
+    // order가 다르면 order 기준으로 정렬 (높을수록 앞에)
     if (orderA !== orderB) {
       return orderB - orderA;
     }
 
+    // order가 같으면 날짜순 (최신이 앞)
     return (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
   });
 }
 
-// 인덱스 JSON
-const index = {
-  projects: Object.keys(projects).sort(),
-  byProject: projects,
-  all: allProjects,
+/**
+ * 포트폴리오 인덱스 생성
+ * @param {Object} projects
+ * @param {ProjectMeta[]} allProjects
+ * @returns {PortfolioIndex}
+ */
+function createPortfolioIndex(projects, allProjects) {
+  const sortedProjects = sortProjects(allProjects);
+  const sortedProjectGroups = {};
+
+  // 프로젝트별 정렬
+  for (const [projectName, projectList] of Object.entries(projects)) {
+    sortedProjectGroups[projectName] = sortProjects(projectList);
+  }
+
+  return {
+    projects: Object.keys(sortedProjectGroups).sort(),
+    byProject: sortedProjectGroups,
+    all: sortedProjects,
+  };
+}
+
+/**
+ * 메인 빌드 함수
+ * @returns {BuildResult}
+ */
+function buildPortfolio() {
+  const root = process.cwd();
+  const srcDir = path.join(root, CONFIG.SRC_DIR);
+  const outDir = path.join(root, CONFIG.OUT_DIR);
+  const projectsDir = path.join(outDir, CONFIG.PROJECTS_DIR);
+  const assetsDir = path.join(outDir, CONFIG.ASSETS_DIR);
+
+  try {
+    // 디렉토리 정리 및 생성
+    cleanDirectory(outDir);
+    ensureDirectory(projectsDir);
+    ensureDirectory(assetsDir);
+
+    // 프로젝트 파일들 처리
+    const { projects, allProjects } = processProjects(
+      srcDir,
+      projectsDir,
+      assetsDir,
+      root,
+    );
+
+    // 인덱스 생성
+    const index = createPortfolioIndex(projects, allProjects);
+
+    // 인덱스 파일 저장
+    const indexPath = path.join(outDir, "index.json");
+    fs.writeFileSync(indexPath, JSON.stringify(index, null, 2), "utf8");
+
+    return {
+      index,
+      projectCount: allProjects.length,
+      projectGroupCount: Object.keys(projects).length,
+    };
+  } catch (error) {
+    console.error(`${ERROR_MESSAGES.BUILD_FAILED}:`, error.message);
+    throw error;
+  }
+}
+
+// ============================================================================
+// 실행
+// ============================================================================
+
+if (require.main === module) {
+  try {
+    const result = buildPortfolio();
+    console.log(
+      `[portfolio] built: ${result.projectCount} projects in ${result.projectGroupCount} project groups -> ${CONFIG.OUT_DIR}`,
+    );
+  } catch (error) {
+    console.error("빌드 실패:", error.message);
+    process.exit(1);
+  }
+}
+
+module.exports = {
+  buildPortfolio,
+  // 테스트용 함수들
+  isMdxFile,
+  slugify,
+  sanitizeMdxContent,
+  isoToMinute,
+  parseDateParts,
+  sortProjects,
 };
-
-ensureDir(OUT);
-fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(index, null, 2));
-
-console.log(
-  `[portfolio] built: ${allProjects.length} projects in ${Object.keys(projects).length} projects -> apps/portfolio/public/_portfolio`,
-);
