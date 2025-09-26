@@ -1,11 +1,12 @@
 import React from "react";
-import type { Bullet, Experience, PortfolioLink } from "../../../service";
+import type { Bullet, Experience, PortfolioLink } from "../../service";
 import { motion } from "framer-motion";
-import { vItem } from "../../../constants";
-import { Card } from "../../../components/card";
-import { Button, PillButton } from "../../../components/button";
-import { Meta } from "../../../components/badge";
-import { BulletList } from "../../../components/common";
+import { vItem } from "../../constants";
+import { Card } from "../card";
+import { Button, PillButton } from "../button";
+import { Meta } from "../badge";
+import { cn, SimpleCursorTooltip } from "@srf/ui";
+import { Emphasis, BulletList, PortfolioLinks } from "../common";
 
 /* ───────────── 컴포넌트 ───────────── */
 export default function ExperienceItem({ item }: { item: Experience }) {

@@ -1,4 +1,3 @@
-// apps/resume/src/components/TopTabs.tsx
 import { cn } from "@srf/ui";
 import React from "react";
 import { useResume } from "../contexts/ResumeContext";

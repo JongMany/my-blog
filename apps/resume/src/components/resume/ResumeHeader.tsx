@@ -1,10 +1,12 @@
-import type { ResumeData } from "../../../service";
+// apps/resume/src/components/ResumeHeader.tsx
+
+import type { ResumeData } from "../../service";
 import { motion } from "framer-motion";
-import { fadeUp, stagger, vItem } from "../../../constants";
-import { Card } from "../../../components/card";
+import { fadeUp, stagger, vItem } from "../../constants";
+import { Card } from "../card";
 import { imageSource } from "@mfe/shared";
 
-export default function ProfileHeader({
+export default function ResumeHeader({
   profile,
 }: {
   profile: ResumeData["profile"];

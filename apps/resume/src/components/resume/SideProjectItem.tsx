@@ -1,18 +1,18 @@
 import React from "react";
-import type { Bullet, Experience, PortfolioLink } from "../../../service";
+import type { SideProject } from "../../service";
 import { motion } from "framer-motion";
-import { vItem } from "../../../constants";
-import { Card } from "../../../components/card";
-import { Button, PillButton } from "../../../components/button";
-import { Meta } from "../../../components/badge";
-import { BulletList } from "../../../components/common";
+import { vItem } from "../../constants";
+import { Card } from "../card";
+import { Button, PillButton } from "../button";
+import { Meta } from "../badge";
+import { Emphasis, BulletList, PortfolioLinks } from "../common";
 
 /* ───────────── 컴포넌트 ───────────── */
-export default function ExperienceItem({ item }: { item: Experience }) {
+export default function SideProjectItem({ item }: { item: SideProject }) {
   const [open, setOpen] = React.useState(true);
 
   const topVisible = item.bullets;
-  const collapsed = open ? topVisible : topVisible.slice(0, 3);
+  const collapsed = open ? topVisible : topVisible.slice(0, 2);
 
   return (
     <motion.article variants={vItem} className="relative pl-4 avoid-break">
@@ -23,11 +23,17 @@ export default function ExperienceItem({ item }: { item: Experience }) {
       <Card className="p-4">
         {/* 헤더 */}
         <div className="flex flex-wrap items-baseline gap-2">
-          <h4 className="text-[15px] font-medium">{item.company}</h4>
-          <span className="text-sm text-[var(--muted-fg)]">{item.role}</span>
-          <span className="ml-auto">
-            <Meta>{item.period}</Meta>
-          </span>
+          <h4 className="text-[15px] font-medium">
+            <Emphasis
+              text={item.title}
+              keywordImageMap={item.keywordImageMap}
+            />
+          </h4>
+          {item.period && (
+            <span className="ml-auto">
+              <Meta>{item.period}</Meta>
+            </span>
+          )}
         </div>
 
         {/* 요약 */}
@@ -51,6 +57,13 @@ export default function ExperienceItem({ item }: { item: Experience }) {
           </div>
         ) : null}
 
+        {/* 포트폴리오 링크 */}
+        {item.portfolioLinks?.length ? (
+          <div className="mt-2">
+            <PortfolioLinks links={item.portfolioLinks} />
+          </div>
+        ) : null}
+
         {/* 최상위 불릿(접기/펼치기 지원) */}
         <div className="mt-3">
           <BulletList
@@ -61,7 +74,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
           />
         </div>
 
-        {topVisible.length > 3 && (
+        {topVisible.length > 2 && (
           <div className="mt-2">
             <Button
               size="sm"
@@ -69,7 +82,7 @@ export default function ExperienceItem({ item }: { item: Experience }) {
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
             >
-              {open ? "간단히 보기" : `더 보기 (+${topVisible.length - 3})`}
+              {open ? "간단히 보기" : `더 보기 (+${topVisible.length - 2})`}
             </Button>
           </div>
         )}
