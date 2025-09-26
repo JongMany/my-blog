@@ -1,5 +1,4 @@
 import { assetUrl } from "@mfe/shared";
-import { useQuery } from "@tanstack/react-query";
 
 // 상수 정의
 const BLOG_ASSET_PREFIX = "blog" as const;
