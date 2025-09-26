@@ -1,5 +1,4 @@
 import { assetUrl } from "@mfe/shared";
-import { useQuery } from "@tanstack/react-query";
 
 // 썸네일 관련 유틸리티 함수들
 export const getThumbnailPath = (cover?: string): string => {
@@ -79,34 +78,32 @@ export type Skill = {
   lvl: number;
 };
 
-export async function fetchPortfolioIndexFromHost() {
-  // host 기준: /_portfolio/index.json
+// 순수한 데이터 페칭 함수들
+export async function fetchPortfolioIndex(): Promise<ProjectIndex> {
   const url = assetUrl("_portfolio/index.json", "portfolio");
-
   const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`failed to load portfolio index: ${res.status}`);
-  return (await res.json()) as ProjectIndex;
+
+  if (!res.ok) {
+    throw new Error(`Failed to load portfolio index: ${res.status}`);
+  }
+
+  const raw = await res.json();
+  return normalizeProjectIndex(raw);
 }
 
-export async function fetchProjectMdxFromHost(path: string) {
-  // path 예: "_portfolio/projects/foo.mdx"
+export async function fetchProjectMdx(path: string): Promise<string> {
   const url = assetUrl(path, "portfolio");
   const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`failed to load mdx: ${res.status}`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to load MDX: ${res.status}`);
+  }
+
   return await res.text();
 }
 
-export async function fetchPortfolioIndex() {
-  // host 기준: /_portfolio/index.json
-  const url = assetUrl("_portfolio/index.json", "portfolio");
-
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`failed to load portfolio index: ${res.status}`);
-  const raw = (await res.json()) as Partial<ProjectIndex> & {
-    byProject?: ProjectIndex["byProject"];
-    all?: ProjectIndex["all"];
-  };
-
+// 순수한 유틸리티 함수들
+export const normalizeProjectIndex = (raw: any): ProjectIndex => {
   const projects =
     raw.projects ?? (raw.byProject ? Object.keys(raw.byProject).sort() : []);
 
@@ -115,47 +112,39 @@ export async function fetchPortfolioIndex() {
     byProject: raw.byProject ?? {},
     projects,
   };
-}
+};
 
-export function usePortfolioIndex() {
-  return useQuery({
-    queryKey: ["portfolio-index"],
-    queryFn: fetchPortfolioIndex,
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-  });
-}
+export const validateProjectMeta = (project: any): ProjectMeta | null => {
+  if (!project || typeof project !== "object") return null;
 
-export const experiences: Experience[] = [
-  {
-    company: "Coinness",
-    role: "Frontend Engineer",
-    period: "2025.07 - Now",
-    points: [
-      "TradingView 확장(TP/SL 드래그, 주문 UX) 및 안정성 리팩토링",
-      "차트/주문/체결 가시화, iframe 기반 Web Components 인프라",
-    ],
-  },
-  {
-    company: "Bubblechat",
-    role: "Frontend Engineer",
-    period: "2024.10 - 2025.06",
-    points: [
-      "SSE 스트리밍 UX 최적화, 멀티 이미지/구매 플로우",
-      "키워드북·DnD·채팅 히스토리/칩 변환, 로깅/QA/ESLint",
-    ],
-  },
-];
+  const required = [
+    "title",
+    "summary",
+    "tags",
+    "date",
+    "slug",
+    "path",
+    "createdAtMs",
+  ];
+  const hasRequired = required.every((field) => project[field] !== undefined);
 
-export const skills: Skill[] = [
-  { name: "TypeScript", lvl: 80 },
-  { name: "React", lvl: 80 },
-  { name: "Zustand", lvl: 75 },
-  { name: "Tanstack Query", lvl: 70 },
-  { name: "TailwindCSS", lvl: 60 },
-  { name: "Styled Components", lvl: 75 },
-  { name: "TradingView", lvl: 60 },
-  { name: "Nest.js", lvl: 60 },
-  { name: "TypeORM", lvl: 60 },
-  { name: "PostgreSQL", lvl: 50 },
-];
+  if (!hasRequired) return null;
+
+  return {
+    title: String(project.title),
+    summary: String(project.summary),
+    project: project.project ? String(project.project) : undefined,
+    tags: Array.isArray(project.tags) ? project.tags.map(String) : [],
+    date: String(project.date),
+    slug: String(project.slug),
+    path: String(project.path),
+    createdAtMs: Number(project.createdAtMs),
+    cover: project.cover ? String(project.cover) : undefined,
+    coverAlt: project.coverAlt ? String(project.coverAlt) : undefined,
+    coverCaption: project.coverCaption
+      ? String(project.coverCaption)
+      : undefined,
+    coverType: project.coverType,
+    coverAspectRatio: project.coverAspectRatio,
+  };
+};

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useBlogIndex } from "../../service/blogData";
+import { useBlogIndex } from "../../service/blogQueries";
 import { PostCard } from "../../components/post";
 import { LoadingState, ErrorState } from "../../components/common";
 

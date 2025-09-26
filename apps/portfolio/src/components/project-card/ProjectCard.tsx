@@ -110,7 +110,7 @@ export default function ProjectCard({
 
             {!!tags.length && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {visible.map((t) => (
+                {visible.map((t: string) => (
                   <span key={t} className="t-chip">
                     #{t}
                   </span>

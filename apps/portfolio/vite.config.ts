@@ -25,10 +25,6 @@ export default defineConfig({
         "@tanstack/react-query": {
           version: pkg.dependencies["@tanstack/react-query"],
         },
-        "@tanstack/react-form": {
-          version: pkg.dependencies["@tanstack/react-form"],
-        },
-        zustand: { version: pkg.dependencies.zustand },
         "@mfe/shared": { version: "0.0.0" },
       },
     }),

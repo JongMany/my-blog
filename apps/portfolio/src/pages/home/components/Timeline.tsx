@@ -1,8 +1,8 @@
 // apps/portfolio/src/components/timeline/Timeline.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { fadeUp } from "../motion/Motion";
-import type { Experience } from "../../service/portfolio";
+import { fadeUp } from "../../../components/motion/Motion";
+import type { Experience } from "../../../service/portfolio";
 
 export default function Timeline({ items }: { items: Experience[] }) {
   return (

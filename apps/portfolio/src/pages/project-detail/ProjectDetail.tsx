@@ -1,18 +1,17 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Layout } from "../components/layout";
 import { SEO } from "@srf/ui";
+import { getThumbnailPath } from "../../service/portfolio";
 import {
   usePortfolioIndex,
-  fetchProjectMdxFromHost,
-  getThumbnailPath,
-} from "../service/portfolio";
+  useProjectMdx,
+} from "../../service/portfolio.query";
+import { LoadingSpinner, ErrorMessage } from "../../components/common";
 import { evaluate, UseMdxComponents } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { components, MDXTheme } from "../components/mdx-theme";
+import { components, MDXTheme } from "../../components/mdx-theme";
 import { useMemo, useState, useEffect } from "react";
 import { imageSource } from "@mfe/shared";
 
@@ -37,11 +36,7 @@ export default function ProjectDetail() {
     return portfolioIndex?.all.find((p) => p.slug === slug);
   }, [portfolioIndex, slug]);
 
-  const mdxQuery = useQuery({
-    queryKey: ["portfolio", "mdx", project?.path ?? null],
-    queryFn: () => project?.path && fetchProjectMdxFromHost(project.path),
-    enabled: !!project,
-  });
+  const mdxQuery = useProjectMdx(project?.path ?? null);
 
   const [MDXComp, setMDXComp] = useState<React.ComponentType | null>(null);
 
@@ -72,41 +67,23 @@ export default function ProjectDetail() {
   }, [mdxQuery.data]);
 
   if (!project) {
-    return (
-      <Layout>
-        <div className="text-center py-8">
-          <div className="text-lg text-[var(--muted-fg)]">
-            존재하지 않는 프로젝트입니다.
-          </div>
-        </div>
-      </Layout>
-    );
+    return <ErrorMessage message="존재하지 않는 프로젝트입니다." />;
   }
 
   if (mdxQuery.isLoading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center py-8">
-          <div className="text-sm text-[var(--muted-fg)]">로딩 중...</div>
-        </div>
-      </Layout>
-    );
+    return <LoadingSpinner />;
   }
 
   if (mdxQuery.isError) {
     return (
-      <Layout>
-        <div className="text-center py-8">
-          <div className="text-lg text-[var(--muted-fg)]">
-            로드 에러: {(mdxQuery.error as Error).message}
-          </div>
-        </div>
-      </Layout>
+      <ErrorMessage
+        message={`로드 에러: ${(mdxQuery.error as Error).message}`}
+      />
     );
   }
 
   return (
-    <Layout>
+    <>
       <SEO
         title={project.title}
         description={project.summary}
@@ -169,12 +146,10 @@ export default function ProjectDetail() {
               <MDXComp />
             </MDXTheme>
           ) : (
-            <div className="text-center py-8">
-              <div className="text-[var(--muted-fg)]">렌더링 준비 중...</div>
-            </div>
+            <LoadingSpinner message="렌더링 준비 중..." />
           )}
         </div>
       </article>
-    </Layout>
+    </>
   );
 }

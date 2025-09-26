@@ -127,29 +127,7 @@ export async function fetchPostMdx(path: string): Promise<string> {
   }
 }
 
-// React Query 훅
-export function useBlogIndex() {
-  return useQuery({
-    queryKey: ["blog-index"],
-    queryFn: fetchBlogIndex,
-    staleTime: STALE_TIME_MS,
-    refetchOnWindowFocus: false,
-  });
-}
-
-// 편의 함수들
+// 편의 함수들 (기본적인 것들만 유지)
 export function createPostMdxPath(category: string, slug: string): string {
   return `_blog/${category}/${slug}.mdx`;
-}
-
-export function findPostByCategoryAndSlug(
-  data: BlogIndex | undefined,
-  category: string,
-  slug: string,
-): BlogPostMeta | null {
-  if (!data) return null;
-  return (
-    data.all.find((post) => post.category === category && post.slug === slug) ??
-    null
-  );
 }

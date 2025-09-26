@@ -1,9 +1,9 @@
 import * as React from "react";
 import type { RouteObject } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Projects from "./pages/Projects";
-import ProjectDetail from "./pages/ProjectDetail";
+import Home from "./pages/home/Home";
+import Projects from "./pages/projects/Projects";
+import ProjectDetail from "./pages/project-detail/ProjectDetail";
 
 export const routes: RouteObject = {
   children: [

@@ -7,12 +7,9 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
-import {
-  useBlogIndex,
-  fetchPostMdx,
-  createPostMdxPath,
-  findPostByCategoryAndSlug,
-} from "../../service/blogData";
+import { useBlogIndex } from "../../service/blogQueries";
+import { fetchPostMdx, createPostMdxPath } from "../../service/blogData";
+import { findPostByCategoryAndSlug } from "../../service/blogUtils";
 import { MDXTheme } from "../../components/mdx";
 import { components } from "../../components/mdx/MDXTheme";
 import { Comments as Giscus } from "../../components/comments";
