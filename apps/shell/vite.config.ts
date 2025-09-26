@@ -7,22 +7,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 import pkg from "./package.json" assert { type: "json" };
 
-// const USER = "JongMany";
-// const REPO = "my-blog";
-// const isCI = process.env.CI === "true";
-
-// const remotes = isCI
-//   ? {
-//       blog: `https://${USER}.github.io/${REPO}/blog/remoteEntry.js`,
-//       portfolio: `https://${USER}.github.io/${REPO}/portfolio/remoteEntry.js`,
-//       resume: `https://${USER}.github.io/${REPO}/resume/remoteEntry.js`,
-//     }
-//   : {
-//       blog: "http://localhost:3001/assets/remoteEntry.js",
-//       portfolio: "http://localhost:3002/assets/remoteEntry.js",
-//       resume: "http://localhost:3003/assets/remoteEntry.js",
-//     };
-
 const isCI = process.env.CI === "true";
 const REPO = "my-blog";
 const isDev = process.env.NODE_ENV !== "production" && !process.env.CI;
@@ -109,14 +93,6 @@ export default defineConfig({
     federation({
       name: "shell",
       remotes: remotes,
-      // shared: [
-      //   "react",
-      //   "react-dom",
-      //   "react-router-dom",
-      //   "@tanstack/react-query",
-      //   "zustand",
-      //   "@mfe/shared",
-      // ],
       shared: {
         react: { version: pkg.dependencies.react },
         "react-dom": { version: pkg.dependencies["react-dom"] },

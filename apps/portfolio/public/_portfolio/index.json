@@ -105,7 +105,7 @@
         ],
         "date": "2025-01-15T00:00:00.000Z",
         "order": 3.2,
-        "cover": null,
+        "cover": "/projects/thumbnails/gifs/chip-transform.gif",
         "coverAlt": "AI 캐릭터 지능형 텍스트 파싱 시스템 데모",
         "coverCaption": "템플릿 변수 실시간 감지 및 시각적 칩 변환",
         "coverType": "gif",
@@ -177,7 +177,7 @@
         ],
         "date": "2025-01-15T00:00:00.000Z",
         "order": 2,
-        "cover": null,
+        "cover": "/projects/thumbnails/gifs/sse-streaming.gif",
         "coverAlt": "SSE 기반 LLM 실시간 스트리밍 데모",
         "coverCaption": "토큰 단위 실시간 스트리밍으로 AI 응답 즉시 확인",
         "coverType": "gif",
@@ -226,24 +226,6 @@
       }
     ],
     "Coinness": [
-      {
-        "title": "거래 차트 WebView 구현",
-        "summary": "기존 앱의 자체 구현 차트를 TradingView 엔진으로 완전 마이그레이션하고, HTML WebView 기반 렌더링 레이어를 설계하여 앱 차트를 개발했습니다.",
-        "project": "Coinness",
-        "tags": [
-          "기능 추가"
-        ],
-        "date": "2025-01-15T00:00:00.000Z",
-        "order": 10,
-        "cover": "/projects/thumbnails/images/webview.png",
-        "coverAlt": "TradingView WebView 렌더링 시스템 아키텍처",
-        "coverCaption": "앱 내 HTML WebView 기반 TradingView 차트 렌더링",
-        "coverType": "image",
-        "coverAspectRatio": "969",
-        "slug": "tradingview-webview-migration",
-        "path": "/_portfolio/projects/tradingview-webview-migration.mdx",
-        "createdAtMs": 1736899200000
-      },
       {
         "title": "TradingView 차트 내 주문 UI 시스템",
         "summary": "차트 분석과 주문 실행을 하나의 화면에서 처리할 수 있는 Market Order와 Limit Order 패널 시스템. Lit Web Components와 React를 활용한 하이브리드 아키텍처.",
@@ -343,7 +325,7 @@
         ],
         "date": "2025-01-15T00:00:00.000Z",
         "order": 1.8,
-        "cover": null,
+        "cover": "/projects/thumbnails/images/websocket-fallback.png",
         "coverAlt": "WebSocket HTTP Fallback 시스템 아키텍처",
         "coverCaption": "실시간 데이터 연속성 보장을 위한 자동 Fallback 시스템",
         "coverType": "diagram",
@@ -351,28 +333,28 @@
         "slug": "websocket-http-fallback",
         "path": "/_portfolio/projects/websocket-http-fallback.mdx",
         "createdAtMs": 1736899200000
+      },
+      {
+        "title": "거래 차트 WebView 구현",
+        "summary": "기존 앱의 자체 구현 차트를 TradingView 엔진으로 완전 마이그레이션하고, HTML WebView 기반 렌더링 레이어를 설계하여 앱 차트를 개발했습니다.",
+        "project": "Coinness",
+        "tags": [
+          "기능 추가"
+        ],
+        "date": "2025-01-15T00:00:00.000Z",
+        "order": 1.6,
+        "cover": "/projects/thumbnails/images/webview.png",
+        "coverAlt": "TradingView WebView 렌더링 시스템 아키텍처",
+        "coverCaption": "앱 내 HTML WebView 기반 TradingView 차트 렌더링",
+        "coverType": "image",
+        "coverAspectRatio": "969",
+        "slug": "tradingview-webview-migration",
+        "path": "/_portfolio/projects/tradingview-webview-migration.mdx",
+        "createdAtMs": 1736899200000
       }
     ]
   },
   "all": [
-    {
-      "title": "거래 차트 WebView 구현",
-      "summary": "기존 앱의 자체 구현 차트를 TradingView 엔진으로 완전 마이그레이션하고, HTML WebView 기반 렌더링 레이어를 설계하여 앱 차트를 개발했습니다.",
-      "project": "Coinness",
-      "tags": [
-        "기능 추가"
-      ],
-      "date": "2025-01-15T00:00:00.000Z",
-      "order": 10,
-      "cover": "/projects/thumbnails/images/webview.png",
-      "coverAlt": "TradingView WebView 렌더링 시스템 아키텍처",
-      "coverCaption": "앱 내 HTML WebView 기반 TradingView 차트 렌더링",
-      "coverType": "image",
-      "coverAspectRatio": "969",
-      "slug": "tradingview-webview-migration",
-      "path": "/_portfolio/projects/tradingview-webview-migration.mdx",
-      "createdAtMs": 1736899200000
-    },
     {
       "title": "TradingView 차트 내 주문 UI 시스템",
       "summary": "차트 분석과 주문 실행을 하나의 화면에서 처리할 수 있는 Market Order와 Limit Order 패널 시스템. Lit Web Components와 React를 활용한 하이브리드 아키텍처.",
@@ -562,7 +544,7 @@
       ],
       "date": "2025-01-15T00:00:00.000Z",
       "order": 3.2,
-      "cover": null,
+      "cover": "/projects/thumbnails/gifs/chip-transform.gif",
       "coverAlt": "AI 캐릭터 지능형 텍스트 파싱 시스템 데모",
       "coverCaption": "템플릿 변수 실시간 감지 및 시각적 칩 변환",
       "coverType": "gif",
@@ -634,7 +616,7 @@
       ],
       "date": "2025-01-15T00:00:00.000Z",
       "order": 2,
-      "cover": null,
+      "cover": "/projects/thumbnails/gifs/sse-streaming.gif",
       "coverAlt": "SSE 기반 LLM 실시간 스트리밍 데모",
       "coverCaption": "토큰 단위 실시간 스트리밍으로 AI 응답 즉시 확인",
       "coverType": "gif",
@@ -652,13 +634,31 @@
       ],
       "date": "2025-01-15T00:00:00.000Z",
       "order": 1.8,
-      "cover": null,
+      "cover": "/projects/thumbnails/images/websocket-fallback.png",
       "coverAlt": "WebSocket HTTP Fallback 시스템 아키텍처",
       "coverCaption": "실시간 데이터 연속성 보장을 위한 자동 Fallback 시스템",
       "coverType": "diagram",
       "coverAspectRatio": "969",
       "slug": "websocket-http-fallback",
       "path": "/_portfolio/projects/websocket-http-fallback.mdx",
+      "createdAtMs": 1736899200000
+    },
+    {
+      "title": "거래 차트 WebView 구현",
+      "summary": "기존 앱의 자체 구현 차트를 TradingView 엔진으로 완전 마이그레이션하고, HTML WebView 기반 렌더링 레이어를 설계하여 앱 차트를 개발했습니다.",
+      "project": "Coinness",
+      "tags": [
+        "기능 추가"
+      ],
+      "date": "2025-01-15T00:00:00.000Z",
+      "order": 1.6,
+      "cover": "/projects/thumbnails/images/webview.png",
+      "coverAlt": "TradingView WebView 렌더링 시스템 아키텍처",
+      "coverCaption": "앱 내 HTML WebView 기반 TradingView 차트 렌더링",
+      "coverType": "image",
+      "coverAspectRatio": "969",
+      "slug": "tradingview-webview-migration",
+      "path": "/_portfolio/projects/tradingview-webview-migration.mdx",
       "createdAtMs": 1736899200000
     },
     {

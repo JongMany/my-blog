@@ -175,12 +175,13 @@ WebSocket 연결 불안정으로 인한 실시간 데이터 손실을 방지
 - 매직 넘버에 대한 기준 불명확 (데이터 기반으로 변경해야 함)
   - TickMonitor 내의 횟수 및 polling 시간이 데이터 기반으로 적절히 설정이 되어야 합니다.
 
-## setQueryData 내부 로직
+## setQueryData 내부 로직 
 
 queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣지 않으면 Date.now()로 자동 설정
 → 이로 인해 WebSocket으로 실시간 데이터를 받을 때마다 refetchTime이 초기화되어, HTTP polling의 refetchInterval 계산이 초기화된다.
 
 - 1단계: [setQueryData](https://github.com/TanStack/query/blob/2a00fb6504e777fa1a9c9a46ce9f1b7ccdb3835a/packages/query-core/src/queryClient.ts#L176) 호출
+
   ```tsx
   setQueryData<
       TQueryFnData = unknown,
@@ -220,7 +221,9 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
   - queryCache에서 기존 쿼리를 가져옴
   - 이전 데이터를 가져와서 functionalUpdate로 새 데이터 생성
   - queryCache.build()로 쿼리 객체를 생성하고 setData() 호출
+
 - **2단계: queryCache.build() → [setData()](https://github.com/TanStack/query/blob/main/packages/query-core/src/query.ts#L228) 호출**
+
   ```tsx
   setData(
       newData: TData,
@@ -239,11 +242,14 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
       return data
     }
   ```
+
   **코드 분석:**
   - replaceData로 새 데이터 처리
   - #dispatch 호출하여 'success' 액션 전달
   - options?.updatedAt이 전달됨 (기본값은 undefined)
+
 - 3단계: [\*\*#dispatch](https://github.com/TanStack/query/blob/main/packages/query-core/src/query.ts#L608) → dataUpdatedAt 갱신\*\*
+
   ```tsx
   #dispatch(action: Action<TData, TError>): void {
       const reducer = (
@@ -333,7 +339,9 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
   - dataUpdateCount도 증가
   - 모든 observer에게 onQueryUpdate() 호출
   - 이는 refetchInterval을 관리하는 QueryObserver들에게 알림을 보내는 핵심 부분
+
 - 5단계: [\*\*QueryObserver.onQueryUpdate()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L721) 호출\*\*
+
   ```tsx
     onQueryUpdate(): void {
       this.updateResult()
@@ -344,7 +352,9 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
     }
   ```
   - #updateTimers() 호출 - **여기서 refetchInterval 재계산 시작**
+
 - **6단계: [#updateTimers()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L409) → #updateRefetchInterval() 호출 (queryObserver.ts 414-417번째 줄)**
+
   ```tsx
     #updateTimers(): void {
       this.#updateStaleTimeout()
@@ -353,6 +363,7 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
 
   ```
   - #computeRefetchInterval()로 새로운 interval 계산 후 #updateRefetchInterval() 호출
+
 - **7단계: [#computeRefetchInterval()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L377C3-L383C4) 계산**
   ```tsx
    #computeRefetchInterval() {
@@ -367,6 +378,7 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
   - refetchInterval이 함수인지 확인하고, 함수면 현재 쿼리를 전달하여 계산
   - 기본값은 false
 - **8단계: [#updateRefetchInterval()](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts#L385) 실행**
+
   ```tsx
   #updateRefetchInterval(nextInterval: number | false): void {
       this.#clearRefetchInterval()
@@ -399,6 +411,7 @@ queryClient 시 setQueryData 호출시 options.updatedAt을 매개변수로 넣�
       }
     }
   ```
+
   **코드 분석:**
   - #clearRefetchInterval() - **기존 setInterval 정리**
   - 새로운 interval 값 저장
@@ -529,6 +542,7 @@ sequenceDiagram
 ```
 
 - 클래스별 역할
+
   ```mermaid
   classDiagram
       class QueryClient {

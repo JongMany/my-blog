@@ -5,7 +5,6 @@ import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
 import pkg from "./package.json" assert { type: "json" };
 
-// const USER = "JongMany";
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";
 
@@ -35,7 +34,7 @@ export default defineConfig({
     }),
     notifyOnRebuild({
       appName: "portfolio",
-      hostUrl: "http://localhost:5173",
+      hostUrl: "http://localhost:3000",
       endpoint: "/__remote_rebuilt__",
       notifyOnSuccessOnly: true,
     }),
@@ -46,5 +45,9 @@ export default defineConfig({
     strictPort: true,
     headers: { "Access-Control-Allow-Origin": "*" },
   },
-  build: { target: "esnext", minify: false },
+  build: {
+    target: "esnext",
+    minify: false,
+    cssCodeSplit: false,
+  },
 });

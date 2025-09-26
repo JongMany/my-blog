@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
+import pkg from "./package.json" assert { type: "json" };
 
-// const USER = "JongMany";
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";
 
@@ -12,6 +12,7 @@ export default defineConfig({
   base: isCI ? `/${REPO}/resume/` : "/",
   plugins: [
     react(),
+    tailwindcss(),
     federation({
       name: "resume",
       filename: "remoteEntry.js",
@@ -19,30 +20,23 @@ export default defineConfig({
         "./App": "./src/App.tsx",
         "./routes": "./src/routes.tsx",
       },
-      // shared: [
-      //   "react",
-      //   "react-dom",
-      //   "react-router-dom",
-      //   "@tanstack/react-query",
-      //   "zustand",
-      //   "@mfe/shared",
-      // ],
       shared: {
-        react: { version: "19.1.1" },
-        "react-dom": { version: "19.1.1" },
-        "react-router-dom": { version: "7.8.1" },
-        "@tanstack/react-query": { version: "5.85.3" },
-        zustand: { version: "5.0.7" },
+        react: { version: pkg.dependencies.react },
+        "react-dom": { version: pkg.dependencies["react-dom"] },
+        "react-router-dom": { version: pkg.dependencies["react-router-dom"] },
+        "@tanstack/react-query": {
+          version: pkg.dependencies["@tanstack/react-query"],
+        },
+        zustand: { version: pkg.dependencies.zustand },
         "@mfe/shared": { version: "0.0.0" },
       },
     }),
     notifyOnRebuild({
       appName: "resume",
-      hostUrl: "http://localhost:5173",
+      hostUrl: "http://localhost:3000",
       endpoint: "/__remote_rebuilt__",
       notifyOnSuccessOnly: true,
     }),
-    tailwindcss(),
   ],
   server: { port: 3003 },
   preview: {
@@ -50,5 +44,9 @@ export default defineConfig({
     strictPort: true,
     headers: { "Access-Control-Allow-Origin": "*" },
   },
-  build: { target: "esnext", minify: false },
+  build: {
+    target: "esnext",
+    minify: false,
+    cssCodeSplit: false,
+  },
 });
