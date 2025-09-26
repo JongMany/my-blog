@@ -3,10 +3,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
 
 import { BlogLayout } from "./components/layout";
-import PostPage from "./pages/posts/PostsPage";
-
-import ListAll from "./pages/list/ListAll";
-import ListByCategory from "./pages/category/ListByCategory";
+import { PostDetailPage } from "./pages/post";
+import { HomePage } from "./pages/home";
+import { CategoryPage } from "./pages/category";
 
 export default function BlogApp() {
   return (
@@ -19,13 +18,13 @@ export default function BlogApp() {
       <Routes>
         <Route path="/" element={<BlogLayout />}>
           {/* /blog  → 전체 목록 */}
-          <Route index element={<ListAll />} />
+          <Route index element={<HomePage />} />
 
           {/* /blog/c/:category → 카테고리 목록 */}
-          <Route path="c/:category" element={<ListByCategory />} />
+          <Route path="c/:category" element={<CategoryPage />} />
 
           {/* /blog/:category/:slug → 글 상세(MDX) */}
-          <Route path=":category/:slug" element={<PostPage />} />
+          <Route path=":category/:slug" element={<PostDetailPage />} />
 
           {/* 예전 경로 호환: /blog/all → /blog */}
           <Route path="all" element={<Navigate to="." replace />} />
