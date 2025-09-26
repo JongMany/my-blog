@@ -1,1 +1,2 @@
-export { TOC_ITEMS } from "./toc";
+export { SKILL_CATEGORIES } from "./skills";
+export type { SkillCategory, Skill } from "./skills";

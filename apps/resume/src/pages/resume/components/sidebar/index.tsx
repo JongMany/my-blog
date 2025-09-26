@@ -1,8 +1,8 @@
 import React from "react";
-import { Card } from "../../../components/card";
+import { Card } from "../../../../components/card";
 
 import SkillsSection from "./SkillsSection";
-import type { ResumeData } from "../../../service";
+import type { ResumeData } from "../../../../service";
 import ContactInfo from "./ContactInfo";
 
 interface SidebarProps {

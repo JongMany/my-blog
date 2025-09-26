@@ -1,7 +1,6 @@
 import { Mail, Github, BookOpen, Link as LinkIcon } from "lucide-react";
 
-import React from "react";
-import { Card } from "../../../components/card";
+import { Card } from "../../../../components/card";
 import { Link } from "react-router-dom";
 
 export default function ContactInfo({
