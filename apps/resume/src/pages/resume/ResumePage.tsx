@@ -1,26 +1,20 @@
 import React from "react";
 import { Tabs as TopTabs, ScrollProgress } from "../../components/layout";
 import {
-  ResumeHeader,
-  ResumeSidebar,
-  ResumeMain,
-  ResumeTOC,
+  ProfileHeader,
+  Sidebar,
+  MainContent,
+  TableOfContents,
 } from "./components";
-import { useResumeData } from "./hooks/useResumeData";
+import { useResumeContent } from "./hooks/useResumeContent";
 import { TOC_ITEMS } from "./constants/toc";
 import "../../styles/print.css";
 import { ResumeProvider } from "./contexts/ResumeContext";
 import { SEO } from "@srf/ui";
 
 function ResumePage() {
-  const {
-    profile,
-    filteredExperiences,
-    filteredSideProjects,
-    filteredEducation,
-    filteredActivities,
-    filteredSkills,
-  } = useResumeData();
+  const { profile, experiences, sideProjects, education, activities, skills } =
+    useResumeContent();
 
   return (
     <>
@@ -34,17 +28,17 @@ function ResumePage() {
         <TopTabs items={TOC_ITEMS} />
 
         <div className="mx-auto max-w-screen-xl px-3 sm:px-4">
-          <ResumeHeader profile={profile} />
+          <ProfileHeader profile={profile} />
 
           <div className="grid gap-4 lg:grid-cols-12">
-            <ResumeSidebar profile={profile} filteredSkills={filteredSkills} />
-            <ResumeMain
-              filteredExperiences={filteredExperiences}
-              filteredSideProjects={filteredSideProjects}
-              filteredEducation={filteredEducation}
-              filteredActivities={filteredActivities}
+            <Sidebar profile={profile} skills={skills} />
+            <MainContent
+              experiences={experiences}
+              sideProjects={sideProjects}
+              education={education}
+              activities={activities}
             />
-            <ResumeTOC />
+            <TableOfContents />
           </div>
         </div>
       </div>

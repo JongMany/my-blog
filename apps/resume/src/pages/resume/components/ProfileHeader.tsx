@@ -6,7 +6,7 @@ import { fadeUp, stagger, vItem } from "../../../constants";
 import { Card } from "../../../components/card";
 import { imageSource } from "@mfe/shared";
 
-export default function ResumeHeader({
+export default function ProfileHeader({
   profile,
 }: {
   profile: ResumeData["profile"];

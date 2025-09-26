@@ -50,7 +50,13 @@ export function BulletList({
                       text={`${t} 관련 작업`}
                       delay={200}
                     >
-                      <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-[2px] text-[10px] text-[var(--muted-fg)] cursor-help hover:text-[var(--primary)] transition-colors">
+                      <span
+                        className={cn(
+                          "rounded-full border border-[var(--border)] bg-[var(--surface)]",
+                          "px-2 py-[2px] text-[10px] text-[var(--muted-fg)]",
+                          "cursor-help hover:text-[var(--primary)] transition-colors",
+                        )}
+                      >
                         #{t}
                       </span>
                     </SimpleCursorTooltip>

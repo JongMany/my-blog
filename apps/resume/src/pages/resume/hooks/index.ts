@@ -1,1 +1,1 @@
-export { useResumeData } from "./useResumeData";
+export { useResumeContent } from "./useResumeContent";

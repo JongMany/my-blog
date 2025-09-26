@@ -1,5 +1,5 @@
 import React from "react";
-import { InlineTooltip } from "@srf/ui";
+import { InlineTooltip, cn } from "@srf/ui";
 import { imageSource } from "@mfe/shared";
 
 /** 대괄호 키워드 툴팁 */
@@ -86,13 +86,21 @@ export function Emphasis({
                       "http://localhost:3003",
                     )}
                     alt={keyword}
-                    className="max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] min-h-48 object-cover rounded"
+                    className={cn(
+                      "max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] min-h-48",
+                      "object-cover rounded",
+                    )}
                   />
                 </div>
               }
               delay={300}
             >
-              <span className="font-medium cursor-help text-[var(--primary)] opacity-60 hover:opacity-100 transition-opacity">
+              <span
+                className={cn(
+                  "font-medium cursor-help text-[var(--primary)]",
+                  "opacity-60 hover:opacity-100 transition-opacity",
+                )}
+              >
                 {keyword}
               </span>
             </InlineTooltip>

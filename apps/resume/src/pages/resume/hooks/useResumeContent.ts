@@ -15,47 +15,47 @@ import {
   filterSkillsForCompact,
 } from "../../../utils/resumeFilter";
 
-interface UseResumeDataReturn {
+interface UseResumeContentReturn {
   profile: ResumeData["profile"];
-  filteredExperiences: Experience[];
-  filteredSideProjects: SideProject[] | undefined;
-  filteredEducation: Education[];
-  filteredActivities: Activity[];
-  filteredSkills: string[] | undefined;
+  experiences: Experience[];
+  sideProjects?: SideProject[];
+  education: Education[];
+  activities: Activity[];
+  skills?: string[];
 }
 
-export function useResumeData(): UseResumeDataReturn {
+export function useResumeContent(): UseResumeContentReturn {
   const { isDetailed } = useResume();
   const { profile, experiences, sideProjects, education, activities, skills } =
     resume;
 
   // 토글 상태에 따라 데이터 필터링
-  const filteredExperiences = isDetailed
+  const processedExperiences = isDetailed
     ? experiences
     : experiences.map(filterExperienceForCompact);
 
-  const filteredSideProjects = isDetailed
+  const processedSideProjects = isDetailed
     ? sideProjects
     : sideProjects?.map(filterSideProjectForCompact);
 
-  const filteredEducation = isDetailed
+  const processedEducation = isDetailed
     ? education
     : education.map(filterEducationForCompact);
 
-  const filteredActivities = isDetailed
+  const processedActivities = isDetailed
     ? activities
     : activities.map(filterActivityForCompact);
 
-  const filteredSkills = isDetailed
+  const processedSkills = isDetailed
     ? skills
     : filterSkillsForCompact(skills || []);
 
   return {
     profile,
-    filteredExperiences,
-    filteredSideProjects,
-    filteredEducation,
-    filteredActivities,
-    filteredSkills,
+    experiences: processedExperiences,
+    sideProjects: processedSideProjects,
+    education: processedEducation,
+    activities: processedActivities,
+    skills: processedSkills,
   };
 }

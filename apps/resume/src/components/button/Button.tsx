@@ -10,14 +10,32 @@ export function Button({
   variant?: "default" | "primary" | "ghost";
   size?: "sm" | "md" | "xs";
 }) {
-  const base =
-    "inline-flex items-center gap-1.5 rounded-xl transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:[box-shadow:var(--ring)]";
-  const vs =
-    variant === "primary"
-      ? "bg-[var(--primary)] text-[var(--primary-ink)] hover:brightness-105"
-      : variant === "ghost"
-        ? "text-[var(--fg)] hover:bg-[var(--hover-bg)]"
-        : "border border-[var(--border)] bg-[var(--card-bg)] text-[var(--fg)] hover:bg-[var(--hover-bg)]";
-  const sz = size === "sm" ? "px-3 py-1.5 text-xs" : "px-3.5 py-2 text-sm";
-  return <button className={cn(base, vs, sz, className)} {...rest} />;
+  return (
+    <button
+      className={cn(
+        // Base styles
+        "inline-flex items-center gap-1.5 rounded-xl transition hover:-translate-y-0.5",
+        "focus-visible:outline-none focus-visible:[box-shadow:var(--ring)]",
+
+        // Variant styles
+        {
+          "bg-[var(--primary)] text-[var(--primary-ink)] hover:brightness-105":
+            variant === "primary",
+          "text-[var(--fg)] hover:bg-[var(--hover-bg)]": variant === "ghost",
+          "border border-[var(--border)] bg-[var(--card-bg)] text-[var(--fg)] hover:bg-[var(--hover-bg)]":
+            variant === "default",
+        },
+
+        // Size styles
+        {
+          "px-3 py-1.5 text-xs": size === "sm",
+          "px-3.5 py-2 text-sm": size === "md",
+          "px-2 py-0.5 text-[10px]": size === "xs",
+        },
+
+        className,
+      )}
+      {...rest}
+    />
+  );
 }

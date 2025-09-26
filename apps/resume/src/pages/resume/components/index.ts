@@ -1,7 +1,7 @@
 // Resume Section Components
-export { default as ResumeHeader } from "./ResumeHeader";
-export { default as Contact } from "./Contact";
-export { default as SkillsCompact } from "./SkillsCompact";
+export { default as ProfileHeader } from "./ProfileHeader";
+export { default as ContactInfo } from "./ContactInfo";
+export { default as SkillsSection } from "./SkillsSection";
 
 // Resume Item Components
 export { default as ExperienceItem } from "./ExperienceItem";
@@ -10,6 +10,7 @@ export { default as EducationItem } from "./EducationItem";
 export { default as ActivityItem } from "./ActivityItem";
 
 // Resume Layout Components
-export { ResumeSidebar } from "./ResumeSidebar";
-export { ResumeMain } from "./ResumeMain";
-export { ResumeTOC } from "./ResumeTOC";
+export { Sidebar } from "./Sidebar";
+export { MainContent } from "./MainContent";
+export { TableOfContents } from "./TableOfContents";
+export { SectionWithAnimation } from "./SectionWithAnimation";

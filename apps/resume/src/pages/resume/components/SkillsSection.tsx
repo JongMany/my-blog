@@ -81,7 +81,7 @@ const skillDetails: Record<
   },
 };
 
-export default function SkillsCompact({ items }: { items: string[] }) {
+export default function SkillsSection({ items }: { items: string[] }) {
   const [open, setOpen] = React.useState(false);
 
   // 카테고리별로 스킬 분류
