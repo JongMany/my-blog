@@ -1,5 +1,5 @@
 // UI Components
-export { Button, PillButton } from "./button";
+export { Button, PillButton, PrintButton } from "./button";
 export { Card } from "./card";
 export { Meta } from "./badge";
 
@@ -14,3 +14,9 @@ export * from "./emphasis";
 
 // Portfolio Link Components
 export * from "./portfolio-link";
+
+// Resume Components
+export * from "./resume";
+
+// Table of Contents Components
+export * from "./table-of-contents";

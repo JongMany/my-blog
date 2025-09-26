@@ -1,94 +1,32 @@
 import React from "react";
 import type { SideProject } from "../../service";
-import { motion } from "framer-motion";
-import { vItem } from "../../constants";
-import { Card } from "../card";
-import { Button, PillButton } from "../button";
-import { Meta } from "../badge";
-import { Emphasis } from "../emphasis";
-import { BulletList } from "../bullet-list";
-import { PortfolioLinks } from "../portfolio-link";
+import { TimelineItem, type TimelineItemData } from "./TimelineItem";
 
-/* ───────────── 컴포넌트 ───────────── */
+/**
+ * 사이드 프로젝트 아이템 컴포넌트
+ *
+ * @description
+ * - TimelineItem을 사용하여 사이드 프로젝트 데이터를 렌더링
+ * - 최대 2개 아이템까지 접기/펼치기 지원
+ * - 제목에 Emphasis 적용
+ */
 export default function SideProjectItem({ item }: { item: SideProject }) {
-  const [open, setOpen] = React.useState(true);
-
-  const topVisible = item.bullets;
-  const collapsed = open ? topVisible : topVisible.slice(0, 2);
+  // SideProject 데이터를 TimelineItemData 형태로 변환
+  const timelineData: TimelineItemData = {
+    title: item.title,
+    period: item.period,
+    summary: item.summary,
+    stacks: item.stacks,
+    bullets: item.bullets,
+    portfolioLinks: item.portfolioLinks,
+    keywordImageMap: item.keywordImageMap,
+  };
 
   return (
-    <motion.article variants={vItem} className="relative pl-4 avoid-break">
-      {/* left rail & dot */}
-      <span className="pointer-events-none absolute left-0 top-6 bottom-6 w-px bg-[var(--border)]" />
-      <span className="absolute left-0 top-5 -translate-x-1/2 size-2 rounded-full bg-[var(--primary)]" />
-
-      <Card className="p-4">
-        {/* 헤더 */}
-        <div className="flex flex-wrap items-baseline gap-2">
-          <h4 className="text-[15px] font-medium">
-            <Emphasis
-              text={item.title}
-              keywordImageMap={item.keywordImageMap}
-            />
-          </h4>
-          {item.period && (
-            <span className="ml-auto">
-              <Meta>{item.period}</Meta>
-            </span>
-          )}
-        </div>
-
-        {/* 요약 */}
-        {item.summary && (
-          <p className="mt-2 text-[12.5px] text-[var(--fg)]">{item.summary}</p>
-        )}
-
-        {/* 스택 표시 (읽기 전용) */}
-        {item.stacks?.length ? (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {item.stacks.map((s) => (
-              <PillButton
-                key={s}
-                size="sm"
-                variant="soft"
-                className="px-2.5 py-1 text-[11px]"
-              >
-                #{s}
-              </PillButton>
-            ))}
-          </div>
-        ) : null}
-
-        {/* 포트폴리오 링크 */}
-        {item.portfolioLinks?.length ? (
-          <div className="mt-2">
-            <PortfolioLinks links={item.portfolioLinks} />
-          </div>
-        ) : null}
-
-        {/* 최상위 불릿(접기/펼치기 지원) */}
-        <div className="mt-3">
-          <BulletList
-            items={collapsed}
-            level={0}
-            prefix={[]}
-            keywordImageMap={item.keywordImageMap}
-          />
-        </div>
-
-        {topVisible.length > 2 && (
-          <div className="mt-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-            >
-              {open ? "간단히 보기" : `더 보기 (+${topVisible.length - 2})`}
-            </Button>
-          </div>
-        )}
-      </Card>
-    </motion.article>
+    <TimelineItem
+      item={timelineData}
+      maxCollapsedItems={2}
+      emphasizeTitle={true}
+    />
   );
 }

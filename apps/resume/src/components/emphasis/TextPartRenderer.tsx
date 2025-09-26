@@ -1,4 +1,3 @@
-import React from "react";
 import { KeywordTooltip } from "./KeywordTooltip";
 import type { TextPart } from "./utils/textProcessor";
 

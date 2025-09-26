@@ -1,9 +1,10 @@
 import React from "react";
-import ExperienceItem from "./ExperienceItem";
-import SideProjectItem from "./SideProjectItem";
+import ExperienceItem from "../../../components/resume/ExperienceItem";
+import SideProjectItem from "../../../components/resume/SideProjectItem";
 import EducationItem from "./EducationItem";
 import ActivityItem from "./ActivityItem";
 import { SectionWithAnimation } from "../../../components/layout";
+import { PrintButton } from "../../../components/button/PrintButton";
 import type {
   Experience,
   SideProject,
@@ -64,14 +65,7 @@ export function MainContent({
         ))}
       </SectionWithAnimation>
 
-      <div className="flex justify-end pt-2 print:hidden">
-        <button
-          onClick={() => window.print()}
-          className="inline-flex items-center rounded-xl bg-[var(--primary)] px-4 py-2 text-sm text-[var(--primary-ink)]"
-        >
-          PDF로 저장
-        </button>
-      </div>
+      <PrintButton />
     </main>
   );
 }

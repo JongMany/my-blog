@@ -1,4 +1,3 @@
-import React from "react";
 import { InlineTooltip, cn } from "@srf/ui";
 import { imageSource } from "@mfe/shared";
 

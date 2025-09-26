@@ -55,7 +55,7 @@ function PortfolioLinkItem({ title, url, type }: PortfolioLinkItemProps) {
 }
 
 interface LinkIconProps {
-  type?: string;
+  type?: PortfolioLink["type"];
   className?: string;
 }
 
