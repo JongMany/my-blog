@@ -1,11 +1,11 @@
 // apps/portfolio/src/pages/Projects.tsx
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import Layout from "../components/Layout";
+import { Layout } from "../components/layout";
 import { usePortfolioIndex } from "../service/portfolio";
-import ProjectCard from "../components/ProjectCard";
+import { ProjectCard } from "../components/project-card";
 import { motion } from "framer-motion";
-import { stagger } from "../components/Motion";
+import { stagger } from "../components/motion";
 
 /** -------- IME 안전 SearchBox (URL과 완전 분리) -------- */
 const SearchBox = React.memo(function SearchBox({

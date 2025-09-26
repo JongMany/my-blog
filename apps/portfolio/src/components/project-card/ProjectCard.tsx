@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
-import type { ProjectMeta } from "../service/portfolio";
+import type { ProjectMeta } from "../../service/portfolio";
 import {
   getThumbnailPath,
   getThumbnailAspectRatio,
   getFallbackThumbnail,
-} from "../service/portfolio";
+} from "../../service/portfolio";
 import { imageSource } from "@mfe/shared";
 
 type Props = {

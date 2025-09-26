@@ -1,4 +1,4 @@
-// apps/portfolio/src/components/Motion.tsx
+// apps/portfolio/src/components/motion/Motion.tsx
 import { cubicBezier } from "framer-motion";
 
 // TS가 확실히 이해하는 easing 함수(0.16, 1, 0.3, 1: 톡 쏘는 ease-out 느낌)

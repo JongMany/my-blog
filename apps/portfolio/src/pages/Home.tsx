@@ -2,12 +2,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Layout from "../components/Layout";
+import { Layout } from "../components/layout";
 import { SEO } from "@srf/ui";
 import { usePortfolioIndex, experiences, skills } from "../service/portfolio";
-import ProjectCard from "../components/ProjectCard";
-import { fadeUp, stagger, item } from "../components/Motion";
-import Timeline from "../components/Timeline";
+import { ProjectCard } from "../components/project-card";
+import { fadeUp, stagger, item } from "../components/motion";
+import { Timeline } from "../components/timeline";
 
 export default function Home() {
   const { data: portfolioIndex, isLoading } = usePortfolioIndex();

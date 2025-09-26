@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Layout from "../components/Layout";
+import { Layout } from "../components/layout";
 import { SEO } from "@srf/ui";
 import {
   usePortfolioIndex,
@@ -12,7 +12,7 @@ import * as runtime from "react/jsx-runtime";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { components, MDXTheme } from "../components/MDXTheme";
+import { components, MDXTheme } from "../components/mdx-theme";
 import { useMemo, useState, useEffect } from "react";
 import { imageSource } from "@mfe/shared";
 

@@ -1,8 +1,8 @@
 import { MDXProvider } from "@mdx-js/react";
 import { imageSource } from "@mfe/shared";
 import * as React from "react";
-import { MermaidDiagram } from "./MermaidDiagram";
-import { SimpleMermaid } from "./SimpleMermaid";
+import { MermaidDiagram } from "./mermaid-components/MermaidDiagram";
+import { SimpleMermaid } from "./mermaid-components/SimpleMermaid";
 
 // MDX에서 직접 사용할 수 있는 Mermaid 컴포넌트
 export const Mermaid = ({ children }: { children: React.ReactNode }) => (

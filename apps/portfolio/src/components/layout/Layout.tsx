@@ -10,9 +10,6 @@ export default function Layout({ children }: React.PropsWithChildren) {
           <Link to="/portfolio/projects" className="t-btn text-sm">
             모든 프로젝트
           </Link>
-          <Link to="/portfolio/create" className="t-btn text-sm">
-            생성
-          </Link>
         </div>
       </div>
 
