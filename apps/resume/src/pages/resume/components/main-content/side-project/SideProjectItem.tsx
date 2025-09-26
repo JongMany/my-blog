@@ -1,6 +1,6 @@
 import React from "react";
-import type { SideProject } from "../../service";
-import { TimelineItem, type TimelineItemData } from "./TimelineItem";
+import type { SideProject } from "../../../../../service";
+import { TimelineItem, type TimelineItemData } from "../shared/TimelineItem";
 
 /**
  * 사이드 프로젝트 아이템 컴포넌트

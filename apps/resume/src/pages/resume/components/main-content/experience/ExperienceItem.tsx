@@ -1,15 +1,15 @@
 import React from "react";
-import type { Experience } from "../../service";
-import { TimelineItem, type TimelineItemData } from "./TimelineItem";
+import type { Experience } from "../../../../../service";
+import { TimelineItem, type TimelineItemData } from "../shared/TimelineItem";
+
+type ExperienceItemProps = {
+  item: Experience;
+};
 
 /**
  * 경력 아이템 컴포넌트
- *
- * @description
- * - TimelineItem을 사용하여 경력 데이터를 렌더링
- * - 최대 3개 아이템까지 접기/펼치기 지원
  */
-export default function ExperienceItem({ item }: { item: Experience }) {
+export default function ExperienceItem({ item }: ExperienceItemProps) {
   // Experience 데이터를 TimelineItemData 형태로 변환
   const timelineData: TimelineItemData = {
     title: item.company,

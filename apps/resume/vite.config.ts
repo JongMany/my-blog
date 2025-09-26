@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
-import pkg from "./package.json" assert { type: "json" };
+import pkg from "./package.json" with { type: "json" };
 
 const REPO = "my-blog";
 const isCI = process.env.CI === "true";

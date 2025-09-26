@@ -1,6 +1,6 @@
 import { cn } from "@srf/ui";
 import React from "react";
-import { useResume } from "../contexts/ResumeContext";
+import { useResume } from "../../contexts/ResumeContext";
 
 export default function TopTabs({
   items,

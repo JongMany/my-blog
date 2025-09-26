@@ -14,9 +14,3 @@ export * from "./emphasis";
 
 // Portfolio Link Components
 export * from "./portfolio-link";
-
-// Resume Components
-export * from "./resume";
-
-// Table of Contents Components
-export * from "./table-of-contents";
