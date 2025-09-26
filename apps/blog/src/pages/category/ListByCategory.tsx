@@ -1,5 +1,3 @@
-// apps/blog/src/pages/list/ListByCategory.tsx
-import * as React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useBlogIndex } from "../../service/blogData";
 import { assetUrl } from "@mfe/shared";

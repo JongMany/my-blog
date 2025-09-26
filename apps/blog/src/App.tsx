@@ -2,7 +2,7 @@ import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
 
-import BlogLayout from "./components/Layout";
+import { BlogLayout } from "./components/layout";
 import PostPage from "./pages/posts/PostsPage";
 
 import ListAll from "./pages/list/ListAll";

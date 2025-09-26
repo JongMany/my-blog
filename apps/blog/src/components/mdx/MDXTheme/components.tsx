@@ -1,93 +1,19 @@
 import * as React from "react";
-import { MDXProvider } from "@mdx-js/react";
-import type { ComponentProps } from "react";
-import { assetUrl } from "@mfe/shared";
 import { cn } from "@srf/ui";
+import { fixAssetSrc } from "./utils";
+import { Pre } from "./Pre";
+import {
+  HEADING_BASE_CLASSES,
+  TEXT_BASE_CLASSES,
+  BORDER_BASE_CLASSES,
+  SPACING_BASE_CLASSES,
+} from "./constants";
 
 // 타입 정의
-type ComponentsProp = ComponentProps<typeof MDXProvider>["components"];
-type MDXMap = NonNullable<ComponentsProp>;
-
-// 스타일 상수들
-const HEADING_BASE_CLASSES = "font-semibold tracking-tight";
-const TEXT_BASE_CLASSES = "text-white/95";
-const BORDER_BASE_CLASSES = "border-white/10";
-const SPACING_BASE_CLASSES = "my-4";
-
-// 유틸리티 함수
-function fixAssetSrc(src?: string): string | undefined {
-  if (!src) return src;
-  if (src.startsWith("/_blog/") || src.startsWith("_blog/")) {
-    return assetUrl(src.replace(/^\//, ""), "blog");
-  }
-  if (!/^https?:\/\//i.test(src) && !src.startsWith("/")) {
-    return assetUrl(`_blog/${src}`, "blog");
-  }
-  return src;
-}
-
-// 코드블럭 컴포넌트
-type PreProps = React.ComponentPropsWithoutRef<"pre">;
-
-function Pre(props: PreProps) {
-  const { className, ...rest } = props;
-
-  // children 중 첫 번째 유효한 엘리먼트 찾기
-  const firstChild = React.Children.toArray(props.children).find(
-    React.isValidElement,
-  ) as
-    | React.ReactElement<{ children?: React.ReactNode; className?: string }>
-    | undefined;
-
-  // 코드 내용과 언어 추출
-  const raw = firstChild?.props?.children;
-  const code =
-    typeof raw === "string" ? raw : Array.isArray(raw) ? raw.join("") : "";
-  const lang = String(firstChild?.props?.className ?? "").match(
-    /language-([\w-]+)/,
-  )?.[1];
-
-  // 클립보드 복사 함수
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-    } catch {
-      // 복사 실패 시 무시
-    }
-  };
-
-  return (
-    <div className="group relative my-4 overflow-hidden rounded-lg border border-white/10 bg-black/40">
-      {/* 언어 뱃지 */}
-      {lang && (
-        <span className="pointer-events-none absolute right-2 top-2 rounded bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/80">
-          {lang}
-        </span>
-      )}
-
-      {/* 복사 버튼 */}
-      <button
-        type="button"
-        onClick={handleCopy}
-        className="absolute right-2 bottom-2 rounded border border-white/15 bg-white/10 px-2 py-0.5 text-[11px] text-white/90 opacity-0 transition group-hover:opacity-100"
-        aria-label="Copy code"
-      >
-        Copy
-      </button>
-
-      {/* 코드 블럭 */}
-      <pre
-        {...rest}
-        className={cn(
-          "m-0 overflow-auto p-4 text-[0.95em] leading-6",
-          className,
-        )}
-      >
-        {props.children}
-      </pre>
-    </div>
-  );
-}
+type ComponentsProp = React.ComponentProps<
+  typeof import("@mdx-js/react").MDXProvider
+>["components"];
+export type MDXMap = NonNullable<ComponentsProp>;
 
 export const components: MDXMap = {
   // 헤딩 컴포넌트들
@@ -363,7 +289,3 @@ export const components: MDXMap = {
     />
   ),
 };
-
-export function MDXTheme({ children }: { children: React.ReactNode }) {
-  return <MDXProvider components={components}>{children}</MDXProvider>;
-}

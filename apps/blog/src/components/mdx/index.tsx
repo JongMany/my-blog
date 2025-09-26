@@ -1,0 +1,1 @@
+export { MDXTheme } from "./MDXTheme";

@@ -9,8 +9,8 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 import { useBlogIndex, fetchPostMdxFromHost } from "../../service/blogData";
-import { components, MDXTheme } from "../../components/MDXTheme";
-import Giscus from "../../components/Comments";
+import { components, MDXTheme } from "../../components/mdx";
+import { Comments as Giscus } from "../../components/comments";
 
 // evaluate에 주입할 훅(버전 상관없이 오버라이드가 먹도록)
 const useMDXComponents: UseMdxComponents = () => ({
