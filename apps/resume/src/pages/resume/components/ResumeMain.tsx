@@ -9,7 +9,7 @@ import type {
   Education,
   Activity,
 } from "../../../service";
-import { SectionWithAnimation } from "./SectionWithAnimation";
+import { SectionWithAnimation } from "../../../components/layout/SectionWithAnimation";
 
 interface ResumeMainProps {
   filteredExperiences: Experience[];

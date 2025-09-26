@@ -5,11 +5,9 @@ import { vItem } from "../../../constants";
 import { Card } from "../../../components/card";
 import { Button, PillButton } from "../../../components/button";
 import { Meta } from "../../../components/badge";
-import {
-  Emphasis,
-  BulletList,
-  PortfolioLinks,
-} from "../../../components/common";
+import { BulletList } from "../../../components/bullet-list";
+import { Emphasis } from "../../../components/emphasis";
+import { PortfolioLinks } from "../../../components/portfolio-link";
 
 /* ───────────── 컴포넌트 ───────────── */
 export default function SideProjectItem({ item }: { item: SideProject }) {

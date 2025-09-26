@@ -13,4 +13,4 @@ export { default as ActivityItem } from "./ActivityItem";
 export { Sidebar } from "./Sidebar";
 export { MainContent } from "./MainContent";
 export { TableOfContents } from "./TableOfContents";
-export { SectionWithAnimation } from "./SectionWithAnimation";
+export { SectionWithAnimation } from "../../../components/layout/SectionWithAnimation";

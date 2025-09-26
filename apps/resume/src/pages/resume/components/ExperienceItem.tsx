@@ -5,7 +5,7 @@ import { vItem } from "../../../constants";
 import { Card } from "../../../components/card";
 import { Button, PillButton } from "../../../components/button";
 import { Meta } from "../../../components/badge";
-import { BulletList } from "../../../components/common";
+import { BulletList } from "../../../components/bullet-list";
 
 /* ───────────── 컴포넌트 ───────────── */
 export default function ExperienceItem({ item }: { item: Experience }) {

@@ -3,7 +3,7 @@ import ExperienceItem from "./ExperienceItem";
 import SideProjectItem from "./SideProjectItem";
 import EducationItem from "./EducationItem";
 import ActivityItem from "./ActivityItem";
-import { SectionWithAnimation } from "./SectionWithAnimation";
+import { SectionWithAnimation } from "../../../components/layout";
 import type {
   Experience,
   SideProject,

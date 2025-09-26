@@ -6,7 +6,9 @@ import { Card } from "../card";
 import { Button, PillButton } from "../button";
 import { Meta } from "../badge";
 import { cn, SimpleCursorTooltip } from "@srf/ui";
-import { Emphasis, BulletList, PortfolioLinks } from "../common";
+import { Emphasis } from "../emphasis";
+import { BulletList } from "../bullet-list";
+import { PortfolioLinks } from "../portfolio-link";
 
 /* ───────────── 컴포넌트 ───────────── */
 export default function ExperienceItem({ item }: { item: Experience }) {

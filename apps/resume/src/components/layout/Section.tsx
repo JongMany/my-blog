@@ -1,9 +1,15 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
+
+type SectionProps = {
+  title: string;
+  id?: string;
+};
+
 export default function Section({
   title,
   id,
   children,
-}: { title: string; id?: string } & React.PropsWithChildren) {
+}: PropsWithChildren<SectionProps>) {
   return (
     <section id={id} aria-label={title} className="scroll-mt-24 space-y-3">
       <div className="flex items-center gap-3">
