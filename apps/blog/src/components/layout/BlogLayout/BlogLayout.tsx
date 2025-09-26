@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBlogIndexFromHost } from "../../../service/blogData";
+import { fetchBlogIndex } from "../../../service/blogData";
 import { CategoryNavigation } from "./CategoryNavigation";
 
 // 상수 정의
@@ -10,7 +10,7 @@ const STALE_TIME_MS = 60_000; // 1분
 export function BlogLayout() {
   const { data, isLoading } = useQuery({
     queryKey: ["blogIndex"],
-    queryFn: fetchBlogIndexFromHost,
+    queryFn: fetchBlogIndex,
     staleTime: STALE_TIME_MS,
   });
 

@@ -7,7 +7,12 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
-import { useBlogIndex, fetchPostMdxFromHost } from "../../service/blogData";
+import {
+  useBlogIndex,
+  fetchPostMdx,
+  createPostMdxPath,
+  findPostByCategoryAndSlug,
+} from "../../service/blogData";
 import { MDXTheme } from "../../components/mdx";
 import { components } from "../../components/mdx/MDXTheme";
 import { Comments as Giscus } from "../../components/comments";
@@ -31,10 +36,7 @@ export default function PostDetailPage() {
 
   // 해당 포스트 찾기
   const post = React.useMemo(() => {
-    if (!data) return null;
-    return (
-      data.all.find((p) => p.category === category && p.slug === slug) ?? null
-    );
+    return findPostByCategoryAndSlug(data, category, slug);
   }, [data, category, slug]);
 
   // MDX 소스 가져오기
@@ -45,7 +47,7 @@ export default function PostDetailPage() {
     error,
   } = useQuery({
     queryKey: ["postMdx", category, slug],
-    queryFn: () => fetchPostMdxFromHost(`_blog/${category}/${slug}.mdx`),
+    queryFn: () => fetchPostMdx(createPostMdxPath(category, slug)),
     enabled: !!post,
   });
 
