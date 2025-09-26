@@ -1,4 +1,4 @@
-import { useResume } from "../../../contexts/ResumeContext";
+import { useResume } from "../contexts/ResumeContext";
 import { resume } from "../../../service";
 import type {
   ResumeData,
