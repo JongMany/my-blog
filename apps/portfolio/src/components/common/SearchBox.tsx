@@ -18,6 +18,11 @@ export const SearchBox = React.memo(function SearchBox({
   const [value, setValue] = React.useState(initial);
   const composingRef = React.useRef(false);
 
+  // initial prop이 변경되면 내부 상태도 업데이트
+  React.useEffect(() => {
+    setValue(initial);
+  }, [initial]);
+
   // 로컬 값이 바뀌면 필터링에만 반영 (URL은 건드리지 않음)
   React.useEffect(() => {
     onChangeText(value);
