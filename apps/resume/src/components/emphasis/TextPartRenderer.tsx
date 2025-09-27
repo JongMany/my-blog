@@ -1,3 +1,4 @@
+import React from "react";
 import { KeywordTooltip } from "./KeywordTooltip";
 import type { TextPart } from "./utils/textProcessor";
 
@@ -19,5 +20,15 @@ export function TextPartRenderer({
     );
   }
 
-  return <span>{part.content}</span>;
+  // \n을 <br> 태그로 변환하여 줄바꿈 처리
+  const renderTextWithLineBreaks = (text: string) => {
+    return text.split("\n").map((line, index, array) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < array.length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
+  return <span>{renderTextWithLineBreaks(part.content)}</span>;
 }

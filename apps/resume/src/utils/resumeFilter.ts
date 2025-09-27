@@ -13,7 +13,15 @@ export function filterExperienceForCompact(experience: Experience): Experience {
     // 간단한 버전에서는 bullets를 최대 3개로 제한하고, 하위 bullets는 제거
     bullets: experience.bullets.slice(0, 3).map((bullet) => ({
       ...bullet,
-      children: undefined, // 하위 bullets 제거
+      children: bullet.children?.map((child) => ({
+        ...child,
+        children: child.children?.map((grandChild) => ({
+          ...grandChild,
+          portfolioLinks: undefined, // 하위 bullets의 포트폴리오 링크 제거
+        })),
+        portfolioLinks: undefined, // 하위 bullets의 포트폴리오 링크 제거
+      })),
+      portfolioLinks: undefined, // 포트폴리오 링크 제거
       tags: bullet.tags?.slice(0, 3), // 태그도 최대 3개로 제한
     })),
     // summary는 유지 (요약 정보는 중요)
@@ -39,10 +47,11 @@ export function filterSideProjectForCompact(
     bullets: sideProject.bullets.slice(0, 2).map((bullet) => ({
       ...bullet,
       children: undefined, // 하위 bullets 제거
+      portfolioLinks: undefined, // 포트폴리오 링크 제거
       tags: bullet.tags?.slice(0, 2), // 태그도 최대 2개로 제한
     })),
     // summary는 유지 (요약 정보는 중요)
-    // portfolioLinks는 유지 (링크는 중요)
+    portfolioLinks: undefined, // 포트폴리오 링크 제거
   };
 }
 

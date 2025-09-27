@@ -11,7 +11,7 @@ export function PortfolioLinks({ links }: PortfolioLinksProps) {
   if (!links?.length) return null;
 
   return (
-    <div className="mt-1 flex flex-wrap gap-1.5">
+    <div className="ml-2 mt-1.5 flex flex-wrap gap-x-2 gap-y-0.5">
       {links.map((link) => (
         <PortfolioLinkItem
           key={`${link.title}-${link.url}`}
@@ -33,23 +33,14 @@ function PortfolioLinkItem({ title, url, type }: PortfolioLinkItemProps) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "group inline-flex items-center gap-1.5 rounded-md",
-        "border border-[var(--border)] bg-[var(--surface)]",
-        "px-2 py-1 text-[11px] text-[var(--fg)]",
-        "transition-all duration-150",
-        "hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 hover:text-[var(--primary)]",
+        "group inline-flex items-center gap-1 text-[11px]",
+        "text-[var(--muted-fg)] transition-colors duration-150",
+        "hover:text-[var(--primary)] hover:underline",
+        "underline-offset-2 decoration-1",
       )}
     >
-      <div
-        className={cn(
-          "flex items-center justify-center",
-          "text-[var(--muted-fg)] transition-colors",
-          "group-hover:text-[var(--primary)]",
-        )}
-      >
-        <LinkIcon type={type} />
-      </div>
-      <span className="font-medium">{title}</span>
+      <LinkIcon type={type} />
+      <span>{title}</span>
     </a>
   );
 }
@@ -61,7 +52,7 @@ interface LinkIconProps {
 
 /** 포트폴리오 링크 아이콘 컴포넌트 */
 function LinkIcon({ type, className }: LinkIconProps) {
-  const iconProps = { className: `w-3 h-3 ${className || ""}` };
+  const iconProps = { className: `w-2.5 h-2.5 ${className || ""}` };
 
   switch (type) {
     case "github":
