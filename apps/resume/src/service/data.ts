@@ -214,28 +214,9 @@ export const resume: ResumeData = {
                 },
                 {
                   text: "레이어드 아키텍처(Controller / Manager / Renderer)로 책임 분리",
-                  children: [
-                    {
-                      text: "Controller: 차트 타입, 테마, 해상도, 그리기 도구 관리",
-                    },
-                    {
-                      text: "Manager: 지표 및 주문 패널 상태 관리",
-                    },
-                    {
-                      text: "Renderer: UI 렌더링 및 시각적 요소 처리",
-                    },
-                  ],
                 },
                 {
                   text: "EventBus 기반 이벤트 통신 설계 → 인스턴스 간 이벤트 브로커 역할 수행",
-                  children: [
-                    {
-                      text: "상태 변경 시 Updater → emitChange 호출 → EventBus로 브로드캐스트",
-                    },
-                    {
-                      text: "필요한 모듈만 해당 이벤트를 구독 → 확장 가능한 이벤트 기반 아키텍처 구현",
-                    },
-                  ],
                 },
               ],
             },

@@ -34,9 +34,7 @@ export function useResumeContent(): UseResumeContentReturn {
     ? experiences
     : experiences.map(filterExperienceForCompact);
 
-  const processedSideProjects = isDetailed
-    ? sideProjects
-    : sideProjects?.map(filterSideProjectForCompact);
+  const processedSideProjects = isDetailed ? sideProjects : []; // 간단한 버전에서는 사이드 프로젝트를 완전히 숨김
 
   const processedEducation = isDetailed
     ? education
