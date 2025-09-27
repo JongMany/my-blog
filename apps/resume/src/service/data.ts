@@ -55,10 +55,10 @@ export const resume: ResumeData = {
               ],
               children: [
                 {
-                  text: "TradingView 라이브러리 내부 코드 디버깅 및 내부 코드 수정\n→ canvas 내에서의 히트 테스트 및 렌더링 로직 추가",
+                  text: "TradingView 라이브러리 내부 코드 디버깅 및 내부 코드 수정 → canvas 내 요소 간 히트 테스트 및 렌더링 로직 추가",
                 },
                 {
-                  text: "실시간 예상 수익/손실 표시 기능 추가 → 사용자 편의성과 거래 의사결정 속도 향상",
+                  text: "실시간 예상 수익 / 손실 표시 기능 추가 → 거래 의사결정 속도와 편의성 향상",
                 },
               ],
             },
@@ -73,10 +73,10 @@ export const resume: ResumeData = {
               ],
               children: [
                 {
-                  text: "React Draggable 라이브러리 활용 → 사용자가 원하는 위치로 패널 자유롭게 이동 가능",
+                  text: "React Draggable 라이브러리 활용 → 패널을 자유롭게 이동 가능",
                 },
                 {
-                  text: "실시간 호가창 내 데이터(매도 1호가 / 매수 1호가) 연동하여 시장가 표시 → 즉시 매수/매도 주문 실행 지원",
+                  text: "실시간 호가창 내 데이터(매도 1호가 / 매수 1호가) 연동하여 시장가 표시 → 즉시 매수/매도 주문 지원",
                 },
               ],
             },
@@ -91,16 +91,16 @@ export const resume: ResumeData = {
               ],
               children: [
                 {
-                  text: "TradingView iframe DOM 구조 분석 → 차트 위에 동적 마운트 가능한 주문 패널 시스템 설계",
+                  text: "TradingView iframe 내부 구조 분석 → 차트 위 주문 패널 UI 추가",
                 },
                 {
-                  text: "Lit 기반 커스텀 엘리먼트 개발 및 환경별 동적 스크립트 주입 시스템 구축",
+                  text: "Lit 기반 커스텀 엘리먼트 개발 및 iframe 환경에서의 커스텀 UI 컴포넌트 주입 시스템 구현",
                   children: [
                     {
-                      text: "개발 환경: Vite dev server에서 직접 로드",
+                      text: "iframe 환경에서 동적으로 커스텀 엘리먼트를 등록 및 주입하는 시스템을 개발하여, 개발/운영 환경 모두에서 안정적으로 UI 컴포넌트를 제공",
                     },
                     {
-                      text: "운영 환경: vite manifest 파싱 후 빌드된 스크립트 경로를 추출해 커스텀 엘리먼트를 iframe 내에 주입",
+                      text: "Vite 개발 모드에서는 소스 파일을 직접, 프로덕션 모드에서는 manifest 기반 번들을 자동으로 로드하도록 설계",
                     },
                   ],
                 },
@@ -120,7 +120,7 @@ export const resume: ResumeData = {
               text: "성과:",
               children: [
                 {
-                  text: "복잡한 라이브러리 내부 구조를 파악하고 커스터마이징하여 차트 자체를 '거래 플랫폼'으로 확장",
+                  text: "복잡한 라이브러리 내부 구조를 파악하고 커스터마이징하여 차트 자체를 거래 플랫폼으로 확장",
                 },
                 {
                   text: "사용자의 거래속도 및 거래 시의 인지부조화를 줄여 편의성 향상",
@@ -143,10 +143,10 @@ export const resume: ResumeData = {
               ],
               children: [
                 {
-                  text: "웹소켓 연결 상태를 실시간 모니터링 → 웹소켓 서버 불안정/끊김 발생 시 Polling으로 자동 전환",
+                  text: "웹소켓 연결 상태를 감지하여 불안정 시 Polling으로 자동 전환",
                 },
                 {
-                  text: "Tanstack Query setQueryData 활용 → 웹소켓, HTTP 데이터를 동일 캐시에 통합 / 사용자에게 끊김없는 데이터 경험 제공",
+                  text: "Tanstack Query setQueryData 활용하여 웹소켓, HTTP 데이터를 동일 캐시에 통합 → 사용자에게 끊김없는 데이터 경험 제공",
                 },
                 {
                   text: "메시지 처리 시 200ms 스로틀링 적용 → 과도한 업데이트 방지 및 성능 최적화",
@@ -167,7 +167,7 @@ export const resume: ResumeData = {
                   text: "토픽 / 메시지 크기 / 속도 실시간 관찰 및 시각화 → 소켓 병목 구간 신속 파악",
                 },
                 {
-                  text: "구독 / 재구독 제어 기능 제공 → 병목 지점 분석, 장애 상황 재현, 방어 로직 검증",
+                  text: "구독 / 재구독 제어 기능 제공 → 장애 상황 재현, 방어 로직 검증",
                 },
               ],
             },
@@ -198,7 +198,7 @@ export const resume: ResumeData = {
               text: "문제 상황:",
               children: [
                 {
-                  text: "기존 구현은 다수의 useEffect에서 TradingView 메서드를 직접 호출 → 복잡한 의존성, 디버깅 난이도 증가",
+                  text: "기존 구현은 다수의 useEffect에서 TradingView 관련 복잡한 의존성 → 디버깅 난이도 증가",
                 },
                 {
                   text: "차트 초기화, 테마 변경, 심볼 업데이트, 주문 패널 관리 등 로직이 얽혀 있어 기능 추가 및 버그 해결 시 영향 범위 예측 어려움",
@@ -209,13 +209,32 @@ export const resume: ResumeData = {
               text: "해결 방법:",
               children: [
                 {
-                  text: "useSyncExternalStore + Observer 패턴 적용 → iframe 기반 TradingView 라이브러리와 React 생명주기 일관된 상태 동기화 모델 확립",
+                  text: "useSyncExternalStore + Observer 패턴 적용 → React와 TradingView 내 생명주기 간 일관된 상태 동기화",
                 },
                 {
                   text: "레이어드 아키텍처(Controller / Manager / Renderer)로 책임 분리",
+                  children: [
+                    {
+                      text: "Controller: 차트 타입, 테마, 해상도, 그리기 도구 관리",
+                    },
+                    {
+                      text: "Manager: 지표 및 주문 패널 상태 관리",
+                    },
+                    {
+                      text: "Renderer: UI 렌더링 및 시각적 요소 처리",
+                    },
+                  ],
                 },
                 {
                   text: "EventBus 기반 이벤트 통신 설계 → 인스턴스 간 이벤트 브로커 역할 수행",
+                  children: [
+                    {
+                      text: "상태 변경 시 Updater → emitChange 호출 → EventBus로 브로드캐스트",
+                    },
+                    {
+                      text: "필요한 모듈만 해당 이벤트를 구독 → 확장 가능한 이벤트 기반 아키텍처 구현",
+                    },
+                  ],
                 },
               ],
             },
@@ -252,6 +271,9 @@ export const resume: ResumeData = {
         "트리거 단어 칩 변환 알고리즘": "/assets/chip-transform.gif",
         "실시간 텍스트 검열 시스템": "/assets/realtime-filtering-demo.gif",
         "LLM 실시간 스트리밍 시스템": "/assets/sse-streaming.gif",
+        "WASM 기반 WebP 애니메이션 디코딩 시스템": "/assets/wasm-poc.gif",
+        "에디터 내 텍스트 칩 시스템": "/assets/chip-transform.gif",
+        "ESLint Rule": "/assets/transform-eslint-after.png",
       },
       bullets: [
         {
@@ -268,18 +290,18 @@ export const resume: ResumeData = {
               ],
               children: [
                 {
-                  text: "SSE를 활용하여 토큰 단위 실시간 텍스트 렌더링 구현 → 대화형 응답 속도 및 몰입감 향상",
+                  text: "SSE를 활용하여 토큰 단위 실시간 렌더링 → 체감 응답 속도 및 몰입감 향상",
                 },
                 {
-                  text: "MSW 기반 SSE 모킹 시스템 구축 → 서버 의존성 제거 및 독립적 프론트엔드 개발/테스트 가능",
+                  text: "MSW 기반 SSE 모킹 시스템 구축 → 서버 의존성 제거 및 독립적인 프론트엔드 개발 진행 가능",
                 },
                 {
-                  text: "네트워크 상태에 따른 적응형 렌더링 스케줄러 및 버퍼 기반 큐 관리 도입 → 지연/폭주 상황에서도 부드러운 타이핑 효과 제공",
+                  text: "네트워크 상태에 따른 적응형 렌더링 스케줄러 및 버퍼 기반 큐 관리 도입 → 지연 및 LLM 응답 속도 증가 상황에서도 부드러운 타이핑 효과 제공",
                 },
               ],
             },
             {
-              text: "WASM 기반 WebP 애니메이션 디코딩 시스템 검증 (PoC)",
+              text: "[WASM 기반 WebP 애니메이션 디코딩 시스템] 검증 (PoC)",
               portfolioLinks: [
                 {
                   title: "WASM WebP 애니메이션 디코딩",
@@ -297,7 +319,7 @@ export const resume: ResumeData = {
               ],
             },
             {
-              text: "에디터 내 텍스트 칩 시스템 구현",
+              text: "[에디터 내 텍스트 칩 시스템] 구현",
               portfolioLinks: [
                 {
                   title: "텍스트 칩 시스템",
@@ -336,7 +358,7 @@ export const resume: ResumeData = {
                   text: "GA4, Airbridge, NaverLog, XPixel 등 다중 로깅 시스템을 단일 인터페이스로 통합",
                 },
                 {
-                  text: "이벤트 enum 기반 구조 설계 → 신규 이벤트 추가 시 모든 로깅 시스템에 자동 반영",
+                  text: "이벤트 enum 기반 구조 설계 → 신규 이벤트 추가 시 모든 로깅 시스템에 반영",
                 },
                 {
                   text: "이벤트 적용 속도 개선 및 개발 생산성 향상",
@@ -344,7 +366,7 @@ export const resume: ResumeData = {
               ],
             },
             {
-              text: "번역키 검증을 위한 ESLint Rule 개발",
+              text: "번역키 검증을 위한 [ESLint Rule] 개발",
               portfolioLinks: [
                 {
                   title: "ESLint Rule 개발",
