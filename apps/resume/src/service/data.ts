@@ -23,7 +23,7 @@ export const resume: ResumeData = {
       role: "Frontend Developer",
       period: "2025.07 - now",
       summary:
-        "국내 최대 암호화폐 및 가상자산 투자 정보 미디어 서비스인 코인니스 내의 암호화폐 거래소 서비스를 개발했습니다. 암호화폐 거래소의 핵심 거래 기능을 개발하여 사용자들이 더 쉽고 안전하게 거래할 수 있도록 개선했습니다.",
+        "암호화폐 거래소의 WTS(Web Trading System)을 개발했습니다. 사용자의 거래 편의성을 향상시키기 위한 기능들을 제안하고 개발했습니다.",
       stacks: [
         "Yarn",
         "React",
@@ -31,101 +31,224 @@ export const resume: ResumeData = {
         "Tanstack Query",
         "Zustand",
         "Tailwindcss",
+        "Lit",
       ],
       keywordImageMap: {
-        "TP/SL 드래그 UX": "/assets/tpsl.gif",
-        "웹소켓 디버깅 툴": "/assets/socket-devtools.gif",
-        "시장가/지정가 주문 UI": "/assets/limit-order-panel.gif",
-        "HTTP Polling Fallback 시스템": "/assets/websocket-fallback.png",
+        "드래그 앤 드랍 손절/익절 예약 주문": "/assets/tpsl.gif",
+        "지정가 주문 패널": "/assets/limit-order-panel.gif",
+        "시장가 주문 패널": "/assets/market-order-panel.gif",
+        "웹소켓 ↔ HTTP Polling 자동 전환 시스템":
+          "/assets/websocket-fallback.png",
+        "웹소켓 메시지 DevTools": "/assets/socket-devtools.gif",
       },
       bullets: [
         {
-          text: "TradingView 차트 내 [TP/SL 드래그 UX] 확장",
-          portfolioLinks: [
-            {
-              title: "드래그 UX 구현 과정",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-tpsl-drag",
-              type: "portfolio",
-            },
-          ],
+          text: "차트 내 거래 편의성 기능 개발",
           children: [
             {
-              text: "기존 라이브러리에서 불가능했던 차트 내 익절/손절 설정 인터페이스를 거래 편의성 대폭 향상",
+              text: "[드래그 앤 드랍 손절/익절 예약 주문] 기능 구현",
+              portfolioLinks: [
+                {
+                  title: "드래그 앤 드랍 손절/익절 예약 주문",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-tpsl-drag",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "TradingView 라이브러리 내부 코드 디버깅 및 내부 코드 수정\n→ canvas 내에서의 히트 테스트 및 렌더링 로직 추가",
+                },
+                {
+                  text: "실시간 예상 수익/손실 표시 기능 추가 → 사용자 편의성과 거래 의사결정 속도 향상",
+                },
+              ],
             },
             {
-              text: "실시간 손익 계산으로 드래그 시 사용자가 거래 전 수익을 미리 확인할 수 있도록 개선",
+              text: "차트 기반 [시장가 주문 패널] 개발",
+              portfolioLinks: [
+                {
+                  title: "시장가 주문 패널",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-market-order-panel",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "React Draggable 라이브러리 활용 → 사용자가 원하는 위치로 패널 자유롭게 이동 가능",
+                },
+                {
+                  text: "실시간 호가창 내 데이터(매도 1호가 / 매수 1호가) 연동하여 시장가 표시 → 즉시 매수/매도 주문 실행 지원",
+                },
+              ],
+            },
+            {
+              text: "차트 기반 [지정가 주문 패널] 개발",
+              portfolioLinks: [
+                {
+                  title: "지정가 주문 패널",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-limit-order-panel",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "TradingView iframe DOM 구조 분석 → 차트 위에 동적 마운트 가능한 주문 패널 시스템 설계",
+                },
+                {
+                  text: "Lit 기반 커스텀 엘리먼트 개발 및 환경별 동적 스크립트 주입 시스템 구축",
+                  children: [
+                    {
+                      text: "개발 환경: Vite dev server에서 직접 로드",
+                    },
+                    {
+                      text: "운영 환경: vite manifest 파싱 후 빌드된 스크립트 경로를 추출해 커스텀 엘리먼트를 iframe 내에 주입",
+                    },
+                  ],
+                },
+                {
+                  text: "React ↔ iframe 간 콜백 동기화 패턴(useRef 기반) 구현 → 패널 내 주문 요청 시 최신 콜백 참조 보장",
+                  portfolioLinks: [
+                    {
+                      title: "콜백 패턴 최적화",
+                      url: "https://homebody-coder.tistory.com/entry/useCallbackRef-useEffect%EC%9D%98-%ED%95%A8%EC%88%98-deps%EB%A5%BC-%EC%97%86%EC%95%A0%EB%8A%94-%EB%B0%A9%EB%B2%95",
+                      type: "blog",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              text: "성과:",
+              children: [
+                {
+                  text: "복잡한 라이브러리 내부 구조를 파악하고 커스터마이징하여 차트 자체가 '거래 플랫폼'으로 확장",
+                },
+                {
+                  text: "사용자의 거래속도 및 거래 시의 인지부조화를 줄여 편의성 향상",
+                },
+              ],
             },
           ],
         },
         {
-          text: "차트 내 [시장가/지정가 주문 UI] 시스템",
-          portfolioLinks: [
-            {
-              title: "원클릭 거래 시스템 구현",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-chart-order-ui",
-              type: "portfolio",
-            },
-          ],
+          text: "웹소켓 안정성 및 모니터링 시스템 개발",
           children: [
             {
-              text: "차트에서 바로 시장가/지정가 주문이 가능한 원클릭 거래 시스템 구축",
+              text: "[웹소켓 ↔ HTTP Polling 자동 전환 시스템] 구축",
+              portfolioLinks: [
+                {
+                  title: "웹소켓 HTTP Polling 자동 전환 시스템",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-http-fallback",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "웹소켓 연결 상태를 실시간 모니터링 → 웹소켓 서버 불안정/끊김 발생 시 Polling으로 자동 전환",
+                },
+                {
+                  text: "Tanstack Query setQueryData 활용 → 웹소켓, HTTP 데이터를 동일 캐시에 통합 / 사용자에게 끊김없는 데이터 경험 제공",
+                },
+                {
+                  text: "메시지 처리 시 200ms 스로틀링 적용 → 과도한 업데이트 방지 및 성능 최적화",
+                },
+              ],
             },
             {
-              text: "안정적인 실시간 데이터 동기화로 거래 오류 최소화 및 사용자 신뢰도 향상",
+              text: "[웹소켓 메시지 DevTools] 개발",
+              portfolioLinks: [
+                {
+                  title: "웹소켓 메시지 DevTools",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-devtools",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "토픽 / 메시지 크기 / 속도 실시간 관찰 및 시각화 → 소켓 병목 구간 신속 파악",
+                },
+                {
+                  text: "구독 / 재구독 제어 기능 제공 → 병목 지점 분석, 장애 상황 재현, 방어 로직 검증",
+                },
+              ],
+            },
+            {
+              text: "성과:",
+              children: [
+                {
+                  text: "서버 불안정 상황에서도 실시간 데이터 끊김 없는 사용자 경험 보장",
+                },
+                {
+                  text: "DevTools 기반의 모니터링 시스템으로 장애 대응 및 성능 최적화 속도 향상",
+                },
+              ],
             },
           ],
         },
         {
-          text: "웹소켓 불안정 시 [HTTP Polling Fallback 시스템] 개발",
+          text: "TradingView 차트 라이브러리 – React 통합 아키텍처 리팩토링",
           portfolioLinks: [
             {
-              title: "Fallback 시스템 설계",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-http-fallback",
-              type: "portfolio",
-            },
-          ],
-          children: [
-            {
-              text: "웹소켓 서버 불안정 시 웹소켓 → HTTP Polling 자동 전환,",
-            },
-            {
-              text: "웹소켓 서버 복구 시 웹소켓 연결 자동 복귀",
-            },
-          ],
-        },
-        {
-          text: "TradingView 아키텍처 리팩토링",
-          portfolioLinks: [
-            {
-              title: "아키텍처 리팩토링 과정",
+              title: "TradingView 아키텍처 리팩토링",
               url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-architecture-refactoring",
               type: "portfolio",
             },
           ],
           children: [
             {
-              text: "기존 여러 useEffect를 통해 분산된 의존성 관리로 인해 기능 추가 시 예상치 못한 문제 발생",
+              text: "문제 상황:",
+              children: [
+                {
+                  text: "기존 구현은 다수의 useEffect에서 TradingView 메서드를 직접 호출 → 복잡한 의존성, 디버깅 난이도 증가",
+                },
+                {
+                  text: "차트 초기화, 테마 변경, 심볼 업데이트, 주문 패널 관리 등 로직이 얽혀 있어 기능 추가 및 버그 해결 시 영향 범위 예측 어려움",
+                },
+              ],
             },
             {
-              text: "차트 내의 요소들을 분석하여 각 요소 별 책임을 분리하여 유지보수성과 확장성을 향상시킴",
+              text: "해결 방법:",
+              children: [
+                {
+                  text: "useSyncExternalStore + Observer 패턴 적용 → iframe 기반 TradingView 라이브러리와 React 생명주기 일관된 상태 동기화 모델 확립",
+                },
+                {
+                  text: "레이어드 아키텍처(Controller / Manager / Renderer)로 책임 분리",
+                  children: [
+                    {
+                      text: "Controller: 차트 타입, 테마, 해상도, 그리기 도구 관리",
+                    },
+                    {
+                      text: "Manager: 지표 및 주문 패널 상태 관리",
+                    },
+                    {
+                      text: "Renderer: UI 렌더링 및 시각적 요소 처리",
+                    },
+                  ],
+                },
+                {
+                  text: "EventBus 기반 이벤트 통신 설계 → 인스턴스 간 이벤트 브로커 역할 수행",
+                  children: [
+                    {
+                      text: "상태 변경 시 Updater → emitChange 호출 → EventBus로 브로드캐스트",
+                    },
+                    {
+                      text: "필요한 모듈만 해당 이벤트를 구독 → 확장 가능한 이벤트 기반 아키텍처 구현",
+                    },
+                  ],
+                },
+              ],
             },
-          ],
-        },
-        {
-          text: "[웹소켓 디버깅 툴] 개발",
-          portfolioLinks: [
             {
-              title: "웹소켓 디버깅 툴 개발",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-devtools",
-              type: "portfolio",
-            },
-          ],
-          children: [
-            {
-              text: "특정 웹소켓 통신 불안정 시의 디버깅 속도를 향상시키기 위한 디버깅 툴 개발",
-            },
-            {
-              text: "토픽, 크기, 속도를 실시간으로 관찰하여 특정 토픽의 병목 지점 확인",
+              text: "성과:",
+              children: [
+                {
+                  text: "기능 간 의존성 방향을 일관되게 설계하여 코드 복잡도 감소",
+                },
+                {
+                  text: "신규 기능 추가 시 기존 코드 영향 최소화",
+                },
+              ],
             },
           ],
         },
@@ -136,7 +259,7 @@ export const resume: ResumeData = {
       role: "Frontend Developer",
       period: "2024.10 - 2025.07",
       summary:
-        "AI 채팅 플랫폼에서 사용자들이 더 자연스럽고 편리하게 AI와 대화할 수 있도록 핵심 기능들을 개발했습니다. 실시간 대화, 직관적인 에디터, 안정적인 미디어 처리로 사용자 만족도를 크게 향상시켰습니다.",
+        "AI 채팅 플랫폼에서 사용자들이 더 자연스럽고 편리하게 AI와 대화할 수 있도록 핵심 기능들을 검증 및 개발했습니다.",
       stacks: [
         "Pnpm",
         "React",
@@ -152,74 +275,114 @@ export const resume: ResumeData = {
       },
       bullets: [
         {
-          text: "[트리거 단어 칩 변환 알고리즘] 개발",
-          portfolioLinks: [
-            {
-              title: "트리거 단어를 칩으로 변환",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-text-parsing",
-              type: "portfolio",
-            },
-          ],
+          text: "사용자 경험 개선을 위한 다양한 기능들을 구현 및 검증",
           children: [
             {
-              text: "트리거 단어를 직관적인 시각적 칩으로 변환하여 생성 시 가독성 향상",
+              text: "SSE 기반 LLM 응답 스트리밍 시스템 검증 (PoC)",
+              portfolioLinks: [
+                {
+                  title: "SSE 기반 LLM 스트리밍 시스템",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/llm-sse-streaming",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "SSE를 활용하여 토큰 단위 실시간 텍스트 렌더링 구현 → 대화형 응답 속도 및 몰입감 향상",
+                },
+                {
+                  text: "MSW 기반 SSE 모킹 시스템 구축 → 서버 의존성 제거 및 독립적 프론트엔드 개발/테스트 가능",
+                },
+                {
+                  text: "네트워크 상태에 따른 적응형 렌더링 스케줄러 및 버퍼 기반 큐 관리 도입 → 지연/폭주 상황에서도 부드러운 타이핑 효과 제공",
+                },
+              ],
             },
             {
-              text: "키보드만으로도 편리하게 편집할 수 있는 UX를 통해 창작자들의 생산성 향상",
+              text: "WASM 기반 WebP 애니메이션 디코딩 시스템 검증 (PoC)",
+              portfolioLinks: [
+                {
+                  title: "WASM WebP 애니메이션 디코딩",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/wasm-webp-animation",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "ImageDecoder API의 WebP 애니메이션 디코딩 시의 불안정성을 보완하기 위해 WASM 기반 디코더 라이브러리 도입",
+                },
+                {
+                  text: "마우스 호버 시 프레임 지속시간 기반 재생/정지 제어 → 자연스러운 애니메이션 UX 제공",
+                },
+              ],
+            },
+            {
+              text: "에디터 내 텍스트 칩 시스템 구현",
+              portfolioLinks: [
+                {
+                  title: "텍스트 칩 시스템",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/ai-character-text-parsing",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "캐릭터 생성 프롬프트에 {{assistant}}, {{user}} 키워드 정의 → LLM이 발화자(사용자/캐릭터)를 명확히 구분",
+                },
+                {
+                  text: "작성 화면에서 해당 키워드를 색상 구분된 칩으로 시각화 → 시각적 명확성 및 가독성 강화",
+                },
+                {
+                  text: "직관적인 인터페이스를 통해 캐릭터 생성 과정의 편의성과 사용자 경험 개선",
+                },
+              ],
             },
           ],
         },
         {
-          text: "SSE 기반 [LLM 실시간 스트리밍 시스템] 개발",
-          portfolioLinks: [
-            {
-              title: "SSE 스트리밍 구현",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/llm-sse-streaming",
-              type: "portfolio",
-            },
-          ],
+          text: "개발자 경험 향상 기능 추가",
           children: [
             {
-              text: "AI 응답을 실시간으로 스트리밍하여 자연스러운 대화 경험 제공",
+              text: "로깅 시스템 공통 인터페이스 구축",
+              portfolioLinks: [
+                {
+                  title: "통합 로깅 시스템",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/multi-platform-analytics-integration",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "GA4, Airbridge, NaverLog, XPixel 등 다중 로깅 시스템을 단일 인터페이스로 통합",
+                },
+                {
+                  text: "이벤트 enum 기반 구조 설계 → 신규 이벤트 추가 시 모든 로깅 시스템에 자동 반영",
+                },
+                {
+                  text: "이벤트 적용 속도 개선 및 개발 생산성 향상",
+                },
+              ],
             },
             {
-              text: "연결 문제 발생 시 자동으로 복구하여 끊김 없는 대화 환경 구축",
-            },
-          ],
-        },
-        {
-          text: "[실시간 텍스트 검열 시스템] 개발",
-          portfolioLinks: [
-            {
-              title: "Aho-Corasick 알고리즘 기반 실시간 필터링",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/realtime-text-filtering-system",
-              type: "portfolio",
-            },
-          ],
-          children: [
-            {
-              text: "실시간 부적절한 콘텐츠 필터링으로 깨끗한 대화 환경 유지",
-            },
-            {
-              text: "사용자 등급별 맞춤형 검열로 과도한 제재 없이 자유로운 소통 보장",
-            },
-          ],
-        },
-        {
-          text: "다중 분석 플랫폼 통합 로그 수집 시스템",
-          portfolioLinks: [
-            {
-              title: "통합 로깅 아키텍처",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/multi-platform-analytics-integration",
-              type: "portfolio",
-            },
-          ],
-          children: [
-            {
-              text: "GA4, Airbridge, X Pixel, 네이버로그 등 4개 분석 플랫폼을 분석하여 통합된 인터페이스 제공",
-            },
-            {
-              text: "확장 가능한 로깅 아키텍처로 신규 분석 플랫폼 추가 시 개발 시간 단축",
+              text: "번역키 검증을 위한 ESLint Rule 개발",
+              portfolioLinks: [
+                {
+                  title: "ESLint Rule 개발",
+                  url: "https://jongmany.github.io/my-blog/portfolio/project/eslint-i18n-rule",
+                  type: "portfolio",
+                },
+              ],
+              children: [
+                {
+                  text: "한국어/영어/중국어 번역 파일을 동시에 검증 → 누락된 번역키 실시간 감지",
+                },
+                {
+                  text: "i18n의 t 함수 및 <Trans> 컴포넌트 호출 시 번역 키 오타 검출",
+                },
+                {
+                  text: "런타임 번역 오류 예방으로 다국어 서비스 품질 및 안정성 강화",
+                },
+              ],
             },
           ],
         },
