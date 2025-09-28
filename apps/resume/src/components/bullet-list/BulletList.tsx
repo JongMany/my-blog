@@ -10,6 +10,7 @@ import { PortfolioLink } from "../../service";
 
 export interface Bullet {
   text: string;
+  description?: string;
   tags?: string[];
   children?: Bullet[];
   portfolioLinks?: Array<PortfolioLink>;

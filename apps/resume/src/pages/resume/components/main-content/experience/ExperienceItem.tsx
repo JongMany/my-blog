@@ -17,6 +17,7 @@ export default function ExperienceItem({ item }: ExperienceItemProps) {
     period: item.period,
     summary: item.summary,
     stacks: item.stacks,
+    sections: item.sections,
     bullets: item.bullets,
     keywordImageMap: item.keywordImageMap,
   };

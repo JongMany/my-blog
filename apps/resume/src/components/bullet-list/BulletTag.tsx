@@ -6,6 +6,8 @@ interface BulletTagProps {
   tag: string;
   /** 고유 키 생성을 위한 접두사 */
   keyPrefix: string;
+  /** 현재 depth 레벨 */
+  level?: number;
 }
 
 /**
@@ -24,14 +26,20 @@ interface BulletTagProps {
 export const BulletTag = React.memo(function BulletTag({
   tag,
   keyPrefix,
+  level = 0,
 }: BulletTagProps) {
+  // depth에 따른 텍스트 크기 결정
+  const textSizeClass = level >= 2 ? "text-[9px]" : "text-[10px]";
+  const paddingClass = level >= 2 ? "px-1.5 py-[1px]" : "px-2 py-[2px]";
+
   return (
     <SimpleCursorTooltip text={`${tag} 관련 작업`} delay={200}>
       <span
         className={cn(
           "rounded-full border border-[var(--border)] bg-[var(--surface)]",
-          "px-2 py-[2px] text-[10px] text-[var(--muted-fg)]",
-          "cursor-help hover:text-[var(--primary)] transition-colors",
+          paddingClass,
+          textSizeClass,
+          "text-[var(--muted-fg)] cursor-help hover:text-[var(--primary)] transition-colors",
         )}
         role="button"
         tabIndex={0}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Bullet, PortfolioLink } from "../../../../../service";
+import type { Bullet, PortfolioLink, Section } from "../../../../../service";
 import { motion } from "framer-motion";
 import {
   BulletList,
@@ -18,7 +18,8 @@ export interface TimelineItemData {
   period?: string;
   summary?: string;
   stacks?: string[];
-  bullets: Bullet[];
+  sections?: Section[];
+  bullets?: Bullet[];
   portfolioLinks?: PortfolioLink[];
   keywordImageMap?: Record<string, string>;
 }
@@ -29,6 +30,40 @@ interface TimelineItemProps {
   emphasizeTitle?: boolean;
 }
 
+// Section 컴포넌트
+function SectionItem({
+  section,
+  keywordImageMap,
+}: {
+  section: Section;
+  keywordImageMap?: Record<string, string>;
+}) {
+  return (
+    <div className="mb-6">
+      <h4 className="text-sm font-medium text-[var(--primary)] mb-2">
+        {section.title}
+      </h4>
+      {section.description && (
+        <div className="text-[11px] text-[var(--muted-fg)] leading-relaxed mb-3 whitespace-pre-line">
+          <Emphasis
+            text={section.description}
+            keywordImageMap={keywordImageMap}
+          />
+        </div>
+      )}
+      <BulletList
+        items={section.bullets}
+        level={0}
+        prefix={[]}
+        keywordImageMap={keywordImageMap}
+      />
+      {section.portfolioLinks?.length && (
+        <PortfolioLinks links={section.portfolioLinks} />
+      )}
+    </div>
+  );
+}
+
 export function TimelineItem({
   item,
   maxCollapsedItems = 3,
@@ -36,11 +71,15 @@ export function TimelineItem({
 }: TimelineItemProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const visibleBullets = isExpanded
-    ? item.bullets
-    : item.bullets.slice(0, maxCollapsedItems);
+  // sections가 있으면 sections를 사용, 없으면 기존 bullets 사용
+  const hasSections = item.sections && item.sections.length > 0;
+  const bullets = item.bullets || [];
 
-  const hasMoreItems = item.bullets.length > maxCollapsedItems;
+  const visibleBullets = isExpanded
+    ? bullets
+    : bullets.slice(0, maxCollapsedItems);
+
+  const hasMoreItems = bullets.length > maxCollapsedItems;
 
   return (
     <motion.article variants={vItem} className="relative pl-4 avoid-break">
@@ -50,16 +89,32 @@ export function TimelineItem({
         <TimelineSummary summary={item.summary} />
         <TimelineStacks stacks={item.stacks} />
         <TimelinePortfolioLinks links={item.portfolioLinks} />
-        <TimelineBullets
-          bullets={visibleBullets}
-          keywordImageMap={item.keywordImageMap}
-        />
-        <TimelineToggle
-          isExpanded={isExpanded}
-          hasMoreItems={hasMoreItems}
-          remainingCount={item.bullets.length - maxCollapsedItems}
-          onToggle={() => setIsExpanded(!isExpanded)}
-        />
+
+        {/* sections가 있으면 sections 렌더링, 없으면 기존 bullets 렌더링 */}
+        {hasSections ? (
+          <div className="mt-3">
+            {item.sections?.map((section, index) => (
+              <SectionItem
+                key={index}
+                section={section}
+                keywordImageMap={item.keywordImageMap}
+              />
+            ))}
+          </div>
+        ) : (
+          <>
+            <TimelineBullets
+              bullets={visibleBullets}
+              keywordImageMap={item.keywordImageMap}
+            />
+            <TimelineToggle
+              isExpanded={isExpanded}
+              hasMoreItems={hasMoreItems}
+              remainingCount={bullets.length - maxCollapsedItems}
+              onToggle={() => setIsExpanded(!isExpanded)}
+            />
+          </>
+        )}
       </Card>
     </motion.article>
   );

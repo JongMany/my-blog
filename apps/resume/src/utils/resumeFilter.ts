@@ -4,19 +4,37 @@ import {
   Activity,
   Bullet,
   SideProject,
+  Section,
 } from "../service";
 
 // 간단한 버전에서 경력 항목을 필터링하는 함수
 export function filterExperienceForCompact(experience: Experience): Experience {
   return {
     ...experience,
-    // 간단한 버전에서는 bullets를 최대 3개로 제한하고, 하위 bullets는 제거
-    bullets: experience.bullets.slice(0, 3).map((bullet) => ({
+    // sections가 있으면 sections를 필터링, 없으면 기존 bullets 필터링
+    sections: experience.sections?.map((section) => ({
+      ...section,
+      bullets: section.bullets.slice(0, 3).map((bullet) => ({
+        ...bullet,
+        children: bullet.children?.slice(0, 2).map((child) => ({
+          ...child,
+          children: undefined, // 하위 bullets 제거 (2단계까지만)
+          portfolioLinks: undefined, // 포트폴리오 링크 제거
+          tags: child.tags?.slice(0, 2), // 태그도 최대 2개로 제한
+        })),
+        portfolioLinks: undefined, // 포트폴리오 링크 제거
+        tags: bullet.tags?.slice(0, 2), // 태그도 최대 2개로 제한
+      })),
+      portfolioLinks: undefined, // 섹션 레벨 포트폴리오 링크 제거
+    })),
+    // 기존 bullets 필터링 (sections가 없는 경우를 위해)
+    bullets: experience.bullets?.slice(0, 3).map((bullet) => ({
       ...bullet,
-      children: bullet.children?.map((child) => ({
+      children: bullet.children?.slice(0, 2).map((child) => ({
         ...child,
-        children: child.children?.map((grandChild) => ({
+        children: child.children?.slice(0, 2).map((grandChild) => ({
           ...grandChild,
+          children: undefined, // 하위 bullets 제거 (3단계까지만)
           portfolioLinks: undefined, // 하위 bullets의 포트폴리오 링크 제거
         })),
         portfolioLinks: undefined, // 하위 bullets의 포트폴리오 링크 제거

@@ -1,5 +1,6 @@
 export type Bullet = {
   text: string;
+  description?: string; // ← 섹션 설명
   tags?: string[];
   children?: Bullet[]; // ← 하위 불릿(들여쓰기) 지원
   portfolioLinks?: PortfolioLink[]; // ← 포트폴리오 링크들
@@ -11,13 +12,21 @@ export type PortfolioLink = {
   type?: "portfolio" | "demo" | "github" | "blog" | "other";
 };
 
+export type Section = {
+  title: string;
+  description?: string;
+  bullets: Bullet[];
+  portfolioLinks?: PortfolioLink[];
+};
+
 export type Experience = {
   company: string;
   role: string;
   period: string;
   summary?: string; // ← 경력 요약(문단)
   stacks?: string[]; // 칩으로 표시
-  bullets: Bullet[]; // 중첩 불릿
+  sections?: Section[]; // 섹션들
+  bullets?: Bullet[]; // 중첩 불릿 (기존 호환성을 위해 유지)
   keywordImageMap?: Record<string, string>; // 키워드-이미지 매핑
 };
 
