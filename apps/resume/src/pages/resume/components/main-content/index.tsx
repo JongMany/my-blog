@@ -9,6 +9,8 @@ import ExperienceSection from "./experience";
 import SideProjectSection from "./side-project";
 import EducationSection from "./education";
 import ActivitySection from "./activity";
+import { useViewport } from "../../../../contexts/ViewportContext";
+import { cn } from "@srf/ui";
 
 interface MainContentProps {
   experiences: Experience[];
@@ -23,8 +25,15 @@ export default function MainContent({
   education,
   activities,
 }: MainContentProps) {
+  const { isLargeDesktop } = useViewport();
+
   return (
-    <main className="space-y-6 lg:col-span-7">
+    <main
+      className={cn(
+        "space-y-6",
+        isLargeDesktop ? "lg:col-span-7" : "col-span-1",
+      )}
+    >
       <ExperienceSection experiences={experiences} />
       <SideProjectSection sideProjects={sideProjects} />
       <EducationSection education={education} />

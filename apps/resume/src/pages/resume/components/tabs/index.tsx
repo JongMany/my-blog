@@ -1,6 +1,7 @@
 import { cn } from "@srf/ui";
 import React from "react";
 import { useResume } from "../../contexts/ResumeContext";
+import { useViewport } from "../../../../contexts/ViewportContext";
 
 export default function TopTabs({
   items,

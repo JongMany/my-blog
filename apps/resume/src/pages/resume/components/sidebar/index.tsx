@@ -5,6 +5,7 @@ import SkillsSection from "./SkillsSection";
 import type { ResumeData } from "../../../../service";
 import ContactInfo from "./ContactInfo";
 import { cn } from "@srf/ui";
+import { useViewport } from "../../../../contexts/ViewportContext";
 
 interface SidebarProps {
   profile: ResumeData["profile"];
@@ -13,9 +14,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ profile, skills, className }: SidebarProps) {
+  const { isLargeDesktop } = useViewport();
+
   return (
-    <aside className={cn("lg:col-span-3", className)}>
-      <div className="lg:sticky lg:top-24 space-y-4">
+    <aside
+      className={cn(isLargeDesktop ? "lg:col-span-3" : "col-span-1", className)}
+    >
+      <div className={cn("space-y-4", isLargeDesktop && "lg:sticky lg:top-24")}>
         <ContactInfo profile={profile} />
         {skills?.length ? (
           <Card className="p-4">

@@ -11,10 +11,13 @@ import { ResumeProvider } from "./contexts/ResumeContext";
 import { SEO } from "@srf/ui";
 import "../../styles/print.css";
 import TopTabs from "./components/tabs";
+import { useViewport } from "../../contexts/ViewportContext";
+import { cn } from "@srf/ui";
 
 function ResumePage() {
   const { profile, experiences, sideProjects, education, activities, skills } =
     useResumeContent();
+  const { isLargeDesktop } = useViewport();
 
   return (
     <>
@@ -30,7 +33,12 @@ function ResumePage() {
         <div className="mx-auto max-w-screen-xl px-3 sm:px-4">
           <ProfileHeader profile={profile} />
 
-          <div className="grid gap-4 lg:grid-cols-12">
+          <div
+            className={cn(
+              "grid gap-4",
+              isLargeDesktop ? "lg:grid-cols-12" : "grid-cols-1",
+            )}
+          >
             <Sidebar profile={profile} skills={skills} className="mt-4" />
             <MainContent
               experiences={experiences}

@@ -3,16 +3,28 @@ import { motion } from "framer-motion";
 import { fadeUp, stagger, vItem } from "../../../../constants";
 import { Card } from "../../../../components/card";
 import { imageSource } from "@mfe/shared";
+import { useViewport } from "../../../../contexts/ViewportContext";
+import { cn } from "@srf/ui";
 
 type ProfileHeaderProps = {
   profile: ResumeData["profile"];
 };
 
 export default function ProfileHeader({ profile }: ProfileHeaderProps) {
+  const { isDesktop, isTablet, isLargeDesktop } = useViewport();
+
   return (
     <Card className="relative overflow-hidden p-4 sm:p-6 md:p-8">
       <BackgroundGradient />
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
+      <div
+        className={cn(
+          "flex gap-4",
+          isDesktop ? "flex-row items-start" : "flex-col items-center",
+          isTablet && "gap-6",
+          isLargeDesktop && "gap-8",
+        )}
+        style={{ minHeight: "fit-content" }}
+      >
         <ProfileImage profile={profile} />
         <ProfileInfo profile={profile} />
       </div>
@@ -38,6 +50,8 @@ function BackgroundGradient() {
 }
 
 function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
+  const { isMobile, isTablet, isLargeDesktop } = useViewport();
+
   if (!profile.photoUrl) return null;
 
   return (
@@ -45,14 +59,22 @@ function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
       {...fadeUp}
       src={imageSource(profile.photoUrl, "resume", "http://localhost:3003")}
       alt={`${profile.name} 프로필`}
-      className="size-24 sm:size-32 md:size-40 rounded-2xl object-cover border border-[var(--border)] flex-shrink-0"
+      className={cn(
+        "rounded-2xl object-cover border border-[var(--border)] flex-shrink-0",
+        isMobile && "size-24",
+        isTablet && "size-28",
+        isLargeDesktop && "size-32",
+        !isMobile && !isTablet && !isLargeDesktop && "size-40",
+      )}
     />
   );
 }
 
 function ProfileInfo({ profile }: { profile: ResumeData["profile"] }) {
+  const { isDesktop } = useViewport();
+
   return (
-    <div className="min-w-0 text-left">
+    <div className={cn("min-w-0", isDesktop ? "text-left" : "text-center")}>
       <ProfileName name={profile.name} />
       <ProfileTagline tagline={profile.tagline} />
       <IntroList intro={profile.intro} />
@@ -61,10 +83,15 @@ function ProfileInfo({ profile }: { profile: ResumeData["profile"] }) {
 }
 
 function ProfileName({ name }: { name: string }) {
+  const { isDesktop } = useViewport();
+
   return (
     <motion.h1
       {...fadeUp}
-      className="text-xl sm:text-2xl font-semibold tracking-tight"
+      className={cn(
+        "font-semibold tracking-tight",
+        isDesktop ? "text-2xl" : "text-xl",
+      )}
     >
       {name}
     </motion.h1>
@@ -84,13 +111,18 @@ function ProfileTagline({ tagline }: { tagline: string }) {
 }
 
 function IntroList({ intro }: { intro: string[] }) {
+  const { isDesktop } = useViewport();
+
   return (
     <motion.ul
       variants={stagger}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true }}
-      className="mt-3 space-y-1.5 text-[11px] sm:text-[12px]"
+      className={cn(
+        "mt-3 space-y-1.5",
+        isDesktop ? "text-[12px]" : "text-[11px]",
+      )}
     >
       {intro.map((item, index) => (
         <motion.li variants={vItem} key={index}>

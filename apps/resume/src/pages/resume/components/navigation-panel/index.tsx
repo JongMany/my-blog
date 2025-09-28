@@ -8,6 +8,7 @@ import {
   updateHash as updateHashFunction,
 } from "./hooks";
 import { useState } from "react";
+import { useViewport } from "../../../../contexts/ViewportContext";
 
 type NavigationItem = { id: string; label: string };
 
@@ -16,8 +17,12 @@ interface NavigationPanelProps {
 }
 
 export default function NavigationPanel({ className }: NavigationPanelProps) {
+  const { isLargeDesktop } = useViewport();
+
+  if (!isLargeDesktop) return null;
+
   return (
-    <aside className={cn("hidden lg:block lg:col-span-2", className)}>
+    <aside className={cn("lg:col-span-2", className)}>
       <div className="lg:sticky lg:top-24">
         <NavigationContent items={TOC_ITEMS} />
       </div>
