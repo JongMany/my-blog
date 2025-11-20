@@ -1,14 +1,34 @@
-import { format } from "date-fns";
+import { cn } from "@srf/ui";
+import { formatDate } from "../utils/date";
+
+interface TimeProps {
+  date: Date | string;
+  className?: string;
+  wrapperClassName?: string;
+}
 
 /**
- * @param date - YYYY-MM-DD와 같은 형식으로 들어와야 함.
+ * 날짜 표시 컴포넌트
+ *
+ * @example
+ * ```tsx
+ * <Time date="2024-01-01" />
+ * <Time date={date} className="text-xs" wrapperClassName="mb-8" />
+ * ```
  */
-export default function Time({ date }: { date: Date | string }) {
-  const formattedDate = format(new Date(date), "yyyy-MM-dd");
+export default function Time({ date, className, wrapperClassName }: TimeProps) {
+  const dateStr = typeof date === "string" ? date : date.toISOString();
+  const formattedDate = formatDate(dateStr);
 
-  return (
-    <time dateTime={formattedDate} className="text-xs text-gray-400">
+  const timeElement = (
+    <time dateTime={dateStr} className={cn("text-xs text-gray-400", className)}>
       {formattedDate}
     </time>
   );
+
+  if (wrapperClassName) {
+    return <div className={wrapperClassName}>{timeElement}</div>;
+  }
+
+  return timeElement;
 }

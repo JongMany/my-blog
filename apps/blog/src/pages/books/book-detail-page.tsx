@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getBook } from "../../service/books";
 import { serialize } from "../../utils/mdx";
 import { MDX } from "../../components/mdx";
+import Title from "../../components/title";
 import Time from "../../components/time";
 import Summary from "../../components/summary";
 import TableOfContents from "../../components/table-of-contents";
@@ -25,7 +26,7 @@ export default function BookDetailPage() {
     <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">
       <div className="flex justify-center">
         <article className="w-full max-w-2xl">
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
+          <Title title={title} className="text-4xl font-bold mb-4" />
           <div className="flex flex-col items-start gap-2 mb-8">
             <Time date={updatedAt!} />
             {summary && <Summary>{summary}</Summary>}
