@@ -40,7 +40,7 @@ export const BulletItem = React.memo(function BulletItem({
   return (
     <>
       {/* 메인 텍스트와 태그 영역 */}
-      <div className={`flex gap-1 ${textSizeClass}`}>
+      <div className={`${textSizeClass}`}>
         <Emphasis text={item.text} keywordImageMap={keywordImageMap} />
         {item.tags?.length ? (
           <span

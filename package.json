@@ -2,6 +2,7 @@
   "name": "stock-recommend-fe",
   "private": true,
   "scripts": {
+    "init": "pnpm run build:all && pnpm run dev:all",
     "dev:all": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume -c green,cyan,blue,magenta \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\"",
     "dev:all:dev": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume -c green,cyan,blue,magenta \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\"",
     "build:all": "turbo run build",
