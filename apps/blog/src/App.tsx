@@ -5,6 +5,8 @@ import { SEO } from "@srf/ui";
 import BlogLayout from "./components/layout";
 import { PostDetailPage } from "./pages/post";
 import { HomePage } from "./pages/home";
+import BookDetailPage from "./pages/books/book-detail-page";
+import BooksPage from "./pages/books/books-page";
 
 export default function BlogApp() {
   return (
@@ -21,7 +23,10 @@ export default function BlogApp() {
 
           {/* /blog/c/:category → 카테고리 목록 */}
           {/* <Route path="c/:category" element={<CategoryPage />} /> */}
-
+          <Route path="books">
+            <Route index element={<BooksPage />} />
+            <Route path=":slug" element={<BookDetailPage />} />
+          </Route>
           {/* /blog/:category/:slug → 글 상세(MDX) */}
           <Route path=":category/:slug" element={<PostDetailPage />} />
 

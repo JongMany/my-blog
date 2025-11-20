@@ -3,6 +3,7 @@
  */
 export interface BookMeta {
   title: string;
+  id: string; // 파일명에서 확장자 제거한 값 (예: "linchipin")
   author?: string;
   summary?: string;
   tags?: string[];

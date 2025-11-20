@@ -73,6 +73,7 @@ function getAllBooks(): Item<BookMeta>[] {
 
     const meta: BookMeta = {
       title: (frontmatter.title as string) || fileNameWithoutExt,
+      id: fileNameWithoutExt, // 파일명에서 확장자 제거한 값
       ...frontmatter,
       slug,
       path: relativePath,
@@ -113,5 +114,6 @@ function getAllBooks(): Item<BookMeta>[] {
  */
 export function getBook(slug: string): Item<BookMeta> | undefined {
   const books = getAllBooks();
-  return books.find((book) => book.slug === slug);
+
+  return books.find((book) => book.meta.id === slug);
 }
