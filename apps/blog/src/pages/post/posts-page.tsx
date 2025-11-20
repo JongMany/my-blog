@@ -7,7 +7,7 @@ import { Item, PostMeta } from "../../types/contents/post";
 export default function PostsPage() {
   const posts = getPosts();
   const navigate = useNavigate();
-
+  console.log(posts);
   // published가 true인 포스트만 필터링하고 최신순으로 정렬
   const sortedPosts = useMemo(() => {
     const publishedPosts = posts.filter(
@@ -59,7 +59,7 @@ export default function PostsPage() {
               <article
                 key={post.slug}
                 className="cursor-pointer"
-                onClick={() => navigate(`/posts/${post.meta.id}`)}
+                onClick={() => navigate(`/${post.slug}`)}
               >
                 <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
                   {post.meta.title}

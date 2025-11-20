@@ -117,4 +117,3 @@ export function getPost(slug: string): Item<PostMeta> | undefined {
 
   return posts.find((post) => post.meta.id === slug);
 }
-
