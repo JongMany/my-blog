@@ -1,31 +1,27 @@
-import { useBlogIndex } from "../../service/blogQueries";
-import { PostCard } from "../../components/post";
-import { LoadingState, ErrorState } from "../../components/common";
+import React from "react";
+import { getBooks } from "../../service/books";
+import { BookMeta } from "../../types/contents/book";
 
 export default function HomePage() {
-  const { data, isLoading, isError, error } = useBlogIndex();
+  // pages에서도 사용 가능합니다!
+  const books = getBooks();
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
-  if (isError) {
-    return <ErrorState error={error as Error} />;
-  }
-
-  if (!data) {
-    return (
-      <div className="text-center">
-        <p className="text-white/70">데이터를 불러올 수 없습니다.</p>
-      </div>
-    );
-  }
-
+  console.log(books);
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {data.all.map((post) => (
-        <PostCard key={`${post.category}/${post.slug}`} post={post} />
-      ))}
+    <div>
+      <h1>HomePage</h1>
+      <div>
+        <h2>Books ({books.length})</h2>
+        {books.length === 0 ? (
+          <p>책이 없습니다.</p>
+        ) : (
+          <ul>
+            {books.map((book: BookMeta) => (
+              <li key={book.slug}>{book.title}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

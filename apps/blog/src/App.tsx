@@ -2,16 +2,15 @@ import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
 
-import { BlogLayout } from "./components/layout";
+import BlogLayout from "./components/layout";
 import { PostDetailPage } from "./pages/post";
 import { HomePage } from "./pages/home";
-import { CategoryPage } from "./pages/category";
 
 export default function BlogApp() {
   return (
     <>
       <SEO
-        title="Frontend Developer 기술 블로그"
+        title="이종민 블로그"
         description="프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다."
         keywords="기술 블로그, 프론트엔드 개발자, React, TypeScript, TradingView, AI, 개발 노하우"
       />
@@ -21,7 +20,7 @@ export default function BlogApp() {
           <Route index element={<HomePage />} />
 
           {/* /blog/c/:category → 카테고리 목록 */}
-          <Route path="c/:category" element={<CategoryPage />} />
+          {/* <Route path="c/:category" element={<CategoryPage />} /> */}
 
           {/* /blog/:category/:slug → 글 상세(MDX) */}
           <Route path=":category/:slug" element={<PostDetailPage />} />
