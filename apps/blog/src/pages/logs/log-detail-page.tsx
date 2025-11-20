@@ -1,8 +1,7 @@
-import { use, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { getLog } from "../../service/logs";
-import { serialize } from "../../utils/mdx";
 import { extractDateFromMeta } from "../../utils/date";
+import { useSerializedMDX } from "../../hooks/use-serialized-mdx";
 import { MDX } from "../../components/mdx";
 import TableOfContents from "../../components/table-of-contents";
 import Title from "../../components/title";
@@ -19,9 +18,7 @@ export default function LogDetailPage() {
   const { content } = log;
   const { title, summary } = log.meta;
 
-  // Promise를 메모이제이션하여 안정적인 참조 유지
-  const serializedPromise = useMemo(() => serialize(content), [content]);
-  const { compiledSource } = use(serializedPromise);
+  const { compiledSource } = useSerializedMDX(content);
 
   const displayDate = extractDateFromMeta(log.meta);
 
