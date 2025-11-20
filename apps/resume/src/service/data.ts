@@ -18,6 +18,11 @@ export const resume: ResumeData = {
   },
   experiences: [
     {
+      company: "토스증권",
+      role: "Frontend Developer(Chart)",
+      period: "2025.12.08 입사 예정",
+    },
+    {
       company: "아데나 소프트웨어 (코인니스)",
       role: "Frontend Developer",
       period: "2025.07 - now",
