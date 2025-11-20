@@ -85,6 +85,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.85.3
         version: 5.85.3(react@19.1.1)
+      lucide-react:
+        specifier: ^0.525.0
+        version: 0.525.0(react@19.1.1)
       next-mdx-remote:
         specifier: ^5.0.0
         version: 5.0.0(@types/react@19.1.0)(react@19.1.1)
