@@ -3,7 +3,7 @@ import { Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import { DetailedHTMLProps, ReactNode, VideoHTMLAttributes } from "react";
-import { useBoolean } from "@mfe/shared";
+import { useBoolean, imageSource } from "@mfe/shared";
 import { calculateMyAge } from "../utils/calculateMyAge";
 
 export function MDX({
@@ -43,13 +43,20 @@ function Image({
 }) {
   const { value: opened, toggle, setFalse: close } = useBoolean(false);
 
+  // 이미지 경로 처리 (portfolio와 동일한 방식)
+  const processedSrc = src
+    ? /^https?:\/\//i.test(src)
+      ? src // 외부 URL은 그대로
+      : imageSource(src, "blog", "http://localhost:3001")
+    : src;
+
   return (
     <div className="flex flex-col items-center">
       <Dialog modal={false} open={opened} onOpenChange={toggle}>
         <DialogTrigger asChild>
           <img
             alt={alt ?? ""}
-            src={src}
+            src={processedSrc}
             className="mb-1 mt-8 h-auto w-full cursor-pointer rounded-lg"
             {...props}
           />
@@ -62,7 +69,7 @@ function Image({
           <DialogTitle className="sr-only">{alt ?? ""}</DialogTitle>
           <img
             alt={alt ?? ""}
-            src={src}
+            src={processedSrc}
             className="h-auto max-h-full w-auto max-w-full object-contain"
             onClick={close}
           />
