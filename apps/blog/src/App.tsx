@@ -39,7 +39,14 @@ export default function BlogApp() {
           </Route>
           <Route path="posts">
             <Route index element={<PostsPage />} />
-            <Route path=":slug" element={<PostDetailPage />} />
+            <Route
+              path=":slug"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <PostDetailPage />
+                </Suspense>
+              }
+            />
           </Route>
           <Route path="retrospect">
             <Route index element={<RetrospectsPage />} />

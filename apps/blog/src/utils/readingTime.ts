@@ -44,3 +44,4 @@ export function calculateReadingTime(text: string): number {
   // 최소 1분 반환
   return Math.max(1, Math.ceil(totalTime));
 }
+
