@@ -55,7 +55,7 @@ function Image({
           />
         </DialogTrigger>
         <DialogContent
-          className="flex h-[90vh] w-[90vw] max-w-none items-center justify-center bg-transparent p-0 shadow-none"
+          className="fixed left-1/2 top-1/2 z-50 flex h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center outline-none bg-transparent p-0 shadow-none max-w-none"
           overlayClassName="bg-black/50"
           hideClose
         >
