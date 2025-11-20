@@ -10,7 +10,7 @@ const CATEGORIES: Category[] = [
   { path: "/blog/posts", label: "개발" },
   { path: "/blog/retrospect", label: "회고" },
   { path: "/blog/books", label: "읽은책" },
-  { path: "/blog/records", label: "기록" },
+  { path: "/blog/logs", label: "기록" },
 ];
 
 export default function CategoryNavigation() {

@@ -7,6 +7,11 @@ import { PostDetailPage } from "./pages/post";
 import { HomePage } from "./pages/home";
 import BookDetailPage from "./pages/books/book-detail-page";
 import BooksPage from "./pages/books/books-page";
+import PostsPage from "./pages/post/posts-page";
+import RetrospectsPage from "./pages/retrospect/retrospects-page";
+import RetrospectDetailPage from "./pages/retrospect/retrosepct-detail-page";
+import LogsPage from "./pages/logs/logs-page";
+import LogDetailPage from "./pages/logs/log-detail-page";
 
 export default function BlogApp() {
   return (
@@ -27,11 +32,18 @@ export default function BlogApp() {
             <Route index element={<BooksPage />} />
             <Route path=":slug" element={<BookDetailPage />} />
           </Route>
-          {/* /blog/:category/:slug → 글 상세(MDX) */}
-          <Route path=":category/:slug" element={<PostDetailPage />} />
-
-          {/* 예전 경로 호환: /blog/all → /blog */}
-          <Route path="all" element={<Navigate to="." replace />} />
+          <Route path="posts">
+            <Route index element={<PostsPage />} />
+            <Route path=":slug" element={<PostDetailPage />} />
+          </Route>
+          <Route path="retrospect">
+            <Route index element={<RetrospectsPage />} />
+            <Route path=":slug" element={<RetrospectDetailPage />} />
+          </Route>
+          <Route path="logs">
+            <Route index element={<LogsPage />} />
+            <Route path=":slug" element={<LogDetailPage />} />
+          </Route>
         </Route>
       </Routes>
     </>

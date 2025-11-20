@@ -63,7 +63,7 @@ function getAllBooks(): Item<BookMeta>[] {
         : "books";
 
     // slug 생성: "books/linchipin" 형태
-    const defaultSlug = `${categoryDir}/${fileNameWithoutExt}`;
+    const defaultSlug = `blog/${categoryDir}/${fileNameWithoutExt}`;
     const slug = (frontmatter.slug as string) || defaultSlug;
 
     // 상대 경로 생성
