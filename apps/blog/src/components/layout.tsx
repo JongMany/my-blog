@@ -4,7 +4,7 @@ import CategoryNavigation from "./category-navigation";
 
 export default function Layout() {
   return (
-    <div className="">
+    <div className="px-2.5">
       {/* 카테고리 네비게이션 */}
       <CategoryNavigation />
 

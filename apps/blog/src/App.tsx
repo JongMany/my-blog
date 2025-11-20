@@ -1,10 +1,9 @@
 import "./App.css";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
 
 import BlogLayout from "./components/layout";
-import { PostDetailPage } from "./pages/post";
-import { HomePage } from "./pages/home";
+import PostDetailPage from "./pages/post/post-detail-page";
 import BookDetailPage from "./pages/books/book-detail-page";
 import BooksPage from "./pages/books/books-page";
 import PostsPage from "./pages/post/posts-page";
@@ -12,6 +11,7 @@ import RetrospectsPage from "./pages/retrospect/retrospects-page";
 import RetrospectDetailPage from "./pages/retrospect/retrosepct-detail-page";
 import LogsPage from "./pages/logs/logs-page";
 import LogDetailPage from "./pages/logs/log-detail-page";
+import HomePage from "./pages/home/home-page";
 
 export default function BlogApp() {
   return (
@@ -23,11 +23,8 @@ export default function BlogApp() {
       />
       <Routes>
         <Route path="/" element={<BlogLayout />}>
-          {/* /blog  → 전체 목록 */}
           <Route index element={<HomePage />} />
 
-          {/* /blog/c/:category → 카테고리 목록 */}
-          {/* <Route path="c/:category" element={<CategoryPage />} /> */}
           <Route path="books">
             <Route index element={<BooksPage />} />
             <Route path=":slug" element={<BookDetailPage />} />
