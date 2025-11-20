@@ -11,6 +11,7 @@ export interface BookMeta {
   slug: string;
   path: string;
   createdAtMs?: number;
+  updatedAt?: string;
   [key: string]: unknown; // frontmatter의 추가 필드를 허용
 }
 

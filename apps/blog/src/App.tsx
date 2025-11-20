@@ -12,6 +12,7 @@ import RetrospectDetailPage from "./pages/retrospect/retrosepct-detail-page";
 import LogsPage from "./pages/logs/logs-page";
 import LogDetailPage from "./pages/logs/log-detail-page";
 import HomePage from "./pages/home/home-page";
+import { Suspense } from "react";
 
 export default function BlogApp() {
   return (
@@ -27,7 +28,14 @@ export default function BlogApp() {
 
           <Route path="books">
             <Route index element={<BooksPage />} />
-            <Route path=":slug" element={<BookDetailPage />} />
+            <Route
+              path=":slug"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <BookDetailPage />
+                </Suspense>
+              }
+            />
           </Route>
           <Route path="posts">
             <Route index element={<PostsPage />} />
