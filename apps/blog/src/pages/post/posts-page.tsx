@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getPosts } from "../../service/posts";
-import { Item, PostMeta } from "../../types/contents/post";
 
 export default function PostsPage() {
   const posts = getPosts();
