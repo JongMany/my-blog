@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { getLogs } from "../../service/logs";
+import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
 
 export default function LogsPage() {
   const logs = getLogs();
@@ -9,35 +9,8 @@ export default function LogsPage() {
 
   // published가 true인 로그만 필터링하고 최신순으로 정렬
   const sortedLogs = useMemo(() => {
-    const publishedLogs = logs.filter(
-      (log) => log.meta.published !== false,
-    );
-
-    return publishedLogs.sort((a, b) => {
-      const dateA =
-        (a.meta.createdAt as string) ||
-        (a.meta.updatedAt as string) ||
-        a.meta.date ||
-        "";
-      const dateB =
-        (b.meta.createdAt as string) ||
-        (b.meta.updatedAt as string) ||
-        b.meta.date ||
-        "";
-
-      if (!dateA || !dateB) return 0;
-
-      return new Date(dateB).getTime() - new Date(dateA).getTime(); // 최신순
-    });
+    return sortByDate(logs, true);
   }, [logs]);
-
-  const formatDate = (dateStr: string) => {
-    try {
-      return format(new Date(dateStr), "yyyy-MM-dd");
-    } catch {
-      return dateStr;
-    }
-  };
 
   return (
     <div className="max-w-2xl">
@@ -48,11 +21,7 @@ export default function LogsPage() {
       ) : (
         <div className="space-y-6">
           {sortedLogs.map((log) => {
-            const dateStr =
-              (log.meta.createdAt as string) ||
-              (log.meta.updatedAt as string) ||
-              log.meta.date ||
-              "";
+            const dateStr = extractDateFromMeta(log.meta);
 
             return (
               <article

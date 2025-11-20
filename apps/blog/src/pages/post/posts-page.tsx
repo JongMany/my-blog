@@ -1,43 +1,16 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { getPosts } from "../../service/posts";
+import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
 
 export default function PostsPage() {
   const posts = getPosts();
   const navigate = useNavigate();
-  console.log(posts);
+
   // published가 true인 포스트만 필터링하고 최신순으로 정렬
   const sortedPosts = useMemo(() => {
-    const publishedPosts = posts.filter(
-      (post) => post.meta.published !== false,
-    );
-
-    return publishedPosts.sort((a, b) => {
-      const dateA =
-        (a.meta.createdAt as string) ||
-        (a.meta.updatedAt as string) ||
-        a.meta.date ||
-        "";
-      const dateB =
-        (b.meta.createdAt as string) ||
-        (b.meta.updatedAt as string) ||
-        b.meta.date ||
-        "";
-
-      if (!dateA || !dateB) return 0;
-
-      return new Date(dateB).getTime() - new Date(dateA).getTime(); // 최신순
-    });
+    return sortByDate(posts, true);
   }, [posts]);
-
-  const formatDate = (dateStr: string) => {
-    try {
-      return format(new Date(dateStr), "yyyy-MM-dd");
-    } catch {
-      return dateStr;
-    }
-  };
 
   return (
     <div className="max-w-2xl">
@@ -48,11 +21,7 @@ export default function PostsPage() {
       ) : (
         <div className="space-y-6">
           {sortedPosts.map((post) => {
-            const dateStr =
-              (post.meta.createdAt as string) ||
-              (post.meta.updatedAt as string) ||
-              post.meta.date ||
-              "";
+            const dateStr = extractDateFromMeta(post.meta);
 
             return (
               <article

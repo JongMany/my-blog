@@ -1,8 +1,8 @@
 import { use, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { format } from "date-fns";
 import { getPost } from "../../service/posts";
 import { serialize } from "../../utils/mdx";
+import { extractDateFromMeta, formatDate } from "../../utils/date";
 import { MDX } from "../../components/mdx";
 import TableOfContents from "../../components/table-of-contents";
 
@@ -14,20 +14,13 @@ export default function PostDetailPage() {
   }
 
   const { content } = post;
-  const { title, summary, updatedAt, createdAt } = post.meta;
+  const { title, summary } = post.meta;
 
   // Promise를 메모이제이션하여 안정적인 참조 유지
   const serializedPromise = useMemo(() => serialize(content), [content]);
   const { compiledSource } = use(serializedPromise);
 
-  const displayDate = updatedAt || createdAt;
-  const formatDate = (dateStr: string) => {
-    try {
-      return format(new Date(dateStr), "yyyy-MM-dd");
-    } catch {
-      return dateStr;
-    }
-  };
+  const displayDate = extractDateFromMeta(post.meta);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">

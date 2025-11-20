@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { getRetrospects } from "../../service/retrospects";
+import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
 
 export default function RetrospectsPage() {
   const retrospects = getRetrospects();
@@ -9,35 +9,8 @@ export default function RetrospectsPage() {
 
   // published가 true인 회고만 필터링하고 최신순으로 정렬
   const sortedRetrospects = useMemo(() => {
-    const publishedRetrospects = retrospects.filter(
-      (retrospect) => retrospect.meta.published !== false,
-    );
-
-    return publishedRetrospects.sort((a, b) => {
-      const dateA =
-        (a.meta.createdAt as string) ||
-        (a.meta.updatedAt as string) ||
-        a.meta.date ||
-        "";
-      const dateB =
-        (b.meta.createdAt as string) ||
-        (b.meta.updatedAt as string) ||
-        b.meta.date ||
-        "";
-
-      if (!dateA || !dateB) return 0;
-
-      return new Date(dateB).getTime() - new Date(dateA).getTime(); // 최신순
-    });
+    return sortByDate(retrospects, true);
   }, [retrospects]);
-
-  const formatDate = (dateStr: string) => {
-    try {
-      return format(new Date(dateStr), "yyyy-MM-dd");
-    } catch {
-      return dateStr;
-    }
-  };
 
   return (
     <div className="max-w-2xl">
@@ -48,11 +21,7 @@ export default function RetrospectsPage() {
       ) : (
         <div className="space-y-6">
           {sortedRetrospects.map((retrospect) => {
-            const dateStr =
-              (retrospect.meta.createdAt as string) ||
-              (retrospect.meta.updatedAt as string) ||
-              retrospect.meta.date ||
-              "";
+            const dateStr = extractDateFromMeta(retrospect.meta);
 
             return (
               <article
