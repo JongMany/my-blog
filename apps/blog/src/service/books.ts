@@ -93,7 +93,7 @@ function getAllBooks(): Item<BookMeta>[] {
  * 특정 slug의 책을 가져오는 함수
  *
  * @param slug 책의 slug
- * @returns 책 정보 (Item 형태), 없으면 undefined
+ * @returns 책 정보 (Item 형태), 없으면 undefined. published가 false인 책은 반환하지 않습니다.
  *
  * @example
  * ```tsx
@@ -115,5 +115,12 @@ function getAllBooks(): Item<BookMeta>[] {
 export function getBook(slug: string): Item<BookMeta> | undefined {
   const books = getAllBooks();
 
-  return books.find((book) => book.meta.id === slug);
+  const book = books.find((book) => book.meta.id === slug);
+  
+  // published가 false인 책은 반환하지 않음
+  if (book && book.meta.published === false) {
+    return undefined;
+  }
+
+  return book;
 }

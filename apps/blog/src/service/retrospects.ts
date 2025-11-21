@@ -96,7 +96,7 @@ function getAllRetrospects(): Item<RetrospectMeta>[] {
  * 특정 slug의 회고를 가져오는 함수
  *
  * @param slug 회고의 slug
- * @returns 회고 정보 (Item 형태), 없으면 undefined
+ * @returns 회고 정보 (Item 형태), 없으면 undefined. published가 false인 회고는 반환하지 않습니다.
  *
  * @example
  * ```tsx
@@ -118,5 +118,12 @@ function getAllRetrospects(): Item<RetrospectMeta>[] {
 export function getRetrospect(slug: string): Item<RetrospectMeta> | undefined {
   const retrospects = getAllRetrospects();
 
-  return retrospects.find((retrospect) => retrospect.meta.id === slug);
+  const retrospect = retrospects.find((retrospect) => retrospect.meta.id === slug);
+  
+  // published가 false인 회고는 반환하지 않음
+  if (retrospect && retrospect.meta.published === false) {
+    return undefined;
+  }
+
+  return retrospect;
 }

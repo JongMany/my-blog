@@ -93,7 +93,7 @@ function getAllPosts(): Item<PostMeta>[] {
  * 특정 slug의 포스트를 가져오는 함수
  *
  * @param slug 포스트의 slug
- * @returns 포스트 정보 (Item 형태), 없으면 undefined
+ * @returns 포스트 정보 (Item 형태), 없으면 undefined. published가 false인 포스트는 반환하지 않습니다.
  *
  * @example
  * ```tsx
@@ -115,5 +115,12 @@ function getAllPosts(): Item<PostMeta>[] {
 export function getPost(slug: string): Item<PostMeta> | undefined {
   const posts = getAllPosts();
 
-  return posts.find((post) => post.meta.id === slug);
+  const post = posts.find((post) => post.meta.id === slug);
+  
+  // published가 false인 포스트는 반환하지 않음
+  if (post && post.meta.published === false) {
+    return undefined;
+  }
+
+  return post;
 }

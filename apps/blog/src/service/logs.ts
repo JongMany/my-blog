@@ -93,7 +93,7 @@ function getAllLogs(): Item<LogMeta>[] {
  * 특정 slug의 로그를 가져오는 함수
  *
  * @param slug 로그의 slug
- * @returns 로그 정보 (Item 형태), 없으면 undefined
+ * @returns 로그 정보 (Item 형태), 없으면 undefined. published가 false인 로그는 반환하지 않습니다.
  *
  * @example
  * ```tsx
@@ -115,6 +115,13 @@ function getAllLogs(): Item<LogMeta>[] {
 export function getLog(slug: string): Item<LogMeta> | undefined {
   const logs = getAllLogs();
 
-  return logs.find((log) => log.meta.id === slug);
+  const log = logs.find((log) => log.meta.id === slug);
+  
+  // published가 false인 로그는 반환하지 않음
+  if (log && log.meta.published === false) {
+    return undefined;
+  }
+
+  return log;
 }
 
