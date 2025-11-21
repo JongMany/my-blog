@@ -80,7 +80,9 @@ export type Skill = {
 
 // 순수한 데이터 페칭 함수들
 export async function fetchPortfolioIndex(): Promise<ProjectIndex> {
-  const url = assetUrl("_portfolio/index.json", "portfolio");
+  const url = assetUrl("_portfolio/index.json", "portfolio", {
+    isDevelopment: import.meta.env.MODE === "development",
+  });
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
