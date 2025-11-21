@@ -1,4 +1,4 @@
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@srf/ui";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
 import { Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
@@ -31,33 +31,61 @@ export function MDX({
   );
 }
 
+type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  source?: string;
+  description?: string;
+  width?: number | string;
+  height?: number | string;
+};
+
+function processImageSource(src?: string): string | undefined {
+  if (!src) return src;
+  if (/^https?:\/\//i.test(src)) return src;
+  return imageSource(src, "blog", "http://localhost:3001");
+}
+
+function createImageStyle(
+  width?: number | string,
+  height?: number | string,
+): React.CSSProperties | undefined {
+  const style: React.CSSProperties = {};
+  if (width) {
+    style.width = typeof width === "number" ? `${width}px` : width;
+  }
+  if (height) {
+    style.height = typeof height === "number" ? `${height}px` : height;
+  }
+  return Object.keys(style).length > 0 ? style : undefined;
+}
+
 function Image({
   alt,
   src,
   source,
   description,
+  width,
+  height,
+  className,
   ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & {
-  source?: string;
-  description?: string;
-}) {
+}: ImageProps) {
   const { value: opened, toggle, setFalse: close } = useBoolean(false);
-
-  // 이미지 경로 처리 (portfolio와 동일한 방식)
-  const processedSrc = src
-    ? /^https?:\/\//i.test(src)
-      ? src // 외부 URL은 그대로
-      : imageSource(src, "blog", "http://localhost:3001")
-    : src;
+  const processedSrc = processImageSource(src);
+  const imageStyle = createImageStyle(width, height);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full max-w-full flex-col items-center overflow-hidden">
       <Dialog modal={false} open={opened} onOpenChange={toggle}>
         <DialogTrigger asChild>
           <img
             alt={alt ?? ""}
             src={processedSrc}
-            className="mb-1 mt-8 h-auto w-full cursor-pointer rounded-lg"
+            className={cn(
+              "mb-1 mt-8 h-auto w-full max-w-full cursor-pointer rounded-lg object-contain",
+              className,
+            )}
+            style={imageStyle}
+            width={width}
+            height={height}
             {...props}
           />
         </DialogTrigger>
