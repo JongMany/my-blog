@@ -66,7 +66,9 @@ export default function ProjectCard({
               className={`relative ${getThumbnailAspectRatio(p.coverAspectRatio)} overflow-hidden`}
             >
               <img
-                src={`${imageSource(currentSrc, "portfolio", "http://localhost:3002")}`}
+                src={`${imageSource(currentSrc, "portfolio", {
+                  isDevelopment: import.meta.env.MODE === "development",
+                })}`}
                 alt={p.coverAlt || p.title}
                 loading="lazy"
                 decoding="async"
