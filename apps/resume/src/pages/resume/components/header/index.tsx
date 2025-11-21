@@ -53,7 +53,6 @@ function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
   const { isMobile, isTablet, isLargeDesktop } = useViewport();
 
   if (!profile.photoUrl) return null;
-  console.log(import.meta.env, import.meta);
 
   return (
     <motion.img

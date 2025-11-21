@@ -31,7 +31,7 @@ export default function BlogApp() {
             <Route
               path=":slug"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<></>}>
                   <BookDetailPage />
                 </Suspense>
               }
@@ -42,7 +42,7 @@ export default function BlogApp() {
             <Route
               path=":slug"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<></>}>
                   <PostDetailPage />
                 </Suspense>
               }
@@ -53,7 +53,7 @@ export default function BlogApp() {
             <Route
               path=":slug"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<></>}>
                   <RetrospectDetailPage />
                 </Suspense>
               }
@@ -64,7 +64,7 @@ export default function BlogApp() {
             <Route
               path=":slug"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<></>}>
                   <LogDetailPage />
                 </Suspense>
               }

@@ -19,7 +19,6 @@ export const imageSource = (
   options?: HostOptions,
 ) => {
   const hostUrl = mainHost(prefix, options);
-  console.log(hostUrl, options);
 
   return `${hostUrl}${src}`;
 };
