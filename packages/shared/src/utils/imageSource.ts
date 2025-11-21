@@ -1,30 +1,38 @@
-type AppPrefix = "" | "blog" | "portfolio" | "resume";
+import { DEV_HOST_URLS, PROD_HOST_URLS } from "../constants/host";
 
-const mainHost = (app: AppPrefix) => {
-  const devUrl = {
-    "": "http://localhost:3000",
-    blog: "http://localhost:3001",
-    portfolio: "http://localhost:3002",
-    resume: "http://localhost:3003",
-  };
-  const isDev = import.meta.env.MODE === "development";
-  return isDev ? `${devUrl[app]}/` : `/my-blog/${app}/`;
+type AppPrefix = "home" | "blog" | "portfolio" | "resume";
+
+type HostOptions = {
+  isDevelopment?: boolean;
+};
+
+const mainHost = (app: AppPrefix, options?: HostOptions) => {
+  const { isDevelopment = true } = options ?? {};
+
+  return isDevelopment ? DEV_HOST_URLS[app] : PROD_HOST_URLS[app];
 };
 
 export const imageSource = (
   src: string,
-  prefix: "portfolio" | "blog" | "" | "resume",
-  devUrl: string,
+  prefix: "portfolio" | "blog" | "home" | "resume",
+  // devUrl: string,
+  options?: HostOptions,
 ) => {
-  return import.meta.env.MODE === "development"
-    ? `${devUrl}/${src}`
-    : `/my-blog/${prefix}${src}`;
+  const hostUrl = mainHost(prefix, options);
+  console.log(hostUrl, options);
+
+  return `${hostUrl}${src}`;
 };
 
-export function assetUrl(path: string, app: AppPrefix = "") {
-  const host = mainHost(app);
+export function assetUrl(
+  path: string,
+  app: AppPrefix = "home",
+  options?: HostOptions,
+) {
+  const host = mainHost(app, options);
 
   const clean = path.replace(/^\/+/, ""); // path 맨 앞의 / 제거
+  // console.log(host, clean);
   // 중복 슬래시 정리
-  return `${host}${clean}`;
+  return `${host}/${clean}`;
 }

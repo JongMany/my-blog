@@ -39,9 +39,14 @@ type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 };
 
 function processImageSource(src?: string): string | undefined {
-  if (!src) return src;
-  if (/^https?:\/\//i.test(src)) return src;
-  return imageSource(src, "blog", "http://localhost:3001");
+  if (!src) return undefined;
+
+  const isExternalUrl = /^https?:\/\//i.test(src);
+  if (isExternalUrl) return src;
+
+  return imageSource(src, "blog", {
+    isDevelopment: import.meta.env.MODE === "development",
+  });
 }
 
 function createImageStyle(

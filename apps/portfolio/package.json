@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 3002",
-    "dev:mfe": "rimraf dist && concurrently -k -n build,serve -c yellow,magenta \"vite build --watch\" \"wait-on dist/assets/remoteEntry.js && vite preview --port 3002 --strictPort\"",
+    "dev:mfe": "rimraf dist && concurrently -k -n build,serve -c yellow,magenta \"vite build --watch --mode development\" \"wait-on dist/assets/remoteEntry.js && vite preview --port 3002 --strictPort\"",
     "build:ghp": "vite build --base=/my-blog/portfolio/"
   },
   "dependencies": {

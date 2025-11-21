@@ -92,7 +92,9 @@ export async function fetchPortfolioIndex(): Promise<ProjectIndex> {
 }
 
 export async function fetchProjectMdx(path: string): Promise<string> {
-  const url = assetUrl(path, "portfolio");
+  const url = assetUrl(path, "portfolio", {
+    isDevelopment: import.meta.env.MODE === "development",
+  });
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {

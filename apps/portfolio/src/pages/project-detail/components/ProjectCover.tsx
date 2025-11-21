@@ -15,7 +15,9 @@ export function ProjectCover({ project }: ProjectCoverProps) {
   return (
     <div className="mb-8">
       <img
-        src={imageSource(project.cover, "portfolio", URL_CONSTANTS.DEV_HOST)}
+        src={imageSource(project.cover, "portfolio", {
+          isDevelopment: import.meta.env.MODE === "development",
+        })}
         alt={project.coverAlt || project.title}
         className="w-full h-auto rounded-lg"
       />

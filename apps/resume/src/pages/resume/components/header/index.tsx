@@ -53,11 +53,14 @@ function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
   const { isMobile, isTablet, isLargeDesktop } = useViewport();
 
   if (!profile.photoUrl) return null;
+  console.log(import.meta.env, import.meta);
 
   return (
     <motion.img
       {...fadeUp}
-      src={imageSource(profile.photoUrl, "resume", "http://localhost:3003")}
+      src={imageSource(profile.photoUrl, "resume", {
+        isDevelopment: import.meta.env.MODE === "development",
+      })}
       alt={`${profile.name} 프로필`}
       className={cn(
         "rounded-2xl object-cover border border-[var(--border)] flex-shrink-0",

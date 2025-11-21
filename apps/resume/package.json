@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 3003",
-    "dev:mfe": "concurrently -k -n build,serve -c yellow,magenta \"vite build --watch\" \"vite preview --port 3003 --strictPort\"",
+    "dev:mfe": "concurrently -k -n build,serve -c yellow,magenta \"vite build --watch --mode development\" \"vite preview --port 3003 --strictPort\"",
     "build:ghp": "vite build --base=/my-blog/resume/"
   },
   "dependencies": {

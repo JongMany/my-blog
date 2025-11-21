@@ -21,7 +21,9 @@ function fixAssetSrc(src?: string) {
   }
 
   // 모든 경로를 imageSource로 처리
-  const result = imageSource(src, "portfolio", "http://localhost:3002");
+  const result = imageSource(src, "portfolio", {
+    isDevelopment: import.meta.env.MODE === "development",
+  });
   return result;
 }
 
