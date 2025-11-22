@@ -1,17 +1,12 @@
 import * as React from "react";
 import { cn } from "../../utils";
 
-interface TossSpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg" | "xl";
   text?: string;
 }
 
-function TossSpinner({
-  size = "md",
-  text,
-  className,
-  ...props
-}: TossSpinnerProps) {
+function Spinner({ size = "md", text, className, ...props }: SpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-6 h-6",
@@ -20,10 +15,7 @@ function TossSpinner({
   };
 
   const spinner = (
-    <div
-      className={cn("toss-spinner", sizeClasses[size], className)}
-      {...props}
-    />
+    <div className={cn(sizeClasses[size], className)} {...props} />
   );
 
   if (!text) {
@@ -40,4 +32,4 @@ function TossSpinner({
   );
 }
 
-export { TossSpinner };
+export { Spinner };

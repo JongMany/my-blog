@@ -1,7 +1,7 @@
 import * as React from "react";
-import { TossSpinner } from "./toss-spinner";
+import { Spinner } from "./spinner";
 
-interface TossRemoteLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
+interface RemoteLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
   appName?: string;
   message?: string;
   error?: Error | null;
@@ -12,16 +12,16 @@ interface TossRemoteLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 // 애니메이션 키프레임을 동적으로 주입하는 함수
-function injectTossAnimations() {
+function injectAnimations() {
   if (typeof document === "undefined") return;
 
-  const styleId = "toss-remote-loader-animations";
+  const styleId = "remote-loader-animations";
   if (document.getElementById(styleId)) return;
 
   const style = document.createElement("style");
   style.id = styleId;
   style.textContent = `
-    @keyframes toss-fade-in {
+    @keyframes fade-in {
       0% { opacity: 0; }
       100% { opacity: 1; }
     }
@@ -43,7 +43,7 @@ const TEXT_STYLE: React.CSSProperties = {
   marginTop: "24px",
   fontSize: "16px",
   color: "#64748b",
-  animation: "toss-fade-in 0.3s ease-in",
+  animation: "fade-in 0.3s ease-in",
 };
 
 const ERROR_TEXT_STYLE: React.CSSProperties = {
@@ -64,7 +64,7 @@ const BUTTON_STYLE: React.CSSProperties = {
   cursor: "pointer",
 };
 
-function TossRemoteLoader({
+function RemoteLoader({
   className,
   appName,
   message,
@@ -74,9 +74,9 @@ function TossRemoteLoader({
   maxAttempts = 3,
   isLoading = true,
   ...props
-}: TossRemoteLoaderProps) {
+}: RemoteLoaderProps) {
   React.useEffect(() => {
-    injectTossAnimations();
+    injectAnimations();
   }, []);
 
   const getLoadingMessage = () => {
@@ -89,7 +89,7 @@ function TossRemoteLoader({
   if (error) {
     return (
       <div style={CONTAINER_STYLE} className={className} {...props}>
-        <TossSpinner size="lg" />
+        <Spinner size="lg" />
         <div style={ERROR_TEXT_STYLE}>
           {appName ? `${appName}을` : "페이지를"} 불러올 수 없습니다
         </div>
@@ -105,10 +105,10 @@ function TossRemoteLoader({
   // 로딩 상태
   return (
     <div style={CONTAINER_STYLE} className={className} {...props}>
-      <TossSpinner size="lg" />
+      <Spinner size="lg" />
       <div style={TEXT_STYLE}>{getLoadingMessage()}</div>
     </div>
   );
 }
 
-export { TossRemoteLoader };
+export { RemoteLoader };
