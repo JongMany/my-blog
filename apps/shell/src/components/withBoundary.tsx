@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { ErrorBoundary } from "./ErrorBoundary";
-import { TossRemoteLoader } from "@srf/ui";
+import { RemoteLoader } from "@srf/ui";
 
 type Options = {
   suspenseFallback?: React.ReactNode;
@@ -17,7 +17,7 @@ export function withBoundary(
 ) {
   const { suspenseFallback, remoteOrigin, onError, appName } = opts;
 
-  const defaultSuspenseFallback = <TossRemoteLoader appName={appName} />;
+  const defaultSuspenseFallback = <RemoteLoader appName={appName} />;
 
   return function Wrapped() {
     const [key, setKey] = React.useState(0);
@@ -38,7 +38,7 @@ export function withBoundary(
           }}
           resetKeys={[loc.key, key]}
           fallback={(err) => (
-            <TossRemoteLoader
+            <RemoteLoader
               appName={appName}
               error={err instanceof Error ? err : new Error(String(err))}
               onRetry={retry}

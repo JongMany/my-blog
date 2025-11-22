@@ -21,12 +21,14 @@ const remotes = isDev
       blog: "http://localhost:3001/assets/remoteEntry.js",
       portfolio: "http://localhost:3002/assets/remoteEntry.js",
       resume: "http://localhost:3003/assets/remoteEntry.js",
+      home: "http://localhost:3004/assets/remoteEntry.js",
     }
   : {
       // ✅ 배포/프리뷰는 루트-상대 경로(오리진 자동)
       blog: `/my-blog/blog/assets/remoteEntry.js${q}`,
       portfolio: `/my-blog/portfolio/assets/remoteEntry.js${q}`,
       resume: `/my-blog/resume/assets/remoteEntry.js${q}`,
+      home: `/my-blog/home/assets/remoteEntry.js${q}`,
     };
 const BASE = isCI ? `/${REPO}/` : "/";
 
@@ -109,7 +111,7 @@ export default defineConfig({
     }),
     injectRemoteHints(),
     listenForRemoteRebuilds({
-      allowedApps: ["blog", "portfolio", "resume"],
+      allowedApps: ["blog", "portfolio", "resume", "home"],
       endpoint: "/__remote_rebuilt__",
       hotPayload: { type: "full-reload", path: "*" },
     }),

@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "init": "pnpm run build:all && pnpm run dev:all",
-    "dev:all": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume -c green,cyan,blue,magenta \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\"",
-    "dev:all:dev": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume -c green,cyan,blue,magenta \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\"",
+    "dev:all": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume,home -c green,cyan,blue,magenta,yellow \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\" \"pnpm -F home dev:mfe\"",
+    "dev:all:dev": "pnpm run content:build && concurrently -n shell,blog,portfolio,resume,home -c green,cyan,blue,magenta,yellow \"pnpm -F shell dev\" \"pnpm -F blog dev:mfe\" \"pnpm -F portfolio dev:mfe\" \"pnpm -F resume dev:mfe\" \"pnpm -F home dev:mfe\"",
     "build:all": "turbo run build",
     "preview:all": "concurrently -n shell,blog,portfolio,resume -c green,cyan,blue,magenta \"pnpm -F shell preview\" \"pnpm -F blog preview\" \"pnpm -F portfolio preview\" \"pnpm -F resume preview\"",
     "lint": "turbo run lint",
