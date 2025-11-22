@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 
 const sections = [
@@ -29,8 +29,6 @@ const sections = [
 ];
 
 export default function HomePage() {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 sm:p-8 md:p-12">
       <div className="max-w-7xl mx-auto">
@@ -64,29 +62,30 @@ export default function HomePage() {
               <motion.a
                 key={section.id}
                 href={section.href}
-                onMouseEnter={() => setHoveredId(section.id)}
-                onMouseLeave={() => setHoveredId(null)}
                 className={`
                   group relative overflow-hidden rounded-2xl
                   ${isLarge ? "sm:col-span-2 lg:col-span-2 lg:row-span-2" : ""}
                   ${isMedium ? "sm:col-span-1 lg:col-span-1" : ""}
                   ${isSmall ? "sm:col-span-1 lg:col-span-1" : ""}
                   bg-white shadow-lg hover:shadow-2xl
-                  transition-all duration-300
+                  transition-all duration-100
                   min-h-[200px] sm:min-h-[240px]
                   no-underline hover:no-underline
-                  ${hoveredId === section.id ? "scale-[1.02] z-10" : ""}
                 `}
                 style={{ textDecoration: "none" }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.1 },
+                }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
               >
                 {/* 그라데이션 배경 */}
                 <div
                   className={`
                     absolute inset-0 bg-gradient-to-br ${section.color}
-                    opacity-0 group-hover:opacity-10 transition-opacity duration-300
+                    opacity-0 group-hover:opacity-10 transition-opacity duration-100
                   `}
                 />
 
@@ -115,10 +114,8 @@ export default function HomePage() {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                         initial={{ x: 0 }}
-                        animate={{
-                          x: hoveredId === section.id ? 5 : 0,
-                        }}
-                        transition={{ duration: 0.2 }}
+                        whileHover={{ x: 5 }}
+                        transition={{ duration: 0.1 }}
                       >
                         <path
                           strokeLinecap="round"
@@ -155,7 +152,7 @@ export default function HomePage() {
                     absolute bottom-0 right-0 w-32 h-32
                     bg-gradient-to-tl ${section.color}
                     opacity-0 group-hover:opacity-5
-                    blur-3xl transition-opacity duration-300
+                    blur-3xl transition-opacity duration-100
                   `}
                 />
               </motion.a>
