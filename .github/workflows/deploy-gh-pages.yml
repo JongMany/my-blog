@@ -132,11 +132,21 @@ jobs:
 
           # 모든 MFE 앱의 진입점 확인
           for app in $MFE_APPS; do
-            if test -f "dist_ghp/${app}/assets/remoteEntry.js"; then
-              echo "✅ ${app}/assets/remoteEntry.js found"
+            # home 앱은 shell과 같은 경로에 배치되므로 경로가 다름
+            if [ "$app" = "home" ]; then
+              if test -f "dist_ghp/assets/remoteEntry.js"; then
+                echo "✅ ${app}/assets/remoteEntry.js found (at dist_ghp/assets/remoteEntry.js)"
+              else
+                echo "❌ Missing ${app}/assets/remoteEntry.js (expected at dist_ghp/assets/remoteEntry.js)"
+                exit 1
+              fi
             else
-              echo "❌ Missing ${app}/assets/remoteEntry.js"
-              exit 1
+              if test -f "dist_ghp/${app}/assets/remoteEntry.js"; then
+                echo "✅ ${app}/assets/remoteEntry.js found"
+              else
+                echo "❌ Missing ${app}/assets/remoteEntry.js"
+                exit 1
+              fi
             fi
           done
 
