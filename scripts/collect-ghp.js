@@ -41,6 +41,13 @@ const CONFIG = {
       skipIndex: true, // index.html 제외
       isMainApp: false,
     },
+    home: {
+      name: "home",
+      distPath: "apps/home/dist",
+      outputPath: "home",
+      skipIndex: true, // index.html 제외
+      isMainApp: false,
+    },
   },
 
   // GitHub Pages 설정

@@ -29,7 +29,7 @@ jobs:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }} # Turbo 원격 캐시 토큰
       TURBO_TEAM: ${{ secrets.TURBO_TEAM  || ''}} # Turbo 팀 식별자
       # MFE Apps configuration - 새 앱 추가 시 여기만 수정하면 됨
-      MFE_APPS: "blog portfolio resume"
+      MFE_APPS: "blog portfolio resume home"
     steps:
       # 1️⃣ 소스 코드 체크아웃
       - uses: actions/checkout@v4
