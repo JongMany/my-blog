@@ -105,6 +105,7 @@ export default defineConfig({
         "@tanstack/react-form": {
           version: pkg.dependencies["@tanstack/react-form"],
         },
+        "framer-motion": { version: pkg.dependencies["framer-motion"] },
         zustand: { version: pkg.dependencies.zustand },
         "@mfe/shared": { version: "0.0.0" },
       },
