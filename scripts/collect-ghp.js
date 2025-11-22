@@ -44,7 +44,7 @@ const CONFIG = {
     home: {
       name: "home",
       distPath: "apps/home/dist",
-      outputPath: "home",
+      outputPath: "", // shell과 같은 경로에 배치
       skipIndex: true, // index.html 제외
       isMainApp: false,
     },

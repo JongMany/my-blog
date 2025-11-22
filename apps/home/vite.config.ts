@@ -9,7 +9,7 @@ const REPO = "my-blog";
 const isCI = process.env.CI === "true";
 
 export default defineConfig({
-  base: isCI ? `/${REPO}/home/` : "/",
+  base: isCI ? `/${REPO}/` : "/",
   plugins: [
     react(),
     tailwindcss(),
