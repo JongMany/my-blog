@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@srf/ui";
 import { SKILL_CATEGORIES, type SkillCategory } from "../../constants/skills";
 import { PillButton } from "../../../../components";
 
@@ -19,7 +20,7 @@ export default function SkillsSection({ items }: SkillsSectionProps) {
   if (categorizedSkills.length === 0) {
     return (
       <div
-        className="text-sm text-[var(--muted-fg)]"
+        className={cn("text-sm sm:text-base text-[var(--muted-fg)]")}
         role="status"
         aria-live="polite"
       >
@@ -29,7 +30,11 @@ export default function SkillsSection({ items }: SkillsSectionProps) {
   }
 
   return (
-    <div className="space-y-3" role="region" aria-label="기술 스택 목록">
+    <div
+      className={cn("space-y-2 sm:space-y-3")}
+      role="region"
+      aria-label="기술 스택 목록"
+    >
       {categorizedSkills.map(({ category, skills }) => (
         <SkillCategory key={category} category={category} skills={skills} />
       ))}
@@ -44,10 +49,17 @@ interface SkillCategoryProps {
 
 function SkillCategory({ category, skills }: SkillCategoryProps) {
   return (
-    <div className="space-y-1">
-      <h4 className="text-xs font-medium text-[var(--muted-fg)]">{category}</h4>
+    <div className={cn("space-y-1")}>
+      <h4
+        className={cn(
+          "text-xs font-medium text-[var(--muted-fg)]",
+          "mb-1",
+        )}
+      >
+        {category}
+      </h4>
       <div
-        className="flex flex-wrap gap-1"
+        className={cn("flex flex-wrap gap-1")}
         role="list"
         aria-label={`${category} 스킬 목록`}
       >
@@ -68,8 +80,8 @@ function SkillItem({ skill, className }: SkillItemProps) {
   return (
     <PillButton
       variant="soft"
-      size="sm"
-      className={`cursor-help ${className || ""}`.trim()}
+      size="xs"
+      className={cn("cursor-help", className)}
       title={`${skill} 스킬`}
       aria-label={`${skill} 기술 스택`}
     >

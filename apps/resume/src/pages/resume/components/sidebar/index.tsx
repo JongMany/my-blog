@@ -20,11 +20,18 @@ export default function Sidebar({ profile, skills, className }: SidebarProps) {
     <aside
       className={cn(isLargeDesktop ? "lg:col-span-3" : "col-span-1", className)}
     >
-      <div className={cn("space-y-4", isLargeDesktop && "lg:sticky lg:top-24")}>
+      <div
+        className={cn(
+          "space-y-4",
+          isLargeDesktop && "lg:sticky lg:top-24",
+        )}
+      >
         <ContactInfo profile={profile} />
         {skills?.length ? (
-          <Card className="p-4">
-            <div className="mb-2 font-medium">Skills</div>
+          <Card className="p-3 sm:p-4">
+            <div className={cn("mb-2 sm:mb-3 font-medium", "text-sm sm:text-base")}>
+              Skills
+            </div>
             <SkillsSection items={skills} />
           </Card>
         ) : null}

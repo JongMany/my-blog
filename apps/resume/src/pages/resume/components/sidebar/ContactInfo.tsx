@@ -1,5 +1,5 @@
 import { Mail, Github, BookOpen, Link as LinkIcon } from "lucide-react";
-
+import { cn } from "@srf/ui";
 import { Card } from "../../../../components/card";
 import { Link } from "react-router-dom";
 
@@ -19,45 +19,91 @@ export default function ContactInfo({
 }) {
   return (
     <Card className="p-3 sm:p-4">
-      <div className="font-medium text-sm sm:text-base">Contact</div>
-      <div className="mt-2 grid gap-1 text-[10px] sm:text-xs ml-1">
-        <a
-          className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
+      <div className={cn("font-medium mb-2 sm:mb-3", "text-sm sm:text-base")}>
+        Contact
+      </div>
+      <div
+        className={cn(
+          "grid gap-1 sm:gap-2",
+          "grid-cols-2",
+          "text-[10px] sm:text-xs",
+        )}
+      >
+        <ContactLink
           href={`mailto:${profile.email}`}
-        >
-          <Mail size={14} className="sm:w-4 sm:h-4" />
-          {profile.email}
-        </a>
+          icon={<Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+          label="Email"
+        />
         {profile.github && (
-          <a
-            className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
+          <ContactLink
             href={profile.github}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Github size={14} className="sm:w-4 sm:h-4" /> GitHub
-          </a>
+            icon={<Github className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            label="GitHub"
+            external
+          />
         )}
         {profile.blog && (
-          <a
-            className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
+          <ContactLink
             href={profile.blog}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BookOpen size={14} className="sm:w-4 sm:h-4" /> Blog
-          </a>
+            icon={<BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            label="Blog"
+            external
+          />
         )}
         {profile.portfolio && (
-          <Link
-            className="rounded-full bg-[var(--surface)] px-2 py-1 border border-[var(--border)] w-fit flex items-center gap-1"
-            to={"/portfolio"}
-            rel="noreferrer"
-          >
-            <LinkIcon size={14} className="sm:w-4 sm:h-4" /> Portfolio
-          </Link>
+          <ContactLink
+            to="/portfolio"
+            icon={<LinkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            label="Portfolio"
+          />
         )}
       </div>
     </Card>
   );
+}
+
+interface ContactLinkProps {
+  icon: React.ReactNode;
+  label: string;
+  href?: string;
+  to?: string;
+  external?: boolean;
+}
+
+function ContactLink({ icon, label, href, to, external }: ContactLinkProps) {
+  const baseClassName = cn(
+    "rounded-full bg-[var(--surface)]",
+    "px-2 py-1.5 sm:px-3 sm:py-2",
+    "border border-[var(--border)]",
+    "flex items-center gap-1.5 sm:gap-2",
+    "transition-colors",
+    "hover:bg-[var(--hover-bg)]",
+    "active:scale-[0.98]",
+    "text-left",
+  );
+
+  if (to) {
+    return (
+      <Link className={baseClassName} to={to}>
+        {icon}
+        <span className="truncate">{label}</span>
+      </Link>
+    );
+  }
+
+  if (href) {
+    return (
+      <a
+        className={baseClassName}
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noreferrer" : undefined}
+      >
+        {icon}
+        <span className="truncate">{label}</span>
+      </a>
+    );
+  }
+
+  return null;
 }
