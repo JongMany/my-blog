@@ -28,7 +28,7 @@ const remotes = isDev
       blog: `/my-blog/blog/assets/remoteEntry.js${q}`,
       portfolio: `/my-blog/portfolio/assets/remoteEntry.js${q}`,
       resume: `/my-blog/resume/assets/remoteEntry.js${q}`,
-      home: `/my-blog/home/assets/remoteEntry.js${q}`,
+      home: `/my-blog/assets/remoteEntry.js${q}`,
     };
 const BASE = isCI ? `/${REPO}/` : "/";
 
