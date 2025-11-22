@@ -33,7 +33,6 @@ export default defineConfig({
         "@tanstack/react-query": {
           version: pkg.dependencies["@tanstack/react-query"],
         },
-        "framer-motion": { version: pkg.dependencies["framer-motion"] },
         zustand: { version: pkg.dependencies.zustand },
         "@mfe/shared": { version: "0.0.0" },
       },
