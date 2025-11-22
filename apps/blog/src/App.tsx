@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { SEO } from "@srf/ui";
 
 import BlogLayout from "./components/layout";
@@ -11,7 +11,6 @@ import RetrospectsPage from "./pages/retrospect/retrospects-page";
 import RetrospectDetailPage from "./pages/retrospect/retrosepct-detail-page";
 import LogsPage from "./pages/logs/logs-page";
 import LogDetailPage from "./pages/logs/log-detail-page";
-import HomePage from "./pages/home/home-page";
 import { Suspense } from "react";
 
 export default function BlogApp() {
@@ -24,7 +23,7 @@ export default function BlogApp() {
       />
       <Routes>
         <Route path="/" element={<BlogLayout />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<Navigate to="/blog/posts" replace />} />
 
           <Route path="books">
             <Route index element={<BooksPage />} />
