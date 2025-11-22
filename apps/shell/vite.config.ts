@@ -38,18 +38,18 @@ function injectRemoteHints(): Plugin {
     apply: "build",
     transformIndexHtml(html: string) {
       const tags: HtmlTagDescriptor[] = [
-        // 첫 화면에 꼭 쓰는 원격만 preload (home이 첫 화면)
+        // 모든 원격 앱을 prefetch로 로드 (Module Federation 동적 로딩과 호환)
         {
           tag: "link",
           injectTo: "head",
           attrs: {
-            rel: "preload",
+            rel: "prefetch",
             as: "script",
             href: `${BASE}assets/remoteEntry.js${q}`,
             crossorigin: "anonymous",
           },
         },
-        // 나머지는 prefetch
+        // 나머지도 prefetch
         {
           tag: "link",
           injectTo: "head",
