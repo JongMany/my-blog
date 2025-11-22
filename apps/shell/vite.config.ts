@@ -38,17 +38,26 @@ function injectRemoteHints(): Plugin {
     apply: "build",
     transformIndexHtml(html: string) {
       const tags: HtmlTagDescriptor[] = [
-        // 첫 화면에 꼭 쓰는 원격만 preload
+        // 첫 화면에 꼭 쓰는 원격만 preload (home이 첫 화면)
         {
           tag: "link",
           injectTo: "head",
           attrs: {
             rel: "preload",
             as: "script",
-            href: `${BASE}blog/assets/remoteEntry.js${q}`,
+            href: `${BASE}assets/remoteEntry.js${q}`,
           },
         },
         // 나머지는 prefetch
+        {
+          tag: "link",
+          injectTo: "head",
+          attrs: {
+            rel: "prefetch",
+            as: "script",
+            href: `${BASE}blog/assets/remoteEntry.js${q}`,
+          },
+        },
         {
           tag: "link",
           injectTo: "head",
@@ -77,7 +86,10 @@ export default defineConfig({
   base: isCI ? `/${REPO}/` : "/",
   publicDir: "public",
   plugins: [
-    react(),
+    react({
+      // 프로덕션에서 개발 도구 비활성화
+      jsxRuntime: "automatic",
+    }),
     // giscus 스타일 cors에러
     {
       name: "giscus-cors",
