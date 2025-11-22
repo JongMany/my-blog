@@ -74,8 +74,10 @@ export default function HomePage() {
                   bg-white shadow-lg hover:shadow-2xl
                   transition-all duration-300
                   min-h-[200px] sm:min-h-[240px]
+                  no-underline hover:no-underline
                   ${hoveredId === section.id ? "scale-[1.02] z-10" : ""}
                 `}
+                style={{ textDecoration: "none" }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
