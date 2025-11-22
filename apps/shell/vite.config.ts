@@ -46,6 +46,7 @@ function injectRemoteHints(): Plugin {
             rel: "preload",
             as: "script",
             href: `${BASE}assets/remoteEntry.js${q}`,
+            crossorigin: "anonymous",
           },
         },
         // 나머지는 prefetch
@@ -56,6 +57,7 @@ function injectRemoteHints(): Plugin {
             rel: "prefetch",
             as: "script",
             href: `${BASE}blog/assets/remoteEntry.js${q}`,
+            crossorigin: "anonymous",
           },
         },
         {
@@ -65,6 +67,7 @@ function injectRemoteHints(): Plugin {
             rel: "prefetch",
             as: "script",
             href: `${BASE}portfolio/assets/remoteEntry.js${q}`,
+            crossorigin: "anonymous",
           },
         },
         {
@@ -74,6 +77,7 @@ function injectRemoteHints(): Plugin {
             rel: "prefetch",
             as: "script",
             href: `${BASE}resume/assets/remoteEntry.js${q}`,
+            crossorigin: "anonymous",
           },
         },
       ];
