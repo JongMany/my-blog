@@ -1,22 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchPortfolioIndex, fetchProjectMdx } from "./portfolio";
+import { useMemo } from "react";
+import { getPortfolioIndex, getProject, type ProjectIndex } from "./portfolio";
 
-export function usePortfolioIndex() {
-  return useQuery({
-    queryKey: ["portfolio-index"],
-    queryFn: fetchPortfolioIndex,
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-  });
+export function usePortfolioIndex(): {
+  data: ProjectIndex | undefined;
+  isLoading: false;
+  isError: false;
+  error: null;
+} {
+  const data = useMemo(() => getPortfolioIndex(), []);
+
+  return {
+    data,
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 }
 
-export function useProjectMdx(path: string | null) {
-  return useQuery({
-    queryKey: ["portfolio", "mdx", path],
-    queryFn: () =>
-      path
-        ? fetchProjectMdx(path)
-        : Promise.reject(new Error("No path provided")),
-    enabled: !!path,
-  });
+export function useProjectMdx(slug: string | null): {
+  data: string | null;
+  isLoading: false;
+  isError: false;
+  error: null;
+} {
+  const data = useMemo(() => {
+    if (!slug) return null;
+    const project = getProject(slug);
+    return project?.content ?? null;
+  }, [slug]);
+
+  return {
+    data,
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 }

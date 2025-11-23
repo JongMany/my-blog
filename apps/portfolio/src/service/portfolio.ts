@@ -1,4 +1,4 @@
-import { assetUrl } from "@mfe/shared";
+import { parseFrontmatter } from "../utils/frontmatter";
 
 // 썸네일 관련 유틸리티 함수들
 export const getThumbnailPath = (cover?: string): string => {
@@ -58,6 +58,9 @@ export type ProjectMeta = {
   slug: string;
   path: string;
   createdAtMs: number;
+  id: string; // 파일명에서 확장자 제거한 값
+  published?: boolean;
+  order?: number;
 } & ProjectThumbnail;
 
 export type ProjectIndex = {
@@ -78,77 +81,200 @@ export type Skill = {
   lvl: number;
 };
 
-// 순수한 데이터 페칭 함수들
-export async function fetchPortfolioIndex(): Promise<ProjectIndex> {
-  const url = assetUrl("_portfolio/index.json", "portfolio", {
-    isDevelopment: import.meta.env.MODE === "development",
-  });
-  const res = await fetch(url, { cache: "no-store" });
-
-  if (!res.ok) {
-    throw new Error(`Failed to load portfolio index: ${res.status}`);
-  }
-
-  const raw = await res.json();
-  return normalizeProjectIndex(raw);
-}
-
-export async function fetchProjectMdx(path: string): Promise<string> {
-  const url = assetUrl(path, "portfolio", {
-    isDevelopment: import.meta.env.MODE === "development",
-  });
-  const res = await fetch(url, { cache: "no-store" });
-
-  if (!res.ok) {
-    throw new Error(`Failed to load MDX: ${res.status}`);
-  }
-
-  return await res.text();
-}
-
-// 순수한 유틸리티 함수들
-export const normalizeProjectIndex = (raw: any): ProjectIndex => {
-  const projects =
-    raw.projects ?? (raw.byProject ? Object.keys(raw.byProject).sort() : []);
-
-  return {
-    all: raw.all ?? [],
-    byProject: raw.byProject ?? {},
-    projects,
-  };
+/**
+ * 콘텐츠 아이템 타입
+ */
+export type Item<T extends ProjectMeta> = {
+  slug: string;
+  content: string;
+  meta: T;
 };
 
-export const validateProjectMeta = (project: any): ProjectMeta | null => {
-  if (!project || typeof project !== "object") return null;
+/**
+ * 모든 프로젝트를 Item 형태로 가져오는 함수 (내부 함수)
+ */
+function getAllProjects(): Item<ProjectMeta>[] {
+  // ⚠️ Vite는 리터럴 문자열만 허용하므로, 이 파일 위치 기준 상대 경로를 직접 사용
+  const modules = import.meta.glob<string>(
+    "../contents/projects/**/*.{md,mdx}",
+    {
+      eager: true,
+      query: "?raw",
+      import: "default",
+    },
+  );
 
-  const required = [
-    "title",
-    "summary",
-    "tags",
-    "date",
-    "slug",
-    "path",
-    "createdAtMs",
-  ];
-  const hasRequired = required.every((field) => project[field] !== undefined);
+  const projects: Item<ProjectMeta>[] = [];
 
-  if (!hasRequired) return null;
+  for (const [filePath, module] of Object.entries(modules)) {
+    // raw content를 가져옴
+    const rawContent = module as unknown as string;
+    const { data: frontmatter, content } = parseFrontmatter(rawContent);
+
+    // 파일 경로에서 정보 추출
+    const pathParts = filePath.split("/");
+    const fileName = pathParts[pathParts.length - 1];
+    const fileNameWithoutExt = fileName.replace(/\.(md|mdx)$/, "");
+
+    // slug 생성: 파일명 기반
+    const defaultSlug = fileNameWithoutExt;
+    const slug = (frontmatter.slug as string) || defaultSlug;
+
+    // 상대 경로 생성
+    const relativePath = filePath
+      .replace(/^\.\.\/contents\//, "/contents/")
+      .replace(/\\/g, "/");
+
+    // createdAtMs 계산 (date가 있으면 사용, 없으면 현재 시간)
+    const dateStr = (frontmatter.date as string) || new Date().toISOString();
+    const createdAtMs = new Date(dateStr).getTime();
+
+    const publishedValue =
+      normalizeBoolean(frontmatter.publish) ??
+      normalizeBoolean(frontmatter.published);
+    const published = publishedValue ?? true;
+
+    if (!published) {
+      continue;
+    }
+
+    const tags = normalizeTags(frontmatter.tags);
+    const order = normalizeNumber(frontmatter.order);
+
+    const meta: ProjectMeta = {
+      title: (frontmatter.title as string) || fileNameWithoutExt,
+      summary: (frontmatter.summary as string) || "",
+      project: frontmatter.project ? String(frontmatter.project) : undefined,
+      tags,
+      date: String(frontmatter.date || dateStr),
+      slug,
+      path: relativePath,
+      createdAtMs,
+      id: fileNameWithoutExt,
+      published,
+      order,
+      cover: frontmatter.cover ? String(frontmatter.cover) : undefined,
+      coverAlt: frontmatter.coverAlt ? String(frontmatter.coverAlt) : undefined,
+      coverCaption: frontmatter.coverCaption
+        ? String(frontmatter.coverCaption)
+        : undefined,
+      coverType: frontmatter.coverType as ProjectThumbnail["coverType"],
+      coverAspectRatio: frontmatter.coverAspectRatio as
+        | ProjectThumbnail["coverAspectRatio"]
+        | undefined,
+    };
+
+    projects.push({
+      slug,
+      content,
+      meta,
+    });
+  }
+
+  return projects;
+}
+
+/**
+ * 모든 프로젝트 목록을 가져오는 함수 (Item 형태)
+ *
+ * Vite의 import.meta.glob을 사용하여 빌드 타임에 모든 파일을 번들에 포함시킵니다.
+ * CSR 환경에서도 동작합니다.
+ */
+export function getProjects(): Item<ProjectMeta>[] {
+  return getAllProjects();
+}
+
+/**
+ * 프로젝트 인덱스를 생성하는 함수
+ */
+export function getPortfolioIndex(): ProjectIndex {
+  const projects = getAllProjects();
+  const all = projects
+    .map((p) => p.meta)
+    .sort((a, b) => {
+      // order가 있으면 order 기준, 없으면 createdAtMs 기준
+      const orderA = (a as any).order ?? a.createdAtMs;
+      const orderB = (b as any).order ?? b.createdAtMs;
+      return orderB - orderA;
+    });
+
+  // byProject 그룹화
+  const byProject: Record<string, ProjectMeta[]> = {};
+  for (const project of all) {
+    const projectName = project.project || "기타";
+    if (!byProject[projectName]) {
+      byProject[projectName] = [];
+    }
+    byProject[projectName].push(project);
+  }
+
+  // projects 목록 (프로젝트명 목록)
+  const projectsList = Object.keys(byProject).sort();
 
   return {
-    title: String(project.title),
-    summary: String(project.summary),
-    project: project.project ? String(project.project) : undefined,
-    tags: Array.isArray(project.tags) ? project.tags.map(String) : [],
-    date: String(project.date),
-    slug: String(project.slug),
-    path: String(project.path),
-    createdAtMs: Number(project.createdAtMs),
-    cover: project.cover ? String(project.cover) : undefined,
-    coverAlt: project.coverAlt ? String(project.coverAlt) : undefined,
-    coverCaption: project.coverCaption
-      ? String(project.coverCaption)
-      : undefined,
-    coverType: project.coverType,
-    coverAspectRatio: project.coverAspectRatio,
+    all,
+    byProject,
+    projects: projectsList,
   };
-};
+}
+
+/**
+ * 특정 slug의 프로젝트를 가져오는 함수
+ *
+ * @param slug 프로젝트의 slug
+ * @returns 프로젝트 정보 (Item 형태), 없으면 undefined
+ */
+export function getProject(slug: string): Item<ProjectMeta> | undefined {
+  const projects = getAllProjects();
+  return projects.find((project) => project.meta.slug === slug);
+}
+
+function normalizeTags(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .map((value) => String(value).trim())
+      .filter((value) => value.length > 0);
+  }
+
+  if (typeof raw === "string") {
+    const trimmed = raw.trim();
+    if (!trimmed) return [];
+
+    const parts = trimmed.includes(",")
+      ? trimmed.split(",")
+      : trimmed.split(" ");
+
+    return parts.map((part) => part.trim()).filter((part) => part.length > 0);
+  }
+
+  return [];
+}
+
+function normalizeBoolean(raw: unknown): boolean | undefined {
+  if (typeof raw === "boolean") {
+    return raw;
+  }
+
+  if (typeof raw === "string") {
+    const normalized = raw.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+
+  return undefined;
+}
+
+function normalizeNumber(raw: unknown): number | undefined {
+  if (typeof raw === "number" && Number.isFinite(raw)) {
+    return raw;
+  }
+
+  if (typeof raw === "string" && raw.trim().length > 0) {
+    const parsed = Number(raw);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+}

@@ -24,7 +24,7 @@ export default function ProjectDetail() {
   }, [portfolioIndex, slug]);
 
   // MDX 데이터 조회
-  const mdxQuery = useProjectMdx(project?.path ?? null);
+  const mdxQuery = useProjectMdx(slug ?? null);
 
   // MDX 콘텐츠 처리
   const {
@@ -38,17 +38,6 @@ export default function ProjectDetail() {
     return <ErrorMessage message={MESSAGE_CONSTANTS.NOT_FOUND_MESSAGE} />;
   }
 
-  if (mdxQuery.isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (mdxQuery.isError) {
-    return (
-      <ErrorMessage
-        message={`로드 에러: ${(mdxQuery.error as Error).message}`}
-      />
-    );
-  }
 
   if (mdxError) {
     return <ErrorMessage message={`MDX 처리 에러: ${mdxError.message}`} />;

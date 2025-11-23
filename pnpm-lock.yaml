@@ -307,6 +307,9 @@ importers:
       '@eslint/js':
         specifier: ^9.33.0
         version: 9.33.0
+      '@mdx-js/rollup':
+        specifier: ^3.1.0
+        version: 3.1.0(rollup@4.44.1)
       '@originjs/vite-plugin-federation':
         specifier: ^1.4.1
         version: 1.4.1
@@ -7146,6 +7149,16 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - acorn
+      - supports-color
+
+  '@mdx-js/rollup@3.1.0(rollup@4.44.1)':
+    dependencies:
+      '@mdx-js/mdx': 3.1.1
+      '@rollup/pluginutils': 5.2.0(rollup@4.44.1)
+      rollup: 4.44.1
+      source-map: 0.7.6
+      vfile: 6.0.3
+    transitivePeerDependencies:
       - supports-color
 
   '@mermaid-js/parser@0.6.2':
