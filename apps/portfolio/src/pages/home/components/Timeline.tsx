@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { easeOutCb } from "../../../components/motion/Motion";
 import type { Experience } from "../../../entities/project";
+import { easeOutCb } from "../../../utils/motion";
 
 export default function Timeline({ items }: { items: Experience[] }) {
   return (

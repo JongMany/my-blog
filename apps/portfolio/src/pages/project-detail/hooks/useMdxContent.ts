@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createMdxComponent } from "../utils/mdx";
+import { createMdxComponent } from "../utils";
 
 export function useMdxContent(mdxSource: string | null) {
   const [MDXComponent, setMDXComponent] = useState<React.ComponentType | null>(

@@ -1,7 +1,7 @@
 import { ProjectGrid } from "../../../components/common";
 import { SectionHeader } from "./SectionHeader";
 import type { ProjectMeta } from "../../../entities/project";
-import { ProjectCard } from "../../../components/project-card";
+import { ProjectCard } from "../../../entities/project/ui/project-card";
 
 interface SelectedProjectsProps {
   projects: ProjectMeta[];
