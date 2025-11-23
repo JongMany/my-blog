@@ -1,4 +1,3 @@
-import * as React from "react";
 import type { RouteObject } from "react-router-dom";
 
 import Home from "./pages/home/Home";

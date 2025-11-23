@@ -5,13 +5,9 @@ import { MESSAGE_CONSTANTS } from "../constants/messages";
 
 interface ProjectContentProps {
   MDXComponent: React.ComponentType | null;
-  isLoading: boolean;
 }
 
-export function ProjectContent({
-  MDXComponent,
-  isLoading,
-}: ProjectContentProps) {
+export function ProjectContent({ MDXComponent }: ProjectContentProps) {
   return (
     <div className="prose prose-lg max-w-none">
       {MDXComponent ? (

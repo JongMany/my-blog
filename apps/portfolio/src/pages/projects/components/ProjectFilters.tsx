@@ -1,6 +1,6 @@
 import React from "react";
 import { SearchBox, FilterChips } from "../../../components/common";
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 import { extractAllTags, extractAllProjects } from "../utils/extractors";
 import { UI_CONSTANTS } from "../constants/ui";
 

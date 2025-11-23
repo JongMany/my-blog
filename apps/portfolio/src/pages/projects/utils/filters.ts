@@ -1,4 +1,4 @@
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 
 /**
  * 문자열이 포함되어 있는지 대소문자 구분 없이 확인하는 순수함수

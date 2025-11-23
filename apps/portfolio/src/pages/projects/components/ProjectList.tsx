@@ -1,6 +1,6 @@
 import { ProjectGrid } from "../../../components/common";
 import { ProjectCard } from "../../../components/project-card";
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 import { MESSAGE_CONSTANTS } from "../constants/messages";
 
 interface ProjectListProps {

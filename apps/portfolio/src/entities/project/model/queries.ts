@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { getPortfolioIndex, getProject, type ProjectIndex } from "./portfolio";
+import { getPortfolioIndex, getProject } from "./repository";
+import type { ProjectIndex } from "./domain";
 
 export function usePortfolioIndex(): {
   data: ProjectIndex | undefined;
@@ -36,3 +37,4 @@ export function useProjectMdx(slug: string | null): {
     error: null,
   };
 }
+

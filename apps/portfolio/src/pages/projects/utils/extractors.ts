@@ -1,4 +1,4 @@
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 
 /**
  * 프로젝트 목록에서 모든 태그를 추출하는 순수함수

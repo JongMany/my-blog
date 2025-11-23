@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as React from "react";
-import type { ProjectMeta } from "../../service/portfolio";
-import {
-  getThumbnailPath,
-  getThumbnailAspectRatio,
-  getFallbackThumbnail,
-} from "../../service/portfolio";
+import type { ProjectMeta } from "../../entities/project";
+import { getThumbnailAspectRatio, getFallbackThumbnail } from "../../entities/project";
 import { imageSource } from "@mfe/shared";
 
 // 호버 애니메이션만 (인뷰 애니메이션은 ProjectGrid에서 처리)

@@ -15,7 +15,6 @@ export function MermaidDiagram({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [isCtrlPressed, setIsCtrlPressed] = useState(false);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -224,30 +223,22 @@ export function MermaidDiagram({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        setIsCtrlPressed(true);
-        // Ctrl 키가 눌렸을 때 페이지 스크롤 방지
         document.body.style.overflow = "hidden";
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (!e.ctrlKey && !e.metaKey) {
-        setIsCtrlPressed(false);
-        // Ctrl 키가 떼어졌을 때 페이지 스크롤 복원 (드래그 중이 아닐 때만)
-        if (!isDragging) {
-          document.body.style.overflow = "";
-        }
+      if (!e.ctrlKey && !e.metaKey && !isDragging) {
+        document.body.style.overflow = "";
       }
     };
 
-    // 전역 키 이벤트 리스너 등록
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
-      // 컴포넌트 언마운트 시 스크롤 복원
       document.body.style.overflow = "";
     };
   }, [isDragging]);

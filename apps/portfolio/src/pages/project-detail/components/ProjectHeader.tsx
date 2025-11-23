@@ -1,5 +1,4 @@
-import React from "react";
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 
 interface ProjectHeaderProps {
   project: ProjectMeta;

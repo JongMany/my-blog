@@ -1,6 +1,5 @@
-import React from "react";
 import { SEO } from "@srf/ui";
-import { usePortfolioIndex } from "../../service/portfolio.query";
+import { usePortfolioIndex } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
 import { SectionHeader } from "./components/SectionHeader";
 import { Hero, SelectedProjects, Experience } from "./components";

@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState } from "react";
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 import { filterProjects } from "../utils/filters";
 
 export function useProjectFilters(

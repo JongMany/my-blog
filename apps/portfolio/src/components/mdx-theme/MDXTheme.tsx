@@ -303,7 +303,6 @@ export const components: MDXMap = {
 
     // 모든 children을 확인하여 mermaid 요소 찾기
     let mermaidElement = null;
-    let mermaidClassName = "";
     let mermaidChildren = "";
 
     for (const child of children) {
@@ -323,7 +322,6 @@ export const components: MDXMap = {
               childChildren.includes("subgraph")))
         ) {
           mermaidElement = child;
-          mermaidClassName = className;
           mermaidChildren =
             typeof childChildren === "string" ? childChildren : "";
           break;

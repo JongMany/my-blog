@@ -1,5 +1,4 @@
-import React from "react";
-import { usePortfolioIndex } from "../../service/portfolio.query";
+import { usePortfolioIndex } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
 import { ProjectFilters, ProjectList, useProjectFilters } from "./components";
 

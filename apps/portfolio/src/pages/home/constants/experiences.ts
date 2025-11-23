@@ -1,4 +1,4 @@
-import type { Experience } from "../../../service/portfolio";
+import type { Experience } from "../../../entities/project";
 
 export const experiences: Experience[] = [
   {

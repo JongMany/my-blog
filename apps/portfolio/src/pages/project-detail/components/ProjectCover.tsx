@@ -1,7 +1,5 @@
-import React from "react";
 import { imageSource } from "@mfe/shared";
-import { URL_CONSTANTS } from "../constants/urls";
-import type { ProjectMeta } from "../../../service/portfolio";
+import type { ProjectMeta } from "../../../entities/project";
 
 interface ProjectCoverProps {
   project: ProjectMeta;

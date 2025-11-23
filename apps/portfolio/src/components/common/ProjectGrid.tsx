@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { stagger } from "../motion/Motion";
-import type { ProjectMeta } from "../../service/portfolio";
+import type { ProjectMeta } from "../../entities/project";
 import { ReactNode } from "react";
 
 interface ProjectGridProps {
