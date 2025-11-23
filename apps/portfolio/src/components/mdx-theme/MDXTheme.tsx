@@ -1,11 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
 import { imageSource, useBoolean } from "@mfe/shared";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@srf/ui";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@srf/ui";
 import * as React from "react";
 import { MermaidDiagram } from "./mermaid-components/MermaidDiagram";
 import { SimpleMermaid } from "./mermaid-components/SimpleMermaid";
@@ -52,6 +47,78 @@ function createImageStyle(
   }
 
   return Object.keys(style).length > 0 ? style : undefined;
+}
+
+type ParagraphProps = React.HTMLAttributes<HTMLParagraphElement>;
+
+const INLINE_TAGS = new Set([
+  "a",
+  "abbr",
+  "b",
+  "cite",
+  "code",
+  "em",
+  "i",
+  "kbd",
+  "mark",
+  "small",
+  "span",
+  "strong",
+  "sub",
+  "sup",
+  "time",
+  "u",
+]);
+
+function isInlineNode(node: React.ReactNode): boolean {
+  if (node === null || node === undefined || typeof node === "boolean") {
+    return true;
+  }
+  if (typeof node === "string" || typeof node === "number") {
+    return true;
+  }
+  if (!React.isValidElement(node)) {
+    return false;
+  }
+
+  const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+  const elementType = element.type;
+
+  if (elementType === React.Fragment) {
+    return React.Children.toArray(element.props.children).every(isInlineNode);
+  }
+
+  if (typeof elementType === "string") {
+    return INLINE_TAGS.has(elementType);
+  }
+
+  // 커스텀 컴포넌트(예: Image)는 블록 요소로 간주
+  return false;
+}
+
+function Paragraph({ children, className = "", ...props }: ParagraphProps) {
+  const childArray = React.Children.toArray(children);
+  const meaningfulChildren = childArray.filter((child) => {
+    if (child === null || child === undefined) return false;
+    if (typeof child === "boolean") return false;
+    if (typeof child === "string") {
+      return child.trim().length > 0;
+    }
+    return true;
+  });
+
+  const shouldBeInline =
+    meaningfulChildren.length === 0 ||
+    meaningfulChildren.every((child) => isInlineNode(child));
+
+  const Wrapper = shouldBeInline ? "p" : "div";
+  const wrapperClassName = `mb-4 leading-relaxed ${className}`.trim();
+
+  return (
+    <Wrapper {...props} className={wrapperClassName}>
+      {children}
+    </Wrapper>
+  );
 }
 
 function Image({
@@ -121,7 +188,7 @@ export const components: MDXMap = {
   h6: (p) => <h6 {...p} className="text-sm font-medium mb-2 mt-4" />,
 
   /* === Text === */
-  p: (p) => <p {...p} className="mb-4 leading-relaxed" />,
+  p: Paragraph,
   strong: (p) => <strong {...p} className="font-semibold" />,
   em: (p) => <em {...p} className="italic" />,
 

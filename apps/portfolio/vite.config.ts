@@ -44,6 +44,9 @@ export default defineConfig({
     strictPort: true,
     headers: { "Access-Control-Allow-Origin": "*" },
   },
+  optimizeDeps: {
+    include: ["mermaid", "dagre", "dagre-d3-es", "graphlib", "khroma"],
+  },
   build: {
     target: "esnext",
     minify: false,

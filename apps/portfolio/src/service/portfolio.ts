@@ -115,6 +115,11 @@ function getAllProjects(): Item<ProjectMeta>[] {
     const pathParts = filePath.split("/");
     const fileName = pathParts[pathParts.length - 1];
     const fileNameWithoutExt = fileName.replace(/\.(md|mdx)$/, "");
+    const projectsIndex = pathParts.findIndex((part) => part === "projects");
+    const folderAfterProjects =
+      projectsIndex >= 0 && projectsIndex < pathParts.length - 2
+        ? pathParts[projectsIndex + 1]
+        : undefined;
 
     // slug 생성: 파일명 기반
     const defaultSlug = fileNameWithoutExt;
@@ -141,10 +146,19 @@ function getAllProjects(): Item<ProjectMeta>[] {
     const tags = normalizeTags(frontmatter.tags);
     const order = normalizeNumber(frontmatter.order);
 
+    const inferredProject =
+      frontmatter.project && String(frontmatter.project).trim().length > 0
+        ? String(frontmatter.project)
+        : folderAfterProjects &&
+            !folderAfterProjects.includes(".") &&
+            folderAfterProjects !== fileName
+          ? folderAfterProjects
+          : undefined;
+
     const meta: ProjectMeta = {
       title: (frontmatter.title as string) || fileNameWithoutExt,
       summary: (frontmatter.summary as string) || "",
-      project: frontmatter.project ? String(frontmatter.project) : undefined,
+      project: inferredProject,
       tags,
       date: String(frontmatter.date || dateStr),
       slug,

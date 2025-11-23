@@ -10,8 +10,8 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "content:build": "node ./scripts/build-blog.js && node ./scripts/build-portfolio.js",
-    "build:ghp": "pnpm -F shell build:ghp && pnpm -F blog build:ghp && pnpm -F portfolio build:ghp && pnpm -F resume build:ghp && pnpm -F home build:ghp && node scripts/collect-ghp.js && node scripts/build-blog.js && node scripts/build-portfolio.js",
+    "content:build": "node ./scripts/build-blog.js",
+    "build:ghp": "pnpm -F shell build:ghp && pnpm -F blog build:ghp && pnpm -F portfolio build:ghp && pnpm -F resume build:ghp && pnpm -F home build:ghp && node scripts/collect-ghp.js && node scripts/build-blog.js",
     "preview:ghp": "pnpm build:ghp && pnpm dlx http-server dist_ghp -p 5050 -c-1",
     "prepare": "husky"
   },

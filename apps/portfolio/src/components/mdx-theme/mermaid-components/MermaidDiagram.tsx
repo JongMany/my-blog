@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import mermaid from "mermaid";
+import mermaid from "mermaid/dist/mermaid.esm.min.mjs";
 
 interface MermaidDiagramProps {
   children: React.ReactNode;
