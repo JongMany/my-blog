@@ -61,6 +61,7 @@ export type ProjectMeta = {
   id: string; // 파일명에서 확장자 제거한 값
   published?: boolean;
   order?: number;
+  banner?: boolean;
 } & ProjectThumbnail;
 
 export type ProjectIndex = {
@@ -145,6 +146,8 @@ function getAllProjects(): Item<ProjectMeta>[] {
 
     const tags = normalizeTags(frontmatter.tags);
     const order = normalizeNumber(frontmatter.order);
+    const bannerValue = normalizeBoolean(frontmatter.banner);
+    const banner = bannerValue ?? false;
 
     const inferredProject =
       frontmatter.project && String(frontmatter.project).trim().length > 0
@@ -167,6 +170,7 @@ function getAllProjects(): Item<ProjectMeta>[] {
       id: fileNameWithoutExt,
       published,
       order,
+      banner,
       cover: frontmatter.cover ? String(frontmatter.cover) : undefined,
       coverAlt: frontmatter.coverAlt ? String(frontmatter.coverAlt) : undefined,
       coverCaption: frontmatter.coverCaption
@@ -206,10 +210,16 @@ export function getPortfolioIndex(): ProjectIndex {
   const all = projects
     .map((p) => p.meta)
     .sort((a, b) => {
-      // order가 있으면 order 기준, 없으면 createdAtMs 기준
-      const orderA = (a as any).order ?? a.createdAtMs;
-      const orderB = (b as any).order ?? b.createdAtMs;
-      return orderB - orderA;
+      const orderA =
+        typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
+      const orderB =
+        typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
+
+      if (orderA !== orderB) {
+        return orderA - orderB; // 낮은 order가 우선
+      }
+
+      return (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0); // 최신순
     });
 
   // byProject 그룹화

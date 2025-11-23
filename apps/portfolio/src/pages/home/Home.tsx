@@ -7,7 +7,11 @@ import { Hero, SelectedProjects, Experience } from "./components";
 
 export default function Home() {
   const { data: portfolioIndex, isLoading } = usePortfolioIndex();
-  const topProjects = portfolioIndex?.all.slice(0, 6) ?? [];
+  const bannerProjects =
+    portfolioIndex?.all.filter((project) => project.banner).slice(0, 6) ?? [];
+  const fallbackProjects = portfolioIndex?.all.slice(0, 6) ?? [];
+  const topProjects =
+    bannerProjects.length > 0 ? bannerProjects : fallbackProjects;
 
   return (
     <>
