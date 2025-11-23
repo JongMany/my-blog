@@ -1,4 +1,3 @@
-// apps/shell/src/mfe/importRetry.ts
 export type RetryOpts = {
   retries?: number; // 총 시도 횟수
   baseDelay?: number; // 첫 대기(ms)

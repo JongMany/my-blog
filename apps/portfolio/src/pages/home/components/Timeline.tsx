@@ -1,4 +1,3 @@
-// apps/portfolio/src/components/timeline/Timeline.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import { fadeUp, easeOutCb } from "../../../components/motion/Motion";

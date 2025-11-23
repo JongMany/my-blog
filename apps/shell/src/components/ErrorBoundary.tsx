@@ -1,4 +1,3 @@
-// apps/shell/src/mfe/ErrorBoundary.tsx
 import * as React from "react";
 
 type Props = {

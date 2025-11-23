@@ -1,4 +1,3 @@
-// @mfe/shared/GaCounters.tsx
 import * as React from "react";
 
 type Props = {

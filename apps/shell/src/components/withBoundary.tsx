@@ -1,4 +1,3 @@
-// apps/shell/src/components/withBoundary.tsx
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { ErrorBoundary } from "./ErrorBoundary";

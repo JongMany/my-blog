@@ -1,4 +1,3 @@
-// apps/shell/src/mfe/lazyRemote.tsx
 import * as React from "react";
 import { importWithRetry, type RetryOpts } from "./importRetry";
 
