@@ -3,7 +3,7 @@ import { SEO } from "@srf/ui";
 import { usePortfolioIndex } from "../../service/portfolio.query";
 import { LoadingSpinner } from "../../components/common";
 import { SectionHeader } from "./components/SectionHeader";
-import { Hero, SelectedProjects, Experience, Skills } from "./components";
+import { Hero, SelectedProjects, Experience } from "./components";
 
 export default function Home() {
   const { data: portfolioIndex, isLoading } = usePortfolioIndex();
@@ -27,11 +27,6 @@ export default function Home() {
           <section className="space-y-3">
             <SectionHeader title="Experience" />
             <Experience />
-          </section>
-
-          <section className="space-y-3">
-            <SectionHeader title="Skills" />
-            <Skills />
           </section>
         </div>
       )}
