@@ -149,7 +149,7 @@ function getAllProjects(): Item<ProjectMeta>[] {
     const bannerValue = normalizeBoolean(frontmatter.banner);
     const banner = bannerValue ?? false;
 
-    const inferredProject =
+    const inferredProjectRaw =
       frontmatter.project && String(frontmatter.project).trim().length > 0
         ? String(frontmatter.project)
         : folderAfterProjects &&
@@ -157,6 +157,7 @@ function getAllProjects(): Item<ProjectMeta>[] {
             folderAfterProjects !== fileName
           ? folderAfterProjects
           : undefined;
+    const inferredProject = formatProjectName(inferredProjectRaw);
 
     const meta: ProjectMeta = {
       title: (frontmatter.title as string) || fileNameWithoutExt,
@@ -301,4 +302,26 @@ function normalizeNumber(raw: unknown): number | undefined {
   }
 
   return undefined;
+}
+
+function formatProjectName(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+
+  // 한글/특수문자 등 비영문 조합은 그대로 반환
+  if (/[^a-zA-Z0-9\s_-]/.test(trimmed)) {
+    return trimmed;
+  }
+
+  const parts = trimmed
+    .split(/[\s_-]+/)
+    .filter((part) => part.length > 0)
+    .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase());
+
+  if (parts.length === 0) {
+    return trimmed[0].toUpperCase() + trimmed.slice(1);
+  }
+
+  return parts.join("");
 }
