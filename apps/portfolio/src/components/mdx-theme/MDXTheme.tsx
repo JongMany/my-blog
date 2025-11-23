@@ -1,5 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
-import { imageSource } from "@mfe/shared";
+import { imageSource, useBoolean } from "@mfe/shared";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@srf/ui";
 import * as React from "react";
 import { MermaidDiagram } from "./mermaid-components/MermaidDiagram";
 import { SimpleMermaid } from "./mermaid-components/SimpleMermaid";
@@ -12,25 +13,172 @@ export const Mermaid = ({ children }: { children: React.ReactNode }) => (
 type ComponentsProp = Parameters<typeof MDXProvider>[0]["components"];
 type MDXMap = NonNullable<ComponentsProp>;
 
-function fixAssetSrc(src?: string) {
-  if (!src) return src;
+type PortfolioImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  source?: string;
+  description?: string;
+  width?: number | string;
+  height?: number | string;
+};
 
-  // 절대 URL인 경우 그대로 반환
+function processImageSource(src?: string): string | undefined {
+  if (!src) return undefined;
+
   if (/^https?:\/\//i.test(src)) {
     return src;
   }
 
-  // 모든 경로를 imageSource로 처리
-  const result = imageSource(src, "portfolio", {
+  return imageSource(src, "portfolio", {
     isDevelopment: import.meta.env.MODE === "development",
   });
-  return result;
+}
+
+function createImageStyle(
+  width?: number | string,
+  height?: number | string,
+): React.CSSProperties | undefined {
+  const style: React.CSSProperties = {};
+
+  if (width) {
+    style.width = typeof width === "number" ? `${width}px` : width;
+  }
+
+  if (height) {
+    style.height = typeof height === "number" ? `${height}px` : height;
+  }
+
+  return Object.keys(style).length > 0 ? style : undefined;
+}
+
+type ParagraphProps = React.HTMLAttributes<HTMLParagraphElement>;
+
+const INLINE_TAGS = new Set([
+  "a",
+  "abbr",
+  "b",
+  "cite",
+  "code",
+  "em",
+  "i",
+  "kbd",
+  "mark",
+  "small",
+  "span",
+  "strong",
+  "sub",
+  "sup",
+  "time",
+  "u",
+]);
+
+function isInlineNode(node: React.ReactNode): boolean {
+  if (node === null || node === undefined || typeof node === "boolean") {
+    return true;
+  }
+  if (typeof node === "string" || typeof node === "number") {
+    return true;
+  }
+  if (!React.isValidElement(node)) {
+    return false;
+  }
+
+  const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+  const elementType = element.type;
+
+  if (elementType === React.Fragment) {
+    return React.Children.toArray(element.props.children).every(isInlineNode);
+  }
+
+  if (typeof elementType === "string") {
+    return INLINE_TAGS.has(elementType);
+  }
+
+  // 커스텀 컴포넌트(예: Image)는 블록 요소로 간주
+  return false;
+}
+
+function Paragraph({ children, className = "", ...props }: ParagraphProps) {
+  const childArray = React.Children.toArray(children);
+  const meaningfulChildren = childArray.filter((child) => {
+    if (child === null || child === undefined) return false;
+    if (typeof child === "boolean") return false;
+    if (typeof child === "string") {
+      return child.trim().length > 0;
+    }
+    return true;
+  });
+
+  const shouldBeInline =
+    meaningfulChildren.length === 0 ||
+    meaningfulChildren.every((child) => isInlineNode(child));
+
+  const Wrapper = shouldBeInline ? "p" : "div";
+  const wrapperClassName = `mb-4 leading-relaxed ${className}`.trim();
+
+  return (
+    <Wrapper {...props} className={wrapperClassName}>
+      {children}
+    </Wrapper>
+  );
+}
+
+function Image({
+  alt,
+  src,
+  source,
+  description,
+  width,
+  height,
+  className,
+  ...props
+}: PortfolioImageProps) {
+  const { value: opened, toggle, setFalse: close } = useBoolean(false);
+  const processedSrc = processImageSource(src);
+  const imageStyle = createImageStyle(width, height);
+
+  if (!processedSrc) return null;
+
+  return (
+    <div className="flex w-full max-w-full flex-col items-center overflow-hidden">
+      <Dialog modal={false} open={opened} onOpenChange={toggle}>
+        <DialogTrigger asChild>
+          <img
+            alt={alt ?? ""}
+            src={processedSrc}
+            className={`mb-1 mt-8 h-auto w-full max-w-full cursor-pointer rounded-lg object-contain ${className ?? ""}`}
+            style={imageStyle}
+            width={width}
+            height={height}
+            loading="lazy"
+            {...props}
+          />
+        </DialogTrigger>
+        <DialogContent
+          className="fixed left-1/2 top-1/2 z-50 flex h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center bg-transparent p-0 shadow-none outline-none"
+          overlayClassName="bg-black/50"
+          hideClose
+        >
+          <DialogTitle className="sr-only">{alt ?? ""}</DialogTitle>
+          <img
+            alt={alt ?? ""}
+            src={processedSrc}
+            className="h-auto max-h-full w-auto max-w-full object-contain"
+            onClick={close}
+          />
+        </DialogContent>
+      </Dialog>
+      {source && <p className="text-xs text-gray-500">[출처: {source}]</p>}
+      {description && (
+        <p className="text-xs text-gray-500 text-center">{description}</p>
+      )}
+    </div>
+  );
 }
 
 export const components: MDXMap = {
   // MDX에서 직접 사용할 수 있는 컴포넌트들
   Mermaid,
   SimpleMermaid,
+  Image,
   /* === Headings === */
   h1: (p) => <h1 {...p} className="text-3xl font-bold mb-6 mt-8 first:mt-0" />,
   h2: (p) => <h2 {...p} className="text-2xl font-semibold mb-4 mt-8" />,
@@ -40,7 +188,7 @@ export const components: MDXMap = {
   h6: (p) => <h6 {...p} className="text-sm font-medium mb-2 mt-4" />,
 
   /* === Text === */
-  p: (p) => <p {...p} className="mb-4 leading-relaxed" />,
+  p: Paragraph,
   strong: (p) => <strong {...p} className="font-semibold" />,
   em: (p) => <em {...p} className="italic" />,
 
@@ -66,17 +214,7 @@ export const components: MDXMap = {
   ),
 
   /* === Media === */
-  img: ({ src, ...p }) => {
-    const processedSrc = fixAssetSrc(src);
-    return (
-      <img
-        {...p}
-        src={processedSrc}
-        className="max-w-full h-auto rounded-lg mb-4"
-        loading="lazy"
-      />
-    );
-  },
+  img: (props) => <Image {...props} />,
 
   /* === Tables === */
   table: (p) => (
