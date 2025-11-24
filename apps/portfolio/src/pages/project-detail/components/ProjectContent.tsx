@@ -1,10 +1,10 @@
-import React from "react";
+import type { ComponentType } from "react";
 import { LoadingSpinner } from "../../../components/common";
 import { MDXTheme } from "../../../components/mdx-theme";
 import { MESSAGE_CONSTANTS } from "../constants/messages";
 
 interface ProjectContentProps {
-  MDXComponent: React.ComponentType | null;
+  MDXComponent: ComponentType | null;
 }
 
 export function ProjectContent({ MDXComponent }: ProjectContentProps) {

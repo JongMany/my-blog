@@ -11,7 +11,10 @@ interface SelectableChipsProps {
 }
 
 function getChipClassName(isSelected: boolean): string {
-  return cn("t-chip", isSelected && "ring-1 ring-[var(--primary)]");
+  return cn(
+    "t-chip transition-all cursor-pointer",
+    isSelected && "ring-1 ring-[var(--primary)]",
+  );
 }
 
 export function SelectableChips({

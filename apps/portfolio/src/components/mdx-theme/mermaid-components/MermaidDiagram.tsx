@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode, type MouseEvent, type WheelEvent } from "react";
 import mermaid from "mermaid/dist/mermaid.esm.min.mjs";
 
 interface MermaidDiagramProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
@@ -244,7 +244,7 @@ export function MermaidDiagram({
   }, [isDragging]);
 
   // 마우스 이벤트 핸들러
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: MouseEvent) => {
     // 마우스 왼쪽 버튼만 드래그 허용
     if (e.button !== 0) return;
 
@@ -255,7 +255,7 @@ export function MermaidDiagram({
     document.body.style.overflow = "hidden";
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
+  const handleWheel = (e: WheelEvent) => {
     // Ctrl 키를 누르고 있을 때만 줌 작동
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
@@ -276,21 +276,21 @@ export function MermaidDiagram({
       <div className="absolute top-2 right-2 z-10 flex gap-2">
         <button
           onClick={() => setZoom((prev) => Math.min(3, prev * 1.2))}
-          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md"
+          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md cursor-pointer"
           title="줌인"
         >
           +
         </button>
         <button
           onClick={() => setZoom((prev) => Math.max(0.1, prev * 0.8))}
-          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md"
+          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md cursor-pointer"
           title="줌아웃"
         >
           -
         </button>
         <button
           onClick={resetView}
-          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md"
+          className="bg-white/80 hover:bg-white text-gray-700 px-2 py-1 rounded text-sm shadow-md cursor-pointer"
           title="리셋"
         >
           ⌂

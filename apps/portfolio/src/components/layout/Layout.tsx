@@ -1,4 +1,4 @@
-import React from "react";
+import type { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { cn } from "@srf/ui";
 
@@ -13,7 +13,7 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
   { to: "/portfolio/projects", label: "Projects" },
 ] as const;
 
-export default function Layout({ children }: React.PropsWithChildren) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

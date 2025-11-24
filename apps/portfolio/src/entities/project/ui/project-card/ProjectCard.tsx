@@ -1,6 +1,6 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import * as React from "react";
 import { imageSource } from "@mfe/shared";
 import {
   getFallbackThumbnail,
@@ -29,11 +29,11 @@ export default function ProjectCard({
   const visible = tags.slice(0, maxTags);
   const more = tags.length - visible.length;
 
-  const [imgOk, setImgOk] = React.useState(true);
-  const [currentSrc, setCurrentSrc] = React.useState<string>("");
+  const [imgOk, setImgOk] = useState(true);
+  const [currentSrc, setCurrentSrc] = useState<string>("");
 
   // 썸네일 경로 처리
-  React.useEffect(() => {
+  useEffect(() => {
     if (p.cover) {
       // 원본 cover 경로를 그대로 사용 (imageSource에서 처리)
       setCurrentSrc(p.cover);

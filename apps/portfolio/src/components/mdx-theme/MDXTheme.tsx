@@ -1,19 +1,29 @@
+import {
+  type ReactNode,
+  type ReactElement,
+  type CSSProperties,
+  type ImgHTMLAttributes,
+  type HTMLAttributes,
+  isValidElement,
+  Children,
+  Fragment,
+  cloneElement,
+} from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { imageSource, useBoolean } from "@mfe/shared";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@srf/ui";
-import * as React from "react";
 import { MermaidDiagram } from "./mermaid-components/MermaidDiagram";
 import { SimpleMermaid } from "./mermaid-components/SimpleMermaid";
 
 // MDX에서 직접 사용할 수 있는 Mermaid 컴포넌트
-export const Mermaid = ({ children }: { children: React.ReactNode }) => (
+export const Mermaid = ({ children }: { children: ReactNode }) => (
   <MermaidDiagram>{children}</MermaidDiagram>
 );
 
 type ComponentsProp = Parameters<typeof MDXProvider>[0]["components"];
 type MDXMap = NonNullable<ComponentsProp>;
 
-type PortfolioImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+type PortfolioImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   source?: string;
   description?: string;
   width?: number | string;
@@ -35,8 +45,8 @@ function processImageSource(src?: string): string | undefined {
 function createImageStyle(
   width?: number | string,
   height?: number | string,
-): React.CSSProperties | undefined {
-  const style: React.CSSProperties = {};
+): CSSProperties | undefined {
+  const style: CSSProperties = {};
 
   if (width) {
     style.width = typeof width === "number" ? `${width}px` : width;
@@ -49,7 +59,7 @@ function createImageStyle(
   return Object.keys(style).length > 0 ? style : undefined;
 }
 
-type ParagraphProps = React.HTMLAttributes<HTMLParagraphElement>;
+type ParagraphProps = HTMLAttributes<HTMLParagraphElement>;
 
 const INLINE_TAGS = new Set([
   "a",
@@ -70,22 +80,22 @@ const INLINE_TAGS = new Set([
   "u",
 ]);
 
-function isInlineNode(node: React.ReactNode): boolean {
+function isInlineNode(node: ReactNode): boolean {
   if (node === null || node === undefined || typeof node === "boolean") {
     return true;
   }
   if (typeof node === "string" || typeof node === "number") {
     return true;
   }
-  if (!React.isValidElement(node)) {
+  if (!isValidElement(node)) {
     return false;
   }
 
-  const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+  const element = node as ReactElement<{ children?: ReactNode }>;
   const elementType = element.type;
 
-  if (elementType === React.Fragment) {
-    return React.Children.toArray(element.props.children).every(isInlineNode);
+  if (elementType === Fragment) {
+    return Children.toArray(element.props.children).every(isInlineNode);
   }
 
   if (typeof elementType === "string") {
@@ -97,7 +107,7 @@ function isInlineNode(node: React.ReactNode): boolean {
 }
 
 function Paragraph({ children, className = "", ...props }: ParagraphProps) {
-  const childArray = React.Children.toArray(children);
+  const childArray = Children.toArray(children);
   const meaningfulChildren = childArray.filter((child) => {
     if (child === null || child === undefined) return false;
     if (typeof child === "boolean") return false;
@@ -257,23 +267,23 @@ export const components: MDXMap = {
       {...p}
       className="my-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
     >
-      {React.Children.map(children, (child, index) => {
+      {Children.map(children, (child, index) => {
         if (
           index === 0 &&
-          React.isValidElement(child) &&
+          isValidElement(child) &&
           child.type === "summary"
         ) {
           return child;
         }
 
         // pre 태그인 경우 특별한 클래스 추가
-        if (React.isValidElement(child) && child.type === "pre") {
+        if (isValidElement(child) && child.type === "pre") {
           const existingClassName =
             (child.props as { className?: string })?.className || "";
           return (
             <div key={index} className="ml-6 mr-4 mb-4 first:mt-4">
-              {React.cloneElement(
-                child as React.ReactElement<{ className?: string }>,
+              {cloneElement(
+                child as ReactElement<{ className?: string }>,
                 {
                   className: `${existingClassName} details-content`,
                 },
@@ -299,14 +309,14 @@ export const components: MDXMap = {
 
   /* === Mermaid Diagrams === */
   pre: (p) => {
-    const children = React.Children.toArray(p.children);
+    const children = Children.toArray(p.children);
 
     // 모든 children을 확인하여 mermaid 요소 찾기
     let mermaidElement = null;
     let mermaidChildren = "";
 
     for (const child of children) {
-      if (React.isValidElement(child)) {
+      if (isValidElement(child)) {
         const className = (child.props as any)?.className || "";
         const childChildren = (child.props as any)?.children || "";
 
@@ -350,6 +360,6 @@ export const components: MDXMap = {
   },
 };
 
-export function MDXTheme({ children }: { children: React.ReactNode }) {
+export function MDXTheme({ children }: { children: ReactNode }) {
   return <MDXProvider components={components}>{children}</MDXProvider>;
 }

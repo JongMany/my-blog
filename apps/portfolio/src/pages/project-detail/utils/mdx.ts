@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { evaluate, UseMdxComponents } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import remarkGfm from "remark-gfm";
@@ -26,7 +27,7 @@ export function sanitizeMdxSource(src: string): string {
  */
 export async function createMdxComponent(
   source: string,
-): Promise<React.ComponentType> {
+): Promise<ComponentType> {
   const sanitizedSource = sanitizeMdxSource(source);
   const { default: MDXContent } = await evaluate(sanitizedSource, {
     ...runtime,
@@ -34,5 +35,5 @@ export async function createMdxComponent(
     remarkPlugins: [remarkGfm],
     rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
   });
-  return MDXContent as React.ComponentType;
+  return MDXContent as ComponentType;
 }
