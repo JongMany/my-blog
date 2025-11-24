@@ -1,16 +1,17 @@
-import { parseFrontmatter } from "../../../utils/frontmatter";
+import {
+  parseFrontmatter,
+  getString,
+  getOptionalString,
+} from "../../../utils/frontmatter";
 import {
   formatProjectName,
   normalizeBoolean,
   normalizeNumber,
   normalizeTags,
 } from "../../../utils/normalize";
+import { normalizeFilePath } from "../../../utils/path";
 import { buildProjectIndex, findProjectBySlug } from "./catalog";
 import type { ProjectDocument, ProjectIndex, ProjectMeta } from "./types";
-
-// ============================================================================
-// Types
-// ============================================================================
 
 interface PathInfo {
   fileName: string;
@@ -31,10 +32,6 @@ interface BuildMetaParams {
   dateInfo: DateInfo;
 }
 
-// ============================================================================
-// Public API
-// ============================================================================
-
 export function getProjects(): ProjectDocument[] {
   return getDocuments();
 }
@@ -47,17 +44,10 @@ export function getPortfolioIndex(): ProjectIndex {
   return buildProjectIndex(getDocuments());
 }
 
-// ============================================================================
-// Cache & Load
-// ============================================================================
-
 let cachedDocuments: ProjectDocument[] | null = null;
 
 const getDocuments = (): ProjectDocument[] => {
-  if (!cachedDocuments) {
-    cachedDocuments = loadProjectDocuments();
-  }
-  return cachedDocuments;
+  return cachedDocuments ?? (cachedDocuments = loadProjectDocuments());
 };
 
 function loadProjectDocuments(): ProjectDocument[] {
@@ -77,10 +67,6 @@ function loadProjectDocuments(): ProjectDocument[] {
     .filter((doc): doc is ProjectDocument => Boolean(doc));
 }
 
-// ============================================================================
-// Document Creation
-// ============================================================================
-
 function createProjectDocument(
   filePath: string,
   rawContent: string,
@@ -93,48 +79,31 @@ function createProjectDocument(
     return null;
   }
 
-  const slug = extractSlug(frontmatter, pathInfo.fileNameWithoutExt);
-  const relativePath = normalizeFilePath(filePath);
+  const slug = (frontmatter.slug as string) || pathInfo.fileNameWithoutExt;
   const meta = buildProjectMeta({
     frontmatter,
     pathInfo,
     slug,
-    relativePath,
+    relativePath: normalizeFilePath(filePath),
     dateInfo,
   });
 
   return { slug, content, meta };
 }
 
-// ============================================================================
-// Extractors
-// ============================================================================
-
 function extractPathInfo(filePath: string): PathInfo {
   const pathParts = filePath.split("/");
   const fileName = pathParts.at(-1) ?? "";
-  const fileNameWithoutExt = fileName.replace(/\.(md|mdx)$/, "");
   const projectsIndex = pathParts.findIndex((part) => part === "projects");
 
-  const folderAfterProjects =
-    projectsIndex >= 0 && projectsIndex < pathParts.length - 2
-      ? pathParts[projectsIndex + 1]
-      : undefined;
-
-  return { fileName, fileNameWithoutExt, folderAfterProjects };
-}
-
-function extractSlug(
-  frontmatter: Record<string, unknown>,
-  defaultSlug: string,
-): string {
-  return (frontmatter.slug as string) || defaultSlug;
-}
-
-function normalizeFilePath(filePath: string): string {
-  return filePath
-    .replace(/^\.\.\/contents\//, "/contents/")
-    .replace(/\\/g, "/");
+  return {
+    fileName,
+    fileNameWithoutExt: fileName.replace(/\.(md|mdx)$/, ""),
+    folderAfterProjects:
+      projectsIndex >= 0 && projectsIndex < pathParts.length - 2
+        ? pathParts[projectsIndex + 1]
+        : undefined,
+  };
 }
 
 function extractDateInfo(frontmatter: Record<string, unknown>): DateInfo {
@@ -153,10 +122,6 @@ function extractPublished(frontmatter: Record<string, unknown>): boolean {
   );
 }
 
-// ============================================================================
-// Builders
-// ============================================================================
-
 function buildProjectMeta({
   frontmatter,
   pathInfo,
@@ -164,15 +129,12 @@ function buildProjectMeta({
   relativePath,
   dateInfo,
 }: BuildMetaParams): ProjectMeta {
-  const title = (frontmatter.title as string) || pathInfo.fileNameWithoutExt;
-  const summary = (frontmatter.summary as string) || "";
-
   return {
-    title,
-    summary,
+    title: getString(frontmatter, "title", pathInfo.fileNameWithoutExt),
+    summary: getString(frontmatter, "summary"),
     project: inferProjectName(frontmatter, pathInfo),
     tags: normalizeTags(frontmatter.tags),
-    date: String(frontmatter.date || dateInfo.dateStr),
+    date: getString(frontmatter, "date", dateInfo.dateStr),
     slug,
     path: relativePath,
     createdAtMs: dateInfo.createdAtMs,
@@ -180,11 +142,9 @@ function buildProjectMeta({
     published: true,
     order: normalizeNumber(frontmatter.order),
     banner: normalizeBoolean(frontmatter.banner) ?? false,
-    cover: frontmatter.cover ? String(frontmatter.cover) : undefined,
-    coverAlt: frontmatter.coverAlt ? String(frontmatter.coverAlt) : undefined,
-    coverCaption: frontmatter.coverCaption
-      ? String(frontmatter.coverCaption)
-      : undefined,
+    cover: getOptionalString(frontmatter, "cover"),
+    coverAlt: getOptionalString(frontmatter, "coverAlt"),
+    coverCaption: getOptionalString(frontmatter, "coverCaption"),
     coverType: frontmatter.coverType as ProjectMeta["coverType"],
     coverAspectRatio: frontmatter.coverAspectRatio as
       | ProjectMeta["coverAspectRatio"]
@@ -196,11 +156,7 @@ function inferProjectName(
   frontmatter: Record<string, unknown>,
   pathInfo: PathInfo,
 ): string | undefined {
-  const projectFromFrontmatter =
-    frontmatter.project && String(frontmatter.project).trim().length > 0
-      ? String(frontmatter.project)
-      : undefined;
-
+  const projectFromFrontmatter = String(frontmatter.project || "").trim();
   if (projectFromFrontmatter) {
     return formatProjectName(projectFromFrontmatter);
   }
