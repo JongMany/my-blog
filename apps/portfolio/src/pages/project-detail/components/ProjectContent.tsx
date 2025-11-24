@@ -2,6 +2,7 @@ import { LoadingSpinner } from "../../../components/common";
 import { MDX } from "../../../components/mdx";
 import { MESSAGE_CONSTANTS } from "../constants/messages";
 import type { ProjectMeta } from "../../../entities/project";
+import type { FrontmatterData } from "../../../components/mdx";
 
 interface ProjectContentProps {
   compiledSource: string | null;
@@ -17,7 +18,7 @@ export function ProjectContent({
       {compiledSource ? (
         <MDX
           compiledSource={compiledSource}
-          frontmatter={frontmatter as Record<string, unknown>}
+          frontmatter={frontmatter as FrontmatterData}
         />
       ) : (
         <LoadingSpinner message={MESSAGE_CONSTANTS.MDX_RENDER_MESSAGE} />

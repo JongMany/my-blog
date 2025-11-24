@@ -2,6 +2,9 @@
  * Project 엔티티 타입 정의
  */
 
+/**
+ * 프로젝트 썸네일 정보
+ */
 export type ProjectThumbnail = {
   cover?: string;
   coverAlt?: string;
@@ -48,4 +51,34 @@ export type ProjectDocument = {
   content: string;
   meta: ProjectMeta;
 };
+
+/**
+ * 프로젝트 문서 생성 시 사용하는 경로 정보
+ */
+export interface PathInfo {
+  fileName: string;
+  fileNameWithoutExt: string;
+  folderAfterProjects?: string;
+}
+
+/**
+ * 프로젝트 문서 생성 시 사용하는 날짜 정보
+ */
+export interface DateInfo {
+  dateStr: string;
+  createdAtMs: number;
+}
+
+import type { FrontmatterData } from "../../../components/mdx";
+
+/**
+ * 프로젝트 메타데이터 빌드 파라미터
+ */
+export interface BuildMetaParams {
+  frontmatter: FrontmatterData;
+  pathInfo: PathInfo;
+  slug: string;
+  relativePath: string;
+  dateInfo: DateInfo;
+}
 

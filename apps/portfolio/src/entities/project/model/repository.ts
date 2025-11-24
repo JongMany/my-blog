@@ -10,27 +10,16 @@ import {
   normalizeTags,
 } from "../../../utils/normalize";
 import { normalizeFilePath } from "../../../utils/path";
+import type { FrontmatterData } from "../../../components/mdx";
 import { buildProjectIndex, findProjectBySlug } from "./catalog";
-import type { ProjectDocument, ProjectIndex, ProjectMeta } from "./types";
-
-interface PathInfo {
-  fileName: string;
-  fileNameWithoutExt: string;
-  folderAfterProjects?: string;
-}
-
-interface DateInfo {
-  dateStr: string;
-  createdAtMs: number;
-}
-
-interface BuildMetaParams {
-  frontmatter: Record<string, unknown>;
-  pathInfo: PathInfo;
-  slug: string;
-  relativePath: string;
-  dateInfo: DateInfo;
-}
+import type {
+  BuildMetaParams,
+  DateInfo,
+  PathInfo,
+  ProjectDocument,
+  ProjectIndex,
+  ProjectMeta,
+} from "./types";
 
 export function getProjects(): ProjectDocument[] {
   return getDocuments();
@@ -106,7 +95,7 @@ function extractPathInfo(filePath: string): PathInfo {
   };
 }
 
-function extractDateInfo(frontmatter: Record<string, unknown>): DateInfo {
+function extractDateInfo(frontmatter: FrontmatterData): DateInfo {
   const dateStr = (frontmatter.date as string) || new Date().toISOString();
   return {
     dateStr,
@@ -114,7 +103,7 @@ function extractDateInfo(frontmatter: Record<string, unknown>): DateInfo {
   };
 }
 
-function extractPublished(frontmatter: Record<string, unknown>): boolean {
+function extractPublished(frontmatter: FrontmatterData): boolean {
   return (
     normalizeBoolean(frontmatter.publish) ??
     normalizeBoolean(frontmatter.published) ??
@@ -153,7 +142,7 @@ function buildProjectMeta({
 }
 
 function inferProjectName(
-  frontmatter: Record<string, unknown>,
+  frontmatter: FrontmatterData,
   pathInfo: PathInfo,
 ): string | undefined {
   const projectFromFrontmatter = String(frontmatter.project || "").trim();

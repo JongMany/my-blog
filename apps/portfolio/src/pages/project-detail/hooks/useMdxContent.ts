@@ -1,5 +1,5 @@
 import { use, useMemo } from "react";
-import { serializeMdx } from "../utils";
+import { serializeMdx } from "../../../components/mdx";
 
 /**
  * MDX 콘텐츠를 시리얼라이즈하는 커스텀 훅
