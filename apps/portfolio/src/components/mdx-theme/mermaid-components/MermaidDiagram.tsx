@@ -166,7 +166,7 @@ export function MermaidDiagram({
 
   // 전역 마우스 이벤트 처리
   useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
+    const handleGlobalMouseMove = (e: globalThis.MouseEvent) => {
       if (!isDragging) return;
 
       // 컨테이너 크기 계산

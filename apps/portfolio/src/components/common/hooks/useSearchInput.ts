@@ -18,7 +18,7 @@ interface UseSearchInputOptions {
 
 interface UseSearchInputReturn {
   inputValue: string;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   inputProps: {
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
