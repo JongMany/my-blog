@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { getPortfolioIndex, getProject } from "./repository";
-import type { ProjectIndex } from "./domain";
+import type { ProjectIndex } from "./types";
 
 export function usePortfolioIndex(): ProjectIndex | undefined {
   const data = useMemo(() => getPortfolioIndex(), []);

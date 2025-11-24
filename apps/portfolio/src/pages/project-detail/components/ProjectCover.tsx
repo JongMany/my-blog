@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { imageSource } from "@mfe/shared";
-import { getFallbackThumbnail } from "../../../entities/project";
-import type { ProjectMeta } from "../../../entities/project";
+import { getFallbackThumbnail, type ProjectMeta } from "../../../entities/project";
 
 interface ProjectCoverProps {
   project: ProjectMeta;

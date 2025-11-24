@@ -6,7 +6,7 @@ import {
   getFallbackThumbnail,
   getThumbnailAspectRatio,
   ProjectMeta,
-} from "../../entities/project/model/domain";
+} from "../../entities/project";
 
 const HOVER_ANIMATION = {
   whileHover: { y: -4, scale: 1.01 },

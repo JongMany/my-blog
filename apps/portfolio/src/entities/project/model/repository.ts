@@ -1,35 +1,64 @@
 import { parseFrontmatter } from "../../../utils/frontmatter";
 import {
   formatProjectName,
-  ProjectCatalog,
-  type ProjectDocument,
-  type ProjectIndex,
-  type ProjectMeta,
   normalizeBoolean,
   normalizeNumber,
   normalizeTags,
-} from "./domain";
+} from "../../../utils/normalize";
+import { buildProjectIndex, findProjectBySlug } from "./catalog";
+import type { ProjectDocument, ProjectIndex, ProjectMeta } from "./types";
 
-let catalog: ProjectCatalog | null = null;
+// ============================================================================
+// Types
+// ============================================================================
+
+interface PathInfo {
+  fileName: string;
+  fileNameWithoutExt: string;
+  folderAfterProjects?: string;
+}
+
+interface DateInfo {
+  dateStr: string;
+  createdAtMs: number;
+}
+
+interface BuildMetaParams {
+  frontmatter: Record<string, unknown>;
+  pathInfo: PathInfo;
+  slug: string;
+  relativePath: string;
+  dateInfo: DateInfo;
+}
+
+// ============================================================================
+// Public API
+// ============================================================================
 
 export function getProjects(): ProjectDocument[] {
-  return getCatalog().list();
+  return getDocuments();
 }
 
 export function getProject(slug: string): ProjectDocument | undefined {
-  return getCatalog().findBySlug(slug);
+  return findProjectBySlug(getDocuments(), slug);
 }
 
 export function getPortfolioIndex(): ProjectIndex {
-  return getCatalog().buildIndex();
+  return buildProjectIndex(getDocuments());
 }
 
-function getCatalog(): ProjectCatalog {
-  if (!catalog) {
-    catalog = ProjectCatalog.create(loadProjectDocuments());
+// ============================================================================
+// Cache & Load
+// ============================================================================
+
+let cachedDocuments: ProjectDocument[] | null = null;
+
+const getDocuments = (): ProjectDocument[] => {
+  if (!cachedDocuments) {
+    cachedDocuments = loadProjectDocuments();
   }
-  return catalog;
-}
+  return cachedDocuments;
+};
 
 function loadProjectDocuments(): ProjectDocument[] {
   const modules = import.meta.glob<string>(
@@ -48,68 +77,109 @@ function loadProjectDocuments(): ProjectDocument[] {
     .filter((doc): doc is ProjectDocument => Boolean(doc));
 }
 
+// ============================================================================
+// Document Creation
+// ============================================================================
+
 function createProjectDocument(
   filePath: string,
   rawContent: string,
 ): ProjectDocument | null {
   const { data: frontmatter, content } = parseFrontmatter(rawContent);
+  const pathInfo = extractPathInfo(filePath);
+  const dateInfo = extractDateInfo(frontmatter);
 
+  if (!extractPublished(frontmatter)) {
+    return null;
+  }
+
+  const slug = extractSlug(frontmatter, pathInfo.fileNameWithoutExt);
+  const relativePath = normalizeFilePath(filePath);
+  const meta = buildProjectMeta({
+    frontmatter,
+    pathInfo,
+    slug,
+    relativePath,
+    dateInfo,
+  });
+
+  return { slug, content, meta };
+}
+
+// ============================================================================
+// Extractors
+// ============================================================================
+
+function extractPathInfo(filePath: string): PathInfo {
   const pathParts = filePath.split("/");
   const fileName = pathParts.at(-1) ?? "";
   const fileNameWithoutExt = fileName.replace(/\.(md|mdx)$/, "");
   const projectsIndex = pathParts.findIndex((part) => part === "projects");
+
   const folderAfterProjects =
     projectsIndex >= 0 && projectsIndex < pathParts.length - 2
       ? pathParts[projectsIndex + 1]
       : undefined;
 
-  const defaultSlug = fileNameWithoutExt;
-  const slug = (frontmatter.slug as string) || defaultSlug;
+  return { fileName, fileNameWithoutExt, folderAfterProjects };
+}
 
-  const relativePath = filePath
+function extractSlug(
+  frontmatter: Record<string, unknown>,
+  defaultSlug: string,
+): string {
+  return (frontmatter.slug as string) || defaultSlug;
+}
+
+function normalizeFilePath(filePath: string): string {
+  return filePath
     .replace(/^\.\.\/contents\//, "/contents/")
     .replace(/\\/g, "/");
+}
 
+function extractDateInfo(frontmatter: Record<string, unknown>): DateInfo {
   const dateStr = (frontmatter.date as string) || new Date().toISOString();
-  const createdAtMs = new Date(dateStr).getTime();
+  return {
+    dateStr,
+    createdAtMs: new Date(dateStr).getTime(),
+  };
+}
 
-  const publishedValue =
+function extractPublished(frontmatter: Record<string, unknown>): boolean {
+  return (
     normalizeBoolean(frontmatter.publish) ??
-    normalizeBoolean(frontmatter.published);
-  const published = publishedValue ?? true;
+    normalizeBoolean(frontmatter.published) ??
+    true
+  );
+}
 
-  if (!published) {
-    return null;
-  }
+// ============================================================================
+// Builders
+// ============================================================================
 
-  const tags = normalizeTags(frontmatter.tags);
-  const order = normalizeNumber(frontmatter.order);
-  const bannerValue = normalizeBoolean(frontmatter.banner);
-  const banner = bannerValue ?? false;
+function buildProjectMeta({
+  frontmatter,
+  pathInfo,
+  slug,
+  relativePath,
+  dateInfo,
+}: BuildMetaParams): ProjectMeta {
+  const title = (frontmatter.title as string) || pathInfo.fileNameWithoutExt;
+  const summary = (frontmatter.summary as string) || "";
 
-  const inferredProjectRaw =
-    frontmatter.project && String(frontmatter.project).trim().length > 0
-      ? String(frontmatter.project)
-      : folderAfterProjects &&
-          !folderAfterProjects.includes(".") &&
-          folderAfterProjects !== fileName
-        ? folderAfterProjects
-        : undefined;
-  const inferredProject = formatProjectName(inferredProjectRaw);
-
-  const meta: ProjectMeta = {
-    title: (frontmatter.title as string) || fileNameWithoutExt,
-    summary: (frontmatter.summary as string) || "",
-    project: inferredProject,
-    tags,
-    date: String(frontmatter.date || dateStr),
+  return {
+    title,
+    summary,
+    project: inferProjectName(frontmatter, pathInfo),
+    tags: normalizeTags(frontmatter.tags),
+    date: String(frontmatter.date || dateInfo.dateStr),
     slug,
     path: relativePath,
-    createdAtMs,
-    id: fileNameWithoutExt,
-    published,
-    order,
-    banner,
+    createdAtMs: dateInfo.createdAtMs,
+    id: pathInfo.fileNameWithoutExt,
+    published: true,
+    order: normalizeNumber(frontmatter.order),
+    banner: normalizeBoolean(frontmatter.banner) ?? false,
     cover: frontmatter.cover ? String(frontmatter.cover) : undefined,
     coverAlt: frontmatter.coverAlt ? String(frontmatter.coverAlt) : undefined,
     coverCaption: frontmatter.coverCaption
@@ -120,11 +190,26 @@ function createProjectDocument(
       | ProjectMeta["coverAspectRatio"]
       | undefined,
   };
-
-  return {
-    slug,
-    content,
-    meta,
-  };
 }
 
+function inferProjectName(
+  frontmatter: Record<string, unknown>,
+  pathInfo: PathInfo,
+): string | undefined {
+  const projectFromFrontmatter =
+    frontmatter.project && String(frontmatter.project).trim().length > 0
+      ? String(frontmatter.project)
+      : undefined;
+
+  if (projectFromFrontmatter) {
+    return formatProjectName(projectFromFrontmatter);
+  }
+
+  const { folderAfterProjects, fileName } = pathInfo;
+  const isValidFolderName =
+    folderAfterProjects &&
+    !folderAfterProjects.includes(".") &&
+    folderAfterProjects !== fileName;
+
+  return isValidFolderName ? formatProjectName(folderAfterProjects) : undefined;
+}
