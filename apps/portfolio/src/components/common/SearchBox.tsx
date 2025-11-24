@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@srf/ui";
 
 interface SearchBoxProps {
   initial: string;
@@ -13,7 +14,7 @@ export const SearchBox = React.memo(function SearchBox({
   onChangeText,
   onCommit,
   placeholder = "검색(제목/요약/프로젝트명)",
-  className = "flex items-center gap-2",
+  className,
 }: SearchBoxProps) {
   const [value, setValue] = React.useState(initial);
   const composingRef = React.useRef(false);
@@ -29,7 +30,7 @@ export const SearchBox = React.memo(function SearchBox({
   }, [value, onChangeText]);
 
   return (
-    <div className={className}>
+    <div className={cn("flex items-center gap-2", className)}>
       <input
         className="min-w-0 flex-1 rounded-md border border-[var(--border)] bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-[var(--primary)]"
         placeholder={placeholder}

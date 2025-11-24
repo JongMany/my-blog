@@ -3,4 +3,4 @@ export { ErrorMessage } from "./ErrorMessage";
 export { EmptyState } from "./EmptyState";
 export { ProjectGrid } from "./ProjectGrid";
 export { SearchBox } from "./SearchBox";
-export { FilterChips } from "./FilterChips";
+export { SelectableChips } from "./SelectableChips";

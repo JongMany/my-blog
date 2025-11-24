@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchBox, FilterChips } from "../../../components/common";
+import { SearchBox, SelectableChips } from "../../../components/common";
 import type { ProjectMeta } from "../../../entities/project";
 import { extractAllTags, extractAllProjects } from "../utils/extractors";
 import { UI_CONSTANTS } from "../constants/ui";
@@ -51,22 +51,22 @@ export function ProjectFilters({
       />
 
       {/* 프로젝트 칩 필터 */}
-      <FilterChips
+      <SelectableChips
         items={allProjects}
-        activeItem={selectedProject}
-        onItemClick={onProjectChange}
-        onClearClick={onProjectClear}
-        clearLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
+        selectedValue={selectedProject}
+        onSelect={onProjectChange}
+        onReset={onProjectClear}
+        allLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
       />
 
       {/* 태그 칩 필터 */}
-      <FilterChips
+      <SelectableChips
         items={allTags}
-        activeItem={selectedTag}
-        onItemClick={onTagChange}
-        onClearClick={onTagClear}
-        clearLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
-        itemPrefix={UI_CONSTANTS.TAG_PREFIX}
+        selectedValue={selectedTag}
+        onSelect={onTagChange}
+        onReset={onTagClear}
+        allLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
+        prefix={UI_CONSTANTS.TAG_PREFIX}
       />
     </div>
   );
