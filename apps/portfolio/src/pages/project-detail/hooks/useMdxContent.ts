@@ -1,46 +1,19 @@
-import { useState, useEffect, type ComponentType } from "react";
-import { createMdxComponent } from "../utils";
+import { use, useMemo } from "react";
+import { serializeMdx } from "../utils";
 
+/**
+ * MDX 콘텐츠를 시리얼라이즈하는 커스텀 훅
+ */
 export function useMdxContent(mdxSource: string | null) {
-  const [MDXComponent, setMDXComponent] = useState<ComponentType | null>(
-    null,
-  );
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!mdxSource) {
-      setMDXComponent(null);
-      setError(null);
-      return;
-    }
-
-    let cancelled = false;
-
-    const processMdx = async () => {
-      try {
-        setError(null);
-        const component = await createMdxComponent(mdxSource);
-
-        if (!cancelled) {
-          setMDXComponent(() => component);
-        }
-      } catch (err: any) {
-        if (!cancelled) {
-          setMDXComponent(null);
-          setError(err);
-        }
-      }
-    };
-
-    processMdx();
-
-    return () => {
-      cancelled = true;
-    };
+  const serializedPromise = useMemo(() => {
+    if (!mdxSource) return null;
+    return serializeMdx(mdxSource);
   }, [mdxSource]);
 
-  return {
-    MDXComponent,
-    error,
-  };
+  if (!serializedPromise) {
+    return { compiledSource: null };
+  }
+
+  const { compiledSource } = use(serializedPromise);
+  return { compiledSource };
 }
