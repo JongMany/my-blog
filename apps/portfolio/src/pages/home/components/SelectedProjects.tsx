@@ -1,7 +1,6 @@
-import { ProjectGrid } from "../../../components/common";
+import { ProjectGrid, ProjectCard } from "../../../components/common";
 import { SectionHeader } from "./SectionHeader";
 import type { ProjectMeta } from "../../../entities/project";
-import { ProjectCard } from "../../../entities/project/ui/project-card";
 
 interface SelectedProjectsProps {
   projects: ProjectMeta[];
@@ -17,7 +16,7 @@ export function SelectedProjects({ projects }: SelectedProjectsProps) {
       />
       <ProjectGrid
         projects={projects}
-        renderProject={(project) => <ProjectCard p={project} />}
+        renderProject={(project) => <ProjectCard project={project} />}
       />
     </section>
   );

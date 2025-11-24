@@ -1,5 +1,5 @@
 import { memo, useRef } from "react";
-import { cn } from "@srf/ui";
+import { cn, CloseIcon } from "@srf/ui";
 import { useSearchInput } from "./hooks/useSearchInput";
 
 interface SearchInputProps {
@@ -47,27 +47,14 @@ export const SearchInput = memo(function SearchInput({
         <button
           id="search-clear-button"
           className={cn(
-            "absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-xs text-[var(--muted-fg)] transition-opacity hover:text-[var(--fg)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer",
+            "absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-xs text-[var(--muted-fg)] transition-all duration-200 hover:text-[var(--fg)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer",
             hasValue ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           {...clearButtonProps}
           aria-label={clearButtonLabel}
           tabIndex={hasValue ? 0 : -1}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
+          <CloseIcon size={16} />
         </button>
       </div>
     </div>

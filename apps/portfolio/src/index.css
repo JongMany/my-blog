@@ -23,3 +23,29 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none; /* Webkit 기반 브라우저 (Chrome, Safari, Edge) */
 }
+
+/* 카드 내부 링크 언더라인 제거 */
+a {
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+
+/* 카드 내부 모든 요소 언더라인 제거 */
+.group a,
+.group h3,
+.group p,
+.group span,
+.group div {
+  text-decoration: none !important;
+}
+
+.group:hover a,
+.group:hover h3,
+.group:hover p,
+.group:hover span,
+.group:hover div {
+  text-decoration: none !important;
+}

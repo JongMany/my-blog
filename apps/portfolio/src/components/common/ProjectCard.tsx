@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { imageSource } from "@mfe/shared";
@@ -6,81 +6,69 @@ import {
   getFallbackThumbnail,
   getThumbnailAspectRatio,
   ProjectMeta,
-} from "../../model/domain";
+} from "../../entities/project/model/domain";
 
-// 호버 애니메이션만 (인뷰 애니메이션은 ProjectGrid에서 처리)
-const hoverAnim = {
+const HOVER_ANIMATION = {
   whileHover: { y: -4, scale: 1.01 },
   transition: { type: "spring", stiffness: 260, damping: 18 },
 } as const;
 
-type Props = {
-  p: ProjectMeta;
-  maxTags?: number; // 태그 보여줄 최대 개수
+interface ProjectCardProps {
+  project: ProjectMeta;
+  maxTags?: number;
   showImage?: boolean;
-};
+}
 
 export default function ProjectCard({
-  p,
+  project,
   maxTags = 3,
   showImage = true,
-}: Props) {
-  const tags = p.tags ?? [];
-  const visible = tags.slice(0, maxTags);
-  const more = tags.length - visible.length;
+}: ProjectCardProps) {
+  const tags = project.tags ?? [];
+  const visibleTags = tags.slice(0, maxTags);
+  const remainingTagCount = tags.length - visibleTags.length;
 
-  const [imgOk, setImgOk] = useState(true);
-  const [currentSrc, setCurrentSrc] = useState<string>("");
-
-  // 썸네일 경로 처리
-  useEffect(() => {
-    if (p.cover) {
-      // 원본 cover 경로를 그대로 사용 (imageSource에서 처리)
-      setCurrentSrc(p.cover);
-    }
-  }, [p.cover]);
+  const [useFallback, setUseFallback] = useState(false);
+  const imageSrc = useFallback
+    ? getFallbackThumbnail()
+    : (project.cover ?? getFallbackThumbnail());
 
   const handleImageError = () => {
-    if (currentSrc !== getFallbackThumbnail()) {
-      setCurrentSrc(getFallbackThumbnail());
-    } else {
-      setImgOk(false);
+    if (!useFallback) {
+      setUseFallback(true);
     }
   };
 
   return (
     <li className="h-full">
       <Link
-        to={`/portfolio/project/${p.slug}`}
-        className="group block h-full focus-visible:outline-none focus-visible:[box-shadow:var(--ring)]"
-        aria-label={`${p.title} 상세 보기`}
+        to={`/portfolio/project/${project.slug}`}
+        className="group block h-full no-underline hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--ring)] [&_*]:no-underline [&_*]:hover:no-underline"
+        aria-label={`${project.title} 상세 보기`}
       >
         <motion.article
-          {...hoverAnim}
+          {...HOVER_ANIMATION}
           className="t-card h-full overflow-hidden"
         >
-          {/* 썸네일 (있을 때만) */}
-          {showImage && p.cover && imgOk && currentSrc && (
+          {showImage && imageSrc && (
             <div
-              className={`relative ${getThumbnailAspectRatio(p.coverAspectRatio)} overflow-hidden`}
+              className={`relative ${getThumbnailAspectRatio(project.coverAspectRatio)} overflow-hidden`}
             >
               <img
-                src={`${imageSource(currentSrc, "portfolio", {
+                src={imageSource(imageSrc, "portfolio", {
                   isDevelopment: import.meta.env.MODE === "development",
-                })}`}
-                alt={p.coverAlt || p.title}
+                })}
+                alt={project.coverAlt || project.title}
                 loading="lazy"
                 decoding="async"
                 onError={handleImageError}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
-              {/* 우상단 메타 칩 */}
-              {p.project && (
+              {project.project && (
                 <span className="absolute right-2 top-2 t-chip text-[10px]">
-                  {p.project}
+                  {project.project}
                 </span>
               )}
-              {/* 호버 그라데이션 */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -94,29 +82,32 @@ export default function ProjectCard({
 
           <div className="p-4">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-base font-medium leading-tight">{p.title}</h3>
-              {/* 썸네일이 없을 땐 텍스트 메타로 노출 */}
-              {!p.cover && p.project && (
+              <h3 className="text-base font-medium leading-tight">
+                {project.title}
+              </h3>
+              {!project.cover && project.project && (
                 <div className="text-xs text-[var(--muted-fg)]">
-                  {p.project}
+                  {project.project}
                 </div>
               )}
             </div>
 
-            {p.summary && (
+            {project.summary && (
               <p className="mt-2 text-sm leading-5 line-clamp-2 min-h-[2.5rem]">
-                {p.summary}
+                {project.summary}
               </p>
             )}
 
             {!!tags.length && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {visible.map((t: string) => (
-                  <span key={t} className="t-chip">
-                    #{t}
+                {visibleTags.map((tag) => (
+                  <span key={tag} className="t-chip">
+                    #{tag}
                   </span>
                 ))}
-                {more > 0 && <span className="t-chip text-xs">+{more}</span>}
+                {remainingTagCount > 0 && (
+                  <span className="t-chip text-xs">+{remainingTagCount}</span>
+                )}
               </div>
             )}
           </div>
