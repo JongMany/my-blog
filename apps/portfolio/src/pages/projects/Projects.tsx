@@ -3,7 +3,7 @@ import { LoadingSpinner } from "../../components/common";
 import { ProjectFilters, ProjectList, useProjectFilters } from "./components";
 
 export default function Projects() {
-  const { data: portfolioIndex, isLoading } = usePortfolioIndex();
+  const portfolioIndex = usePortfolioIndex();
 
   const {
     searchQuery,
@@ -18,7 +18,7 @@ export default function Projects() {
     clearProject,
   } = useProjectFilters(portfolioIndex);
 
-  if (isLoading) {
+  if (!portfolioIndex) {
     return <LoadingSpinner />;
   }
 

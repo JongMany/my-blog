@@ -1,34 +1,33 @@
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 import { usePortfolioIndex, useProjectMdx } from "../../entities/project";
-import { ErrorMessage } from "../../components/common";
+import { LoadingSpinner, ErrorMessage } from "../../components/common";
 import { useMdxContent } from "./hooks/useMdxContent";
-import { ProjectSEO, ProjectHeader, ProjectCover, ProjectContent } from "./components";
+import {
+  ProjectSEO,
+  ProjectHeader,
+  ProjectCover,
+  ProjectContent,
+} from "./components";
 import { MESSAGE_CONSTANTS } from "./constants/messages";
 
 export default function ProjectDetail() {
   const { slug = "" } = useParams();
-  const { data: portfolioIndex } = usePortfolioIndex();
+  const portfolioIndex = usePortfolioIndex();
+  const mdxSource = useProjectMdx(slug || null);
+  const { MDXComponent, error: mdxError } = useMdxContent(mdxSource);
 
-  // 프로젝트 정보 조회
+  if (!portfolioIndex) {
+    return <LoadingSpinner />;
+  }
+
   const project = useMemo(() => {
-    return portfolioIndex?.all.find((p) => p.slug === slug);
+    return portfolioIndex.all.find((p) => p.slug === slug);
   }, [portfolioIndex, slug]);
 
-  // MDX 데이터 조회
-  const mdxQuery = useProjectMdx(slug ?? null);
-
-  // MDX 콘텐츠 처리
-  const {
-    MDXComponent,
-    error: mdxError,
-  } = useMdxContent(mdxQuery.data ?? null);
-
-  // 에러 처리
   if (!project) {
     return <ErrorMessage message={MESSAGE_CONSTANTS.NOT_FOUND_MESSAGE} />;
   }
-
 
   if (mdxError) {
     return <ErrorMessage message={`MDX 처리 에러: ${mdxError.message}`} />;
