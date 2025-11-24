@@ -3,8 +3,36 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
-import type { Root } from "hast";
+import type { Root, Element, Properties } from "hast";
 import { visit } from "unist-util-visit";
+import {
+  isElement,
+  isImageElement,
+  isMermaidCodeBlock,
+  extractClassName,
+  extractMermaidCode,
+} from "../../../utils/hast";
+
+/**
+ * 이미지가 포함된 p 태그를 div로 변환하는 rehype 플러그인
+ * p 태그 안에 img가 있으면 p 태그를 div로 변환 (HTML 중첩 오류 방지)
+ */
+function rehypeUnwrapImages() {
+  return (tree: Root) => {
+    visit(tree, "element", (node) => {
+      if (node.tagName === "p") {
+        const hasImage = node.children.some(
+          (child): child is Element =>
+            isElement(child) && isImageElement(child),
+        );
+
+        if (hasImage) {
+          node.tagName = "div";
+        }
+      }
+    });
+  };
+}
 
 /**
  * mermaid 코드 블록을 감지하고 특별한 속성을 추가하는 rehype 플러그인
@@ -12,43 +40,30 @@ import { visit } from "unist-util-visit";
  */
 function rehypeSkipMermaid() {
   return (tree: Root) => {
-    visit(tree, "element", (node, index, parent) => {
-      // pre > code 구조에서 mermaid 감지
-      if (node.tagName === "pre" && parent) {
-        const codeChild = node.children.find(
-          (child: any) => child.type === "element" && child.tagName === "code",
-        ) as any;
-        if (codeChild && codeChild.type === "element" && codeChild.properties) {
-          const className = codeChild.properties.className;
-          const classStr = Array.isArray(className)
-            ? className.join(" ")
-            : String(className || "");
-          if (
-            classStr.includes("language-mermaid") ||
-            classStr.includes("mermaid")
-          ) {
-            // mermaid 코드 내용 추출
-            const mermaidCode = codeChild.children
-              .map((child: any) => {
-                if (child.type === "text") return child.value;
-                return "";
-              })
-              .join("")
-              .trim();
+    visit(tree, "element", (node) => {
+      if (node.tagName !== "pre") return;
 
-            if (mermaidCode) {
-              // pre 태그를 특별한 div로 변환
-              node.tagName = "div";
-              node.properties = {
-                "data-mermaid": "true",
-                "data-mermaid-code": mermaidCode,
-                className: ["mermaid-wrapper"],
-              };
-              node.children = [];
-            }
-          }
-        }
-      }
+      const codeChild = node.children.find(
+        (child): child is Element =>
+          isElement(child) && child.tagName === "code",
+      );
+
+      if (!codeChild?.properties) return;
+
+      const classStr = extractClassName(codeChild.properties.className);
+      if (!isMermaidCodeBlock(classStr)) return;
+
+      const mermaidCode = extractMermaidCode(codeChild.children);
+      if (!mermaidCode) return;
+
+      node.tagName = "div";
+      node.properties = {
+        "data-mermaid": "true",
+        "data-mermaid-code": mermaidCode,
+                "data-mermaid-width": "min(600px, 100%)",
+        className: ["mermaid-wrapper"],
+      } as Properties;
+      node.children = [];
     });
   };
 }
@@ -84,6 +99,8 @@ export async function serializeMdx(source: string) {
             },
           },
         ],
+        // 이미지가 포함된 p 태그 분리 (가장 먼저 실행)
+        rehypeUnwrapImages,
         // mermaid 감지 및 마킹 (rehypePrettyCode 전에 실행)
         rehypeSkipMermaid,
         [
@@ -92,10 +109,12 @@ export async function serializeMdx(source: string) {
             theme: "dark-plus",
             filterMetaString: (string: string) =>
               string.replace(/filename="[^"]*"/, ""),
-            onVisitHighlightedLine(node: any) {
-              node.properties.className.push("highlighted");
+            onVisitHighlightedLine(node: Element) {
+              if (node.properties && Array.isArray(node.properties.className)) {
+                node.properties.className.push("highlighted");
+              }
             },
-            onVisitHighlightedWord(node: any) {
+            onVisitHighlightedWord(node: Element) {
               node.properties.className = ["word"];
             },
           },
