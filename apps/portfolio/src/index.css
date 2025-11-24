@@ -11,3 +11,15 @@
     display: none; /* Webkit 기반 브라우저 (Chrome, Safari, Edge) */
   }
 }
+
+/* 전역 스크롤바 숨기기 */
+html,
+body {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Webkit 기반 브라우저 (Chrome, Safari, Edge) */
+}
