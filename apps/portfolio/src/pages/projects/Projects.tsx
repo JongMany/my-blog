@@ -1,25 +1,13 @@
-import React from "react";
-import { usePortfolioIndex } from "../../service/portfolio.query";
+import { usePortfolioIndex } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
-import { ProjectFilters, ProjectList, useProjectFilters } from "./components";
+import { ProjectFilters, ProjectList } from "./components";
+import { useProjectFilters } from "./hooks/useProjectFilters";
 
 export default function Projects() {
-  const { data: portfolioIndex, isLoading } = usePortfolioIndex();
+  const portfolioIndex = usePortfolioIndex();
+  const filterState = useProjectFilters(portfolioIndex);
 
-  const {
-    searchQuery,
-    selectedTag,
-    selectedProject,
-    filteredProjects,
-    setSearchText,
-    setSearchCommit,
-    setTag,
-    setProject,
-    clearTag,
-    clearProject,
-  } = useProjectFilters(portfolioIndex);
-
-  if (isLoading) {
+  if (!portfolioIndex) {
     return <LoadingSpinner />;
   }
 
@@ -27,18 +15,9 @@ export default function Projects() {
     <div className="space-y-4">
       <ProjectFilters
         portfolioIndex={portfolioIndex}
-        searchQuery={searchQuery}
-        selectedTag={selectedTag}
-        selectedProject={selectedProject}
-        onSearchChange={setSearchText}
-        onSearchCommit={setSearchCommit}
-        onTagChange={setTag}
-        onProjectChange={setProject}
-        onTagClear={clearTag}
-        onProjectClear={clearProject}
+        filterState={filterState}
       />
-
-      <ProjectList projects={filteredProjects} />
+      <ProjectList projects={filterState.filteredProjects} />
     </div>
   );
 }

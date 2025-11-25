@@ -1,7 +1,7 @@
-import React from "react";
+import { Fragment } from "react";
 import { motion } from "framer-motion";
-import { fadeUp, easeOutCb } from "../../../components/motion/Motion";
-import type { Experience } from "../../../service/portfolio";
+import type { Experience } from "../../../entities/project";
+import { easeOutCb } from "../../../utils/motion";
 
 export default function Timeline({ items }: { items: Experience[] }) {
   return (
@@ -15,7 +15,7 @@ export default function Timeline({ items }: { items: Experience[] }) {
 
 function TimelineItem({ experience }: { experience: Experience }) {
   return (
-    <React.Fragment>
+    <Fragment>
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -42,6 +42,6 @@ function TimelineItem({ experience }: { experience: Experience }) {
           ))}
         </ul>
       </motion.li>
-    </React.Fragment>
+    </Fragment>
   );
 }

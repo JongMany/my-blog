@@ -32,6 +32,33 @@ export function parseFrontmatter(source: string): ParseResult {
 }
 
 /**
+ * Record에서 문자열 값을 추출합니다.
+ * @param data - 데이터 객체
+ * @param key - 키
+ * @param defaultValue - 기본값
+ */
+export function getString(
+  data: Record<string, unknown>,
+  key: string,
+  defaultValue = "",
+): string {
+  return (data[key] as string) || defaultValue;
+}
+
+/**
+ * Record에서 선택적 문자열 값을 추출합니다.
+ * @param data - 데이터 객체
+ * @param key - 키
+ */
+export function getOptionalString(
+  data: Record<string, unknown>,
+  key: string,
+): string | undefined {
+  const value = data[key];
+  return value ? String(value) : undefined;
+}
+
+/**
  * 간단한 YAML 파서 (기본적인 키-값 쌍만 지원)
  *
  * 복잡한 YAML 구조는 지원하지 않지만, 일반적인 frontmatter 사용에는 충분합니다.

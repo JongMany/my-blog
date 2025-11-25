@@ -44,8 +44,15 @@ function processImageSource(src?: string): string | undefined {
   const isExternalUrl = /^https?:\/\//i.test(src);
   if (isExternalUrl) return src;
 
+  // 프로덕션 모드에서는 Vite의 base 경로가 이미 처리되므로 원본 경로를 그대로 사용
+  const isDevelopment = import.meta.env.MODE === "development";
+  if (!isDevelopment) {
+    return src;
+  }
+
+  // 개발 모드에서만 imageSource를 사용하여 localhost URL을 붙임
   return imageSource(src, "blog", {
-    isDevelopment: import.meta.env.MODE === "development",
+    isDevelopment: true,
   });
 }
 

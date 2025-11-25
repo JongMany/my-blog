@@ -1,6 +1,5 @@
-import { ProjectGrid } from "../../../components/common";
-import { ProjectCard } from "../../../components/project-card";
-import type { ProjectMeta } from "../../../service/portfolio";
+import { ProjectGrid, ProjectCard } from "../../../components/common";
+import type { ProjectMeta } from "../../../entities/project";
 import { MESSAGE_CONSTANTS } from "../constants/messages";
 
 interface ProjectListProps {
@@ -16,7 +15,7 @@ export function ProjectList({
     <ProjectGrid
       projects={projects}
       emptyMessage={emptyMessage}
-      renderProject={(project) => <ProjectCard p={project} />}
+      renderProject={(project) => <ProjectCard project={project} />}
     />
   );
 }

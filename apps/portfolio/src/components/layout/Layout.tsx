@@ -1,7 +1,19 @@
-import React from "react";
+import type { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { cn } from "@srf/ui";
 
-export default function Layout({ children }: React.PropsWithChildren) {
+interface NavigationItem {
+  to: string;
+  label: string;
+  end?: boolean;
+}
+
+const NAVIGATION_ITEMS: NavigationItem[] = [
+  { to: "/portfolio", label: "Home", end: true },
+  { to: "/portfolio/projects", label: "Projects" },
+] as const;
+
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -14,24 +26,21 @@ export default function Layout({ children }: React.PropsWithChildren) {
       </div>
 
       <nav className="flex gap-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)] p-1 text-sm">
-        {[
-          { to: "/portfolio", label: "Home", end: true },
-          { to: "/portfolio/projects", label: "Projects" },
-        ].map((n) => (
+        {NAVIGATION_ITEMS.map((item) => (
           <NavLink
-            key={n.to}
-            to={n.to}
-            end={(n as any).end}
+            key={item.to}
+            to={item.to}
+            end={item.end}
             className={({ isActive }) =>
-              [
+              cn(
                 "rounded-full px-3 py-1.5 transition",
                 isActive
                   ? "bg-[var(--primary)] text-[var(--primary-ink)]"
                   : "hover:bg-[var(--hover-bg)]",
-              ].join(" ")
+              )
             }
           >
-            {n.label}
+            {item.label}
           </NavLink>
         ))}
       </nav>

@@ -1,41 +1,38 @@
-import React from "react";
-import { SearchBox, FilterChips } from "../../../components/common";
-import type { ProjectMeta } from "../../../service/portfolio";
-import { extractAllTags, extractAllProjects } from "../utils/extractors";
+import { useMemo } from "react";
+import { SearchInput, SelectableChips } from "../../../components/common";
+import type { ProjectMeta } from "../../../entities/project";
+import { extractAllTags, extractAllProjects } from "../../../entities/project/utils";
 import { UI_CONSTANTS } from "../constants/ui";
+import type { useProjectFilters } from "../hooks/useProjectFilters";
 
 interface ProjectFiltersProps {
   portfolioIndex: { all: ProjectMeta[] } | undefined;
-  searchQuery: string;
-  selectedTag: string;
-  selectedProject: string;
-  onSearchChange: (value: string) => void;
-  onSearchCommit: (value: string) => void;
-  onTagChange: (tag: string) => void;
-  onProjectChange: (project: string) => void;
-  onTagClear: () => void;
-  onProjectClear: () => void;
+  filterState: ReturnType<typeof useProjectFilters>;
 }
 
 export function ProjectFilters({
   portfolioIndex,
-  searchQuery,
-  selectedTag,
-  selectedProject,
-  onSearchChange,
-  onSearchCommit,
-  onTagChange,
-  onProjectChange,
-  onTagClear,
-  onProjectClear,
+  filterState,
 }: ProjectFiltersProps) {
+  const {
+    searchQuery,
+    selectedTag,
+    selectedProject,
+    setSearchText,
+    commitSearch,
+    setTag,
+    setProject,
+    clearTag,
+    clearProject,
+  } = filterState;
+
   // 태그/프로젝트 목록
-  const allTags = React.useMemo(
+  const allTags = useMemo(
     () => extractAllTags(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
 
-  const allProjects = React.useMemo(
+  const allProjects = useMemo(
     () => extractAllProjects(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
@@ -43,30 +40,30 @@ export function ProjectFilters({
   return (
     <div className="t-card flex flex-col gap-3 p-3">
       {/* 검색 인풋 */}
-      <SearchBox
-        initial={searchQuery}
-        onChangeText={onSearchChange}
-        onCommit={onSearchCommit}
+      <SearchInput
+        defaultValue={searchQuery}
+        onChange={setSearchText}
+        onSubmit={commitSearch}
         placeholder={UI_CONSTANTS.SEARCH_PLACEHOLDER}
       />
 
       {/* 프로젝트 칩 필터 */}
-      <FilterChips
+      <SelectableChips
         items={allProjects}
-        activeItem={selectedProject}
-        onItemClick={onProjectChange}
-        onClearClick={onProjectClear}
-        clearLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
+        selectedValue={selectedProject}
+        onSelect={setProject}
+        onReset={clearProject}
+        allLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
       />
 
       {/* 태그 칩 필터 */}
-      <FilterChips
+      <SelectableChips
         items={allTags}
-        activeItem={selectedTag}
-        onItemClick={onTagChange}
-        onClearClick={onTagClear}
-        clearLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
-        itemPrefix={UI_CONSTANTS.TAG_PREFIX}
+        selectedValue={selectedTag}
+        onSelect={setTag}
+        onReset={clearTag}
+        allLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
+        prefix={UI_CONSTANTS.TAG_PREFIX}
       />
     </div>
   );

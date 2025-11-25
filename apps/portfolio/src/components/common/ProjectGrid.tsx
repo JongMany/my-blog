@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { stagger } from "../motion/Motion";
-import type { ProjectMeta } from "../../service/portfolio";
+import type { ProjectMeta } from "../../entities/project";
 import { ReactNode } from "react";
+import { stagger } from "../../utils/motion";
+import { cn } from "@srf/ui";
 
 interface ProjectGridProps {
   projects: ProjectMeta[];
@@ -13,7 +14,7 @@ interface ProjectGridProps {
 export function ProjectGrid({
   projects,
   emptyMessage = "프로젝트가 없습니다.",
-  className = "grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
+  className,
   renderProject,
 }: ProjectGridProps) {
   if (projects.length === 0) {
@@ -25,7 +26,7 @@ export function ProjectGrid({
       variants={stagger}
       initial="hidden"
       animate="show"
-      className={className}
+      className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}
     >
       {projects.map((project) => (
         <motion.div

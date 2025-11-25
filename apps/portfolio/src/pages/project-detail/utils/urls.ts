@@ -1,4 +1,4 @@
-import { getThumbnailPath } from "../../../service/portfolio";
+import { getThumbnailPath } from "../../../entities/project";
 import { URL_CONSTANTS } from "../constants/urls";
 
 /**

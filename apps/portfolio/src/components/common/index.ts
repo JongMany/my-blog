@@ -2,5 +2,6 @@ export { LoadingSpinner } from "./LoadingSpinner";
 export { ErrorMessage } from "./ErrorMessage";
 export { EmptyState } from "./EmptyState";
 export { ProjectGrid } from "./ProjectGrid";
-export { SearchBox } from "./SearchBox";
-export { FilterChips } from "./FilterChips";
+export { SearchInput } from "./SearchInput";
+export { SelectableChips } from "./SelectableChips";
+export { default as ProjectCard } from "./ProjectCard";
