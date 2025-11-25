@@ -65,3 +65,18 @@ export function calculateContainerWidth(
   return typeof width === "number" ? `${width}px` : width;
 }
 
+/**
+ * 다이어그램 transform 스타일을 계산하는 함수
+ */
+export function calculateTransformStyle(
+  zoom: number,
+  translate: { x: number; y: number },
+  isDragging: boolean,
+): React.CSSProperties {
+  return {
+    transform: `scale(${zoom}) translate(${translate.x / zoom}px, ${translate.y / zoom}px)`,
+    transformOrigin: "center center",
+    transition: isDragging ? "none" : "transform 0.1s ease-out",
+  };
+}
+

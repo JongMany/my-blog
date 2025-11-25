@@ -1,24 +1,9 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
-import { Link } from "react-router-dom";
-import { DetailedHTMLProps, ReactNode, VideoHTMLAttributes } from "react";
 import { useBoolean } from "@mfe/shared";
-import { MermaidDiagram } from "./mermaid/MermaidDiagram";
-import {
-  normalizeClassName,
-  isExternalUrl,
-  processImageSource,
-  createImageStyle,
-  extractTextFromChildren,
-  normalizeMermaidCode,
-} from "./utils";
-import type {
-  CodeElementProps,
-  ElementWithChildren,
-  ImageProps,
-  MermaidDataAttributes,
-} from "./types";
+import { processImageSource, createImageStyle } from "../utils";
+import type { ImageProps } from "../types";
 
-function Image({
+export function Image({
   alt,
   src,
   source,
@@ -77,59 +62,4 @@ function Image({
     </div>
   );
 }
-
-function Video({
-  src,
-  ...props
-}: DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>) {
-  return (
-    <video
-      src={src}
-      className="h-auto w-full rounded-lg my-8 shadow-md"
-      playsInline
-      {...props}
-    />
-  );
-}
-
-function Mermaid({
-  children,
-  width,
-  height,
-  ...props
-}: {
-  children: ReactNode;
-  width?: string | number;
-  height?: string | number;
-} & React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <MermaidDiagram width={width} height={height} {...props}>
-      {normalizeMermaidCode(children)}
-    </MermaidDiagram>
-  );
-}
-
-function MDXLink({
-  href,
-  children,
-  ...props
-}: React.AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode }) {
-  return isExternalUrl(href) ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
-      {...props}
-    >
-      {children}
-    </a>
-  ) : (
-    <Link to={href ?? "#"} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline" {...props}>
-      {children}
-    </Link>
-  );
-}
-
-export { Image, Video, Mermaid, MDXLink };
 

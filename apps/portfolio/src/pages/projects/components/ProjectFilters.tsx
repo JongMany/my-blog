@@ -3,32 +3,29 @@ import { SearchInput, SelectableChips } from "../../../components/common";
 import type { ProjectMeta } from "../../../entities/project";
 import { extractAllTags, extractAllProjects } from "../utils/extractors";
 import { UI_CONSTANTS } from "../constants/ui";
+import type { useProjectFilters } from "../hooks/useProjectFilters";
 
 interface ProjectFiltersProps {
   portfolioIndex: { all: ProjectMeta[] } | undefined;
-  searchQuery: string;
-  selectedTag: string;
-  selectedProject: string;
-  onSearchChange: (value: string) => void;
-  onSearchCommit: (value: string) => void;
-  onTagChange: (tag: string) => void;
-  onProjectChange: (project: string) => void;
-  onTagClear: () => void;
-  onProjectClear: () => void;
+  filterState: ReturnType<typeof useProjectFilters>;
 }
 
 export function ProjectFilters({
   portfolioIndex,
-  searchQuery,
-  selectedTag,
-  selectedProject,
-  onSearchChange,
-  onSearchCommit,
-  onTagChange,
-  onProjectChange,
-  onTagClear,
-  onProjectClear,
+  filterState,
 }: ProjectFiltersProps) {
+  const {
+    searchQuery,
+    selectedTag,
+    selectedProject,
+    setSearchText,
+    commitSearch,
+    setTag,
+    setProject,
+    clearTag,
+    clearProject,
+  } = filterState;
+
   // 태그/프로젝트 목록
   const allTags = useMemo(
     () => extractAllTags(portfolioIndex?.all ?? []),
@@ -45,8 +42,8 @@ export function ProjectFilters({
       {/* 검색 인풋 */}
       <SearchInput
         defaultValue={searchQuery}
-        onChange={onSearchChange}
-        onSubmit={onSearchCommit}
+        onChange={setSearchText}
+        onSubmit={commitSearch}
         placeholder={UI_CONSTANTS.SEARCH_PLACEHOLDER}
       />
 
@@ -54,8 +51,8 @@ export function ProjectFilters({
       <SelectableChips
         items={allProjects}
         selectedValue={selectedProject}
-        onSelect={onProjectChange}
-        onReset={onProjectClear}
+        onSelect={setProject}
+        onReset={clearProject}
         allLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
       />
 
@@ -63,8 +60,8 @@ export function ProjectFilters({
       <SelectableChips
         items={allTags}
         selectedValue={selectedTag}
-        onSelect={onTagChange}
-        onReset={onTagClear}
+        onSelect={setTag}
+        onReset={clearTag}
         allLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
         prefix={UI_CONSTANTS.TAG_PREFIX}
       />

@@ -1,5 +1,4 @@
-import type { ReactNode } from "react";
-import { isValidElement } from "react";
+import { isValidElement, type ReactNode } from "react";
 import { imageSource } from "@mfe/shared";
 import type { ElementWithChildren } from "./types";
 
