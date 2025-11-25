@@ -23,13 +23,14 @@ export function ProjectCover({ project }: ProjectCoverProps) {
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 flex flex-col items-center">
       <img
         src={imageSource(imageSrc, "portfolio", {
           isDevelopment: import.meta.env.MODE === "development",
         })}
         alt={project.coverAlt || project.title}
-        className="w-full h-auto rounded-lg"
+        className="h-auto rounded-lg"
+        style={{ width: "min(600px, 100%)" }}
         onError={handleImageError}
       />
       {project.coverCaption && (

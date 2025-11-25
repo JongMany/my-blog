@@ -27,6 +27,7 @@ export interface ElementWithChildren {
 export type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   source?: string;
   description?: string;
+  figcaption?: string;
   width?: number | string;
   height?: number | string;
 };
