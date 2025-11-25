@@ -29,8 +29,8 @@ export function SectionCard({ section, index }: SectionCardProps) {
       href={section.href}
       className={cn(
         "group relative overflow-visible rounded-2xl",
-        "bg-white shadow-lg hover:shadow-2xl",
-        "transition-all duration-100",
+        "bg-white shadow-sm hover:shadow-md",
+        "transition-all duration-200",
         "min-h-[200px]",
         "sm:min-h-[240px]",
         "no-underline hover:no-underline",
@@ -39,20 +39,9 @@ export function SectionCard({ section, index }: SectionCardProps) {
       style={{ textDecoration: "none" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      whileHover={{
-        scale: 1.02,
-        transition: {
-          duration: 0.1,
-          ease: [0.4, 0, 0.2, 1],
-        },
-      }}
       transition={{
-        delay: index * 0.1,
-        duration: 0.3,
-        scale: {
-          duration: 0.2,
-          ease: [0.4, 0, 0.2, 1],
-        },
+        delay: index * 0.05,
+        duration: 0.2,
       }}
     >
       {/* 그라데이션 배경 */}
@@ -60,7 +49,7 @@ export function SectionCard({ section, index }: SectionCardProps) {
         className={cn(
           "absolute inset-0 bg-gradient-to-br",
           section.color,
-          "opacity-0 group-hover:opacity-10 transition-opacity duration-100",
+          "opacity-0 group-hover:opacity-5 transition-opacity duration-200",
         )}
       />
 
@@ -79,11 +68,10 @@ export function SectionCard({ section, index }: SectionCardProps) {
             <div className="flex items-center gap-3 flex-nowrap">
               <span
                 className={cn(
-                  "text-3xl sm:text-4xl md:text-5xl font-bold",
-                  "bg-gradient-to-r bg-clip-text text-transparent",
+                  "text-3xl sm:text-4xl md:text-5xl font-semibold",
+                  "text-slate-700",
                   "leading-normal pb-0.5",
                   "whitespace-nowrap",
-                  section.color,
                 )}
                 style={{ lineHeight: "1.2" }}
               >
@@ -99,17 +87,6 @@ export function SectionCard({ section, index }: SectionCardProps) {
 
         {hasTags && section.tags && <Tags tags={section.tags} />}
       </div>
-
-      {/* 호버 시 장식 요소 */}
-      <div
-        className={cn(
-          "absolute bottom-0 right-0 w-32 h-32",
-          "bg-gradient-to-tl blur-3xl",
-          "opacity-0 group-hover:opacity-5",
-          "transition-opacity duration-100",
-          section.color,
-        )}
-      />
     </motion.a>
   );
 }
