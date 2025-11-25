@@ -1,54 +1,17 @@
 import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
-import type { Section } from "../consts/sections";
+import type { Section } from "../types/sections";
 import {
   getSectionGridClasses,
   SECTION_ANIMATION,
   SECTION_STYLES,
 } from "../utils/section";
+import { ArrowIcon } from "./arrow-icon";
 
 interface SectionCardProps {
   section: Section;
   index: number;
 }
-
-const ArrowIcon = () => (
-  <motion.svg
-    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-gray-600 flex-shrink-0"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    initial={{ x: 0 }}
-    whileHover={{ x: 5 }}
-    transition={{ duration: SECTION_ANIMATION.HOVER_DURATION }}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M9 5l7 7-7 7"
-    />
-  </motion.svg>
-);
-
-interface TagProps {
-  tags: string[];
-}
-
-const Tags = ({ tags }: TagProps) => (
-  <div className="mt-6 sm:mt-8">
-    <div className="flex gap-2 flex-wrap">
-      {tags.map((tag) => (
-        <span
-          key={tag}
-          className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600"
-        >
-          {tag}
-        </span>
-      ))}
-    </div>
-  </div>
-);
 
 export function SectionCard({ section, index }: SectionCardProps) {
   const isLarge = section.size === "lg";
@@ -145,3 +108,21 @@ export function SectionCard({ section, index }: SectionCardProps) {
     </motion.a>
   );
 }
+
+interface TagProps {
+  tags: string[];
+}
+const Tags = ({ tags }: TagProps) => (
+  <div className="mt-6 sm:mt-8">
+    <div className="flex gap-2 flex-wrap">
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600"
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+);

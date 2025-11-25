@@ -1,16 +1,6 @@
-type SectionSize = "lg" | "md" | "sm";
+import { Section } from "../../../types/sections";
 
-export interface Section {
-  id: string;
-  label: string;
-  description: string;
-  href: string;
-  color: string;
-  size: SectionSize;
-  tags?: string[];
-}
-
-export const sections: Section[] = [
+export const HOME_SECTIONS: Section[] = [
   {
     id: "blog",
     label: "Blog",

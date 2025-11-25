@@ -1,6 +1,6 @@
 import { cn } from "@srf/ui";
-import type { Section } from "../consts/sections";
-import { SectionCard } from "./SectionCard";
+import type { Section } from "../types/sections";
+import { SectionCard } from "./section-card";
 
 interface SectionGridProps {
   sections: Section[];

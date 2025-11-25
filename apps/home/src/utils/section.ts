@@ -1,4 +1,4 @@
-import type { Section } from "../consts/sections";
+import type { Section } from "../types/sections";
 
 const GRID_COLUMN_CLASSES: Record<Section["size"], string> = {
   lg: "sm:col-span-2 lg:col-span-2 lg:row-span-2",
