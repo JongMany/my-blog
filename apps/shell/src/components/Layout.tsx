@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@srf/ui";
 import ActivePill from "./ActivePill";
 import { useGaPageViews } from "../hooks/useGaPageViews";
@@ -29,7 +29,7 @@ export default function Layout({ children }: PropsWithChildren) {
 
   return (
     <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col ">
-      <HeroBackdrop />
+      {/* <HeroBackdrop /> */}
 
       <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
         <div className="shell:mr-2 shell:text-xl shell:font-semibold shell:tracking-tight">
@@ -66,15 +66,6 @@ export default function Layout({ children }: PropsWithChildren) {
           setOpen={setOpen}
           activeLabel={activeLabel}
         />
-
-        {/* <div className="shell:ml-auto shell:flex shell:items-center shell:gap-2">
-          <Link
-            to="/blog/write"
-            className="shell:t-btn shell:t-btn--primary shell:text-sm"
-          >
-            새 글 쓰기
-          </Link>
-        </div> */}
       </header>
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
@@ -82,16 +73,6 @@ export default function Layout({ children }: PropsWithChildren) {
         © {new Date().getFullYear()} · Frontend Developer
       </footer>
     </div>
-  );
-}
-
-function HeroBackdrop() {
-  return (
-    <>
-      <div className="shell:pointer-events-none shell:absolute shell:inset-0 shell:-z-10 [background:radial-gradient(60%_50%_at_50%_0%,rgb(99_102_241_/_0.25),transparent_60%)]" />
-      <div className="shell:pointer-events-none shell:absolute shell:inset-0 shell:-z-10 shell:opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:16px_16px]" />
-      <div className="shell:pointer-events-none shell:absolute shell:left-1/2 shell:top-[-80px] shell:-z-10 shell:size-[520px] shell:-translate-x-1/2 shell:rounded-full shell:bg-gradient-to-tr shell:from-fuchsia-500/20 via-sky-400/20 to-emerald-400/20 shell:blur-3xl" />
-    </>
   );
 }
 
