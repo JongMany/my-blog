@@ -42,7 +42,11 @@ export function Pre({ children, className, ...props }: PreProps) {
     ? `${baseClassName} ${CODE_BLOCK_STYLES.prettyCode}`.trim()
     : baseClassName;
   
-  return <pre className={combinedClassName} {...props}>{children}</pre>;
+  return (
+    <pre className={combinedClassName} {...props}>
+      {children}
+    </pre>
+  );
 }
 
 interface CodeProps extends React.HTMLAttributes<HTMLElement> {

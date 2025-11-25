@@ -8,6 +8,7 @@ export interface MermaidDataAttributes {
   "data-language"?: string;
   "data-lang"?: string;
   "data-skip-pretty-code"?: string;
+  "data-theme"?: string;
 }
 
 export interface CodeElementProps {
