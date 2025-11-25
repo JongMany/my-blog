@@ -1,8 +1,6 @@
 import React, { ReactNode, Children, isValidElement } from "react";
-import { cn } from "@srf/ui";
 import { MermaidDiagram } from "../mermaid/MermaidDiagram";
 import { normalizeClassName, extractTextFromChildren } from "../lib/utils";
-import { CODE_BLOCK_STYLES, CODE_INLINE_STYLE, CODE_BLOCK_STYLE } from "./constants";
 import { isMermaid } from "./utils";
 import type {
   CodeElementProps,
@@ -32,25 +30,8 @@ export function Pre({ children, ...props }: PreProps) {
       if (text.trim()) return <MermaidDiagram>{text}</MermaidDiagram>;
     }
   }
-  const hasCode = Children.toArray(children).some(
-    (c) =>
-      isValidElement(c) &&
-      (c.type === "code" ||
-        normalizeClassName((c.props as CodeElementProps)?.className).includes(
-          "language-",
-        )),
-  );
-  return (
-    <pre
-      {...props}
-      className={cn(
-        hasCode ? CODE_BLOCK_STYLES.prettyCode : CODE_BLOCK_STYLES.default,
-        props.className,
-      )}
-    >
-      {children}
-    </pre>
-  );
+  // prose 클래스가 자동으로 스타일을 적용하도록 커스텀 스타일 제거
+  return <pre {...props}>{children}</pre>;
 }
 
 interface CodeProps extends React.HTMLAttributes<HTMLElement> {
@@ -66,15 +47,8 @@ export function Code({ children, className, ...props }: CodeProps) {
         {children}
       </code>
     );
-  const inline = !normalizeClassName(className).includes("language-");
-  return (
-    <code
-      {...props}
-      className={cn(inline ? CODE_INLINE_STYLE : CODE_BLOCK_STYLE, className)}
-    >
-      {children}
-    </code>
-  );
+  // prose 클래스가 자동으로 스타일을 적용하도록 커스텀 스타일 제거
+  return <code {...props} className={className}>{children}</code>;
 }
 
 
