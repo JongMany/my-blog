@@ -60,7 +60,7 @@ export function SectionCard({ section, index }: SectionCardProps) {
       key={section.id}
       href={section.href}
       className={cn(
-        "group relative overflow-hidden rounded-2xl",
+        "group relative overflow-visible rounded-2xl",
         "bg-white shadow-lg hover:shadow-2xl",
         "transition-all duration-100",
         SECTION_STYLES.MIN_HEIGHT.base,
@@ -107,19 +107,22 @@ export function SectionCard({ section, index }: SectionCardProps) {
         )}
       >
         <div>
-          <div className="flex items-center gap-3 mb-3 flex-wrap overflow-visible">
-            <span
-              className={cn(
-                "text-3xl sm:text-4xl md:text-5xl font-bold",
-                "bg-gradient-to-r bg-clip-text text-transparent",
-                "leading-normal pb-0.5 block",
-                section.color,
-              )}
-              style={{ lineHeight: "1.2" }}
-            >
-              {section.label}
-            </span>
-            <ArrowIcon />
+          <div className="mb-3">
+            <div className="flex items-center gap-3 flex-nowrap">
+              <span
+                className={cn(
+                  "text-3xl sm:text-4xl md:text-5xl font-bold",
+                  "bg-gradient-to-r bg-clip-text text-transparent",
+                  "leading-normal pb-0.5",
+                  "whitespace-nowrap",
+                  section.color,
+                )}
+                style={{ lineHeight: "1.2" }}
+              >
+                {section.label}
+              </span>
+              <ArrowIcon />
+            </div>
           </div>
           <p className="text-gray-600 text-sm sm:text-base">
             {section.description}
