@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { SECTION_ANIMATION } from "../utils/section";
 
 export const ArrowIcon = () => (
   <motion.svg
@@ -9,7 +8,7 @@ export const ArrowIcon = () => (
     viewBox="0 0 24 24"
     initial={{ x: 0 }}
     whileHover={{ x: 5 }}
-    transition={{ duration: SECTION_ANIMATION.HOVER_DURATION }}
+    transition={{ duration: 0.1 }}
   >
     <path
       strokeLinecap="round"

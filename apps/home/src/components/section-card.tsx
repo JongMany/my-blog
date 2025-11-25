@@ -1,12 +1,17 @@
 import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
 import type { Section } from "../types/sections";
-import {
-  getSectionGridClasses,
-  SECTION_ANIMATION,
-  SECTION_STYLES,
-} from "../utils/section";
 import { ArrowIcon } from "./arrow-icon";
+
+const GRID_COLUMN_CLASSES: Record<Section["size"], string> = {
+  lg: "sm:col-span-2 lg:col-span-2 lg:row-span-2",
+  md: "sm:col-span-1 lg:col-span-1",
+  sm: "sm:col-span-1 lg:col-span-1",
+};
+
+function getSectionGridClasses(size: Section["size"]): string {
+  return GRID_COLUMN_CLASSES[size];
+}
 
 interface SectionCardProps {
   section: Section;
@@ -26,8 +31,8 @@ export function SectionCard({ section, index }: SectionCardProps) {
         "group relative overflow-visible rounded-2xl",
         "bg-white shadow-lg hover:shadow-2xl",
         "transition-all duration-100",
-        SECTION_STYLES.MIN_HEIGHT.base,
-        SECTION_STYLES.MIN_HEIGHT.sm,
+        "min-h-[200px]",
+        "sm:min-h-[240px]",
         "no-underline hover:no-underline",
         getSectionGridClasses(section.size),
       )}
@@ -35,18 +40,18 @@ export function SectionCard({ section, index }: SectionCardProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       whileHover={{
-        scale: SECTION_ANIMATION.HOVER_SCALE,
+        scale: 1.02,
         transition: {
-          duration: SECTION_ANIMATION.HOVER_DURATION,
-          ease: SECTION_ANIMATION.EASE,
+          duration: 0.1,
+          ease: [0.4, 0, 0.2, 1],
         },
       }}
       transition={{
-        delay: index * SECTION_ANIMATION.STAGGER_DELAY,
-        duration: SECTION_ANIMATION.DURATION,
+        delay: index * 0.1,
+        duration: 0.3,
         scale: {
-          duration: SECTION_ANIMATION.SCALE_DURATION,
-          ease: SECTION_ANIMATION.EASE,
+          duration: 0.2,
+          ease: [0.4, 0, 0.2, 1],
         },
       }}
     >
@@ -63,10 +68,10 @@ export function SectionCard({ section, index }: SectionCardProps) {
       <div
         className={cn(
           "relative h-full flex flex-col justify-between",
-          SECTION_STYLES.PADDING.base,
-          SECTION_STYLES.PADDING.sm,
-          SECTION_STYLES.PADDING.md,
-          SECTION_STYLES.PADDING.lg,
+          "p-6",
+          "sm:p-8",
+          "md:p-10",
+          "lg:p-12",
         )}
       >
         <div>
