@@ -341,10 +341,10 @@ export function getTokenCSS<T extends DesignToken>(
 /**
  * Token value mapping (for compile-time checking)
  */
-export interface TokenValue {
+export type TokenValue = {
   // Colors map to hex/rgb values
   [K in SemanticColorToken]: string;
-}
+};
 
 /**
  * Component token mapping (allows components to define their own tokens)
@@ -372,8 +372,10 @@ export interface ThemeConfig {
 
 /**
  * Available themes
+ * Note: Theme type is also exported from utils/theme.ts
+ * This export is kept for backward compatibility but should use utils/theme.ts instead
  */
-export type Theme = "light" | "dark";
+// export type Theme = "light" | "dark"; // Moved to utils/theme.ts to avoid duplicate export
 
 // ============================================================================
 // Examples & Documentation
