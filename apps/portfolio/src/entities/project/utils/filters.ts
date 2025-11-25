@@ -1,14 +1,5 @@
-import type { ProjectMeta } from "../../../entities/project";
-
-/**
- * 문자열이 포함되어 있는지 대소문자 구분 없이 확인하는 순수함수
- */
-export function includesIgnoreCase(
-  text: string | undefined | null,
-  query: string,
-): boolean {
-  return (text ?? "").toLowerCase().includes(query.toLowerCase());
-}
+import type { ProjectMeta } from "../model/types";
+import { includesIgnoreCase } from "../../../utils/string";
 
 /**
  * 프로젝트를 필터링하는 순수함수
@@ -40,3 +31,4 @@ export function filterProjects(
     return matchesSearch && matchesTag && matchesProject;
   });
 }
+

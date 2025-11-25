@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { SearchInput, SelectableChips } from "../../../components/common";
 import type { ProjectMeta } from "../../../entities/project";
-import { extractAllTags, extractAllProjects } from "../utils/extractors";
+import { extractAllTags, extractAllProjects } from "../../../entities/project/utils";
 import { UI_CONSTANTS } from "../constants/ui";
 import type { useProjectFilters } from "../hooks/useProjectFilters";
 

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { calculateMaxTranslate, clampTranslate } from "./utils";
-import type { DragState, TranslateState } from "../types";
+import type { DragState, TranslateState } from "../lib/types";
 
 export function useDiagramDrag(
   ref: React.RefObject<HTMLDivElement | null>,

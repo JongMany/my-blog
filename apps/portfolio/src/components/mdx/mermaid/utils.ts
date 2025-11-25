@@ -1,17 +1,6 @@
-import type { ReactNode } from "react";
-
 /**
  * Mermaid 다이어그램 관련 유틸리티 함수들
  */
-
-/**
- * mermaid 코드를 정규화하는 함수
- */
-export function normalizeMermaidCode(children: ReactNode): string {
-  if (typeof children === "string") return children;
-  if (Array.isArray(children)) return children.join("");
-  return String(children);
-}
 
 /**
  * 고유한 mermaid ID를 생성하는 함수

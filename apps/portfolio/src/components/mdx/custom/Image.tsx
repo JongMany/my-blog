@@ -1,7 +1,7 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
 import { useBoolean } from "@mfe/shared";
-import { processImageSource, createImageStyle } from "../utils";
-import type { ImageProps } from "../types";
+import { processImageSource, createImageStyle } from "../lib/utils";
+import type { ImageProps } from "../lib/types";
 
 export function Image({
   alt,

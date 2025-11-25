@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { isExternalUrl } from "../utils";
+import { isExternalUrl } from "../lib/utils";
 
 interface MDXLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;

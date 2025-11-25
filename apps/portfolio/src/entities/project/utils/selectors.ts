@@ -1,4 +1,4 @@
-import type { ProjectIndex } from "../../../entities/project";
+import type { ProjectIndex } from "../model/types";
 
 const TOP_PROJECTS_COUNT = 6;
 
@@ -21,5 +21,4 @@ export function selectTopProjects(
 
   return portfolioIndex.all.slice(0, TOP_PROJECTS_COUNT);
 }
-
 

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { MermaidDiagram } from "../mermaid/MermaidDiagram";
-import { normalizeMermaidCode } from "../utils";
+import { normalizeMermaidCode } from "../lib/utils";
 
 interface MermaidProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;

@@ -1,7 +1,11 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import type { ProjectMeta } from "../../../entities/project";
-import { filterProjects } from "../utils/filters";
+import { filterProjects } from "../../../entities/project/utils";
+import {
+  createUpdateSearchParam,
+  createToggleSearchParam,
+} from "../../../utils/search-params";
 
 const SEARCH_PARAM_KEY = "q";
 const TAG_PARAM_KEY = "tag";
@@ -25,44 +29,15 @@ export function useProjectFilters(
     setSearchInputValue(urlSearchQuery);
   }, [urlSearchQuery]);
 
-  // URL 파라미터 업데이트 헬퍼 (함수형 업데이트로 개선)
+  // URL 파라미터 업데이트 헬퍼
   const updateSearchParam = useCallback(
-    (key: string, value?: string) => {
-      setSearchParams(
-        (prevParams) => {
-          const newParams = new URLSearchParams(prevParams);
-          if (value && value.trim()) {
-            newParams.set(key, value);
-          } else {
-            newParams.delete(key);
-          }
-          return newParams;
-        },
-        { replace: true },
-      );
-    },
+    createUpdateSearchParam(setSearchParams),
     [setSearchParams],
   );
 
-  // 토글 파라미터 헬퍼 (함수형 업데이트로 개선)
+  // 토글 파라미터 헬퍼
   const toggleSearchParam = useCallback(
-    (key: string, value: string) => {
-      setSearchParams(
-        (prevParams) => {
-          const newParams = new URLSearchParams(prevParams);
-          const currentValue = newParams.get(key) ?? "";
-          const newValue = currentValue === value ? undefined : value;
-
-          if (newValue) {
-            newParams.set(key, newValue);
-          } else {
-            newParams.delete(key);
-          }
-          return newParams;
-        },
-        { replace: true },
-      );
-    },
+    createToggleSearchParam(setSearchParams),
     [setSearchParams],
   );
 

@@ -1,4 +1,4 @@
-import type { ProjectMeta } from "../../../entities/project";
+import type { ProjectMeta } from "../model/types";
 
 /**
  * 프로젝트 목록에서 모든 태그를 추출하는 순수함수
@@ -15,3 +15,4 @@ export function extractAllProjects(projects: ProjectMeta[]): string[] {
     new Set(projects.map((p) => p.project).filter(Boolean) as string[]),
   ).sort();
 }
+

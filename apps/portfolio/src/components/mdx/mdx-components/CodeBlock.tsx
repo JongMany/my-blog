@@ -1,13 +1,13 @@
 import React, { ReactNode, Children, isValidElement } from "react";
 import { cn } from "@srf/ui";
 import { MermaidDiagram } from "../mermaid/MermaidDiagram";
-import { normalizeClassName, extractTextFromChildren } from "../utils";
+import { normalizeClassName, extractTextFromChildren } from "../lib/utils";
 import { CODE_BLOCK_STYLES, CODE_INLINE_STYLE, CODE_BLOCK_STYLE } from "./constants";
 import { isMermaid } from "./utils";
 import type {
   CodeElementProps,
   MermaidDataAttributes,
-} from "../types";
+} from "../lib/types";
 
 interface PreProps
   extends React.HTMLAttributes<HTMLPreElement>,

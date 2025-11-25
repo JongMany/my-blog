@@ -6,7 +6,7 @@ import {
 import { useMermaidRender } from "./useMermaidRender";
 import { useDiagramZoom } from "./useDiagramZoom";
 import { useDiagramDrag } from "./useDiagramDrag";
-import type { MermaidDiagramProps } from "../types";
+import type { MermaidDiagramProps } from "../lib/types";
 
 export function MermaidDiagram({
   children,

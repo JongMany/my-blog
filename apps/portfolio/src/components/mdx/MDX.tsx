@@ -1,5 +1,5 @@
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
-import type { FrontmatterData } from "./types";
+import type { FrontmatterData } from "./lib/types";
 import { createMdxComponentMap } from "./mdx-components/componentMap";
 
 function MDX({

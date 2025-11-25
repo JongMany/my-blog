@@ -1,9 +1,8 @@
 import { SEO } from "@srf/ui";
-import { usePortfolioIndex } from "../../entities/project";
+import { usePortfolioIndex, selectTopProjects } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
 import { SectionHeader } from "./components/SectionHeader";
 import { Hero, SelectedProjects, Experience } from "./components";
-import { selectTopProjects } from "./utils/selectTopProjects";
 
 const SEO_PROPS = {
   title: "Frontend Developer 프로젝트 모음",

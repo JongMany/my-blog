@@ -1,6 +1,6 @@
 import { ReactNode, Children, isValidElement } from "react";
-import { normalizeClassName } from "../utils";
-import type { ElementWithChildren, MermaidDataAttributes } from "../types";
+import { normalizeClassName } from "../lib/utils";
+import type { ElementWithChildren, MermaidDataAttributes } from "../lib/types";
 
 export function isMermaid(
   props: MermaidDataAttributes & { className?: string | string[] },
