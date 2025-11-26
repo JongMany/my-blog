@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { GISCUS_CONFIG } from "../consts/giscus.config";
 import { isDarkMode } from "../utils/is-dark-mode";
 import { Theme } from "../types/theme";
+import { useThemeChange } from "../hooks/use-theme-change";
 
 type GiscusCommentsProps = {
   term: string;
@@ -9,32 +10,8 @@ type GiscusCommentsProps = {
 };
 
 export const GiscusComments = ({ term, className }: GiscusCommentsProps) => {
-  const giscusTheme = isDarkMode() ? "dark" : "light";
-
   const containerRef = useRef<HTMLDivElement>(null);
-  const [theme, setTheme] = useState<Theme>(giscusTheme);
-
-  useEffect(() => {
-    const updateTheme = () => {
-      const newTheme = isDarkMode() ? "dark" : "light";
-      setTheme(newTheme);
-      sendThemeUpdateMessage(newTheme);
-    };
-
-    const mediaQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
-    mediaQuery?.addEventListener?.("change", updateTheme);
-
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => {
-      mediaQuery?.removeEventListener?.("change", updateTheme);
-      observer.disconnect();
-    };
-  }, []);
+  const theme = useThemeChange(sendThemeUpdateMessage);
 
   useEffect(() => {
     if (!containerRef.current) return;
