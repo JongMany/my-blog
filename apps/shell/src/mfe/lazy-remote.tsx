@@ -1,10 +1,10 @@
 import * as React from "react";
-import { importWithRetry, type RetryOpts } from "./importRetry";
+import { importWithRetry, type RetryOpts } from "./import-retry";
 
 /** React.lazy + 재시도 */
 export function lazyRemote<T extends { default: React.ComponentType<any> }>(
   loader: () => Promise<T>,
-  retryOpts?: RetryOpts
+  retryOpts?: RetryOpts,
 ) {
   return React.lazy(async () => {
     const mod = await importWithRetry(loader, retryOpts);

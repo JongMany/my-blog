@@ -1,10 +1,10 @@
 import * as React from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 
-import Layout from "./components/Layout";
-import BootRedirect from "./components/BootRedirect";
-import { withBoundary } from "./components/withBoundary";
-import { lazyRemote } from "./mfe/lazyRemote";
+import Layout from "./components/root-layout";
+import BootRedirect from "./components/boot-redirect";
+import { withBoundary } from "./components/with-boundary";
+import { lazyRemote } from "./mfe/lazy-remote";
 import "./App.css";
 
 const RAW_BASE = import.meta.env.BASE_URL || "/";

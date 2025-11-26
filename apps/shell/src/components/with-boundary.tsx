@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useLocation } from "react-router-dom";
-import { ErrorBoundary } from "./ErrorBoundary";
+import { ErrorBoundary } from "./error-boundary";
 import { RemoteLoader } from "@srf/ui";
 
 type Options = {
