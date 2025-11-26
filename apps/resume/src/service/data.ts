@@ -56,7 +56,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "드래그 앤 드랍 손절/익절 예약 주문",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-tpsl-drag",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/tradingview-tpsl-drag",
                   type: "portfolio",
                 },
               ],
@@ -115,7 +115,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "시장가 주문 패널",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-market-order-panel",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/tradingview-market-order-panel",
                   type: "portfolio",
                 },
               ],
@@ -136,7 +136,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "지정가 주문 패널",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-limit-order-panel",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/tradingview-limit-order-panel",
                   type: "portfolio",
                 },
               ],
@@ -182,7 +182,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "웹소켓 HTTP Polling 자동 전환 시스템",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-http-fallback",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/websocket-http-fallback",
                   type: "portfolio",
                 },
               ],
@@ -208,7 +208,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "웹소켓 메시지 DevTools",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/websocket-devtools",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/websocket-devtools",
                   type: "portfolio",
                 },
               ],
@@ -241,7 +241,7 @@ export const resume: ResumeData = {
           portfolioLinks: [
             {
               title: "TradingView 아키텍처 리팩토링",
-              url: "https://jongmany.github.io/my-blog/portfolio/project/tradingview-architecture-refactoring",
+              url: "https://jongmany.github.io/my-blog/portfolio/projects/tradingview-architecture-refactoring",
               type: "portfolio",
             },
           ],
@@ -320,7 +320,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "SSE 기반 LLM 스트리밍 시스템",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/llm-sse-streaming",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/llm-sse-streaming",
                   type: "portfolio",
                 },
               ],
@@ -341,7 +341,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "WASM 기반 WebP 애니메이션 디코딩 시스템",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/wasm-webp-decoder",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/wasm-webp-decoder",
                   type: "portfolio",
                 },
               ],
@@ -359,7 +359,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "에디터 내 텍스트 칩 시스템",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/text-chip-system",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/text-chip-system",
                   type: "portfolio",
                 },
               ],
@@ -387,7 +387,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "통합 로깅 시스템",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/multi-platform-analytics-integration",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/multi-platform-analytics-integration",
                   type: "portfolio",
                 },
               ],
@@ -405,7 +405,7 @@ export const resume: ResumeData = {
               portfolioLinks: [
                 {
                   title: "ESLint Rule",
-                  url: "https://jongmany.github.io/my-blog/portfolio/project/eslint-rule",
+                  url: "https://jongmany.github.io/my-blog/portfolio/projects/eslint-rule",
                   type: "portfolio",
                 },
               ],
@@ -438,7 +438,7 @@ export const resume: ResumeData = {
       portfolioLinks: [
         {
           title: "스승의 날 프로젝트 포트폴리오",
-          url: "https://jongmany.github.io/my-blog/portfolio/project/teachers-day",
+          url: "https://jongmany.github.io/my-blog/portfolio/projects/teachers-day",
           type: "portfolio",
         },
       ],
@@ -461,7 +461,7 @@ export const resume: ResumeData = {
       portfolioLinks: [
         {
           title: "Ready To Work 프로젝트 포트폴리오",
-          url: "https://jongmany.github.io/my-blog/portfolio/project/ready-to-work",
+          url: "https://jongmany.github.io/my-blog/portfolio/projects/ready-to-work",
           type: "portfolio",
         },
       ],

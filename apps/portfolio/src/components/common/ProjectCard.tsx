@@ -42,7 +42,7 @@ export default function ProjectCard({
   return (
     <li className="h-full">
       <Link
-        to={`/portfolio/project/${project.slug}`}
+        to={`/portfolio/projects/${project.slug}`}
         className="group block h-full no-underline hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--ring)] [&_*]:no-underline [&_*]:hover:no-underline"
         aria-label={`${project.title} 상세 보기`}
       >

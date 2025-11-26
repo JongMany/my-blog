@@ -12,5 +12,5 @@ export function createProjectImageUrl(cover: string): string {
  * 프로젝트 상세 페이지 URL을 생성하는 순수함수
  */
 export function createProjectDetailUrl(slug: string): string {
-  return `${URL_CONSTANTS.BASE_URL}/project/${slug}`;
+  return `${URL_CONSTANTS.BASE_URL}/projects/${slug}`;
 }
