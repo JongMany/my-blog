@@ -43,12 +43,13 @@ function rehypeSkipMermaid() {
       const mermaidCode = extractMermaidCode(codeChild.children);
       if (!mermaidCode) return;
       node.tagName = "div";
-      node.properties = {
+      const mermaidProperties: Properties = {
         "data-mermaid": "true",
         "data-mermaid-code": mermaidCode,
         "data-mermaid-width": MERMAID_DEFAULT_WIDTH,
         className: ["mermaid-wrapper"],
-      } as Properties;
+      };
+      node.properties = mermaidProperties;
       node.children = [];
     });
   };

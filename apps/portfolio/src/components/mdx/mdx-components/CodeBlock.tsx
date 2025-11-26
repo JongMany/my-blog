@@ -3,10 +3,7 @@ import { MermaidDiagram } from "../mermaid/MermaidDiagram";
 import { normalizeClassName, extractTextFromChildren } from "../lib/utils";
 import { isMermaid } from "./utils";
 import { CODE_BLOCK_STYLES } from "./constants";
-import type {
-  CodeElementProps,
-  MermaidDataAttributes,
-} from "../lib/types";
+import type { CodeElementProps, MermaidDataAttributes } from "../lib/types";
 
 interface PreProps
   extends React.HTMLAttributes<HTMLPreElement>,
@@ -14,24 +11,64 @@ interface PreProps
   children?: ReactNode;
 }
 
-export function Pre({ children, className, ...props }: PreProps) {
+/**
+ * code 요소에서 mermaid 관련 속성을 추출하고 병합
+ */
+function getMermaidCheckProps(
+  codeProps: CodeElementProps,
+  preProps: MermaidDataAttributes,
+): MermaidDataAttributes & { className?: string | string[] } {
+  return {
+    className: codeProps.className,
+    "data-language": codeProps["data-language"] ?? preProps["data-language"],
+    "data-lang": codeProps["data-lang"] ?? preProps["data-lang"],
+    "data-skip-pretty-code":
+      codeProps["data-skip-pretty-code"] ?? preProps["data-skip-pretty-code"],
+    "data-mermaid": preProps["data-mermaid"],
+  };
+}
+
+/**
+ * React 요소가 code 요소인지 확인하고 CodeElementProps로 타입 가드
+ */
+function isCodeElement(
+  element: React.ReactElement,
+): element is React.ReactElement<CodeElementProps> {
+  return element.type === "code";
+}
+
+/**
+ * children에서 첫 번째 code 요소를 찾아 반환
+ */
+function findFirstCodeElement(
+  children: ReactNode,
+): { codeProps: CodeElementProps; codeChildren: ReactNode } | null {
   for (const child of Children.toArray(children)) {
-    if (!isValidElement(child) || child.type !== "code") continue;
-    const cp = child.props as CodeElementProps;
-    if (
-      isMermaid({
-        className: cp?.className,
-        "data-language": cp?.["data-language"] || props["data-language"],
-        "data-lang": cp?.["data-lang"] || props["data-lang"],
-        "data-skip-pretty-code":
-          cp?.["data-skip-pretty-code"] || props["data-skip-pretty-code"],
-      })
-    ) {
-      const text = extractTextFromChildren(cp?.children || "");
-      if (text.trim()) return <MermaidDiagram>{text}</MermaidDiagram>;
+    if (!isValidElement(child) || !isCodeElement(child)) continue;
+    const codeProps = child.props;
+    return { codeProps, codeChildren: codeProps.children };
+  }
+  return null;
+}
+
+export function Pre({ children, className, ...props }: PreProps) {
+  // code 요소 찾기
+  const codeElement = findFirstCodeElement(children);
+
+  // mermaid 체크 및 렌더링
+  if (codeElement) {
+    const mermaidCheckProps = getMermaidCheckProps(
+      codeElement.codeProps,
+      props,
+    );
+    if (isMermaid(mermaidCheckProps)) {
+      const text = extractTextFromChildren(codeElement.codeChildren);
+      if (text.trim()) {
+        return <MermaidDiagram>{text}</MermaidDiagram>;
+      }
     }
   }
-  
+
   // mermaid가 아닌 경우 rehype-pretty-code가 적용된 스타일을 유지
   // rehype-pretty-code가 추가한 data-theme, className 등을 그대로 전달
   // data-theme이 있는 경우 rehype-pretty-code가 생성한 코드 블록이므로
@@ -41,7 +78,7 @@ export function Pre({ children, className, ...props }: PreProps) {
   const combinedClassName = hasPrettyCode
     ? `${baseClassName} ${CODE_BLOCK_STYLES.prettyCode}`.trim()
     : baseClassName;
-  
+
   return (
     <pre className={combinedClassName} {...props}>
       {children}
@@ -56,14 +93,10 @@ interface CodeProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function Code({ children, className, ...props }: CodeProps) {
-  if (isMermaid({ className, ...props }))
-    return (
-      <code {...props} className={className}>
-        {children}
-      </code>
-    );
-  // prose 클래스가 자동으로 스타일을 적용하도록 커스텀 스타일 제거
-  return <code {...props} className={className}>{children}</code>;
+  // mermaid 체크는 Pre 컴포넌트에서 처리되므로 여기서는 단순 렌더링
+  return (
+    <code {...props} className={className}>
+      {children}
+    </code>
+  );
 }
-
-

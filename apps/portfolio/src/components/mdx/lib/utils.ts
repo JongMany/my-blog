@@ -41,13 +41,29 @@ export function createImageStyle(width?: number | string, height?: number | stri
   return style;
 }
 
+/**
+ * React 요소가 ElementWithChildren을 가진 요소인지 확인하는 타입 가드
+ */
+function hasElementWithChildrenProps(
+  props: unknown,
+): props is ElementWithChildren {
+  return (
+    typeof props === "object" &&
+    props !== null &&
+    ("children" in props || "src" in props || "alt" in props)
+  );
+}
+
 export function extractTextFromChildren(children: ReactNode): string {
   if (typeof children === "string") return children;
   if (typeof children === "number") return String(children);
   if (Array.isArray(children)) return children.map(extractTextFromChildren).join("");
   if (isValidElement(children)) {
-    const props = children.props as ElementWithChildren;
-    return props?.children ? extractTextFromChildren(props.children) : "";
+    if (hasElementWithChildrenProps(children.props)) {
+      return children.props.children
+        ? extractTextFromChildren(children.props.children)
+        : "";
+    }
   }
   return "";
 }

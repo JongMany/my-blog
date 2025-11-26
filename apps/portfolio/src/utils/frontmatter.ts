@@ -31,6 +31,8 @@ export function parseFrontmatter(source: string): ParseResult {
   return { data, content };
 }
 
+import { isString } from "@mfe/shared";
+
 /**
  * Record에서 문자열 값을 추출합니다.
  * @param data - 데이터 객체
@@ -42,7 +44,8 @@ export function getString(
   key: string,
   defaultValue = "",
 ): string {
-  return (data[key] as string) || defaultValue;
+  const value = data[key];
+  return isString(value) ? value : defaultValue;
 }
 
 /**
@@ -80,10 +83,14 @@ function parseYaml(yaml: string): Record<string, unknown> {
     if (trimmed.startsWith("- ")) {
       const arrayValue = trimmed.slice(2).trim();
       if (currentKey) {
-        if (!Array.isArray(result[currentKey])) {
+        const currentValue = result[currentKey];
+        if (!Array.isArray(currentValue)) {
           result[currentKey] = [];
         }
-        (result[currentKey] as unknown[]).push(parseValue(arrayValue));
+        const array = result[currentKey];
+        if (Array.isArray(array)) {
+          array.push(parseValue(arrayValue));
+        }
       } else {
         // 키 없이 배열이 시작되는 경우는 무시 (일반적이지 않음)
       }

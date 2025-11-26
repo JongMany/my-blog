@@ -11,16 +11,16 @@ export function Paragraph(p: ParagraphProps) {
     "mb-4 leading-relaxed text-gray-700 dark:text-gray-300",
     p.className,
   );
-  return hasImage(p.children) ? (
-    <div
-      {...(p as React.HTMLAttributes<HTMLDivElement>)}
-      className={className}
-    >
-      {p.children}
-    </div>
-  ) : (
-    <p {...p} className={className} />
-  );
+
+  if (hasImage(p.children)) {
+    // div 요소에 전달할 수 있는 속성만 추출
+    const { children, className: _className, ...divProps } = p;
+    return (
+      <div {...divProps} className={className}>
+        {children}
+      </div>
+    );
+  }
+
+  return <p {...p} className={className} />;
 }
-
-

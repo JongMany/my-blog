@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { getPortfolioIndex, getProject } from "./repository";
+import { getPortfolioIndex, getProject } from "./service";
 import type { ProjectIndex } from "./types";
 
 export function usePortfolioIndex(): ProjectIndex | undefined {

@@ -1,3 +1,4 @@
+import { isString } from "@mfe/shared";
 import {
   parseFrontmatter,
   getString,
@@ -50,10 +51,13 @@ function loadProjectDocuments(): ProjectDocument[] {
   );
 
   return Object.entries(modules)
-    .map(([filePath, module]) =>
-      createProjectDocument(filePath, module as unknown as string),
-    )
-    .filter((doc): doc is ProjectDocument => Boolean(doc));
+    .map(([filePath, module]) => {
+      if (typeof module === "string") {
+        return createProjectDocument(filePath, module);
+      }
+      return null;
+    })
+    .filter((doc): doc is ProjectDocument => doc !== null);
 }
 
 function createProjectDocument(
@@ -68,7 +72,8 @@ function createProjectDocument(
     return null;
   }
 
-  const slug = (frontmatter.slug as string) || pathInfo.fileNameWithoutExt;
+  const slugValue = frontmatter.slug;
+  const slug = isString(slugValue) ? slugValue : pathInfo.fileNameWithoutExt;
   const meta = buildProjectMeta({
     frontmatter,
     pathInfo,
@@ -95,8 +100,27 @@ function extractPathInfo(filePath: string): PathInfo {
   };
 }
 
+/**
+ * 값이 유효한 coverType인지 확인하는 타입 가드
+ */
+function isValidCoverType(value: unknown): value is ProjectMeta["coverType"] {
+  return value === "gif" || value === "image" || value === "video";
+}
+
+/**
+ * 값이 유효한 coverAspectRatio인지 확인하는 타입 가드
+ */
+function isValidCoverAspectRatio(
+  value: unknown,
+): value is ProjectMeta["coverAspectRatio"] {
+  return (
+    value === "16:9" || value === "4:3" || value === "1:1" || value === "auto"
+  );
+}
+
 function extractDateInfo(frontmatter: FrontmatterData): DateInfo {
-  const dateStr = (frontmatter.date as string) || new Date().toISOString();
+  const dateValue = frontmatter.date;
+  const dateStr = isString(dateValue) ? dateValue : new Date().toISOString();
   return {
     dateStr,
     createdAtMs: new Date(dateStr).getTime(),
@@ -134,10 +158,12 @@ function buildProjectMeta({
     cover: getOptionalString(frontmatter, "cover"),
     coverAlt: getOptionalString(frontmatter, "coverAlt"),
     coverCaption: getOptionalString(frontmatter, "coverCaption"),
-    coverType: frontmatter.coverType as ProjectMeta["coverType"],
-    coverAspectRatio: frontmatter.coverAspectRatio as
-      | ProjectMeta["coverAspectRatio"]
-      | undefined,
+    coverType: isValidCoverType(frontmatter.coverType)
+      ? frontmatter.coverType
+      : undefined,
+    coverAspectRatio: isValidCoverAspectRatio(frontmatter.coverAspectRatio)
+      ? frontmatter.coverAspectRatio
+      : undefined,
   };
 }
 

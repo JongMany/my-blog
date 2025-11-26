@@ -1,3 +1,4 @@
+import { isString } from "@mfe/shared";
 import type { ProjectMeta } from "../model/types";
 
 /**
@@ -12,7 +13,12 @@ export function extractAllTags(projects: ProjectMeta[]): string[] {
  */
 export function extractAllProjects(projects: ProjectMeta[]): string[] {
   return Array.from(
-    new Set(projects.map((p) => p.project).filter(Boolean) as string[]),
+    new Set(
+      projects
+        .map((p) => p.project)
+        .filter(
+          (project): project is string => isString(project) && project !== "",
+        ),
+    ),
   ).sort();
 }
-
