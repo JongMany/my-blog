@@ -7,13 +7,13 @@ import ProjectDetail from "./pages/project-detail/ProjectDetail";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
+    <Routes>
+      <Route path="" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="projects" element={<Projects />} />
         <Route path="project/:slug" element={<ProjectDetail />} />
-      </Routes>
-    </Layout>
+      </Route>
+    </Routes>
   );
 }
 

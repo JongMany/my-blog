@@ -1,5 +1,5 @@
-import type { PropsWithChildren } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useOutlet } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@srf/ui";
 
 interface NavigationItem {
@@ -13,7 +13,10 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
   { to: "/portfolio/projects", label: "Projects" },
 ] as const;
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout() {
+  const location = useLocation();
+  const outlet = useOutlet();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -45,7 +48,19 @@ export default function Layout({ children }: PropsWithChildren) {
         ))}
       </nav>
 
-      <div className="t-card p-5">{children}</div>
+      <div className="t-card p-5">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {outlet}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
