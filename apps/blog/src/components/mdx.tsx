@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import { DetailedHTMLProps, ReactNode, VideoHTMLAttributes } from "react";
 import { useBoolean, imageSource } from "@mfe/shared";
-import { calculateMyAge } from "../utils/calculateMyAge";
+import { calculateMyAge } from "../utils/calculate-my-age";
 
 export function MDX({
   scope = {},

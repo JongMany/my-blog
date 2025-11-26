@@ -6,7 +6,7 @@ import Title from "../../components/title";
 import Time from "../../components/time";
 import Summary from "../../components/summary";
 import TableOfContents from "../../components/table-of-contents";
-import { Comments } from "../../components/comments";
+import { GiscusComments } from "../../components/giscus-comments";
 
 export default function BookDetailPage() {
   const { slug } = useParams();
@@ -33,7 +33,7 @@ export default function BookDetailPage() {
             <MDX compiledSource={compiledSource} frontmatter={book.meta} />
           </div>
           <div className="mt-12">
-            <Comments term={slug ?? ""} />
+            <GiscusComments term={slug ?? ""} />
           </div>
         </article>
       </div>

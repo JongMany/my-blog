@@ -7,7 +7,7 @@ import TableOfContents from "../../components/table-of-contents";
 import Title from "../../components/title";
 import Summary from "../../components/summary";
 import Time from "../../components/time";
-import { Comments } from "../../components/comments";
+import { GiscusComments } from "../../components/giscus-comments";
 
 export default function LogDetailPage() {
   const { slug } = useParams();
@@ -44,7 +44,7 @@ export default function LogDetailPage() {
             <MDX compiledSource={compiledSource} frontmatter={log.meta} />
           </div>
           <div className="mt-12">
-            <Comments term={slug ?? ""} />
+            <GiscusComments term={slug ?? ""} />
           </div>
         </article>
       </div>
