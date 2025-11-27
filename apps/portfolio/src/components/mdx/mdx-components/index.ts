@@ -1,7 +1,7 @@
-export { createHeading } from "./Heading";
-export { Paragraph } from "./Paragraph";
-export { UnorderedList, OrderedList, ListItem } from "./List";
-export { Blockquote } from "./Blockquote";
+export { createHeading } from "./mdx-heading";
+export { Paragraph } from "./mdx-paragraph";
+export { UnorderedList, OrderedList, ListItem } from "./mdx-list";
+export { Blockquote } from "./mdx-blockquote";
 export {
   Table,
   TableHead,
@@ -9,7 +9,7 @@ export {
   TableRow,
   TableHeader,
   TableCell,
-} from "./Table";
-export { Anchor, HorizontalRule, Strong, Emphasis } from "./TextElements";
-export { Pre, Code } from "./CodeBlock";
-export { Div } from "./Div";
+} from "./mdx-table";
+export { Anchor, HorizontalRule, Strong, Emphasis } from "./mdx-text-elements";
+export { Pre, Code } from "./mdx-codeblock";
+export { Div } from "./mdx-div";

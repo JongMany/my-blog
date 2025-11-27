@@ -18,6 +18,3 @@ export const CODE_INLINE_STYLE =
 
 export const CODE_BLOCK_STYLE =
   "block text-sm font-mono leading-relaxed text-gray-100";
-
-
-

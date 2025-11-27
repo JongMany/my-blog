@@ -1,7 +1,7 @@
-export { LoadingSpinner } from "./LoadingSpinner";
-export { ErrorMessage } from "./ErrorMessage";
-export { EmptyState } from "./EmptyState";
-export { ProjectGrid } from "./ProjectGrid";
-export { SearchInput } from "./SearchInput";
-export { SelectableChips } from "./SelectableChips";
-export { default as ProjectCard } from "./ProjectCard";
+export { LoadingSpinner } from "./loading-spinner";
+export { ErrorMessage } from "./error-message";
+export { EmptyState } from "./empty-state";
+export { ProjectGrid } from "./project-grid";
+export { ProjectCard } from "./project-card";
+export { SearchInput } from "./search-input";
+export { SelectableChips } from "./selectable-chips";

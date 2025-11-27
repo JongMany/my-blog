@@ -3,9 +3,9 @@ import {
   calculateContainerWidth,
   calculateTransformStyle,
 } from "./utils";
-import { useMermaidRender } from "./useMermaidRender";
-import { useDiagramZoom } from "./useDiagramZoom";
-import { useDiagramDrag } from "./useDiagramDrag";
+import { useMermaidRender } from "./use-mermaid-render";
+import { useDiagramZoom } from "./use-diagram-zoom";
+import { useDiagramDrag } from "./use-diagram-drag";
 import type { MermaidDiagramProps } from "../lib/types";
 
 export function MermaidDiagram({

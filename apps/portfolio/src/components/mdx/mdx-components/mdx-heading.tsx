@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@srf/ui";
-import { HEADING_STYLES } from "./constants";
+import { HEADING_STYLES } from "../constants/styles";
 
 type HeadingLevel = keyof typeof HEADING_STYLES;
 
@@ -14,6 +14,3 @@ export function createHeading(level: HeadingLevel) {
     );
   };
 }
-
-
-

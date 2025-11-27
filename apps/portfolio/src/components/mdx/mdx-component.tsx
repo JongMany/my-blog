@@ -1,6 +1,6 @@
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import type { FrontmatterData } from "./lib/types";
-import { createMdxComponentMap } from "./mdx-components/componentMap";
+import { createMdxComponentMap } from "./mdx-components/component-map";
 
 type MDXProps = Omit<MDXRemoteProps, "scope" | "frontmatter"> & {
   scope?: FrontmatterData;

@@ -19,7 +19,7 @@ interface ProjectCardProps {
   showImage?: boolean;
 }
 
-export default function ProjectCard({
+export function ProjectCard({
   project,
   maxTags = 3,
   showImage = true,

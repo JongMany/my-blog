@@ -1,8 +1,8 @@
 import React, { ReactNode, Children, isValidElement } from "react";
-import { MermaidDiagram } from "../mermaid/MermaidDiagram";
+import { MermaidDiagram } from "../mermaid/mermaid-diagram";
 import { normalizeClassName, extractTextFromChildren } from "../lib/utils";
 import { isMermaid } from "./utils";
-import { CODE_BLOCK_STYLES } from "./constants";
+import { CODE_BLOCK_STYLES } from "../constants/styles";
 import type { CodeElementProps, MermaidDataAttributes } from "../lib/types";
 
 interface PreProps
