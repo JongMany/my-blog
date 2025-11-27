@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 import { SearchInput, SelectableChips } from "../../../components/common";
 import type { ProjectMeta } from "../../../entities/project";
-import {
-  extractAllTags,
-  extractAllProjects,
-} from "../../../entities/project/utils";
+import { ProjectExtractor } from "../../../entities/project/utils";
 import { UI_CONSTANTS } from "../constants/ui";
 import type { useProjectFilters } from "../hooks/use-project-filters";
 
@@ -31,12 +28,12 @@ export function ProjectFilters({
 
   // 태그/프로젝트 목록
   const allTags = useMemo(
-    () => extractAllTags(portfolioIndex?.all ?? []),
+    () => ProjectExtractor.extractAllTags(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
 
   const allProjects = useMemo(
-    () => extractAllProjects(portfolioIndex?.all ?? []),
+    () => ProjectExtractor.extractAllProjects(portfolioIndex?.all ?? []),
     [portfolioIndex],
   );
 

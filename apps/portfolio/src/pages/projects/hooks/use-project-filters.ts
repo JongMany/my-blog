@@ -44,12 +44,11 @@ export function useProjectFilters(
   // 필터링된 프로젝트 목록
   const filteredProjects = useMemo(() => {
     if (!portfolioIndex) return [];
-    return filterProjects(
-      portfolioIndex.all,
-      searchInputValue,
+    return filterProjects(portfolioIndex.all, {
+      searchQuery: searchInputValue,
       selectedTag,
       selectedProject,
-    );
+    });
   }, [portfolioIndex, searchInputValue, selectedTag, selectedProject]);
 
   return {
