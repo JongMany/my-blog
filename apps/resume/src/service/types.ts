@@ -56,16 +56,16 @@ export type SideProject = {
 };
 
 export type Profile = {
-  name: string;
-  tagline: string;
-  intro: string[];
-  email: string;
-  github?: string;
-  blog?: string;
-  portfolio?: string;
-  personalSite?: string;
-  photoUrl?: string;
-};
+    name: string;
+    tagline: string;
+    intro: string[];
+    email: string;
+    github?: string;
+    blog?: string;
+    portfolio?: string;
+    personalSite?: string;
+    photoUrl?: string;
+  };
 
 export type ResumeData = {
   profile: Profile;

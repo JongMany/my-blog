@@ -12,8 +12,8 @@ import {
 import ProfileHeader from "./components/header";
 import Sidebar from "./components/sidebar";
 import MainContent from "./components/main-content";
-import NavigationPanel from "./components/navigation-panel";
-import TopTabs from "./components/tabs";
+import NavigationPanel from "./components/navigation/panel";
+import TopTabs from "./components/navigation/tabs";
 
 function ResumePage() {
   const {

@@ -1,15 +1,10 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { cn } from "@srf/ui";
 
-import { TOC_ITEMS } from "../../constants";
-import { Card } from "../../../../components/card";
-import { useViewport } from "../../../../contexts/ViewportContext";
-import {
-  useIntersectionObserver,
-  useHashManager,
-  useScrollNavigation,
-  updateHash as updateHashFunction,
-} from "./hooks";
+import { TOC_ITEMS } from "../../../constants";
+import { Card } from "../../../../../components/card";
+import { useViewport } from "../../../../../contexts/ViewportContext";
+import { useActiveSection, useSectionScroll } from "../hooks";
 
 type NavigationItem = { id: string; label: string };
 
@@ -42,31 +37,30 @@ function NavigationContent({
   offset = 96,
   updateHash = true,
 }: NavigationContentProps) {
-  const [active, setActive] = useState(items[0]?.id);
-
-  useHashManager({
+  const { active, setActive, lockRef } = useActiveSection({
     items,
     offset,
-    onActiveChange: setActive,
+  });
+  const { scrollToSection, initializeScrollFromHash } = useSectionScroll({
+    offset,
+    updateHash,
   });
 
-  const { navigateToSection, isLocked } = useScrollNavigation({
-    offset,
-    onActiveChange: setActive,
-    onHashUpdate: (id) => updateHashFunction(id, updateHash),
-  });
+  // 초기 해시가 있을 경우 스크롤 처리
+  useEffect(() => {
+    initializeScrollFromHash(items);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  useIntersectionObserver({
-    items,
-    offset,
-    onActiveChange: (id) => {
-      if (id !== active) {
-        setActive(id);
-        updateHashFunction(id, updateHash);
+  const handleItemClick = (id: string) => {
+    setActive(id);
+    scrollToSection(id, "smooth", (lockId: number | null) => {
+      if (lockRef.current) {
+        window.clearTimeout(lockRef.current);
       }
-    },
-    isLocked,
-  });
+      lockRef.current = lockId;
+    });
+  };
 
   return (
     <Card className="p-3">
@@ -74,7 +68,7 @@ function NavigationContent({
       <NavigationList
         items={items}
         activeId={active}
-        onItemClick={navigateToSection}
+        onItemClick={handleItemClick}
       />
     </Card>
   );
@@ -130,3 +124,4 @@ function NavigationItem({ id, label, isActive, onClick }: NavigationItemProps) {
     </button>
   );
 }
+
