@@ -1,4 +1,4 @@
-import { PrintButton } from "../../../../components/button/PrintButton";
+import { PrintButton } from "../../../../components";
 import type {
   Experience,
   SideProject,

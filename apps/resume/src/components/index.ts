@@ -1,7 +1,7 @@
 // UI Components
 export { Button, PillButton, PrintButton } from "./button";
 export { Card } from "./card";
-export { Meta } from "./badge";
+export { MetaBadge } from "./badge";
 
 // Layout Components
 export * from "./layout";

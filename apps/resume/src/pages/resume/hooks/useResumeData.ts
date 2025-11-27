@@ -13,7 +13,7 @@ import {
   filterEducationForCompact,
   filterActivityForCompact,
   filterSkillsForCompact,
-} from "../../../utils/resumeFilter";
+} from "../../../utils/resume-filter";
 
 interface UseResumeDataReturn {
   profile: ResumeData["profile"];

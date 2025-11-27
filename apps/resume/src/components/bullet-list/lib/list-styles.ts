@@ -32,3 +32,4 @@ export function getListStyles(level: number): string {
     levelStyles[level as keyof typeof levelStyles] || levelStyles[2],
   );
 }
+

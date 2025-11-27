@@ -1,13 +1,12 @@
-// Bullet List Components
-export { BulletList } from "./BulletList";
-export { BulletItem } from "./BulletItem";
-export { BulletTag } from "./BulletTag";
+// UI Components
+export { BulletList, BulletItem, BulletTag } from "./ui";
 
-// Hooks
-export { useMaxDepth, useTotalItemCount } from "./hooks";
+// Model (Hooks)
+export { useMaxDepth, useTotalItemCount } from "./model";
 
-// Utils
-export { getListStyles } from "./utils";
+// Lib (Utils)
+export { getListStyles } from "./lib/list-styles";
+export { defaultKeyGenerator } from "./lib/key-generator";
 
 // Constants
 export {
@@ -19,4 +18,11 @@ export {
 } from "./constants";
 
 // Types
-export type { Bullet } from "./BulletList";
+export type {
+  Bullet,
+  BulletListProps,
+  KeyGenerator,
+  EmphasisComponent,
+  PortfolioLinksComponent,
+  BulletListComponent,
+} from "./types";

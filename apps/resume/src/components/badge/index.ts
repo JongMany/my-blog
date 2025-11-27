@@ -1,1 +1,1 @@
-export { Meta } from "./Meta";
+export { MetaBadge } from "./meta-badge";

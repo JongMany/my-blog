@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Bullet } from "../BulletList";
+import type { Bullet } from "../types";
 
 /**
  * 불릿 리스트 관련 훅들

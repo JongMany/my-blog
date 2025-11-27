@@ -6,7 +6,7 @@ import {
   Button,
   Card,
   Emphasis,
-  Meta,
+  MetaBadge,
   PillButton,
   PortfolioLinks,
 } from "../../../../../components";
@@ -56,6 +56,8 @@ function SectionItem({
         level={0}
         prefix={[]}
         keywordImageMap={keywordImageMap}
+        Emphasis={Emphasis}
+        PortfolioLinks={PortfolioLinks}
       />
       {section.portfolioLinks?.length && (
         <PortfolioLinks links={section.portfolioLinks} />
@@ -149,7 +151,7 @@ function TimelineHeader({ item, emphasizeTitle }: TimelineHeaderProps) {
       )}
       {item.period && (
         <span className="ml-auto">
-          <Meta>{item.period}</Meta>
+          <MetaBadge>{item.period}</MetaBadge>
         </span>
       )}
     </div>
@@ -205,6 +207,8 @@ function TimelineBullets({
         level={0}
         prefix={[]}
         keywordImageMap={keywordImageMap}
+        Emphasis={Emphasis}
+        PortfolioLinks={PortfolioLinks}
       />
     </div>
   );

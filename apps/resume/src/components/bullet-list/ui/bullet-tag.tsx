@@ -50,3 +50,4 @@ export const BulletTag = React.memo(function BulletTag({
     </SimpleCursorTooltip>
   );
 });
+

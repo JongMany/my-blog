@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@srf/ui";
 
-export function Meta(p: React.HTMLAttributes<HTMLSpanElement>) {
+export function MetaBadge(p: React.HTMLAttributes<HTMLSpanElement>) {
   const { className, ...rest } = p;
   return (
     <span

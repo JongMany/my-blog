@@ -1,3 +1,3 @@
-export { Button } from "./Button";
-export { PillButton } from "./PillButton";
-export { PrintButton } from "./PrintButton";
+export { Button } from "./base-button";
+export { PillButton } from "./pill-button";
+export { PrintButton } from "./print-button";

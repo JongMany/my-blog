@@ -1,4 +1,4 @@
-import { Button } from "./Button";
+import { Button } from "./base-button";
 
 interface PrintButtonProps {
   /** 버튼 텍스트 */
