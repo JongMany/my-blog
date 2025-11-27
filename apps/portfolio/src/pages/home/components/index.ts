@@ -1,4 +1,4 @@
-export { Hero } from "./Hero";
-export { Experience } from "./Experience";
-export { SelectedProjects } from "./SelectedProjects";
-export { SectionHeader } from "./SectionHeader";
+export { HeroSection } from "./hero-section";
+export { ExperienceSection } from "./experience-section";
+export { SelectedProjects } from "./selected-projects";
+export { SectionHeader } from "./section-header";

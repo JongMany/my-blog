@@ -1,6 +1,6 @@
-import Timeline from "./Timeline";
+import Timeline from "./timeline-list";
 import { experiences } from "../constants/experiences";
 
-export function Experience() {
+export function ExperienceSection() {
   return <Timeline items={experiences} />;
 }

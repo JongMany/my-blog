@@ -1,4 +1,4 @@
-export { ProjectHeader } from "./ProjectHeader";
-export { ProjectCover } from "./ProjectCover";
-export { ProjectContent } from "./ProjectContent";
-export { ProjectSEO } from "./ProjectSEO";
+export { ProjectHeader } from "./project-header";
+export { ProjectCover } from "./project-cover";
+export { ProjectContent } from "./project-content";
+export { ProjectSEO } from "./project-seo";

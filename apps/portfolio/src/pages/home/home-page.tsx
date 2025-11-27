@@ -1,8 +1,8 @@
 import { SEO } from "@srf/ui";
 import { usePortfolioIndex, selectTopProjects } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
-import { SectionHeader } from "./components/SectionHeader";
-import { Hero, SelectedProjects, Experience } from "./components";
+import { SectionHeader } from "./components/section-header";
+import { HeroSection, SelectedProjects, ExperienceSection } from "./components";
 
 const SEO_PROPS = {
   title: "Frontend Developer 프로젝트 모음",
@@ -24,20 +24,11 @@ export default function Home() {
         <LoadingSpinner />
       ) : (
         <div className="space-y-8">
-          <Hero />
+          <HeroSection />
           <SelectedProjects projects={topProjects} />
           <ExperienceSection />
         </div>
       )}
     </>
-  );
-}
-
-function ExperienceSection() {
-  return (
-    <section className="space-y-3">
-      <SectionHeader title="Experience" />
-      <Experience />
-    </section>
   );
 }

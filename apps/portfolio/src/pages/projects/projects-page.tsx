@@ -1,7 +1,7 @@
 import { usePortfolioIndex } from "../../entities/project";
 import { LoadingSpinner } from "../../components/common";
 import { ProjectFilters, ProjectList } from "./components";
-import { useProjectFilters } from "./hooks/useProjectFilters";
+import { useProjectFilters } from "./hooks/use-project-filters";
 
 export default function Projects() {
   const portfolioIndex = usePortfolioIndex();

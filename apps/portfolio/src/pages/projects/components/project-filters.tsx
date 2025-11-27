@@ -6,7 +6,7 @@ import {
   extractAllProjects,
 } from "../../../entities/project/utils";
 import { UI_CONSTANTS } from "../constants/ui";
-import type { useProjectFilters } from "../hooks/useProjectFilters";
+import type { useProjectFilters } from "../hooks/use-project-filters";
 
 interface ProjectFiltersProps {
   portfolioIndex: { all: ProjectMeta[] } | undefined;
