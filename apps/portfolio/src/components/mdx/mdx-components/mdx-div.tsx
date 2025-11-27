@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { MermaidDiagram } from "../mermaid/MermaidDiagram";
+import { MermaidDiagram } from "../mermaid/mermaid-diagram";
 import { isMermaid } from "./utils";
 import type { MermaidDataAttributes } from "../lib/types";
 
@@ -23,5 +23,3 @@ export function Div({ children, ...props }: DivProps) {
   }
   return <div {...props}>{children}</div>;
 }
-
-

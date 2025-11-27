@@ -44,7 +44,7 @@ export function createImageStyle(width?: number | string, height?: number | stri
 /**
  * React 요소가 ElementWithChildren을 가진 요소인지 확인하는 타입 가드
  */
-function hasElementWithChildrenProps(
+export function hasElementWithChildrenProps(
   props: unknown,
 ): props is ElementWithChildren {
   return (

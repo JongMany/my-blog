@@ -1,6 +1,6 @@
 import { ReactNode, Children, isValidElement } from "react";
-import { normalizeClassName } from "../lib/utils";
-import type { ElementWithChildren, MermaidDataAttributes } from "../lib/types";
+import { normalizeClassName, hasElementWithChildrenProps } from "../lib/utils";
+import type { MermaidDataAttributes } from "../lib/types";
 
 export function isMermaid(
   props: MermaidDataAttributes & { className?: string | string[] },
@@ -13,19 +13,6 @@ export function isMermaid(
   const cls = normalizeClassName(props.className);
   const lang = props["data-language"] || props["data-lang"] || "";
   return cls.includes("mermaid") || lang === "mermaid";
-}
-
-/**
- * React 요소가 ElementWithChildren을 가진 요소인지 확인하는 타입 가드
- */
-function hasElementWithChildrenProps(
-  props: unknown,
-): props is ElementWithChildren {
-  return (
-    typeof props === "object" &&
-    props !== null &&
-    ("children" in props || "src" in props || "alt" in props)
-  );
 }
 
 export function hasImage(children: ReactNode): boolean {
@@ -43,5 +30,4 @@ export function hasImage(children: ReactNode): boolean {
     return props.children ? hasImage(props.children) : false;
   });
 }
-
 

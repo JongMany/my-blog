@@ -43,7 +43,7 @@ const MERMAID_CONFIG = {
   },
 } as const;
 
-const MINMAP_COLORS = {
+const MINDMAP_COLORS = {
   root: { fill: "#dbeafe", stroke: "#93c5fd", text: "#1e3a8a" },
   child: { fill: "#f0f9ff", stroke: "#a8d8ff", text: "#1e40af" },
   edge: { stroke: "#bfdbfe", strokeWidth: "2" },
@@ -53,7 +53,7 @@ function applyMindmapStyles(svgElement: SVGElement, mermaidCode: string): void {
   if (!mermaidCode.trim().startsWith("mindmap")) return;
 
   svgElement.querySelectorAll("g.node").forEach((node, index) => {
-    const colors = index === 0 ? MINMAP_COLORS.root : MINMAP_COLORS.child;
+    const colors = index === 0 ? MINDMAP_COLORS.root : MINDMAP_COLORS.child;
     const path = node.querySelector("path");
     const circle = node.querySelector("circle");
     const text = node.querySelector("text");
@@ -69,19 +69,22 @@ function applyMindmapStyles(svgElement: SVGElement, mermaidCode: string): void {
   });
 
   svgElement.querySelectorAll("path.edge").forEach((edge) => {
-    edge.setAttribute("stroke", MINMAP_COLORS.edge.stroke);
-    edge.setAttribute("stroke-width", MINMAP_COLORS.edge.strokeWidth);
+    edge.setAttribute("stroke", MINDMAP_COLORS.edge.stroke);
+    edge.setAttribute("stroke-width", MINDMAP_COLORS.edge.strokeWidth);
   });
 
   const style = svgElement.querySelector("style");
   if (style) {
     const content = style.textContent || "";
     style.textContent = content
-      .replace(/fill:hsl\([^)]+\)/g, `fill:${MINMAP_COLORS.child.fill}`)
-      .replace(/stroke:hsl\([^)]+\)/g, `stroke:${MINMAP_COLORS.edge.stroke}`)
-      .replace(/fill:#2d3748/g, `fill:${MINMAP_COLORS.child.text}`);
+      .replace(/fill:hsl\([^)]+\)/g, `fill:${MINDMAP_COLORS.child.fill}`)
+      .replace(/stroke:hsl\([^)]+\)/g, `stroke:${MINDMAP_COLORS.edge.stroke}`)
+      .replace(/fill:#2d3748/g, `fill:${MINDMAP_COLORS.child.text}`);
   }
 }
+
+// mermaid 초기화는 한 번만 수행
+let isMermaidInitialized = false;
 
 export function useMermaidRender(children: ReactNode) {
   const ref = useRef<HTMLDivElement>(null);
@@ -89,7 +92,12 @@ export function useMermaidRender(children: ReactNode) {
 
   useEffect(() => {
     if (!ref.current) return;
-    mermaid.initialize({ startOnLoad: false, ...MERMAID_CONFIG });
+    
+    // mermaid는 한 번만 초기화
+    if (!isMermaidInitialized) {
+      mermaid.initialize({ startOnLoad: false, ...MERMAID_CONFIG });
+      isMermaidInitialized = true;
+    }
 
     const render = async () => {
       if (!ref.current) return;

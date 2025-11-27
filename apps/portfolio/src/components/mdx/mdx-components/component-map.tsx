@@ -21,8 +21,8 @@ import {
   Div,
 } from "./index";
 
-// 컴포넌트 맵을 한 번만 생성하여 재사용 (메모이제이션)
-const MDX_COMPONENT_MAP = {
+// 컴포넌트 맵을 한 번만 생성하여 재사용
+export const MDX_COMPONENT_MAP = {
   Image,
   img: Image,
   Link: MDXLink,
@@ -54,6 +54,7 @@ const MDX_COMPONENT_MAP = {
   code: Code,
 } as const;
 
+// 하위 호환성을 위한 함수 (deprecated: MDX_COMPONENT_MAP을 직접 사용하세요)
 export function createMdxComponentMap() {
   return MDX_COMPONENT_MAP;
 }

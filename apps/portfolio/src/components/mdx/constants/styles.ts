@@ -9,12 +9,4 @@ export const HEADING_STYLES = {
 
 export const CODE_BLOCK_STYLES = {
   prettyCode: "overflow-x-auto rounded-lg bg-[#1e1e1e] p-4 mb-4 my-6 shadow-lg",
-  default:
-    "bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4 my-6 shadow-md",
 } as const;
-
-export const CODE_INLINE_STYLE =
-  "bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-gray-900 dark:text-gray-100";
-
-export const CODE_BLOCK_STYLE =
-  "block text-sm font-mono leading-relaxed text-gray-100";
