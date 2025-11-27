@@ -1,5 +1,7 @@
 import React from "react";
+
 import type { SideProject } from "../../../../../service";
+
 import { TimelineItem, type TimelineItemData } from "../shared/TimelineItem";
 
 /**

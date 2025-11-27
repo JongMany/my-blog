@@ -1,10 +1,11 @@
-import type { ResumeData } from "../../../../service";
 import { motion } from "framer-motion";
-import { fadeUp, stagger, vItem } from "../../../../constants/motion.config";
-import { Card } from "../../../../components/card";
-import { imageSource } from "@mfe/shared";
-import { useViewport } from "../../../../contexts/ViewportContext";
 import { cn } from "@srf/ui";
+import { imageSource } from "@mfe/shared";
+
+import type { ResumeData } from "../../../../service";
+import { Card } from "../../../../components/card";
+import { useViewport } from "../../../../contexts/ViewportContext";
+import { fadeUp, stagger, vItem } from "../../../../constants/motion.config";
 
 type ProfileHeaderProps = {
   profile: ResumeData["profile"];
@@ -126,8 +127,8 @@ function IntroList({ intro }: { intro: string[] }) {
         isDesktop ? "text-[12px]" : "text-[11px]",
       )}
     >
-      {intro.map((item, index) => (
-        <motion.li variants={vItem} key={index}>
+      {intro.map((item) => (
+        <motion.li variants={vItem} key={item}>
           {item}
         </motion.li>
       ))}

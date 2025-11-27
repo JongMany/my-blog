@@ -1,20 +1,19 @@
-import { ScrollProgress } from "../../components/layout";
+import { SEO, cn } from "@srf/ui";
 
-import ProfileHeader from "./components/header";
-import Sidebar from "./components/sidebar";
-import MainContent from "./components/main-content";
-import NavigationPanel from "./components/navigation-panel";
+import { ScrollProgress } from "../../components/layout";
+import { useViewport } from "../../contexts/ViewportContext";
+import "../../styles/print.css";
 
 import { TOC_ITEMS } from "./constants";
 import {
   ResumeContextProvider,
   useResumeContext,
 } from "./contexts/resume-context-provider";
-import { SEO } from "@srf/ui";
-import "../../styles/print.css";
+import ProfileHeader from "./components/header";
+import Sidebar from "./components/sidebar";
+import MainContent from "./components/main-content";
+import NavigationPanel from "./components/navigation-panel";
 import TopTabs from "./components/tabs";
-import { useViewport } from "../../contexts/ViewportContext";
-import { cn } from "@srf/ui";
 
 function ResumePage() {
   const {

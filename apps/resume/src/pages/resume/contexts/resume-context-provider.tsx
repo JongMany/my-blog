@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+
 import { useResumeContent } from "../hooks";
 
 type ResumeViewMode = "detailed" | "compact";

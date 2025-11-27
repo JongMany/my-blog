@@ -1,7 +1,8 @@
 import React from "react";
+
+import type { Education } from "../../../../../service";
 import { SectionWithAnimation } from "../../../../../components/layout";
 import EducationItem from "./EducationItem";
-import type { Education } from "../../../../../service";
 
 interface EducationSectionProps {
   education: Education[];

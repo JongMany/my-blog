@@ -1,16 +1,13 @@
 import { Fragment } from "react";
-import { KeywordTooltip } from "./KeywordTooltip";
+import { KeywordTooltip } from "../tooltip";
 import type { TextPart } from "./utils/textProcessor";
 
-interface TextPartRendererProps {
+interface TextSegmentProps {
   part: TextPart;
   keywordImageMap?: Record<string, string>;
 }
 
-export function TextPartRenderer({
-  part,
-  keywordImageMap,
-}: TextPartRendererProps) {
+export function TextSegment({ part, keywordImageMap }: TextSegmentProps) {
   if (part.type === "tooltip" && part.keyword) {
     return (
       <KeywordTooltip

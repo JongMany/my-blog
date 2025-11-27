@@ -1,11 +1,11 @@
 import React from "react";
-import { Card } from "../../../../components/card";
-
-import SkillsSection from "./SkillsSection";
-import type { ResumeData } from "../../../../service";
-import ContactInfo from "./ContactInfo";
 import { cn } from "@srf/ui";
+
+import type { ResumeData } from "../../../../service";
+import { Card } from "../../../../components/card";
 import { useViewport } from "../../../../contexts/ViewportContext";
+import ContactInfo from "./ContactInfo";
+import SkillsSection from "./SkillsSection";
 
 interface SidebarProps {
   profile: ResumeData["profile"];

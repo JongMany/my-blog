@@ -1,4 +1,3 @@
-import { resume } from "../../../service";
 import type {
   ResumeData,
   Experience,
@@ -6,6 +5,7 @@ import type {
   Education,
   Activity,
 } from "../../../service";
+import { resume } from "../../../service";
 import {
   filterExperienceForCompact,
   filterSideProjectForCompact,

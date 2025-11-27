@@ -1,14 +1,15 @@
-import { TOC_ITEMS } from "../../constants";
+import { useState } from "react";
 import { cn } from "@srf/ui";
+
+import { TOC_ITEMS } from "../../constants";
 import { Card } from "../../../../components/card";
+import { useViewport } from "../../../../contexts/ViewportContext";
 import {
   useIntersectionObserver,
   useHashManager,
   useScrollNavigation,
   updateHash as updateHashFunction,
 } from "./hooks";
-import { useState } from "react";
-import { useViewport } from "../../../../contexts/ViewportContext";
 
 type NavigationItem = { id: string; label: string };
 

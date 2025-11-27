@@ -1,7 +1,8 @@
 import React from "react";
+
+import type { Experience } from "../../../../../service";
 import { SectionWithAnimation } from "../../../../../components/layout";
 import ExperienceItem from "./ExperienceItem";
-import type { Experience } from "../../../../../service";
 
 interface ExperienceSectionProps {
   experiences: Experience[];

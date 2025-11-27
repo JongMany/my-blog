@@ -1,7 +1,8 @@
 import React from "react";
+
+import type { Activity } from "../../../../../service";
 import { SectionWithAnimation } from "../../../../../components/layout";
 import ActivityItem from "./ActivityItem";
-import type { Activity } from "../../../../../service";
 
 interface ActivitySectionProps {
   activities: Activity[];

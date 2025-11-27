@@ -1,5 +1,4 @@
-import React from "react";
-import { TextPartRenderer } from "./TextPartRenderer";
+import { TextSegment } from "./text-segment";
 import { processEmphasisText } from "./utils/textProcessor";
 
 interface EmphasisProps {
@@ -14,7 +13,7 @@ export function Emphasis({ text, keywordImageMap }: EmphasisProps) {
   return (
     <>
       {textParts.map((part, index) => (
-        <TextPartRenderer
+        <TextSegment
           key={index}
           part={part}
           keywordImageMap={keywordImageMap}

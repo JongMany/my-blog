@@ -1,7 +1,8 @@
 import React from "react";
+
+import type { SideProject } from "../../../../../service";
 import { SectionWithAnimation } from "../../../../../components/layout";
 import SideProjectItem from "./SideProjectItem";
-import type { SideProject } from "../../../../../service";
 
 interface SideProjectSectionProps {
   sideProjects?: SideProject[];

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Bullet, PortfolioLink, Section } from "../../../../../service";
 import { motion } from "framer-motion";
+
+import type { Bullet, PortfolioLink, Section } from "../../../../../service";
 import {
   BulletList,
   Button,

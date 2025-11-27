@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { vItem } from "../../../../../constants/motion.config";
-import { Card } from "../../../../../components/card";
+
 import type { Activity } from "../../../../../service";
+import { Card } from "../../../../../components/card";
+import { vItem } from "../../../../../constants/motion.config";
 
 interface ActivityItemProps {
   item: Activity;
