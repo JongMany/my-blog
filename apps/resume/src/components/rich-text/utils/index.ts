@@ -1,9 +1,3 @@
-export {
-  extractBracketMatches,
-  replacePlaceholders,
-  splitTextIntoParts,
-  processRichText,
-} from "./textProcessor";
+export { processRichText } from "./text-processor";
 
-export type { BracketMatch, TextPart } from "./textProcessor";
-
+export type { TextPart } from "./text-processor";

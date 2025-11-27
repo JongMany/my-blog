@@ -1,5 +1,5 @@
 import { TextSegment } from "./text-segment";
-import { processRichText } from "./utils/textProcessor";
+import { processRichText } from "./utils";
 
 interface RichTextProps {
   text: string;
@@ -12,9 +12,9 @@ export function RichText({ text, keywordImageMap }: RichTextProps) {
 
   return (
     <>
-      {textParts.map((part, index) => (
+      {textParts.map((part) => (
         <TextSegment
-          key={index}
+          key={part.id}
           part={part}
           keywordImageMap={keywordImageMap}
         />
