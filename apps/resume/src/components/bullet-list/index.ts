@@ -5,6 +5,6 @@ export { BulletList } from "./ui";
 export type {
   Bullet,
   BulletListProps,
-  EmphasisComponent,
+  RichTextComponent,
   PortfolioLinksComponent,
 } from "./types";

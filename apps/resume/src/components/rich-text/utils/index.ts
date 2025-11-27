@@ -2,7 +2,8 @@ export {
   extractBracketMatches,
   replacePlaceholders,
   splitTextIntoParts,
-  processEmphasisText,
+  processRichText,
 } from "./textProcessor";
 
 export type { BracketMatch, TextPart } from "./textProcessor";
+

@@ -18,14 +18,14 @@ export interface Bullet {
 export type KeyGenerator = (path: number[], text: string) => string;
 
 /**
- * 텍스트 강조 컴포넌트 타입
+ * 리치 텍스트 컴포넌트 타입
  */
-export interface EmphasisComponentProps {
+export interface RichTextComponentProps {
   text: string;
   keywordImageMap?: Record<string, string>;
 }
 
-export type EmphasisComponent = React.ComponentType<EmphasisComponentProps>;
+export type RichTextComponent = React.ComponentType<RichTextComponentProps>;
 
 /**
  * 포트폴리오 링크 컴포넌트 타입
@@ -51,8 +51,8 @@ export interface BulletListProps {
   keywordImageMap?: Record<string, string>;
   /** 키 생성 함수 (의존성 주입) */
   keyGenerator?: KeyGenerator;
-  /** 텍스트 강조 컴포넌트 (의존성 주입) */
-  Emphasis?: EmphasisComponent;
+  /** 리치 텍스트 컴포넌트 (의존성 주입) */
+  RichText?: RichTextComponent;
   /** 포트폴리오 링크 컴포넌트 (의존성 주입) */
   PortfolioLinks?: PortfolioLinksComponent;
 }

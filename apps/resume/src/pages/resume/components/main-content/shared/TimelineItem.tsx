@@ -6,7 +6,7 @@ import {
   BulletList,
   Button,
   Card,
-  Emphasis,
+  RichText,
   MetaBadge,
   PillButton,
   PortfolioLinks,
@@ -46,7 +46,7 @@ function SectionItem({
       </h4>
       {section.description && (
         <div className="text-[11px] text-[var(--muted-fg)] leading-relaxed mb-3 whitespace-pre-line">
-          <Emphasis
+          <RichText
             text={section.description}
             keywordImageMap={keywordImageMap}
           />
@@ -57,7 +57,7 @@ function SectionItem({
         level={0}
         prefix={[]}
         keywordImageMap={keywordImageMap}
-        Emphasis={Emphasis}
+        RichText={RichText}
         PortfolioLinks={PortfolioLinks}
       />
       {section.portfolioLinks?.length && (
@@ -146,7 +146,7 @@ function TimelineHeader({ item, emphasizeTitle }: TimelineHeaderProps) {
     <div className="flex flex-wrap items-baseline gap-2">
       <h4 className="text-[15px] font-medium">
         {emphasizeTitle ? (
-          <Emphasis text={item.title} keywordImageMap={item.keywordImageMap} />
+          <RichText text={item.title} keywordImageMap={item.keywordImageMap} />
         ) : (
           item.title
         )}
@@ -202,7 +202,7 @@ function TimelineBullets({
         level={0}
         prefix={[]}
         keywordImageMap={keywordImageMap}
-        Emphasis={Emphasis}
+        RichText={RichText}
         PortfolioLinks={PortfolioLinks}
       />
     </div>

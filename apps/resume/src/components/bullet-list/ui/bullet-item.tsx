@@ -2,7 +2,7 @@ import React from "react";
 import type {
   Bullet,
   KeyGenerator,
-  EmphasisComponent,
+  RichTextComponent,
   PortfolioLinksComponent,
   BulletListComponent,
 } from "../types";
@@ -20,8 +20,8 @@ interface BulletItemProps {
   keywordImageMap?: Record<string, string>;
   /** 키 생성 함수 (의존성 주입) */
   keyGenerator: KeyGenerator;
-  /** 텍스트 강조 컴포넌트 (의존성 주입) */
-  Emphasis?: EmphasisComponent;
+  /** 리치 텍스트 컴포넌트 (의존성 주입) */
+  RichText?: RichTextComponent;
   /** 포트폴리오 링크 컴포넌트 (의존성 주입) */
   PortfolioLinks?: PortfolioLinksComponent;
   /** 불릿 리스트 컴포넌트 (의존성 주입 - 순환 참조 제거) */
@@ -43,7 +43,7 @@ export const BulletItem = React.memo(function BulletItem({
   prefix,
   keywordImageMap,
   keyGenerator,
-  Emphasis,
+  RichText,
   PortfolioLinks,
   BulletList,
 }: BulletItemProps) {
@@ -57,8 +57,8 @@ export const BulletItem = React.memo(function BulletItem({
     <>
       {/* 메인 텍스트와 태그 영역 */}
       <div className={`${textSizeClass}`}>
-        {Emphasis ? (
-          <Emphasis text={item.text} keywordImageMap={keywordImageMap} />
+        {RichText ? (
+          <RichText text={item.text} keywordImageMap={keywordImageMap} />
         ) : (
           item.text
         )}
@@ -84,8 +84,8 @@ export const BulletItem = React.memo(function BulletItem({
         <div
           className={`mt-1.5 ${level >= 2 ? "text-[10px]" : "text-[11px]"} text-[var(--muted-fg)] leading-relaxed whitespace-pre-line`}
         >
-          {Emphasis ? (
-            <Emphasis
+          {RichText ? (
+            <RichText
               text={item.description}
               keywordImageMap={keywordImageMap}
             />
@@ -104,7 +104,7 @@ export const BulletItem = React.memo(function BulletItem({
             prefix={prefix}
             keywordImageMap={keywordImageMap}
             keyGenerator={keyGenerator}
-            Emphasis={Emphasis}
+            RichText={RichText}
             PortfolioLinks={PortfolioLinks}
           />
         </div>

@@ -19,7 +19,7 @@ export function BulletList({
   prefix,
   keywordImageMap,
   keyGenerator = defaultKeyGenerator,
-  Emphasis,
+  RichText,
   PortfolioLinks,
 }: BulletListProps) {
   // 최대 중첩 레벨 체크
@@ -50,7 +50,7 @@ export function BulletList({
               prefix={newPrefix}
               keywordImageMap={keywordImageMap}
               keyGenerator={keyGenerator}
-              Emphasis={Emphasis}
+              RichText={RichText}
               PortfolioLinks={PortfolioLinks}
               BulletList={BulletList}
             />

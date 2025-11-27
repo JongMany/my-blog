@@ -109,7 +109,7 @@ export function splitTextIntoParts(text: string): TextPart[] {
 /**
  * 전체 텍스트 처리 파이프라인
  */
-export function processEmphasisText(
+export function processRichText(
   text: string,
   keywordImageMap?: Record<string, string>,
 ): TextPart[] {
@@ -121,3 +121,4 @@ export function processEmphasisText(
   );
   return splitTextIntoParts(finalText);
 }
+

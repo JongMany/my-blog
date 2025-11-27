@@ -9,8 +9,8 @@ export * from "./layout";
 // Bullet List Components
 export * from "./bullet-list";
 
-// Emphasis Components
-export * from "./emphasis";
+// Rich Text Components
+export * from "./rich-text";
 
 // Portfolio Link Components
 export * from "./portfolio-link";

@@ -1,14 +1,14 @@
 import { TextSegment } from "./text-segment";
-import { processEmphasisText } from "./utils/textProcessor";
+import { processRichText } from "./utils/textProcessor";
 
-interface EmphasisProps {
+interface RichTextProps {
   text: string;
   keywordImageMap?: Record<string, string>;
 }
 
 /** 대괄호 키워드 툴팁 */
-export function Emphasis({ text, keywordImageMap }: EmphasisProps) {
-  const textParts = processEmphasisText(text, keywordImageMap);
+export function RichText({ text, keywordImageMap }: RichTextProps) {
+  const textParts = processRichText(text, keywordImageMap);
 
   return (
     <>
