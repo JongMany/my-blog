@@ -55,18 +55,20 @@ export type SideProject = {
   portfolioLinks?: PortfolioLink[];
 };
 
+export type Profile = {
+  name: string;
+  tagline: string;
+  intro: string[];
+  email: string;
+  github?: string;
+  blog?: string;
+  portfolio?: string;
+  personalSite?: string;
+  photoUrl?: string;
+};
+
 export type ResumeData = {
-  profile: {
-    name: string;
-    tagline: string;
-    intro: string[];
-    email: string;
-    github?: string;
-    blog?: string;
-    portfolio?: string;
-    personalSite?: string;
-    photoUrl?: string;
-  };
+  profile: Profile;
   experiences: Experience[];
   sideProjects?: SideProject[];
   education: Education[];

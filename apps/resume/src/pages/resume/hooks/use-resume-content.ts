@@ -1,10 +1,3 @@
-import type {
-  ResumeData,
-  Experience,
-  SideProject,
-  Education,
-  Activity,
-} from "../../../service";
 import { resume } from "../../../service";
 import {
   filterExperienceForCompact,
