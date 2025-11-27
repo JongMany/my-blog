@@ -1,3 +1,9 @@
+import {
+  calculateScrollTop,
+  isValidHash,
+  type SectionItem,
+} from "../utils/utils";
+
 interface UseSectionScrollOptions {
   offset?: number;
   updateHash?: boolean;
@@ -50,7 +56,7 @@ export function useSectionScroll({
 
     const rect = getBoundingClientRect(el);
     const scrollY = getScrollY();
-    const top = rect.top + scrollY - offset;
+    const top = calculateScrollTop(rect.top, scrollY, offset);
 
     scrollTo({ top, behavior });
 
@@ -78,9 +84,9 @@ export function useSectionScroll({
    * 초기 해시가 있을 경우 해당 섹션으로 스크롤
    * (active 상태는 useActiveSection에서 처리)
    */
-  const initializeScrollFromHash = (items: { id: string; label: string }[]) => {
+  const initializeScrollFromHash = (items: SectionItem[]) => {
     const hash = getLocationHash();
-    if (hash && items.some((i) => i.id === hash)) {
+    if (isValidHash(hash, items)) {
       scrollToSection(hash, "instant");
     }
   };

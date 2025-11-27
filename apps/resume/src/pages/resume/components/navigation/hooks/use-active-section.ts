@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import {
+  getActiveIdFromHash,
+  findClosestVisibleSection,
+  type SectionItem,
+} from "../utils/utils";
 
 interface UseActiveSectionOptions {
-  items: { id: string; label: string }[];
+  items: SectionItem[];
   offset?: number;
   intersectionObserver?: typeof IntersectionObserver;
   getElementById?: (id: string) => HTMLElement | null;
@@ -40,13 +45,10 @@ export function useActiveSection({
   const [active, setActive] = useState(items[0]?.id);
   const lockRef = useRef<number | null>(null);
 
-  // 해시에서 활성 섹션 ID 추출
-  const getActiveIdFromHash = (): string | null => {
+  // 해시에서 활성 섹션 ID 추출 (순수 함수 사용)
+  const getActiveIdFromHashValue = (): string | null => {
     const hash = getLocationHash();
-    if (hash && items.some((item) => item.id === hash)) {
-      return hash;
-    }
-    return null;
+    return getActiveIdFromHash(hash, items);
   };
 
   // IntersectionObserver로 활성 섹션 감지
@@ -56,16 +58,9 @@ export function useActiveSection({
         // 스크롤 애니메이션 중에는 업데이트 무시
         if (lockRef.current) return;
 
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) =>
-              Math.abs(a.boundingClientRect.top - offset) -
-              Math.abs(b.boundingClientRect.top - offset),
-          )[0];
-
-        if (visible?.target?.id) {
-          setActive(visible.target.id);
+        const sectionId = findClosestVisibleSection(entries, offset);
+        if (sectionId) {
+          setActive(sectionId);
         }
       },
       {
@@ -91,7 +86,7 @@ export function useActiveSection({
   // URL 해시 변경 감지
   useEffect(() => {
     const handleHashChange = () => {
-      const hashId = getActiveIdFromHash();
+      const hashId = getActiveIdFromHashValue();
 
       // 해시가 있고 현재 active와 다를 때만 업데이트 (중복 업데이트 방지)
       if (hashId && hashId !== activeRef.current) {
@@ -111,7 +106,7 @@ export function useActiveSection({
     };
 
     // 초기 해시 확인
-    const initialHashId = getActiveIdFromHash();
+    const initialHashId = getActiveIdFromHashValue();
     if (initialHashId) {
       setActive(initialHashId);
     }

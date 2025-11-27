@@ -5,13 +5,21 @@ import { TOC_ITEMS } from "../../../constants";
 import { Card } from "../../../../../components/card";
 import { useViewport } from "../../../../../contexts/ViewportContext";
 import { useActiveSection, useSectionScroll } from "../hooks";
-
-type NavigationItem = { id: string; label: string };
+import { NavigationHeader } from "./navigation-header";
+import { NavigationList } from "./navigation-list";
 
 interface NavigationPanelProps {
   className?: string;
 }
 
+/**
+ * 네비게이션 패널 컴포넌트
+ *
+ * @description
+ * - 사이드바에 표시되는 섹션 네비게이션
+ * - IntersectionObserver와 URL 해시로 현재 활성 섹션 자동 감지
+ * - 대형 데스크톱에서만 표시됨
+ */
 export default function NavigationPanel({ className }: NavigationPanelProps) {
   const { isLargeDesktop } = useViewport();
 
@@ -27,7 +35,7 @@ export default function NavigationPanel({ className }: NavigationPanelProps) {
 }
 
 interface NavigationContentProps {
-  items: NavigationItem[];
+  items: { id: string; label: string }[];
   offset?: number;
   updateHash?: boolean;
 }
@@ -47,6 +55,7 @@ function NavigationContent({
   });
 
   // 초기 해시가 있을 경우 스크롤 처리
+  // (active 상태는 useActiveSection에서 자동으로 처리됨)
   useEffect(() => {
     initializeScrollFromHash(items);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,56 +81,5 @@ function NavigationContent({
         onItemClick={handleItemClick}
       />
     </Card>
-  );
-}
-function NavigationHeader() {
-  return (
-    <div className="mb-2 text-sm font-medium text-[var(--muted-fg)]">목차</div>
-  );
-}
-
-interface NavigationListProps {
-  items: NavigationItem[];
-  activeId?: string;
-  onItemClick: (id: string) => void;
-}
-
-function NavigationList({ items, activeId, onItemClick }: NavigationListProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      {items.map((item) => (
-        <NavigationItem
-          key={item.id}
-          id={item.id}
-          label={item.label}
-          isActive={activeId === item.id}
-          onClick={onItemClick}
-        />
-      ))}
-    </div>
-  );
-}
-
-interface NavigationItemProps {
-  id: string;
-  label: string;
-  isActive: boolean;
-  onClick: (id: string) => void;
-}
-
-function NavigationItem({ id, label, isActive, onClick }: NavigationItemProps) {
-  return (
-    <button
-      onClick={() => onClick(id)}
-      className={cn(
-        "w-full rounded-full px-3 py-1.5 text-left text-sm transition",
-        isActive
-          ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-          : "bg-[var(--surface)] hover:bg-[var(--hover-bg)]",
-      )}
-      aria-current={isActive ? "true" : undefined}
-    >
-      {label}
-    </button>
   );
 }

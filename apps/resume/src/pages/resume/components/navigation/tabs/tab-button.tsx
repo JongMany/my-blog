@@ -30,6 +30,7 @@ export function TabButton({
       className={cn(
         baseClasses,
         variantClasses,
+        "cursor-pointer",
         isActive
           ? "bg-[var(--primary)] text-[var(--primary-ink)]"
           : "hover:bg-[var(--hover-bg)]",
@@ -40,4 +41,3 @@ export function TabButton({
     </button>
   );
 }
-

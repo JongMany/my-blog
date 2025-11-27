@@ -2,8 +2,8 @@ import { useEffect } from "react";
 
 import { useResumeContext } from "../../../contexts/resume-context-provider";
 import { useActiveSection, useSectionScroll } from "../hooks";
-import { SectionTabs } from "./ui/section-tabs";
-import { ViewModeToggle } from "./ui/view-mode-toggle";
+import { SectionTabs } from "./section-tabs";
+import { ViewModeToggle } from "./view-mode-toggle";
 
 interface TopTabsProps {
   items: { id: string; label: string }[];
