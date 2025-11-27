@@ -2,17 +2,17 @@ import type { Experience } from "../types";
 
 export const experiences: Experience[] = [
   {
-    company: "토스증권",
-    role: "Frontend Developer(Chart)",
-    period: "2025.12.08 입사 예정",
+    companyName: "토스증권 (Toss Securities)",
+    position: "Frontend Developer(Chart)",
+    workPeriod: "2025.12.08 입사 예정",
   },
   {
-    company: "아데나 소프트웨어 (코인니스)",
-    role: "Frontend Developer",
-    period: "2025.07 - now",
-    summary:
+    companyName: "아데나 소프트웨어 (코인니스)",
+    position: "Frontend Developer",
+    workPeriod: "2025.07 - now",
+    overview:
       "암호화폐 거래소의 WTS(Web Trading System)을 개발했습니다. 이 과정에서 사용자의 거래 편의성을 높이기 위한 기능들을 기획 및 개발했습니다.",
-    stacks: [
+    techStack: [
       "Yarn",
       "React",
       "TypeScript",
@@ -21,12 +21,11 @@ export const experiences: Experience[] = [
       "Tailwindcss",
       "Lit",
     ],
-    keywordImageMap: {
+    tooltipImages: {
       "익절/손절을 차트 내에서 드래그를 통해 설정": "/assets/tpsl.gif",
       "지정가 주문 패널": "/assets/limit-order-panel.gif",
       "시장가 주문 패널": "/assets/market-order-panel.gif",
-      "웹소켓 ↔ HTTP 폴링 자동 전환 시스템":
-        "/assets/websocket-fallback.png",
+      "웹소켓 ↔ HTTP 폴링 자동 전환 시스템": "/assets/websocket-fallback.png",
       "웹소켓 DevTools": "/assets/socket-devtools.gif",
     },
     sections: [
@@ -272,12 +271,12 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: "아데나 소프트웨어 (버블탭)",
-    role: "Frontend Developer",
-    period: "2024.10 - 2025.07",
-    summary:
+    companyName: "아데나 소프트웨어 (버블탭)",
+    position: "Frontend Developer",
+    workPeriod: "2024.10 - 2025.07",
+    overview:
       "AI 채팅 플랫폼에서 사용자들이 더 자연스럽고 편리하게 AI와 대화할 수 있도록 핵심 기능들을 검증 및 개발했습니다.",
-    stacks: [
+    techStack: [
       "Pnpm",
       "React",
       "TypeScript",
@@ -285,7 +284,7 @@ export const experiences: Experience[] = [
       "Zustand",
       "Styled-Component",
     ],
-    keywordImageMap: {
+    tooltipImages: {
       "트리거 단어 칩 변환 알고리즘": "/assets/chip-transform.gif",
       "실시간 텍스트 검열 시스템": "/assets/realtime-filtering-demo.gif",
       "SSE 기반 LLM 응답 스트리밍 시스템": "/assets/sse-streaming.gif",
@@ -410,4 +409,3 @@ export const experiences: Experience[] = [
     ],
   },
 ];
-

@@ -15,7 +15,7 @@ export default function ExperienceSection({
     <SectionWithAnimation id="experience" title="경력">
       {experiences.map((experience) => (
         <ExperienceItem
-          key={`${experience.company}-${experience.period}`}
+          key={`${experience.companyName}-${experience.workPeriod}`}
           item={experience}
         />
       ))}

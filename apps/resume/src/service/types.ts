@@ -20,14 +20,14 @@ export type Section = {
 };
 
 export type Experience = {
-  company: string;
-  role: string;
-  period: string;
-  summary?: string; // ← 경력 요약(문단)
-  stacks?: string[]; // 칩으로 표시
+  companyName: string; // 회사명
+  position: string; // 직책/역할
+  workPeriod: string; // 근무 기간
+  overview?: string; // 경력 요약(문단)
+  techStack?: string[]; // 기술 스택 (칩으로 표시)
   sections?: Section[]; // 섹션들
   bullets?: Bullet[]; // 중첩 불릿 (기존 호환성을 위해 유지)
-  keywordImageMap?: Record<string, string>; // 키워드-이미지 매핑
+  tooltipImages?: Record<string, string>; // 키워드-툴팁 이미지 매핑
 };
 
 export type Education = {
@@ -47,11 +47,11 @@ export type Activity = {
 
 export type SideProject = {
   title: string;
-  period?: string;
-  summary?: string;
-  stacks?: string[];
+  period?: string; // 프로젝트 기간
+  overview?: string; // 프로젝트 요약
+  techStack?: string[]; // 기술 스택
   bullets: Bullet[];
-  keywordImageMap?: Record<string, string>;
+  tooltipImages?: Record<string, string>; // 키워드-툴팁 이미지 매핑
   portfolioLinks?: PortfolioLink[];
 };
 

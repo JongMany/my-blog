@@ -12,14 +12,14 @@ type ExperienceItemProps = {
 export default function ExperienceItem({ item }: ExperienceItemProps) {
   // Experience 데이터를 TimelineItemData 형태로 변환
   const timelineData: TimelineItemData = {
-    title: item.company,
-    subtitle: item.role,
-    period: item.period,
-    summary: item.summary,
-    stacks: item.stacks,
+    title: item.companyName,
+    subtitle: item.position,
+    period: item.workPeriod,
+    summary: item.overview,
+    stacks: item.techStack,
     sections: item.sections,
     bullets: item.bullets,
-    keywordImageMap: item.keywordImageMap,
+    keywordImageMap: item.tooltipImages,
   };
 
   return (

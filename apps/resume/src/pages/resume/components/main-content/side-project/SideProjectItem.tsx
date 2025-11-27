@@ -17,11 +17,11 @@ export default function SideProjectItem({ item }: { item: SideProject }) {
   const timelineData: TimelineItemData = {
     title: item.title,
     period: item.period,
-    summary: item.summary,
-    stacks: item.stacks,
+    summary: item.overview,
+    stacks: item.techStack,
     bullets: item.bullets,
     portfolioLinks: item.portfolioLinks,
-    keywordImageMap: item.keywordImageMap,
+    keywordImageMap: item.tooltipImages,
   };
 
   return (

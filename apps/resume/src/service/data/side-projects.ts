@@ -4,9 +4,9 @@ export const sideProjects: SideProject[] = [
   {
     title: "[스승의 날 프로젝트]",
     period: "2023.05.11 - 2024.05.14",
-    summary:
+    overview:
       "스승의 날의 맞이하여 연구실 내의 인원들이 교수님께 편지를 쓸 수 있도록 웹페이지 형태로 구현하였습니다.",
-    keywordImageMap: {
+    tooltipImages: {
       "스승의 날 프로젝트": "/assets/teachers-day-main.png",
     },
     portfolioLinks: [
@@ -28,8 +28,8 @@ export const sideProjects: SideProject[] = [
   {
     title: "[Ready To Work 프로젝트]",
     period: "2024.05.11 - 2024.05.14",
-    summary: `Ready To Work 프로젝트는 "회사가 채용 프로세스를 간소화하면서 검증된 인재를 채용할 수 없을까?" 라는 질문으로부터 시작된 프로젝트입니다.`,
-    keywordImageMap: {
+    overview: `Ready To Work 프로젝트는 "회사가 채용 프로세스를 간소화하면서 검증된 인재를 채용할 수 없을까?" 라는 질문으로부터 시작된 프로젝트입니다.`,
+    tooltipImages: {
       "Ready To Work 프로젝트": "/assets/rtw-excel-upload.png",
     },
     portfolioLinks: [
