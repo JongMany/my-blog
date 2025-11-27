@@ -53,6 +53,7 @@ function NavigationContent({
   }, []);
 
   const handleItemClick = (id: string) => {
+    // 클릭 시 즉시 상태 업데이트 (낙관적 업데이트)
     setActive(id);
     scrollToSection(id, "smooth", (lockId: number | null) => {
       if (lockRef.current) {
@@ -124,4 +125,3 @@ function NavigationItem({ id, label, isActive, onClick }: NavigationItemProps) {
     </button>
   );
 }
-
