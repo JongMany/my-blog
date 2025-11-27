@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo } from "react";
 import { cn } from "@srf/ui";
 import { SKILL_CATEGORIES, type SkillCategory } from "../../constants/skills";
 import { PillButton } from "../../../../components";
@@ -8,7 +8,7 @@ interface SkillsSectionProps {
 }
 
 export default function SkillsSection({ items }: SkillsSectionProps) {
-  const categorizedSkills = React.useMemo(() => {
+  const categorizedSkills = useMemo(() => {
     return Object.entries(SKILL_CATEGORIES)
       .map(([category, skills]) => ({
         category: category as SkillCategory,

@@ -1,6 +1,6 @@
 import type { ResumeData } from "../../../../service";
 import { motion } from "framer-motion";
-import { fadeUp, stagger, vItem } from "../../../../constants";
+import { fadeUp, stagger, vItem } from "../../../../constants/motion.config";
 import { Card } from "../../../../components/card";
 import { imageSource } from "@mfe/shared";
 import { useViewport } from "../../../../contexts/ViewportContext";

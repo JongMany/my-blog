@@ -7,7 +7,7 @@ import NavigationPanel from "./components/navigation-panel";
 
 import { useResumeContent } from "./hooks/useResumeContent";
 import { TOC_ITEMS } from "./constants/toc";
-import { ResumeProvider } from "./contexts/ResumeContext";
+import { ResumeContextProvider } from "./contexts/resume-context-provider";
 import { SEO } from "@srf/ui";
 import "../../styles/print.css";
 import TopTabs from "./components/tabs";
@@ -56,8 +56,8 @@ function ResumePage() {
 
 export default () => {
   return (
-    <ResumeProvider>
+    <ResumeContextProvider>
       <ResumePage />
-    </ResumeProvider>
+    </ResumeContextProvider>
   );
 };

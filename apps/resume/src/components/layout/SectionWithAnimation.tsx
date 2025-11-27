@@ -2,7 +2,7 @@ import React from "react";
 import Section from "./Section";
 
 import { motion } from "framer-motion";
-import { stagger } from "../../constants";
+import { stagger } from "../../constants/motion.config";
 
 interface SectionWithAnimationProps {
   id: string;

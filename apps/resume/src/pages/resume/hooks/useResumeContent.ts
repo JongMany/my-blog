@@ -1,4 +1,4 @@
-import { useResume } from "../contexts/ResumeContext";
+import { useResumeContext } from "../contexts/resume-context-provider";
 import { resume } from "../../../service";
 import type {
   ResumeData,
@@ -25,35 +25,22 @@ interface UseResumeContentReturn {
 }
 
 export function useResumeContent(): UseResumeContentReturn {
-  const { isDetailed } = useResume();
+  const { isDetailed } = useResumeContext();
   const { profile, experiences, sideProjects, education, activities, skills } =
     resume;
 
-  // 토글 상태에 따라 데이터 필터링
-  const processedExperiences = isDetailed
-    ? experiences
-    : experiences.map(filterExperienceForCompact);
-
-  const processedSideProjects = isDetailed ? sideProjects : []; // 간단한 버전에서는 사이드 프로젝트를 완전히 숨김
-
-  const processedEducation = isDetailed
-    ? education
-    : education.map(filterEducationForCompact);
-
-  const processedActivities = isDetailed
-    ? activities
-    : activities.map(filterActivityForCompact);
-
-  const processedSkills = isDetailed
-    ? skills
-    : filterSkillsForCompact(skills || []);
-
   return {
     profile,
-    experiences: processedExperiences,
-    sideProjects: processedSideProjects,
-    education: processedEducation,
-    activities: processedActivities,
-    skills: processedSkills,
+    experiences: isDetailed
+      ? experiences
+      : experiences.map(filterExperienceForCompact),
+    sideProjects: isDetailed ? sideProjects : [],
+    education: isDetailed
+      ? education
+      : education.map(filterEducationForCompact),
+    activities: isDetailed
+      ? activities
+      : activities.map(filterActivityForCompact),
+    skills: isDetailed ? skills : filterSkillsForCompact(skills || []),
   };
 }

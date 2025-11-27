@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { Bullet, PortfolioLink, Section } from "../../../../../service";
 import { motion } from "framer-motion";
 import {
@@ -10,7 +10,7 @@ import {
   PillButton,
   PortfolioLinks,
 } from "../../../../../components";
-import { vItem } from "../../../../../constants";
+import { vItem } from "../../../../../constants/motion.config";
 
 export interface TimelineItemData {
   title: string;
@@ -90,7 +90,11 @@ export function TimelineItem({
         <TimelineHeader item={item} emphasizeTitle={emphasizeTitle} />
         <TimelineSummary summary={item.summary} />
         <TimelineStacks stacks={item.stacks} />
-        <TimelinePortfolioLinks links={item.portfolioLinks} />
+        {item.portfolioLinks?.length && (
+          <div className="mt-2">
+            <PortfolioLinks links={item.portfolioLinks} />
+          </div>
+        )}
 
         {/* sections가 있으면 sections 렌더링, 없으면 기존 bullets 렌더링 */}
         {hasSections ? (
@@ -179,16 +183,6 @@ function TimelineStacks({ stacks }: { stacks?: string[] }) {
           #{stack}
         </PillButton>
       ))}
-    </div>
-  );
-}
-
-function TimelinePortfolioLinks({ links }: { links?: PortfolioLink[] }) {
-  if (!links?.length) return null;
-
-  return (
-    <div className="mt-2">
-      <PortfolioLinks links={links} />
     </div>
   );
 }

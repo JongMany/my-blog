@@ -11,7 +11,7 @@ interface ResumeContextType {
 
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
 
-export function ResumeProvider({ children }: { children: ReactNode }) {
+export function ResumeContextProvider({ children }: { children: ReactNode }) {
   const [viewMode, setViewMode] = useState<ResumeViewMode>("detailed");
 
   const toggleViewMode = () => {
@@ -30,7 +30,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useResume() {
+export function useResumeContext() {
   const context = useContext(ResumeContext);
   if (context === undefined) {
     throw new Error("useResume must be used within a ResumeProvider");

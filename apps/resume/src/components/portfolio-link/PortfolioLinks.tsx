@@ -6,7 +6,6 @@ interface PortfolioLinksProps {
   links: PortfolioLink[];
 }
 
-/** 포트폴리오 링크들 */
 export function PortfolioLinks({ links }: PortfolioLinksProps) {
   if (!links?.length) return null;
 
@@ -24,9 +23,7 @@ export function PortfolioLinks({ links }: PortfolioLinksProps) {
   );
 }
 
-export type PortfolioLinkItemProps = PortfolioLink;
-
-function PortfolioLinkItem({ title, url, type }: PortfolioLinkItemProps) {
+function PortfolioLinkItem({ title, url, type }: PortfolioLink) {
   return (
     <a
       href={url}
@@ -45,14 +42,8 @@ function PortfolioLinkItem({ title, url, type }: PortfolioLinkItemProps) {
   );
 }
 
-interface LinkIconProps {
-  type?: PortfolioLink["type"];
-  className?: string;
-}
-
-/** 포트폴리오 링크 아이콘 컴포넌트 */
-function LinkIcon({ type, className }: LinkIconProps) {
-  const iconProps = { className: `w-2.5 h-2.5 ${className || ""}` };
+function LinkIcon({ type }: { type?: PortfolioLink["type"] }) {
+  const iconProps = { className: "w-2.5 h-2.5" };
 
   switch (type) {
     case "github":

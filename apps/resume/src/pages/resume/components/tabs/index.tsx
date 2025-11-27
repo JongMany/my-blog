@@ -1,6 +1,6 @@
 import { cn } from "@srf/ui";
-import React from "react";
-import { useResume } from "../../contexts/ResumeContext";
+import { useEffect, useRef, useState } from "react";
+import { useResumeContext } from "../../contexts/resume-context-provider";
 import { useViewport } from "../../../../contexts/ViewportContext";
 
 export default function TopTabs({
@@ -12,12 +12,12 @@ export default function TopTabs({
   offset?: number;
   updateHash?: boolean;
 }) {
-  const [active, setActive] = React.useState(items[0]?.id);
-  const lockRef = React.useRef<number | null>(null); // 클릭/스크롤 중 IO 업데이트 잠금
-  const { isDetailed, toggleViewMode } = useResume();
+  const [active, setActive] = useState(items[0]?.id);
+  const lockRef = useRef<number | null>(null); // 클릭/스크롤 중 IO 업데이트 잠금
+  const { isDetailed, toggleViewMode } = useResumeContext();
 
   // IO: 화면 상단 기준선(오프셋 보정)에 가장 가까운 섹션을 active로
-  React.useEffect(() => {
+  useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
         if (lockRef.current) return; // 스크롤 애니 중에는 IO 무시(깜빡임 방지)
@@ -43,7 +43,7 @@ export default function TopTabs({
   }, [items, offset]);
 
   // 초기 해시(#section) 처리(있다면 그 섹션을 active로)
-  React.useEffect(() => {
+  useEffect(() => {
     const hash =
       typeof window !== "undefined" ? window.location.hash.slice(1) : "";
     if (hash && items.some((i) => i.id === hash)) {
