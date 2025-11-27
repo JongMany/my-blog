@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { imageSource } from "@mfe/shared";
+import type { ProjectMeta } from "../../entities/project";
 import {
   getFallbackThumbnail,
   getThumbnailAspectRatio,
-  ProjectMeta,
-} from "../../entities/project";
+} from "../../utils/thumbnail";
 
 const HOVER_ANIMATION = {
   whileHover: { y: -4, scale: 1.01 },
