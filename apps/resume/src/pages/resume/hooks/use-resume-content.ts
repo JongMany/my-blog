@@ -1,4 +1,3 @@
-import { useResumeContext } from "../contexts/resume-context-provider";
 import { resume } from "../../../service";
 import type {
   ResumeData,
@@ -15,17 +14,7 @@ import {
   filterSkillsForCompact,
 } from "../../../utils/resume-filter";
 
-interface UseResumeContentReturn {
-  profile: ResumeData["profile"];
-  experiences: Experience[];
-  sideProjects?: SideProject[];
-  education: Education[];
-  activities: Activity[];
-  skills?: string[];
-}
-
-export function useResumeContent(): UseResumeContentReturn {
-  const { isDetailed } = useResumeContext();
+export function useResumeContent(isDetailed: boolean) {
   const { profile, experiences, sideProjects, education, activities, skills } =
     resume;
 

@@ -3,16 +3,10 @@
  */
 
 export const SKILL_CATEGORIES = {
-  Frontend: [
-    "React",
-    "TypeScript",
-    "Vite",
-    "Tailwind CSS",
-    "Styled Components",
-  ],
+  Languages: ["TypeScript"],
+  Frontend: ["React", "Lit", "Tailwind CSS", "Styled Components"],
   "State Management": ["TanStack Query", "Zustand"],
-  Specialized: ["Lit", "WebSocket", "TradingView"],
-  "Package Managers": ["Pnpm", "Yarn"],
+  Specialized: ["TradingView"],
 } as const;
 
 export type SkillCategory = keyof typeof SKILL_CATEGORIES;

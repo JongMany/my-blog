@@ -1,7 +1,6 @@
 import { cn } from "@srf/ui";
 import { useEffect, useRef, useState } from "react";
 import { useResumeContext } from "../../contexts/resume-context-provider";
-import { useViewport } from "../../../../contexts/ViewportContext";
 
 export default function TopTabs({
   items,
@@ -14,7 +13,9 @@ export default function TopTabs({
 }) {
   const [active, setActive] = useState(items[0]?.id);
   const lockRef = useRef<number | null>(null); // 클릭/스크롤 중 IO 업데이트 잠금
-  const { isDetailed, toggleViewMode } = useResumeContext();
+  const { viewMode, toggleViewMode } = useResumeContext();
+
+  const isDetailed = viewMode === "detailed";
 
   // IO: 화면 상단 기준선(오프셋 보정)에 가장 가까운 섹션을 active로
   useEffect(() => {

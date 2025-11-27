@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useResumeContent } from "../hooks";
 
 type ResumeViewMode = "detailed" | "compact";
 
 interface ResumeContextType {
   viewMode: ResumeViewMode;
   toggleViewMode: () => void;
-  isDetailed: boolean;
-  isCompact: boolean;
+  resumeContent: ReturnType<typeof useResumeContent>;
 }
 
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
@@ -18,11 +18,12 @@ export function ResumeContextProvider({ children }: { children: ReactNode }) {
     setViewMode((prev) => (prev === "detailed" ? "compact" : "detailed"));
   };
 
+  const resumeContent = useResumeContent(viewMode === "detailed");
+
   const value = {
     viewMode,
     toggleViewMode,
-    isDetailed: viewMode === "detailed",
-    isCompact: viewMode === "compact",
+    resumeContent,
   };
 
   return (

@@ -1,4 +1,4 @@
-import { TOC_ITEMS } from "../../constants/toc";
+import { TOC_ITEMS } from "../../constants";
 import { cn } from "@srf/ui";
 import { Card } from "../../../../components/card";
 import {

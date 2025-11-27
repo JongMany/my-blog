@@ -5,9 +5,11 @@ import Sidebar from "./components/sidebar";
 import MainContent from "./components/main-content";
 import NavigationPanel from "./components/navigation-panel";
 
-import { useResumeContent } from "./hooks/useResumeContent";
-import { TOC_ITEMS } from "./constants/toc";
-import { ResumeContextProvider } from "./contexts/resume-context-provider";
+import { TOC_ITEMS } from "./constants";
+import {
+  ResumeContextProvider,
+  useResumeContext,
+} from "./contexts/resume-context-provider";
 import { SEO } from "@srf/ui";
 import "../../styles/print.css";
 import TopTabs from "./components/tabs";
@@ -15,8 +17,17 @@ import { useViewport } from "../../contexts/ViewportContext";
 import { cn } from "@srf/ui";
 
 function ResumePage() {
-  const { profile, experiences, sideProjects, education, activities, skills } =
-    useResumeContent();
+  const {
+    resumeContent: {
+      profile,
+      experiences,
+      sideProjects,
+      education,
+      activities,
+      skills,
+    },
+  } = useResumeContext();
+
   const { isLargeDesktop } = useViewport();
 
   return (
