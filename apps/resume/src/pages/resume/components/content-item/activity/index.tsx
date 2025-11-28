@@ -2,7 +2,7 @@ import React from "react";
 
 import type { Activity } from "../../../../../service";
 import { MotionStack } from "../../../../../components/stack";
-import ActivityItem from "./ActivityItem";
+import ActivityItem from "./activity-item";
 
 interface ActivitySectionProps {
   activities: Activity[];

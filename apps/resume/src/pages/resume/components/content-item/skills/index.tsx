@@ -1,7 +1,7 @@
 import { cn } from "@srf/ui";
 
-import { Card } from "../../../components/card";
-import SkillsSection from "./sidebar/SkillsSection";
+import { Card } from "../../../../../components/card";
+import SkillsSection from "./skills-section";
 
 interface SkillsCardProps {
   skills?: string[];

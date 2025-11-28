@@ -2,7 +2,7 @@ import React from "react";
 
 import type { SideProject } from "../../../../../service";
 import { MotionStack } from "../../../../../components/stack";
-import SideProjectItem from "./SideProjectItem";
+import SideProjectItem from "./side-project-item";
 
 interface SideProjectSectionProps {
   sideProjects?: SideProject[];

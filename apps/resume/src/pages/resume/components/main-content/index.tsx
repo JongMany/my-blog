@@ -8,11 +8,11 @@ import type {
 } from "../../../../service";
 import { PrintButton } from "../../../../components";
 import { useViewport } from "../../../../contexts/viewport-context";
-import ActivitySection from "./activity";
-import EducationSection from "./education";
-import ExperienceSection from "./experience";
-import SideProjectSection from "./side-project";
-import SkillsCard from "../skills-card";
+import ActivitySection from "../content-item/activity";
+import EducationSection from "../content-item/education";
+import ExperienceSection from "../content-item/experience";
+import SideProjectSection from "../content-item/side-project";
+import SkillsCard from "../content-item/skills";
 
 interface MainContentProps {
   experiences: Experience[];

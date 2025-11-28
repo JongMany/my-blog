@@ -2,7 +2,7 @@ import React from "react";
 
 import type { Experience } from "../../../../../service";
 import { MotionStack } from "../../../../../components/stack";
-import ExperienceItem from "./ExperienceItem";
+import ExperienceItem from "./experience-item";
 
 interface ExperienceSectionProps {
   experiences: Experience[];

@@ -1,6 +1,6 @@
 import type { Experience } from "../../../../../service";
 
-import { TimelineItem, type TimelineItemData } from "../shared/TimelineItem";
+import { TimelineItem, type TimelineItemData } from "../shared/timeline-item";
 
 type ExperienceItemProps = {
   item: Experience;

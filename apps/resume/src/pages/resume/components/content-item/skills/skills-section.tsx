@@ -1,7 +1,10 @@
 import { useMemo } from "react";
 import { cn } from "@srf/ui";
-import { SKILL_CATEGORIES, type SkillCategory } from "../../constants/skills";
-import { PillButton } from "../../../../components";
+import {
+  SKILL_CATEGORIES,
+  type SkillCategory,
+} from "../../../constants/skills";
+import { PillButton } from "../../../../../components";
 
 interface SkillsSectionProps {
   items: string[];
@@ -50,12 +53,7 @@ interface SkillCategoryProps {
 function SkillCategory({ category, skills }: SkillCategoryProps) {
   return (
     <div className={cn("space-y-1")}>
-      <h4
-        className={cn(
-          "text-xs font-medium text-[var(--muted-fg)]",
-          "mb-1",
-        )}
-      >
+      <h4 className={cn("text-xs font-medium text-[var(--muted-fg)]", "mb-1")}>
         {category}
       </h4>
       <div

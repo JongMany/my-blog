@@ -5,7 +5,7 @@ import { useViewport } from "../../../../contexts/viewport-context";
 import ContactInfo, {
   type ContactInfo as ContactInfoType,
 } from "./contact-info";
-import SkillsCard from "../skills-card";
+import SkillsCard from "../content-item/skills";
 
 interface SidebarProps {
   contact: ContactInfoType;
