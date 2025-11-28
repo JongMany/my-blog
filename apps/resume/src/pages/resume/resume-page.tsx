@@ -49,12 +49,22 @@ function ResumePage() {
               isLargeDesktop ? "lg:grid-cols-12" : "grid-cols-1",
             )}
           >
-            <Sidebar profile={profile} skills={skills} className="mt-4" />
+            <Sidebar
+              contact={{
+                email: profile.email,
+                github: profile.github,
+                blog: profile.blog,
+                portfolio: profile.portfolio,
+              }}
+              skills={skills}
+              className="mt-4"
+            />
             <MainContent
               experiences={experiences}
               sideProjects={sideProjects}
               education={education}
               activities={activities}
+              skills={skills}
             />
             <NavigationPanel className="mt-4" />
           </div>

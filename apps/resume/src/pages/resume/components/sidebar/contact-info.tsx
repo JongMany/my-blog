@@ -4,20 +4,18 @@ import { cn } from "@srf/ui";
 
 import { Card } from "../../../../components/card";
 
-export default function ContactInfo({
-  profile,
-}: {
-  profile: {
-    name: string;
-    tagline: string;
-    intro: string[];
-    email: string;
-    github?: string;
-    blog?: string;
-    portfolio?: string;
-    photoUrl?: string;
-  };
-}) {
+export interface ContactInfo {
+  email: string;
+  github?: string;
+  blog?: string;
+  portfolio?: string;
+}
+
+interface ContactInfoProps {
+  contact: ContactInfo;
+}
+
+export default function ContactInfo({ contact }: ContactInfoProps) {
   return (
     <Card className="p-3 sm:p-4">
       <div className={cn("font-medium mb-2 sm:mb-3", "text-sm sm:text-base")}>
@@ -31,27 +29,27 @@ export default function ContactInfo({
         )}
       >
         <ContactLink
-          href={`mailto:${profile.email}`}
+          href={`mailto:${contact.email}`}
           icon={<Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           label="Email"
         />
-        {profile.github && (
+        {contact.github && (
           <ContactLink
-            href={profile.github}
+            href={contact.github}
             icon={<Github className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             label="GitHub"
             external
           />
         )}
-        {profile.blog && (
+        {contact.blog && (
           <ContactLink
-            href={profile.blog}
+            href={contact.blog}
             icon={<BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             label="Blog"
             external
           />
         )}
-        {profile.portfolio && (
+        {contact.portfolio && (
           <ContactLink
             to="/portfolio"
             icon={<LinkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
