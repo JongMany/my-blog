@@ -1,11 +1,11 @@
-import { resume } from "../../../service";
+import { resume } from "@/service";
 import {
   filterExperienceForCompact,
   filterSideProjectForCompact,
   filterEducationForCompact,
   filterActivityForCompact,
   filterSkillsForCompact,
-} from "../../../utils/resume-filter";
+} from "@/utils/resume-filter";
 
 export function useResumeContent(isDetailed: boolean) {
   const { profile, experiences, sideProjects, education, activities, skills } =

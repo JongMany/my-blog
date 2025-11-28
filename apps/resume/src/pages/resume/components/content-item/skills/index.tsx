@@ -1,6 +1,6 @@
 import { cn } from "@srf/ui";
 
-import { Card } from "../../../../../components/card";
+import { Card } from "@/components/card";
 import SkillsSection from "./skills-section";
 
 interface SkillsCardProps {

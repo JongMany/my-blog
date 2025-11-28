@@ -1,4 +1,4 @@
-import { PortfolioLink } from "../../service";
+import { PortfolioLink } from "@/service";
 import { Link } from "./link";
 
 interface LinkGroupProps {

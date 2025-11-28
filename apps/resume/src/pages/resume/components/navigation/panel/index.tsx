@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { cn } from "@srf/ui";
 
-import { TOC_ITEMS } from "../../../constants";
-import { Card } from "../../../../../components/card";
-import { useViewport } from "../../../../../contexts/viewport-context";
-import { useActiveSection, useSectionScroll } from "../hooks";
+import { TOC_ITEMS } from "@/pages/resume/constants";
+import { Card } from "@/components/card";
+import { useViewport } from "@/contexts/viewport-context";
+import { useActiveSection, useSectionScroll } from "@/pages/resume/components/navigation/hooks";
 import { NavigationHeader } from "./navigation-header";
 import { NavigationList } from "./navigation-list";
 

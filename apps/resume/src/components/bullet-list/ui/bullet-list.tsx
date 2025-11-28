@@ -1,9 +1,9 @@
 import React from "react";
-import type { BulletListProps } from "../types";
+import type { BulletListProps } from "@/components/bullet-list/types";
 import { BulletItem } from "./bullet-item";
-import { getListStyles } from "../lib/list-styles";
-import { ARIA_LABELS, MAX_NESTING_LEVEL } from "../constants";
-import { defaultKeyGenerator } from "../lib/key-generator";
+import { getListStyles } from "@/components/bullet-list/lib/list-styles";
+import { ARIA_LABELS, MAX_NESTING_LEVEL } from "@/components/bullet-list/constants";
+import { defaultKeyGenerator } from "@/components/bullet-list/lib/key-generator";
 
 /**
  * 재귀적으로 렌더링되는 불릿 리스트 컴포넌트

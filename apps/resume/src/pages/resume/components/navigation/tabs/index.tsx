@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-import { useResumeContext } from "../../../contexts/resume-context-provider";
-import { useActiveSection, useSectionScroll } from "../hooks";
+import { useResumeContext } from "@/pages/resume/contexts/resume-context-provider";
+import { useActiveSection, useSectionScroll } from "@/pages/resume/components/navigation/hooks";
 import { SectionTabs } from "./section-tabs";
 import { ViewModeToggle } from "./view-mode-toggle";
 

@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
 import { imageSource } from "@mfe/shared";
 
-import type { ResumeData } from "../../../../service";
-import { Card } from "../../../../components/card";
-import { useViewport } from "../../../../contexts/viewport-context";
+import type { ResumeData } from "@/service";
+import { Card } from "@/components/card";
+import { useViewport } from "@/contexts/viewport-context";
 import {
   fadeUp,
   staggerContainer,
   fadeInItem,
-} from "../../../../constants/motion-variants";
+} from "@/constants/motion-variants";
 
 type ProfileHeaderProps = {
   profile: ResumeData["profile"];

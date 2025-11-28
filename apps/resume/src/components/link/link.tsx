@@ -1,5 +1,5 @@
 import { cn } from "@srf/ui";
-import { PortfolioLink } from "../../service";
+import { PortfolioLink } from "@/service";
 import { LinkIcon } from "./link-icon";
 
 interface LinkProps extends PortfolioLink {

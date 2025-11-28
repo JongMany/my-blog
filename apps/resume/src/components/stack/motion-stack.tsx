@@ -2,7 +2,7 @@ import React from "react";
 import { Stack } from "./stack";
 
 import { motion } from "framer-motion";
-import { staggerContainer } from "../../constants/motion-variants";
+import { staggerContainer } from "@/constants/motion-variants";
 
 interface MotionStackProps {
   id: string;

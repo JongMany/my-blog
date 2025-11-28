@@ -2,7 +2,7 @@ import {
   calculateScrollTop,
   isValidHash,
   type SectionItem,
-} from "../utils/utils";
+} from "@/pages/resume/components/navigation/utils/utils";
 
 interface UseSectionScrollOptions {
   offset?: number;

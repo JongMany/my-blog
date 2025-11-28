@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
+import * as path from "node:path";
 import pkg from "./package.json" with { type: "json" };
 
 const REPO = "my-blog";
@@ -38,6 +39,11 @@ export default defineConfig({
       notifyOnSuccessOnly: true,
     }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: { port: 3003 },
   preview: {
     port: 3003,

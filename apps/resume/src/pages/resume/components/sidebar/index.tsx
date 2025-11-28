@@ -1,11 +1,11 @@
 import React from "react";
 import { cn } from "@srf/ui";
 
-import { useViewport } from "../../../../contexts/viewport-context";
+import { useViewport } from "@/contexts/viewport-context";
 import ContactInfo, {
   type ContactInfo as ContactInfoType,
 } from "./contact-info";
-import SkillsCard from "../content-item/skills";
+import SkillsCard from "@/pages/resume/components/content-item/skills";
 
 interface SidebarProps {
   contact: ContactInfoType;

@@ -3,7 +3,7 @@ import {
   getActiveIdFromHash,
   findClosestVisibleSection,
   type SectionItem,
-} from "../utils/utils";
+} from "@/pages/resume/components/navigation/utils/utils";
 
 interface UseActiveSectionOptions {
   items: SectionItem[];

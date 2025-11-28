@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-import { useResumeContent } from "../hooks";
+import { useResumeContent } from "@/pages/resume/hooks";
 
 type ResumeViewMode = "detailed" | "compact";
 

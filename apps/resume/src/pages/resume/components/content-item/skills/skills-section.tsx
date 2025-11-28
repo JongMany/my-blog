@@ -3,8 +3,8 @@ import { cn } from "@srf/ui";
 import {
   SKILL_CATEGORIES,
   type SkillCategory,
-} from "../../../constants/skills";
-import { PillButton } from "../../../../../components";
+} from "@/pages/resume/constants/skills";
+import { PillButton } from "@/components";
 
 interface SkillsSectionProps {
   items: string[];

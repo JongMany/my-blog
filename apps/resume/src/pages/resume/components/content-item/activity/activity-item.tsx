@@ -1,9 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import type { Activity } from "../../../../../service";
-import { Card } from "../../../../../components/card";
-import { fadeInItem } from "../../../../../constants/motion-variants";
+import type { Activity } from "@/service";
+import { Card } from "@/components/card";
+import { fadeInItem } from "@/constants/motion-variants";
 
 interface ActivityItemProps {
   item: Activity;

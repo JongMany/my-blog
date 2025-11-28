@@ -1,7 +1,7 @@
 import React from "react";
 
-import type { Experience } from "../../../../../service";
-import { MotionStack } from "../../../../../components/stack";
+import type { Experience } from "@/service";
+import { MotionStack } from "@/components/stack";
 import ExperienceItem from "./experience-item";
 
 interface ExperienceSectionProps {

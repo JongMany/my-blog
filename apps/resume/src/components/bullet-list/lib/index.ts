@@ -1,3 +1,3 @@
 export { defaultKeyGenerator } from "./key-generator";
-export type { KeyGenerator } from "../types";
+export type { KeyGenerator } from "@/components/bullet-list/types";
 

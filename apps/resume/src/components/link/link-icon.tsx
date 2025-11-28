@@ -1,5 +1,5 @@
 import { ExternalLink, Github, FileText, Play, Link } from "lucide-react";
-import { PortfolioLink } from "../../service";
+import { PortfolioLink } from "@/service";
 
 interface LinkIconProps {
   type?: PortfolioLink["type"];

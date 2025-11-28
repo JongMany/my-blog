@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { KeywordTooltip } from "../tooltip";
+import { KeywordTooltip } from "@/components/tooltip";
 import type { TextPart } from "./utils";
 
 interface TextSegmentProps {

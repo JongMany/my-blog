@@ -5,9 +5,9 @@ import type {
   RichTextComponent,
   LinkGroupComponent,
   BulletListComponent,
-} from "../types";
+} from "@/components/bullet-list/types";
 import { BulletTag } from "./bullet-tag";
-import { ARIA_LABELS } from "../constants";
+import { ARIA_LABELS } from "@/components/bullet-list/constants";
 
 interface BulletItemProps {
   /** 렌더링할 불릿 아이템 데이터 */

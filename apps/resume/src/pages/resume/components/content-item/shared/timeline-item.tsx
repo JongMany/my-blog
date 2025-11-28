@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-import type { Bullet, PortfolioLink, Section } from "../../../../../service";
+import type { Bullet, PortfolioLink, Section } from "@/service";
 import {
   BulletList,
   Button,
@@ -10,8 +10,8 @@ import {
   MetaBadge,
   PillButton,
   LinkGroup,
-} from "../../../../../components";
-import { fadeInItem } from "../../../../../constants/motion-variants";
+} from "@/components";
+import { fadeInItem } from "@/constants/motion-variants";
 
 export interface TimelineItemData {
   title: string;

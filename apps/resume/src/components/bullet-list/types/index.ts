@@ -1,5 +1,5 @@
 import type React from "react";
-import type { PortfolioLink } from "../../../service";
+import type { PortfolioLink } from "@/service";
 
 /**
  * 불릿 아이템 데이터 타입

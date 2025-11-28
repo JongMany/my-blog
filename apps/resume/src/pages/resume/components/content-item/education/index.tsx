@@ -1,7 +1,7 @@
 import React from "react";
 
-import type { Education } from "../../../../../service";
-import { MotionStack } from "../../../../../components/stack";
+import type { Education } from "@/service";
+import { MotionStack } from "@/components/stack";
 import EducationItem from "./education-item";
 
 interface EducationSectionProps {

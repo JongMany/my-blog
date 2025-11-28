@@ -1,18 +1,13 @@
 import { cn } from "@srf/ui";
 
-import type {
-  Experience,
-  SideProject,
-  Education,
-  Activity,
-} from "../../../../service";
-import { PrintButton } from "../../../../components";
-import { useViewport } from "../../../../contexts/viewport-context";
-import ActivitySection from "../content-item/activity";
-import EducationSection from "../content-item/education";
-import ExperienceSection from "../content-item/experience";
-import SideProjectSection from "../content-item/side-project";
-import SkillsCard from "../content-item/skills";
+import type { Experience, SideProject, Education, Activity } from "@/service";
+import { PrintButton } from "@/components";
+import { useViewport } from "@/contexts/viewport-context";
+import ActivitySection from "@/pages/resume/components/content-item/activity";
+import EducationSection from "@/pages/resume/components/content-item/education";
+import ExperienceSection from "@/pages/resume/components/content-item/experience";
+import SideProjectSection from "@/pages/resume/components/content-item/side-project";
+import SkillsCard from "@/pages/resume/components/content-item/skills";
 
 interface MainContentProps {
   experiences: Experience[];

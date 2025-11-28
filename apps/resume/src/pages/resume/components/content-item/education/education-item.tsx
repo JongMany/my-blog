@@ -1,9 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import type { Education } from "../../../../../service";
-import { Card } from "../../../../../components/card";
-import { fadeInItem } from "../../../../../constants/motion-variants";
+import type { Education } from "@/service";
+import { Card } from "@/components/card";
+import { fadeInItem } from "@/constants/motion-variants";
 
 interface EducationItemProps {
   item: Education;
