@@ -42,6 +42,7 @@ export function SelectableChips({
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
       <button
+        type="button"
         className={getChipClassName(isAllSelected, true)}
         onClick={onReset}
       >
@@ -52,6 +53,7 @@ export function SelectableChips({
         return (
           <button
             key={item}
+            type="button"
             className={getChipClassName(isSelected, false)}
             onClick={() => onSelect(item)}
             aria-pressed={isSelected}

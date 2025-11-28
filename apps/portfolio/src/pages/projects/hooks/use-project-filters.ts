@@ -51,6 +51,23 @@ export function useProjectFilters(
     });
   }, [portfolioIndex, searchInputValue, selectedTag, selectedProject]);
 
+  // 모든 필터 초기화
+  const clearAllFilters = useCallback(() => {
+    setSearchParams(
+      (prevParams) => {
+        const newParams = new URLSearchParams(prevParams);
+        newParams.delete(SEARCH_PARAM_KEY);
+        newParams.delete(TAG_PARAM_KEY);
+        newParams.delete(PROJECT_PARAM_KEY);
+        return newParams;
+      },
+      { replace: true },
+    );
+    // URL 파라미터가 삭제되면 useEffect가 자동으로 searchInputValue를 업데이트함
+    // 하지만 즉시 반영을 위해 여기서도 설정
+    setSearchInputValue("");
+  }, [setSearchParams]);
+
   return {
     // 상태
     searchQuery: searchInputValue,
@@ -66,5 +83,6 @@ export function useProjectFilters(
       toggleSearchParam(PROJECT_PARAM_KEY, project),
     clearTag: () => updateSearchParam(TAG_PARAM_KEY),
     clearProject: () => updateSearchParam(PROJECT_PARAM_KEY),
+    clearAllFilters,
   };
 }
