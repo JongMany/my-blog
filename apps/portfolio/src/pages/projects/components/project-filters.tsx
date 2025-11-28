@@ -57,17 +57,15 @@ function ActiveFilterBadge({
   ariaLabel,
 }: ActiveFilterBadgeProps) {
   return (
-    <span className={`${BADGE_STYLE} cursor-default`}>
+    <button
+      type="button"
+      onClick={onClear}
+      className={`${BADGE_STYLE} cursor-pointer hover:opacity-80 transition-opacity`}
+      aria-label={ariaLabel}
+    >
       {label}
-      <button
-        onClick={onClear}
-        type="button"
-        className="hover:opacity-70 transition-opacity cursor-pointer"
-        aria-label={ariaLabel}
-      >
-        ×
-      </button>
-    </span>
+      <span className="ml-1.5 hover:opacity-70 transition-opacity">×</span>
+    </button>
   );
 }
 
