@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
-import { usePortfolioIndex, useProjectMdx } from "../../entities/project";
-import { LoadingSpinner, ErrorMessage } from "../../components/common";
+import { usePortfolioIndex, useProjectMdx } from "@/entities/project";
+import { LoadingSpinner, ErrorMessage } from "@/components/common";
 import { useMdxContent } from "./hooks/use-mdx-content";
 import {
   ProjectSEO,

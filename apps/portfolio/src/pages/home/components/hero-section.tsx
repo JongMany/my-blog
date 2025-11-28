@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { fadeUp, stagger, item } from "../../../utils/motion";
+import { fadeUp, stagger, item } from "@/utils/motion";
 
 export function HeroSection() {
   const { scrollYProgress } = useScroll();

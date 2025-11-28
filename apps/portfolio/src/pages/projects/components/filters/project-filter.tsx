@@ -1,5 +1,5 @@
-import { SelectableChips } from "../../../../components/common";
-import { UI_CONSTANTS } from "../../constants/ui";
+import { SelectableChips } from "@/components/common";
+import { UI_CONSTANTS } from "@/pages/projects/constants/ui";
 
 interface ProjectFilterProps {
   projects: string[];

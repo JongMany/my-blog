@@ -1,6 +1,6 @@
 import { ProjectGrid, ProjectCard } from "../../../components/common";
-import type { ProjectMeta } from "../../../entities/project";
-import { MESSAGE_CONSTANTS } from "../constants/messages";
+import type { ProjectMeta } from "@/entities/project";
+import { MESSAGE_CONSTANTS } from "@/pages/messages";
 
 interface ProjectListProps {
   projects: ProjectMeta[];

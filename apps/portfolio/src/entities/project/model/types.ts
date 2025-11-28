@@ -70,7 +70,7 @@ export interface DateInfo {
   createdAtMs: number;
 }
 
-import type { FrontmatterData } from "../../../components/mdx";
+import type { FrontmatterData } from "@/components/mdx";
 
 /**
  * 프로젝트 메타데이터 빌드 파라미터

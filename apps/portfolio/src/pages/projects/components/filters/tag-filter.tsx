@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { cn } from "@srf/ui";
-import { UI_CONSTANTS } from "../../constants/ui";
+import { UI_CONSTANTS } from "@/pages/projects/constants/ui";
 
 const TAG_BUTTON_BASE =
   "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-all duration-300 ease-in-out";

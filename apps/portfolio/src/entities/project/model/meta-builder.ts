@@ -1,14 +1,14 @@
 import {
   getString,
   getOptionalString,
-} from "../../../utils/frontmatter";
+} from "@/utils/frontmatter";
 import {
   formatProjectName,
   normalizeBoolean,
   normalizeNumber,
   normalizeTags,
-} from "../../../utils/normalize";
-import type { FrontmatterData } from "../../../components/mdx";
+} from "@/utils/normalize";
+import type { FrontmatterData } from "@/components/mdx";
 import type { BuildMetaParams, PathInfo, ProjectMeta } from "./types";
 
 /**

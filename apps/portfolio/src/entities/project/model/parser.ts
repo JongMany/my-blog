@@ -1,8 +1,8 @@
 import { isString } from "@mfe/shared";
-import { parseFrontmatter } from "../../../utils/frontmatter";
-import { normalizeBoolean } from "../../../utils/normalize";
-import { normalizeFilePath } from "../../../utils/path";
-import type { FrontmatterData } from "../../../components/mdx";
+import { parseFrontmatter } from "@/utils/frontmatter";
+import { normalizeBoolean } from "@/utils/normalize";
+import { normalizeFilePath } from "@/utils/path";
+import type { FrontmatterData } from "@/components/mdx";
 import type { DateInfo, PathInfo, ProjectDocument } from "./types";
 import { buildProjectMeta } from "./meta-builder";
 

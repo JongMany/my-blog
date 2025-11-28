@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "../../../components/common";
 import { MDX } from "../../../components/mdx";
-import { MESSAGE_CONSTANTS } from "../constants/messages";
-import type { ProjectMeta } from "../../../entities/project";
+import { MESSAGE_CONSTANTS } from "@/pages/messages";
+import type { ProjectMeta } from "@/entities/project";
 
 interface ProjectContentProps {
   compiledSource: string | null;

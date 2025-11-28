@@ -1,5 +1,5 @@
 import type { ProjectDocument, ProjectIndex, ProjectMeta } from "./types";
-import { ProjectExtractor } from "../utils/extractors";
+import { ProjectExtractor } from "@/utils/extractors";
 
 /**
  * 프로젝트 메타데이터를 우선순위에 따라 정렬합니다.

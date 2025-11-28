@@ -1,5 +1,5 @@
-import type { ProjectIndex } from "../../../entities/project";
-import { ProjectExtractor } from "../../../entities/project/utils";
+import type { ProjectIndex } from "@/entities/project";
+import { ProjectExtractor } from "@/entities/project/utils";
 
 /**
  * 선택된 프로젝트에 속한 태그 목록을 반환합니다.
