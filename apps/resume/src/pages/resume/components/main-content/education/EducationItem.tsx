@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import type { Education } from "../../../../../service";
 import { Card } from "../../../../../components/card";
-import { vItem } from "../../../../../constants/motion.config";
+import { fadeInItem } from "../../../../../constants/motion-variants";
 
 interface EducationItemProps {
   item: Education;
@@ -11,7 +11,7 @@ interface EducationItemProps {
 
 export default function EducationItem({ item }: EducationItemProps) {
   return (
-    <motion.div variants={vItem}>
+    <motion.div variants={fadeInItem}>
       <Card className="p-4">
         <EducationHeader item={item} />
         <EducationDetails item={item} />

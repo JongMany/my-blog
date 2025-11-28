@@ -11,7 +11,7 @@ import {
   PillButton,
   LinkGroup,
 } from "../../../../../components";
-import { vItem } from "../../../../../constants/motion.config";
+import { fadeInItem } from "../../../../../constants/motion-variants";
 
 export interface TimelineItemData {
   title: string;
@@ -85,7 +85,7 @@ export function TimelineItem({
   const hasMoreItems = bullets.length > maxCollapsedItems;
 
   return (
-    <motion.article variants={vItem} className="relative pl-4 avoid-break">
+    <motion.article variants={fadeInItem} className="relative pl-4 avoid-break">
       <TimelineRail />
       <Card className="p-4">
         <TimelineHeader item={item} emphasizeTitle={emphasizeTitle} />

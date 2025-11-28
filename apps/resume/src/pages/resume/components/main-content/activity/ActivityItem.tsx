@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import type { Activity } from "../../../../../service";
 import { Card } from "../../../../../components/card";
-import { vItem } from "../../../../../constants/motion.config";
+import { fadeInItem } from "../../../../../constants/motion-variants";
 
 interface ActivityItemProps {
   item: Activity;
@@ -11,7 +11,7 @@ interface ActivityItemProps {
 
 export default function ActivityItem({ item }: ActivityItemProps) {
   return (
-    <motion.div variants={vItem}>
+    <motion.div variants={fadeInItem}>
       <Card className="p-4">
         <ActivityHeader item={item} />
         <ActivityBullets bullets={item.bullets} />
