@@ -1,6 +1,6 @@
 import { cn } from "@srf/ui";
 import { HomeHeader } from "./components/home-header";
-import { SectionGrid } from "../../components/section-grid";
+import { SectionGrid } from "@/components/section-grid";
 import { HOME_SECTIONS } from "./constants/sections";
 
 export default function HomePage() {

@@ -1,5 +1,5 @@
 import { cn } from "@srf/ui";
-import type { Section } from "../types/sections";
+import type { Section } from "@/types/sections";
 import { SectionCard } from "./section-card";
 
 interface SectionGridProps {
