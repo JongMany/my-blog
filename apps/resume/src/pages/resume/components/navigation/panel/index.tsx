@@ -3,7 +3,7 @@ import { cn } from "@srf/ui";
 
 import { TOC_ITEMS } from "../../../constants";
 import { Card } from "../../../../../components/card";
-import { useViewport } from "../../../../../contexts/ViewportContext";
+import { useViewport } from "../../../../../contexts/viewport-context";
 import { useActiveSection, useSectionScroll } from "../hooks";
 import { NavigationHeader } from "./navigation-header";
 import { NavigationList } from "./navigation-list";

@@ -7,7 +7,7 @@ import type {
   Activity,
 } from "../../../../service";
 import { PrintButton } from "../../../../components";
-import { useViewport } from "../../../../contexts/ViewportContext";
+import { useViewport } from "../../../../contexts/viewport-context";
 import ActivitySection from "./activity";
 import EducationSection from "./education";
 import ExperienceSection from "./experience";

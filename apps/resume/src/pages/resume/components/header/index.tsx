@@ -4,7 +4,7 @@ import { imageSource } from "@mfe/shared";
 
 import type { ResumeData } from "../../../../service";
 import { Card } from "../../../../components/card";
-import { useViewport } from "../../../../contexts/ViewportContext";
+import { useViewport } from "../../../../contexts/viewport-context";
 import {
   fadeUp,
   staggerContainer,

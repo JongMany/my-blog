@@ -3,10 +3,21 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  type ReactNode,
 } from "react";
 
-interface ViewportContextType {
+/**
+ * Breakpoint constants (matching Tailwind CSS defaults)
+ */
+const BREAKPOINTS = {
+  sm: 640,
+  lg: 1024,
+} as const;
+
+/**
+ * Viewport state type
+ */
+interface ViewportValue {
   isMobile: boolean;
   isTablet: boolean;
   isDesktop: boolean;
@@ -14,16 +25,17 @@ interface ViewportContextType {
   width: number;
 }
 
-const ViewportContext = createContext<ViewportContextType | undefined>(
-  undefined,
-);
+const ViewportContext = createContext<ViewportValue | undefined>(undefined);
 
 interface ViewportProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Provider component that tracks viewport size and breakpoints
+ */
 export function ViewportProvider({ children }: ViewportProviderProps) {
-  const [viewport, setViewport] = useState({
+  const [viewport, setViewport] = useState<ViewportValue>({
     isMobile: false,
     isTablet: false,
     isDesktop: false,
@@ -35,10 +47,10 @@ export function ViewportProvider({ children }: ViewportProviderProps) {
     const updateViewport = () => {
       const width = window.innerWidth;
       setViewport({
-        isMobile: width < 640, // sm
-        isTablet: width >= 640 && width < 1024, // sm to lg
-        isDesktop: width >= 640, // sm+
-        isLargeDesktop: width >= 1024, // lg+
+        isMobile: width < BREAKPOINTS.sm,
+        isTablet: width >= BREAKPOINTS.sm && width < BREAKPOINTS.lg,
+        isDesktop: width >= BREAKPOINTS.sm,
+        isLargeDesktop: width >= BREAKPOINTS.lg,
         width,
       });
     };
@@ -56,6 +68,10 @@ export function ViewportProvider({ children }: ViewportProviderProps) {
   );
 }
 
+/**
+ * Hook to access viewport state
+ * @throws {Error} if used outside ViewportProvider
+ */
 export function useViewport() {
   const context = useContext(ViewportContext);
   if (context === undefined) {
@@ -63,3 +79,4 @@ export function useViewport() {
   }
   return context;
 }
+

@@ -1,7 +1,7 @@
 import { SEO, cn } from "@srf/ui";
 
 import { ScrollProgress } from "../../components/layout";
-import { useViewport } from "../../contexts/ViewportContext";
+import { useViewport } from "../../contexts/viewport-context";
 import "../../styles/print.css";
 
 import { TOC_ITEMS } from "./constants";

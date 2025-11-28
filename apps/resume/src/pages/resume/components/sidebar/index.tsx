@@ -3,7 +3,7 @@ import { cn } from "@srf/ui";
 
 import type { ResumeData } from "../../../../service";
 import { Card } from "../../../../components/card";
-import { useViewport } from "../../../../contexts/ViewportContext";
+import { useViewport } from "../../../../contexts/viewport-context";
 import ContactInfo from "./ContactInfo";
 import SkillsSection from "./SkillsSection";
 
