@@ -85,11 +85,11 @@ export function ProjectCard({
               <h3 className="text-base font-medium leading-tight">
                 {project.title}
               </h3>
-              {!project.cover && project.project && (
+              {/* {!project.cover && project.project && (
                 <div className="text-xs text-[var(--muted-fg)]">
                   {project.project}
                 </div>
-              )}
+              )} */}
             </div>
 
             {project.summary && (
