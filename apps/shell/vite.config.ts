@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { listenForRemoteRebuilds } from "@antdevx/vite-plugin-hmr-sync";
 import tailwindcss from "@tailwindcss/vite";
+import * as path from "node:path";
 
 import pkg from "./package.json" assert { type: "json" };
 
@@ -132,6 +133,11 @@ export default defineConfig({
       hotPayload: { type: "full-reload", path: "*" },
     }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: {
     port: 3000,
   },
