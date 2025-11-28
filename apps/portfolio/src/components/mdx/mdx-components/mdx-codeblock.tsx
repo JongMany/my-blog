@@ -2,7 +2,7 @@ import React, { ReactNode, Children, isValidElement } from "react";
 import { MermaidDiagram } from "../mermaid/mermaid-diagram";
 import { normalizeClassName, extractTextFromChildren } from "../lib/utils";
 import { isMermaid } from "./utils";
-import { CODE_BLOCK_STYLES } from "@/pages/styles";
+import { CODE_BLOCK_STYLES } from "@/components/mdx/constants/styles";
 import type { CodeElementProps, MermaidDataAttributes } from "../lib/types";
 
 interface PreProps

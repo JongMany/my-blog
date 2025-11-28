@@ -9,7 +9,7 @@ import {
 import {
   getTagsForSelectedProject,
   isValidTagForProject,
-} from "@/utils/filter-helpers";
+} from "@/pages/projects/utils/filter-helpers";
 
 const SEARCH_PARAM_KEY = "q";
 const TAG_PARAM_KEY = "tag";

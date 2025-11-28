@@ -4,7 +4,7 @@ import {
   TagFilter,
   ActiveFilters,
 } from "./filters";
-import type { useProjectFilters } from "@/hooks/use-project-filters";
+import type { useProjectFilters } from "@/pages/projects/hooks/use-project-filters";
 
 interface ProjectFiltersProps {
   filterState: ReturnType<typeof useProjectFilters>;

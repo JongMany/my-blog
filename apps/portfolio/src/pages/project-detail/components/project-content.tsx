@@ -1,6 +1,6 @@
 import { LoadingSpinner } from "../../../components/common";
 import { MDX } from "../../../components/mdx";
-import { MESSAGE_CONSTANTS } from "@/pages/messages";
+import { MESSAGE_CONSTANTS } from "@/pages/project-detail/constants/messages";
 import type { ProjectMeta } from "@/entities/project";
 
 interface ProjectContentProps {
