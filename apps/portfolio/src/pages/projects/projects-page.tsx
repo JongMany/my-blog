@@ -7,7 +7,6 @@ export default function Projects() {
   const portfolioIndex = usePortfolioIndex();
   const filterState = useProjectFilters(portfolioIndex);
 
-  console.log(portfolioIndex);
   if (!portfolioIndex) {
     return <LoadingSpinner />;
   }

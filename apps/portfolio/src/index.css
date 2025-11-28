@@ -49,3 +49,17 @@ a:hover {
 .group:hover div {
   text-decoration: none !important;
 }
+
+/* 태그 필터 fade-in 애니메이션 - Tailwind v4 @theme으로 등록 */
+@theme {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  --animate-fade-in: fadeIn 0.3s ease-in-out;
+}
