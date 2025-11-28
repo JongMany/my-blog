@@ -33,7 +33,7 @@ export default function Layout({ children }: PropsWithChildren) {
 
       <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
         <div className="shell:mr-2 shell:text-xl shell:font-semibold shell:tracking-tight">
-          My Site
+          방구석 코딩쟁이
         </div>
 
         <div

@@ -32,6 +32,7 @@ export type ProjectIndex = {
   all: ProjectMeta[];
   byProject: Record<string, ProjectMeta[]>;
   projects: string[];
+  tags: string[];
 };
 
 export type Experience = {

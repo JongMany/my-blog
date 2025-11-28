@@ -1,18 +1,22 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import type { ProjectMeta } from "../../../entities/project";
+import type { ProjectIndex } from "../../../entities/project";
 import { filterProjects } from "../../../entities/project/utils";
 import {
   createUpdateSearchParam,
   createToggleSearchParam,
 } from "../../../utils/search-params";
+import {
+  getTagsForSelectedProject,
+  isValidTagForProject,
+} from "../utils/filter-helpers";
 
 const SEARCH_PARAM_KEY = "q";
 const TAG_PARAM_KEY = "tag";
 const PROJECT_PARAM_KEY = "proj";
 
 export function useProjectFilters(
-  portfolioIndex: { all: ProjectMeta[] } | undefined,
+  portfolioIndex: ProjectIndex | undefined,
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -41,16 +45,51 @@ export function useProjectFilters(
     [setSearchParams],
   );
 
+  // 프로젝트 목록
+  const allProjects = useMemo(
+    () => portfolioIndex?.projects ?? [],
+    [portfolioIndex],
+  );
+
+  // 선택된 프로젝트에 따라 사용 가능한 태그 목록
+  const availableTags = useMemo(
+    () => getTagsForSelectedProject(portfolioIndex, selectedProject),
+    [portfolioIndex, selectedProject],
+  );
+
   // 필터링된 프로젝트 목록
   const filteredProjects = useMemo(() => {
     if (!portfolioIndex) return [];
-    return filterProjects(
-      portfolioIndex.all,
-      searchInputValue,
+    return filterProjects(portfolioIndex.all, {
+      searchQuery: searchInputValue,
       selectedTag,
       selectedProject,
-    );
+    });
   }, [portfolioIndex, searchInputValue, selectedTag, selectedProject]);
+
+  // 선택된 태그가 새로운 프로젝트에 없으면 태그 초기화
+  useEffect(() => {
+    if (!isValidTagForProject(portfolioIndex, selectedProject, selectedTag)) {
+      updateSearchParam(TAG_PARAM_KEY);
+    }
+  }, [selectedProject, selectedTag, portfolioIndex, updateSearchParam]);
+
+  // 모든 필터 초기화
+  const clearAllFilters = useCallback(() => {
+    setSearchParams(
+      (prevParams) => {
+        const newParams = new URLSearchParams(prevParams);
+        newParams.delete(SEARCH_PARAM_KEY);
+        newParams.delete(TAG_PARAM_KEY);
+        newParams.delete(PROJECT_PARAM_KEY);
+        return newParams;
+      },
+      { replace: true },
+    );
+    // URL 파라미터가 삭제되면 useEffect가 자동으로 searchInputValue를 업데이트함
+    // 하지만 즉시 반영을 위해 여기서도 설정
+    setSearchInputValue("");
+  }, [setSearchParams]);
 
   return {
     // 상태
@@ -58,6 +97,8 @@ export function useProjectFilters(
     selectedTag,
     selectedProject,
     filteredProjects,
+    allProjects,
+    availableTags,
 
     // 액션
     setSearchText: setSearchInputValue,
@@ -67,5 +108,6 @@ export function useProjectFilters(
       toggleSearchParam(PROJECT_PARAM_KEY, project),
     clearTag: () => updateSearchParam(TAG_PARAM_KEY),
     clearProject: () => updateSearchParam(PROJECT_PARAM_KEY),
+    clearAllFilters,
   };
 }

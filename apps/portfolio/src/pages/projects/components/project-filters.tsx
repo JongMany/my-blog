@@ -1,72 +1,68 @@
-import { useMemo } from "react";
-import { SearchInput, SelectableChips } from "../../../components/common";
-import type { ProjectMeta } from "../../../entities/project";
 import {
-  extractAllTags,
-  extractAllProjects,
-} from "../../../entities/project/utils";
-import { UI_CONSTANTS } from "../constants/ui";
+  SearchFilter,
+  ProjectFilter,
+  TagFilter,
+  ActiveFilters,
+} from "./filters";
 import type { useProjectFilters } from "../hooks/use-project-filters";
 
 interface ProjectFiltersProps {
-  portfolioIndex: { all: ProjectMeta[] } | undefined;
   filterState: ReturnType<typeof useProjectFilters>;
 }
 
-export function ProjectFilters({
-  portfolioIndex,
-  filterState,
-}: ProjectFiltersProps) {
+export function ProjectFilters({ filterState }: ProjectFiltersProps) {
   const {
     searchQuery,
     selectedTag,
     selectedProject,
+    allProjects,
+    availableTags,
     setSearchText,
     commitSearch,
     setTag,
     setProject,
     clearTag,
     clearProject,
+    clearAllFilters,
   } = filterState;
 
-  // 태그/프로젝트 목록
-  const allTags = useMemo(
-    () => extractAllTags(portfolioIndex?.all ?? []),
-    [portfolioIndex],
-  );
-
-  const allProjects = useMemo(
-    () => extractAllProjects(portfolioIndex?.all ?? []),
-    [portfolioIndex],
-  );
+  const handleClearSearch = () => {
+    setSearchText("");
+    commitSearch("");
+  };
 
   return (
-    <div className="t-card flex flex-col gap-3 p-3">
-      {/* 검색 인풋 */}
-      <SearchInput
-        defaultValue={searchQuery}
-        onChange={setSearchText}
-        onSubmit={commitSearch}
-        placeholder={UI_CONSTANTS.SEARCH_PLACEHOLDER}
+    <div className="t-card flex flex-col gap-4 p-4">
+      <SearchFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchText}
+        onSearchCommit={commitSearch}
       />
 
-      {/* 프로젝트 칩 필터 */}
-      <SelectableChips
-        items={allProjects}
-        selectedValue={selectedProject}
-        onSelect={setProject}
-        onReset={clearProject}
-        allLabel={UI_CONSTANTS.ALL_PROJECTS_LABEL}
-      />
+      <div className="flex flex-col gap-3">
+        <ProjectFilter
+          projects={allProjects}
+          selectedProject={selectedProject}
+          onSelect={setProject}
+          onReset={clearProject}
+        />
 
-      {/* 태그 칩 필터 */}
-      <SelectableChips
-        items={allTags}
-        selectedValue={selectedTag}
-        onSelect={setTag}
-        onReset={clearTag}
-        allLabel={UI_CONSTANTS.ALL_TAGS_LABEL}
-        prefix={UI_CONSTANTS.TAG_PREFIX}
+        <TagFilter
+          availableTags={availableTags}
+          selectedTag={selectedTag}
+          onSelect={setTag}
+          onReset={clearTag}
+        />
+      </div>
+
+      <ActiveFilters
+        searchQuery={searchQuery}
+        selectedProject={selectedProject}
+        selectedTag={selectedTag}
+        onClearSearch={handleClearSearch}
+        onClearProject={clearProject}
+        onClearTag={clearTag}
+        onClearAll={clearAllFilters}
       />
     </div>
   );
