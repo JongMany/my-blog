@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import type { ProjectMeta } from "../../../entities/project";
+import type { ProjectIndex } from "../../../entities/project";
 import { filterProjects } from "../../../entities/project/utils";
 import {
   createUpdateSearchParam,
@@ -12,7 +12,7 @@ const TAG_PARAM_KEY = "tag";
 const PROJECT_PARAM_KEY = "proj";
 
 export function useProjectFilters(
-  portfolioIndex: { all: ProjectMeta[] } | undefined,
+  portfolioIndex: ProjectIndex | undefined,
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
 
