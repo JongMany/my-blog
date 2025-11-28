@@ -1,4 +1,4 @@
-import { Section } from "../../../types/sections";
+import { Section } from "@/types/sections";
 
 export const HOME_SECTIONS: Section[] = [
   {

@@ -1,6 +1,6 @@
 import { memo, useRef } from "react";
 import { cn, CloseIcon } from "@srf/ui";
-import { useSearchInput } from "../../hooks/use-search-input";
+import { useSearchInput } from "@/hooks/use-search-input";
 
 interface SearchInputProps {
   defaultValue: string;

@@ -1,5 +1,5 @@
-import { RetrospectMeta, Item } from "../types/contents/retrospect";
-import { parseFrontmatter } from "../utils/frontmatter";
+import { RetrospectMeta, Item } from "@/types/contents/retrospect";
+import { parseFrontmatter } from "@/utils/frontmatter";
 
 /**
  * 모든 회고 목록을 가져오는 함수 (Item 형태)

@@ -11,7 +11,7 @@ import {
   isMermaidCodeBlock,
   extractClassName,
   extractMermaidCode,
-} from "../../../utils/hast";
+} from "@/utils/hast";
 
 const MERMAID_DEFAULT_WIDTH = "min(600px, 100%)";
 

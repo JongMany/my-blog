@@ -1,5 +1,5 @@
-import { BookMeta, Item } from "../types/contents/book";
-import { parseFrontmatter } from "../utils/frontmatter";
+import { BookMeta, Item } from "@/types/contents/book";
+import { parseFrontmatter } from "@/utils/frontmatter";
 
 /**
  * 모든 책 목록을 가져오는 함수 (Item 형태)

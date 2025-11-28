@@ -1,5 +1,5 @@
 import type { ProjectMeta } from "../model/types";
-import { contains } from "../../../utils/string";
+import { contains } from "@/utils/string";
 
 interface FilterOptions {
   searchQuery?: string;

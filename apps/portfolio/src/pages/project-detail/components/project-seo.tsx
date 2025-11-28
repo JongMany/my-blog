@@ -1,6 +1,6 @@
 import { SEO } from "@srf/ui";
-import { createProjectImageUrl, createProjectDetailUrl } from "../utils/urls";
-import type { ProjectMeta } from "../../../entities/project";
+import { createProjectImageUrl, createProjectDetailUrl } from "@/pages/project-detail/utils/urls";
+import type { ProjectMeta } from "@/entities/project";
 
 interface ProjectSEOProps {
   project: ProjectMeta;

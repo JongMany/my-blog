@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import { getRetrospect } from "../../service/retrospects";
-import { extractDateFromMeta } from "../../utils/date";
-import { useSerializedMDX } from "../../hooks/use-serialized-mdx";
-import { MDX } from "../../components/mdx";
-import TableOfContents from "../../components/table-of-contents";
-import Title from "../../components/title";
-import Summary from "../../components/summary";
-import Time from "../../components/time";
-import { GiscusComments } from "../../components/giscus-comments";
+import { getRetrospect } from "@/service/retrospects";
+import { extractDateFromMeta } from "@/utils/date";
+import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
+import { MDX } from "@/components/mdx";
+import TableOfContents from "@/components/table-of-contents";
+import Title from "@/components/title";
+import Summary from "@/components/summary";
+import Time from "@/components/time";
+import { GiscusComments } from "@/components/giscus-comments";
 
 export default function RetrospectDetailPage() {
   const { slug } = useParams();

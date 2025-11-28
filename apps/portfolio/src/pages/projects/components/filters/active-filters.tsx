@@ -1,5 +1,5 @@
 import { cn } from "@srf/ui";
-import { UI_CONSTANTS } from "../../constants/ui";
+import { UI_CONSTANTS } from "@/pages/projects/constants/ui";
 
 const BADGE_STYLE =
   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20";

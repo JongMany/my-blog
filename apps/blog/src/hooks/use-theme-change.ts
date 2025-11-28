@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { isDarkMode } from "../utils/is-dark-mode";
-import { Theme } from "../types/theme";
+import { isDarkMode } from "@/utils/is-dark-mode";
+import { Theme } from "@/types/theme";
 
 export const useThemeChange = (onThemeChange?: (theme: Theme) => void) => {
   const [theme, setTheme] = useState<Theme>(isDarkMode() ? "dark" : "light");

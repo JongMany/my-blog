@@ -1,4 +1,4 @@
-import type { ProjectMeta } from "../../../entities/project";
+import type { ProjectMeta } from "@/entities/project";
 
 interface ProjectHeaderProps {
   project: ProjectMeta;

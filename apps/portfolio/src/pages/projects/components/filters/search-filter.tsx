@@ -1,5 +1,5 @@
-import { SearchInput } from "../../../../components/common";
-import { UI_CONSTANTS } from "../../constants/ui";
+import { SearchInput } from "@/components/common";
+import { UI_CONSTANTS } from "@/pages/projects/constants/ui";
 
 interface SearchFilterProps {
   searchQuery: string;

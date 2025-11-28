@@ -1,5 +1,5 @@
-import { usePortfolioIndex } from "../../entities/project";
-import { LoadingSpinner } from "../../components/common";
+import { usePortfolioIndex } from "@/entities/project";
+import { LoadingSpinner } from "@/components/common";
 import { ProjectFilters, ProjectList } from "./components";
 import { useProjectFilters } from "./hooks/use-project-filters";
 

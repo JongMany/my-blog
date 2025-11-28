@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPosts } from "../../service/posts";
-import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
+import { getPosts } from "@/service/posts";
+import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 
 export default function PostsPage() {
   const posts = getPosts();

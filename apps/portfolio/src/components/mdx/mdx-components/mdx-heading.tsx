@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@srf/ui";
-import { HEADING_STYLES } from "../constants/styles";
+import { HEADING_STYLES } from "@/components/mdx/constants/styles";
 
 type HeadingLevel = keyof typeof HEADING_STYLES;
 

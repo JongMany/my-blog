@@ -1,15 +1,15 @@
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import type { ProjectIndex } from "../../../entities/project";
-import { filterProjects } from "../../../entities/project/utils";
+import type { ProjectIndex } from "@/entities/project";
+import { filterProjects } from "@/entities/project/utils";
 import {
   createUpdateSearchParam,
   createToggleSearchParam,
-} from "../../../utils/search-params";
+} from "@/utils/search-params";
 import {
   getTagsForSelectedProject,
   isValidTagForProject,
-} from "../utils/filter-helpers";
+} from "@/pages/projects/utils/filter-helpers";
 
 const SEARCH_PARAM_KEY = "q";
 const TAG_PARAM_KEY = "tag";

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getRetrospects } from "../../service/retrospects";
-import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
+import { getRetrospects } from "@/service/retrospects";
+import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 
 export default function RetrospectsPage() {
   const retrospects = getRetrospects();

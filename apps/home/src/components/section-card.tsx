@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
-import type { Section } from "../types/sections";
+import type { Section } from "@/types/sections";
 import { ArrowIcon } from "./arrow-icon";
 
 const GRID_COLUMN_CLASSES: Record<Section["size"], string> = {

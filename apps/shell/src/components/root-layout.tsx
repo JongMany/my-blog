@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
-import { useGaPageViews } from "../hooks/use-ga-page-views";
+import { useGaPageViews } from "@/hooks/use-ga-page-views";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
