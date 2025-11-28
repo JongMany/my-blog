@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getBooks } from "../../service/books";
-import { extractDateFromMeta, compareByDate } from "../../utils/date";
+import { getBooks } from "@/service/books";
+import { extractDateFromMeta, compareByDate } from "@/utils/date";
 import {
   groupByYearMonth,
   sortGroupedByYearMonth,
   formatMonthName,
-} from "../../utils/group";
+} from "@/utils/group";
 
 export default function BooksPage() {
   const books = getBooks();

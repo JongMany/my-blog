@@ -1,5 +1,5 @@
 import { cn } from "@srf/ui";
-import { formatDate } from "../utils/date";
+import { formatDate } from "@/utils/date";
 
 interface TimeProps {
   date: Date | string;

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLogs } from "../../service/logs";
-import { sortByDate, extractDateFromMeta, formatDate } from "../../utils/date";
+import { getLogs } from "@/service/logs";
+import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 
 export default function LogsPage() {
   const logs = getLogs();

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { GISCUS_CONFIG } from "../consts/giscus.config";
-import { isDarkMode } from "../utils/is-dark-mode";
-import { Theme } from "../types/theme";
-import { useThemeChange } from "../hooks/use-theme-change";
+import { GISCUS_CONFIG } from "@/consts/giscus.config";
+import { isDarkMode } from "@/utils/is-dark-mode";
+import { Theme } from "@/types/theme";
+import { useThemeChange } from "@/hooks/use-theme-change";
 
 type GiscusCommentsProps = {
   term: string;

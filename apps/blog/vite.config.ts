@@ -43,6 +43,11 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: { port: 3001, fs: { allow: [path.resolve(__dirname, ".")] } },
   preview: {
     port: 3001,

@@ -1,5 +1,5 @@
-import { PostMeta, Item } from "../types/contents/post";
-import { parseFrontmatter } from "../utils/frontmatter";
+import { PostMeta, Item } from "@/types/contents/post";
+import { parseFrontmatter } from "@/utils/frontmatter";
 
 /**
  * 모든 포스트 목록을 가져오는 함수 (Item 형태)

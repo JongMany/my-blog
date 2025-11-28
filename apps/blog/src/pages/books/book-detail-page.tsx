@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import { getBook } from "../../service/books";
-import { useSerializedMDX } from "../../hooks/use-serialized-mdx";
-import { MDX } from "../../components/mdx";
-import Title from "../../components/title";
-import Time from "../../components/time";
-import Summary from "../../components/summary";
-import TableOfContents from "../../components/table-of-contents";
-import { GiscusComments } from "../../components/giscus-comments";
+import { getBook } from "@/service/books";
+import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
+import { MDX } from "@/components/mdx";
+import Title from "@/components/title";
+import Time from "@/components/time";
+import Summary from "@/components/summary";
+import TableOfContents from "@/components/table-of-contents";
+import { GiscusComments } from "@/components/giscus-comments";
 
 export default function BookDetailPage() {
   const { slug } = useParams();
