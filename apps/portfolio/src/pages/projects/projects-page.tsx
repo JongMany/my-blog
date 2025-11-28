@@ -13,10 +13,7 @@ export default function Projects() {
 
   return (
     <div className="space-y-4">
-      <ProjectFilters
-        portfolioIndex={portfolioIndex}
-        filterState={filterState}
-      />
+      <ProjectFilters filterState={filterState} />
       <ProjectList projects={filterState.filteredProjects} />
     </div>
   );

@@ -6,6 +6,10 @@ import {
   createUpdateSearchParam,
   createToggleSearchParam,
 } from "../../../utils/search-params";
+import {
+  getTagsForSelectedProject,
+  isValidTagForProject,
+} from "../utils/filter-helpers";
 
 const SEARCH_PARAM_KEY = "q";
 const TAG_PARAM_KEY = "tag";
@@ -41,6 +45,18 @@ export function useProjectFilters(
     [setSearchParams],
   );
 
+  // 프로젝트 목록
+  const allProjects = useMemo(
+    () => portfolioIndex?.projects ?? [],
+    [portfolioIndex],
+  );
+
+  // 선택된 프로젝트에 따라 사용 가능한 태그 목록
+  const availableTags = useMemo(
+    () => getTagsForSelectedProject(portfolioIndex, selectedProject),
+    [portfolioIndex, selectedProject],
+  );
+
   // 필터링된 프로젝트 목록
   const filteredProjects = useMemo(() => {
     if (!portfolioIndex) return [];
@@ -50,6 +66,13 @@ export function useProjectFilters(
       selectedProject,
     });
   }, [portfolioIndex, searchInputValue, selectedTag, selectedProject]);
+
+  // 선택된 태그가 새로운 프로젝트에 없으면 태그 초기화
+  useEffect(() => {
+    if (!isValidTagForProject(portfolioIndex, selectedProject, selectedTag)) {
+      updateSearchParam(TAG_PARAM_KEY);
+    }
+  }, [selectedProject, selectedTag, portfolioIndex, updateSearchParam]);
 
   // 모든 필터 초기화
   const clearAllFilters = useCallback(() => {
@@ -74,6 +97,8 @@ export function useProjectFilters(
     selectedTag,
     selectedProject,
     filteredProjects,
+    allProjects,
+    availableTags,
 
     // 액션
     setSearchText: setSearchInputValue,
