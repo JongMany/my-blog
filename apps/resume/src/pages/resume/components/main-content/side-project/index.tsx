@@ -1,7 +1,7 @@
 import React from "react";
 
 import type { SideProject } from "../../../../../service";
-import { SectionWithAnimation } from "../../../../../components/layout";
+import { MotionStack } from "../../../../../components/stack";
 import SideProjectItem from "./SideProjectItem";
 
 interface SideProjectSectionProps {
@@ -16,13 +16,13 @@ export default function SideProjectSection({
   }
 
   return (
-    <SectionWithAnimation id="side-projects" title="사이드 프로젝트">
+    <MotionStack id="side-projects" title="사이드 프로젝트">
       {sideProjects.map((project) => (
         <SideProjectItem
           key={`${project.title}-${project.period}`}
           item={project}
         />
       ))}
-    </SectionWithAnimation>
+    </MotionStack>
   );
 }

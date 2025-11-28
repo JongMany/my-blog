@@ -1,22 +1,18 @@
 import React from "react";
-import Section from "./Section";
+import { Stack } from "./stack";
 
 import { motion } from "framer-motion";
 import { stagger } from "../../constants/motion.config";
 
-interface SectionWithAnimationProps {
+interface MotionStackProps {
   id: string;
   title: string;
   children: React.ReactNode;
 }
 
-export function SectionWithAnimation({
-  id,
-  title,
-  children,
-}: SectionWithAnimationProps) {
+export function MotionStack({ id, title, children }: MotionStackProps) {
   return (
-    <Section id={id} title={title}>
+    <Stack id={id} title={title}>
       <motion.div
         variants={stagger}
         initial="hidden"
@@ -25,6 +21,6 @@ export function SectionWithAnimation({
       >
         {children}
       </motion.div>
-    </Section>
+    </Stack>
   );
 }

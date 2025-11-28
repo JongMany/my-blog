@@ -1,1 +1,1 @@
-export { Card } from "./base-card";
+export { Card } from "./card";

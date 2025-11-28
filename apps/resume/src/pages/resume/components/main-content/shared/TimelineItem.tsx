@@ -9,7 +9,7 @@ import {
   RichText,
   MetaBadge,
   PillButton,
-  PortfolioLinks,
+  LinkGroup,
 } from "../../../../../components";
 import { vItem } from "../../../../../constants/motion.config";
 
@@ -58,10 +58,10 @@ function SectionItem({
         prefix={[]}
         keywordImageMap={keywordImageMap}
         RichText={RichText}
-        PortfolioLinks={PortfolioLinks}
+        LinkGroup={LinkGroup}
       />
       {section.portfolioLinks?.length && (
-        <PortfolioLinks links={section.portfolioLinks} />
+        <LinkGroup links={section.portfolioLinks} />
       )}
     </div>
   );
@@ -93,7 +93,7 @@ export function TimelineItem({
         <TimelineStacks stacks={item.stacks} />
         {item.portfolioLinks?.length && (
           <div className="mt-2">
-            <PortfolioLinks links={item.portfolioLinks} />
+            <LinkGroup links={item.portfolioLinks} />
           </div>
         )}
 
@@ -203,7 +203,7 @@ function TimelineBullets({
         prefix={[]}
         keywordImageMap={keywordImageMap}
         RichText={RichText}
-        PortfolioLinks={PortfolioLinks}
+        LinkGroup={LinkGroup}
       />
     </div>
   );

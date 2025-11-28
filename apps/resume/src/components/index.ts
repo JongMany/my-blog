@@ -12,5 +12,5 @@ export * from "./bullet-list";
 // Rich Text Components
 export * from "./rich-text";
 
-// Portfolio Link Components
-export * from "./portfolio-link";
+// Link Components
+export * from "./link";

@@ -9,7 +9,7 @@ export function MetaBadge(p: React.HTMLAttributes<HTMLSpanElement>) {
         "inline-flex items-center rounded-full",
         "border border-[var(--border)] bg-[var(--surface)]",
         "px-2 py-[2px] text-[11px]",
-        "[font-variant-numeric:tabular-nums] text-[var(--muted-fg)]",
+        "tabular-nums text-[var(--muted-fg)]",
         className,
       )}
       {...rest}

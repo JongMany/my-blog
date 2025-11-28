@@ -20,7 +20,7 @@ export function BulletList({
   keywordImageMap,
   keyGenerator = defaultKeyGenerator,
   RichText,
-  PortfolioLinks,
+  LinkGroup,
 }: BulletListProps) {
   // 최대 중첩 레벨 체크
   if (level > MAX_NESTING_LEVEL) {
@@ -51,7 +51,7 @@ export function BulletList({
               keywordImageMap={keywordImageMap}
               keyGenerator={keyGenerator}
               RichText={RichText}
-              PortfolioLinks={PortfolioLinks}
+              LinkGroup={LinkGroup}
               BulletList={BulletList}
             />
           </li>
