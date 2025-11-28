@@ -1,8 +1,8 @@
 import React from "react";
 
-import type { Education } from "../../../../../service";
-import { SectionWithAnimation } from "../../../../../components/layout";
-import EducationItem from "./EducationItem";
+import type { Education } from "@/service";
+import { MotionStack } from "@/components/stack";
+import EducationItem from "./education-item";
 
 interface EducationSectionProps {
   education: Education[];
@@ -10,13 +10,13 @@ interface EducationSectionProps {
 
 export default function EducationSection({ education }: EducationSectionProps) {
   return (
-    <SectionWithAnimation id="education" title="교육">
+    <MotionStack id="education" title="교육">
       {education.map((educationItem) => (
         <EducationItem
           key={`${educationItem.school}-${educationItem.period}`}
           item={educationItem}
         />
       ))}
-    </SectionWithAnimation>
+    </MotionStack>
   );
 }

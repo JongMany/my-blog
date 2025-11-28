@@ -1,5 +1,5 @@
 import type React from "react";
-import type { PortfolioLink } from "../../../service";
+import type { PortfolioLink } from "@/service";
 
 /**
  * 불릿 아이템 데이터 타입
@@ -28,14 +28,13 @@ export interface RichTextComponentProps {
 export type RichTextComponent = React.ComponentType<RichTextComponentProps>;
 
 /**
- * 포트폴리오 링크 컴포넌트 타입
+ * 링크 그룹 컴포넌트 타입
  */
-export interface PortfolioLinksComponentProps {
+export interface LinkGroupComponentProps {
   links: Array<PortfolioLink>;
 }
 
-export type PortfolioLinksComponent =
-  React.ComponentType<PortfolioLinksComponentProps>;
+export type LinkGroupComponent = React.ComponentType<LinkGroupComponentProps>;
 
 /**
  * 불릿 리스트 Props 타입
@@ -53,8 +52,8 @@ export interface BulletListProps {
   keyGenerator?: KeyGenerator;
   /** 리치 텍스트 컴포넌트 (의존성 주입) */
   RichText?: RichTextComponent;
-  /** 포트폴리오 링크 컴포넌트 (의존성 주입) */
-  PortfolioLinks?: PortfolioLinksComponent;
+  /** 링크 그룹 컴포넌트 (의존성 주입) */
+  LinkGroup?: LinkGroupComponent;
 }
 
 /**

@@ -1,23 +1,20 @@
 import { cn } from "@srf/ui";
 
-import type {
-  Experience,
-  SideProject,
-  Education,
-  Activity,
-} from "../../../../service";
-import { PrintButton } from "../../../../components";
-import { useViewport } from "../../../../contexts/ViewportContext";
-import ActivitySection from "./activity";
-import EducationSection from "./education";
-import ExperienceSection from "./experience";
-import SideProjectSection from "./side-project";
+import type { Experience, SideProject, Education, Activity } from "@/service";
+import { PrintButton } from "@/components";
+import { useViewport } from "@/contexts/viewport-context";
+import ActivitySection from "@/pages/resume/components/content-item/activity";
+import EducationSection from "@/pages/resume/components/content-item/education";
+import ExperienceSection from "@/pages/resume/components/content-item/experience";
+import SideProjectSection from "@/pages/resume/components/content-item/side-project";
+import SkillsCard from "@/pages/resume/components/content-item/skills";
 
 interface MainContentProps {
   experiences: Experience[];
   sideProjects?: SideProject[];
   education: Education[];
   activities: Activity[];
+  skills?: string[];
 }
 
 export default function MainContent({
@@ -25,6 +22,7 @@ export default function MainContent({
   sideProjects,
   education,
   activities,
+  skills,
 }: MainContentProps) {
   const { isLargeDesktop } = useViewport();
 
@@ -36,6 +34,8 @@ export default function MainContent({
       )}
     >
       <ExperienceSection experiences={experiences} />
+      {/* 모바일에서만 skills를 경력 아래에 표시 */}
+      {!isLargeDesktop && <SkillsCard skills={skills} />}
       <SideProjectSection sideProjects={sideProjects} />
       <EducationSection education={education} />
       <ActivitySection activities={activities} />

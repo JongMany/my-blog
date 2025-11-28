@@ -2,10 +2,14 @@ import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
 import { imageSource } from "@mfe/shared";
 
-import type { ResumeData } from "../../../../service";
-import { Card } from "../../../../components/card";
-import { useViewport } from "../../../../contexts/ViewportContext";
-import { fadeUp, stagger, vItem } from "../../../../constants/motion.config";
+import type { ResumeData } from "@/service";
+import { Card } from "@/components/card";
+import { useViewport } from "@/contexts/viewport-context";
+import {
+  fadeUp,
+  staggerContainer,
+  fadeInItem,
+} from "@/constants/motion-variants";
 
 type ProfileHeaderProps = {
   profile: ResumeData["profile"];
@@ -118,7 +122,7 @@ function IntroList({ intro }: { intro: string[] }) {
 
   return (
     <motion.ul
-      variants={stagger}
+      variants={staggerContainer}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true }}
@@ -128,7 +132,7 @@ function IntroList({ intro }: { intro: string[] }) {
       )}
     >
       {intro.map((item) => (
-        <motion.li variants={vItem} key={item}>
+        <motion.li variants={fadeInItem} key={item}>
           {item}
         </motion.li>
       ))}

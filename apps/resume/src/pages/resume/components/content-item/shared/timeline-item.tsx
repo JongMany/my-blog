@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-import type { Bullet, PortfolioLink, Section } from "../../../../../service";
+import type { Bullet, PortfolioLink, Section } from "@/service";
 import {
   BulletList,
   Button,
@@ -9,9 +9,9 @@ import {
   RichText,
   MetaBadge,
   PillButton,
-  PortfolioLinks,
-} from "../../../../../components";
-import { vItem } from "../../../../../constants/motion.config";
+  LinkGroup,
+} from "@/components";
+import { fadeInItem } from "@/constants/motion-variants";
 
 export interface TimelineItemData {
   title: string;
@@ -58,10 +58,10 @@ function SectionItem({
         prefix={[]}
         keywordImageMap={keywordImageMap}
         RichText={RichText}
-        PortfolioLinks={PortfolioLinks}
+        LinkGroup={LinkGroup}
       />
       {section.portfolioLinks?.length && (
-        <PortfolioLinks links={section.portfolioLinks} />
+        <LinkGroup links={section.portfolioLinks} />
       )}
     </div>
   );
@@ -85,7 +85,7 @@ export function TimelineItem({
   const hasMoreItems = bullets.length > maxCollapsedItems;
 
   return (
-    <motion.article variants={vItem} className="relative pl-4 avoid-break">
+    <motion.article variants={fadeInItem} className="relative pl-4 avoid-break">
       <TimelineRail />
       <Card className="p-4">
         <TimelineHeader item={item} emphasizeTitle={emphasizeTitle} />
@@ -93,7 +93,7 @@ export function TimelineItem({
         <TimelineStacks stacks={item.stacks} />
         {item.portfolioLinks?.length && (
           <div className="mt-2">
-            <PortfolioLinks links={item.portfolioLinks} />
+            <LinkGroup links={item.portfolioLinks} />
           </div>
         )}
 
@@ -203,7 +203,7 @@ function TimelineBullets({
         prefix={[]}
         keywordImageMap={keywordImageMap}
         RichText={RichText}
-        PortfolioLinks={PortfolioLinks}
+        LinkGroup={LinkGroup}
       />
     </div>
   );

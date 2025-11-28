@@ -1,9 +1,9 @@
 import React from "react";
-import type { BulletListProps } from "../types";
+import type { BulletListProps } from "@/components/bullet-list/types";
 import { BulletItem } from "./bullet-item";
-import { getListStyles } from "../lib/list-styles";
-import { ARIA_LABELS, MAX_NESTING_LEVEL } from "../constants";
-import { defaultKeyGenerator } from "../lib/key-generator";
+import { getListStyles } from "@/components/bullet-list/lib/list-styles";
+import { ARIA_LABELS, MAX_NESTING_LEVEL } from "@/components/bullet-list/constants";
+import { defaultKeyGenerator } from "@/components/bullet-list/lib/key-generator";
 
 /**
  * 재귀적으로 렌더링되는 불릿 리스트 컴포넌트
@@ -20,7 +20,7 @@ export function BulletList({
   keywordImageMap,
   keyGenerator = defaultKeyGenerator,
   RichText,
-  PortfolioLinks,
+  LinkGroup,
 }: BulletListProps) {
   // 최대 중첩 레벨 체크
   if (level > MAX_NESTING_LEVEL) {
@@ -51,7 +51,7 @@ export function BulletList({
               keywordImageMap={keywordImageMap}
               keyGenerator={keyGenerator}
               RichText={RichText}
-              PortfolioLinks={PortfolioLinks}
+              LinkGroup={LinkGroup}
               BulletList={BulletList}
             />
           </li>

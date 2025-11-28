@@ -1,4 +1,4 @@
-import { Experience, Education, Activity, SideProject } from "../service";
+import { Experience, Education, Activity, SideProject } from "@/service";
 
 export function filterExperienceForCompact(experience: Experience): Experience {
   return {

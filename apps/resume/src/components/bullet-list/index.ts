@@ -6,5 +6,5 @@ export type {
   Bullet,
   BulletListProps,
   RichTextComponent,
-  PortfolioLinksComponent,
+  LinkGroupComponent,
 } from "./types";

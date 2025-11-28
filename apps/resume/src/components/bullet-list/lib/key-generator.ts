@@ -1,4 +1,4 @@
-import type { KeyGenerator } from "../types";
+import type { KeyGenerator } from "@/components/bullet-list/types";
 
 /**
  * 기본 키 생성 함수

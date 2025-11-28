@@ -3,11 +3,11 @@ import type {
   Bullet,
   KeyGenerator,
   RichTextComponent,
-  PortfolioLinksComponent,
+  LinkGroupComponent,
   BulletListComponent,
-} from "../types";
+} from "@/components/bullet-list/types";
 import { BulletTag } from "./bullet-tag";
-import { ARIA_LABELS } from "../constants";
+import { ARIA_LABELS } from "@/components/bullet-list/constants";
 
 interface BulletItemProps {
   /** 렌더링할 불릿 아이템 데이터 */
@@ -22,8 +22,8 @@ interface BulletItemProps {
   keyGenerator: KeyGenerator;
   /** 리치 텍스트 컴포넌트 (의존성 주입) */
   RichText?: RichTextComponent;
-  /** 포트폴리오 링크 컴포넌트 (의존성 주입) */
-  PortfolioLinks?: PortfolioLinksComponent;
+  /** 링크 그룹 컴포넌트 (의존성 주입) */
+  LinkGroup?: LinkGroupComponent;
   /** 불릿 리스트 컴포넌트 (의존성 주입 - 순환 참조 제거) */
   BulletList: BulletListComponent;
 }
@@ -44,7 +44,7 @@ export const BulletItem = React.memo(function BulletItem({
   keywordImageMap,
   keyGenerator,
   RichText,
-  PortfolioLinks,
+  LinkGroup,
   BulletList,
 }: BulletItemProps) {
   // 태그와 하위 컴포넌트에서 사용할 고유 키 접두사
@@ -105,15 +105,15 @@ export const BulletItem = React.memo(function BulletItem({
             keywordImageMap={keywordImageMap}
             keyGenerator={keyGenerator}
             RichText={RichText}
-            PortfolioLinks={PortfolioLinks}
+            LinkGroup={LinkGroup}
           />
         </div>
       ) : null}
 
-      {/* 포트폴리오 링크들 */}
-      {item.portfolioLinks?.length && PortfolioLinks ? (
+      {/* 링크 그룹 */}
+      {item.portfolioLinks?.length && LinkGroup ? (
         <div aria-label={ARIA_LABELS.PORTFOLIO_LINKS}>
-          <PortfolioLinks links={item.portfolioLinks} />
+          <LinkGroup links={item.portfolioLinks} />
         </div>
       ) : null}
     </>
