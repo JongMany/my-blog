@@ -1,4 +1,4 @@
-import type { SideProject } from "../types";
+import type { SideProject } from "@/service/types";
 
 export const sideProjects: SideProject[] = [
   {

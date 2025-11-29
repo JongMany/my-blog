@@ -6,7 +6,7 @@ import {
 import { useMermaidRender } from "./use-mermaid-render";
 import { useDiagramZoom } from "./use-diagram-zoom";
 import { useDiagramDrag } from "./use-diagram-drag";
-import type { MermaidDiagramProps } from "../lib/types";
+import type { MermaidDiagramProps } from "@/components/mdx/lib/types";
 
 export function MermaidDiagram({
   children,

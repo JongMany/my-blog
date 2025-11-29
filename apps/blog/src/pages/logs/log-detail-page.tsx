@@ -8,12 +8,13 @@ import Title from "@/components/title";
 import Summary from "@/components/summary";
 import Time from "@/components/time";
 import { GiscusComments } from "@/components/giscus-comments";
+import NotFoundPage from "@/components/not-found-page";
 
 export default function LogDetailPage() {
   const { slug } = useParams();
   const log = getLog(slug ?? "");
   if (!log) {
-    return <div>Log not found</div>;
+    return <NotFoundPage />;
   }
 
   const { content } = log;

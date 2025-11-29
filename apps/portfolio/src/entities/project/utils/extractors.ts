@@ -1,5 +1,5 @@
 import { isString } from "@mfe/shared";
-import type { ProjectMeta } from "../model/types";
+import type { ProjectMeta } from "@/entities/project/model/types";
 
 /**
  * 프로젝트 메타데이터에서 정보를 추출하는 유틸리티 클래스

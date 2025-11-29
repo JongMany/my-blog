@@ -26,7 +26,13 @@ export default function ProjectDetail() {
   }, [portfolioIndex, slug]);
 
   if (!project) {
-    return <ErrorMessage message={MESSAGE_CONSTANTS.NOT_FOUND_MESSAGE} />;
+    return (
+      <ErrorMessage
+        message={MESSAGE_CONSTANTS.NOT_FOUND_MESSAGE}
+        illustrationSrc="/404.svg"
+        illustrationAlt="프로젝트를 찾을 수 없음을 나타내는 일러스트"
+      />
+    );
   }
 
   return (

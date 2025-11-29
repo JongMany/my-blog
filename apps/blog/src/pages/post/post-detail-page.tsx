@@ -8,12 +8,13 @@ import Title from "@/components/title";
 import Summary from "@/components/summary";
 import Time from "@/components/time";
 import { GiscusComments } from "@/components/giscus-comments";
+import NotFoundPage from "@/components/not-found-page";
 
 export default function PostDetailPage() {
   const { slug } = useParams();
   const post = getPost(slug ?? "");
   if (!post) {
-    return <div>Post not found</div>;
+    return <NotFoundPage />;
   }
 
   const { content } = post;
