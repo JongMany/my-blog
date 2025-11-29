@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
@@ -32,16 +32,19 @@ export default function Layout({ children }: PropsWithChildren) {
       {/* <HeroBackdrop /> */}
 
       <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
-        <div className="shell:flex shell:items-center shell:gap-2 shell:mr-2">
+        <Link
+          to="/"
+          className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
+        >
           <img
-            src="/icon.png"
-            alt=""
-            className="shell:w-6 shell:h-6 shell:object-contain"
+            src="/favicon.svg"
+            alt="방구석 코딩쟁이"
+            className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
           />
           <div className="shell:text-xl shell:font-semibold shell:tracking-tight">
             방구석 코딩쟁이
           </div>
-        </div>
+        </Link>
 
         <div
           ref={navRef}
