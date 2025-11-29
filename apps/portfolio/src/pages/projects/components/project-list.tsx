@@ -1,4 +1,4 @@
-import { ProjectGrid, ProjectCard } from "../../../components/common";
+import { ProjectGrid, ProjectCard } from "@/components/common";
 import type { ProjectMeta } from "@/entities/project";
 import { MESSAGE_CONSTANTS } from "@/pages/projects/constants/messages";
 
