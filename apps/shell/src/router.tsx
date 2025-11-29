@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 
 import Layout from "./components/root-layout";
 import BootRedirect from "./components/boot-redirect";
+import NotFoundPage from "./components/not-found-page";
 import { withBoundary } from "./components/with-boundary";
 import { lazyRemote } from "./mfe/lazy-remote";
 import "./App.css";
@@ -59,6 +60,7 @@ export const router = createBrowserRouter(
         { path: "blog/*", element: <BlogApp /> },
         { path: "portfolio/*", element: <PortfolioApp /> },
         { path: "resume/*", element: <ResumeApp /> },
+        { path: "*", element: <NotFoundPage /> },
       ],
     },
   ],

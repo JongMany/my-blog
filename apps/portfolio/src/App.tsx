@@ -4,6 +4,7 @@ import { Layout, ProjectsLayout } from "./components/layout";
 import HomePage from "./pages/home/home-page";
 import ProjectsPage from "./pages/projects/projects-page";
 import ProjectDetailPage from "./pages/project-detail/project-detail-page";
+import NotFoundPage from "./components/not-found-page";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route index element={<ProjectsPage />} />
           <Route path=":slug" element={<ProjectDetailPage />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

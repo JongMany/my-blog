@@ -32,8 +32,15 @@ export default function Layout({ children }: PropsWithChildren) {
       {/* <HeroBackdrop /> */}
 
       <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
-        <div className="shell:mr-2 shell:text-xl shell:font-semibold shell:tracking-tight">
-          방구석 코딩쟁이
+        <div className="shell:flex shell:items-center shell:gap-2 shell:mr-2">
+          <img
+            src="/icon.png"
+            alt=""
+            className="shell:w-6 shell:h-6 shell:object-contain"
+          />
+          <div className="shell:text-xl shell:font-semibold shell:tracking-tight">
+            방구석 코딩쟁이
+          </div>
         </div>
 
         <div

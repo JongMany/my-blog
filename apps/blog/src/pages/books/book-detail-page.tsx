@@ -7,12 +7,13 @@ import Time from "@/components/time";
 import Summary from "@/components/summary";
 import TableOfContents from "@/components/table-of-contents";
 import { GiscusComments } from "@/components/giscus-comments";
+import NotFoundPage from "@/components/not-found-page";
 
 export default function BookDetailPage() {
   const { slug } = useParams();
   const book = getBook(slug ?? "");
   if (!book) {
-    return <div>Book not found</div>;
+    return <NotFoundPage />;
   }
 
   const { content } = book;
