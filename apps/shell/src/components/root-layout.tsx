@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { imageSource } from "@mfe/shared";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
@@ -15,6 +16,9 @@ export default function Layout({ children }: PropsWithChildren) {
   const navRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const logoSrc = imageSource("/favicon.svg", "home", {
+    isDevelopment: import.meta.env.DEV,
+  });
 
   useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
@@ -37,7 +41,7 @@ export default function Layout({ children }: PropsWithChildren) {
           className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
         >
           <img
-            src="/favicon.svg"
+            src={logoSrc}
             alt="방구석 코딩쟁이"
             className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
           />
