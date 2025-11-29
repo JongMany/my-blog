@@ -1,4 +1,4 @@
-import type { Activity } from "../types";
+import type { Activity } from "@/service/types";
 
 export const activities: Activity[] = [
   {

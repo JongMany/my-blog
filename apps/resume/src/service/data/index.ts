@@ -1,10 +1,10 @@
-import type { ResumeData } from "../types";
-import { profile } from "./profile";
-import { experiences } from "./experiences";
-import { sideProjects } from "./side-projects";
-import { education } from "./education";
-import { activities } from "./activities";
-import { skills } from "./skills";
+import type { ResumeData } from "@/service/types";
+import { profile } from "@/service/data/profile";
+import { experiences } from "@/service/data/experiences";
+import { sideProjects } from "@/service/data/side-projects";
+import { education } from "@/service/data/education";
+import { activities } from "@/service/data/activities";
+import { skills } from "@/service/data/skills";
 
 export const resume: ResumeData = {
   profile,

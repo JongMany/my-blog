@@ -1,4 +1,4 @@
-import type { ProjectIndex } from "../model/types";
+import type { ProjectIndex } from "@/entities/project/model/types";
 
 const TOP_PROJECTS_COUNT = 6;
 

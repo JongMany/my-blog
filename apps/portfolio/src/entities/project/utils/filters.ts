@@ -1,4 +1,4 @@
-import type { ProjectMeta } from "../model/types";
+import type { ProjectMeta } from "@/entities/project/model/types";
 import { contains } from "@/utils/string";
 
 interface FilterOptions {

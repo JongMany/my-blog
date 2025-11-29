@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { MermaidDiagram } from "../mermaid/mermaid-diagram";
+import { MermaidDiagram } from "@/components/mdx/mermaid/mermaid-diagram";
 import { isMermaid } from "./utils";
-import type { MermaidDataAttributes } from "../lib/types";
+import type { MermaidDataAttributes } from "@/components/mdx/lib/types";
 
 interface DivProps
   extends React.HTMLAttributes<HTMLDivElement>,

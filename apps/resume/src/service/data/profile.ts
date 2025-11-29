@@ -1,4 +1,4 @@
-import type { Profile } from "../types";
+import type { Profile } from "@/service/types";
 
 export const profile: Profile = {
   name: "이종민",

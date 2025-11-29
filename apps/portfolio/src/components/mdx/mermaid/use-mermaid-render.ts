@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import mermaid from "mermaid/dist/mermaid.esm.min.mjs";
 import { generateMermaidId } from "./utils";
-import { normalizeMermaidCode } from "../lib/utils";
+import { normalizeMermaidCode } from "@/components/mdx/lib/utils";
 import type { ReactNode } from "react";
 
 const MERMAID_CONFIG = {

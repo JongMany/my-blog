@@ -1,4 +1,4 @@
-import { Image, Video, Mermaid, MDXLink } from "../custom";
+import { Image, Video, Mermaid, MDXLink } from "@/components/mdx/custom";
 import {
   createHeading,
   Paragraph,
