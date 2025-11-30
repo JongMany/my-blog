@@ -5,55 +5,93 @@ import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
 
-type NavItem = {
+// ===== Types =====
+export type NavItem = {
   to: string;
   label: string;
   end?: boolean;
 };
 
-const NAV: NavItem[] = [
+export type LogoConfig = {
+  logoSrc: string;
+  alt: string;
+  text: string;
+};
+
+export type LayoutDependencies = {
+  navItems?: NavItem[];
+  logoConfig?: LogoConfig;
+  gaMeasurementId?: string;
+  defaultActiveLabel?: string;
+  footerText?: string;
+};
+
+// ===== Default Values =====
+export const DEFAULT_NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Home", end: true },
   { to: "/blog", label: "Blog" },
   { to: "/portfolio", label: "Portfolio" },
   { to: "/resume", label: "Resume" },
 ];
 
-const DEFAULT_ACTIVE_LABEL = "Menu";
+export const DEFAULT_ACTIVE_LABEL = "Menu";
 
-function isNavItemActive(navItem: NavItem, pathname: string): boolean {
+export function getDefaultLogoConfig(): LogoConfig {
+  const isDevelopment = import.meta.env.MODE === "development";
+  return {
+    logoSrc: imageSource("/favicon.svg", "home", { isDevelopment }),
+    alt: "방구석 코딩쟁이",
+    text: "방구석 코딩쟁이",
+  };
+}
+
+// ===== Pure Functions (Testable) =====
+export function isNavItemActive(navItem: NavItem, pathname: string): boolean {
   if (navItem.to === "/") {
     return pathname === "/";
   }
   return pathname === navItem.to || pathname.startsWith(`${navItem.to}/`);
 }
 
-function useActiveNavLabel(pathname: string): string {
-  const activeNavItem = NAV.find((item) => isNavItemActive(item, pathname));
-  return activeNavItem?.label ?? DEFAULT_ACTIVE_LABEL;
+export function getActiveNavLabel(
+  navItems: NavItem[],
+  pathname: string,
+  defaultLabel: string,
+): string {
+  const activeNavItem = navItems.find((item) =>
+    isNavItemActive(item, pathname),
+  );
+  return activeNavItem?.label ?? defaultLabel;
 }
 
-function Logo() {
-  const isDevelopment = import.meta.env.MODE === "development";
-  const logoSrc = imageSource("/favicon.svg", "home", { isDevelopment });
+// ===== Components =====
+type LogoProps = {
+  config: LogoConfig;
+};
 
+function Logo({ config }: LogoProps) {
   return (
     <Link
       to="/"
       className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
     >
       <img
-        src={logoSrc}
-        alt="방구석 코딩쟁이"
+        src={config.logoSrc}
+        alt={config.alt}
         className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
       />
       <div className="shell:text-xl shell:font-semibold shell:tracking-tight shell:no-underline">
-        방구석 코딩쟁이
+        {config.text}
       </div>
     </Link>
   );
 }
 
-function DesktopNav() {
+type DesktopNavProps = {
+  navItems: NavItem[];
+};
+
+function DesktopNav({ navItems }: DesktopNavProps) {
   const navRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -62,15 +100,17 @@ function DesktopNav() {
       className="shell:relative shell:z-0 shell:gap-1 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:p-1 shell:hidden shell:md:flex"
     >
       <ActivePill containerRef={navRef} />
-      {NAV.map((item) => (
+      {navItems.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
           end={item.end}
           className={({ isActive }) =>
             cn(
-              "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-              isActive && "shell:text-gray-1",
+              "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
+              isActive
+                ? "shell:text-[var(--fg)] shell:font-semibold"
+                : "shell:text-[var(--muted-fg)]",
             )
           }
         >
@@ -85,15 +125,19 @@ function DesktopNav() {
   );
 }
 
+type MobileNavDropdownProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  activeLabel: string;
+  navItems: NavItem[];
+};
+
 function MobileNavDropdown({
   open,
   setOpen,
   activeLabel,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  activeLabel: string;
-}) {
+  navItems,
+}: MobileNavDropdownProps) {
   const { pathname } = useLocation();
 
   const handleClose = () => setOpen(false);
@@ -107,7 +151,7 @@ function MobileNavDropdown({
         aria-controls="mobile-nav-menu"
         className={cn(
           "shell:inline-flex shell:items-center shell:gap-2 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3 shell:py-1.5 shell:text-sm",
-          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
+          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
         )}
         onClick={() => setOpen(true)}
       >
@@ -144,7 +188,7 @@ function MobileNavDropdown({
             )}
           >
             <nav className="shell:flex shell:flex-col">
-              {NAV.map((item) => {
+              {navItems.map((item) => {
                 const isActive = isNavItemActive(item, pathname);
                 return (
                   <NavLink
@@ -157,9 +201,10 @@ function MobileNavDropdown({
                       cn(
                         "shell:block shell:px-4 shell:py-3 shell:text-sm shell:outline-none",
                         "hover:shell:bg-white/50 dark:hover:shell:bg-white/5",
-                        "shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-                        (rrActive || isActive) &&
-                          "shell:text-[var(--primary)] shell:font-medium",
+                        "shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
+                        rrActive || isActive
+                          ? "shell:text-[var(--fg)] shell:font-semibold"
+                          : "shell:text-[var(--muted-fg)]",
                       )
                     }
                   >
@@ -175,12 +220,30 @@ function MobileNavDropdown({
   );
 }
 
-export default function Layout({ children }: PropsWithChildren) {
+// ===== Main Layout Component =====
+type LayoutProps = PropsWithChildren<LayoutDependencies>;
+
+export default function Layout({
+  children,
+  navItems = DEFAULT_NAV_ITEMS,
+  logoConfig,
+  gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID,
+  defaultActiveLabel = DEFAULT_ACTIVE_LABEL,
+  footerText = `© ${new Date().getFullYear()} · Frontend Developer`,
+}: LayoutProps) {
   const { pathname } = useLocation();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const activeLabel = useActiveNavLabel(pathname);
 
-  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  // Logo config 주입 또는 기본값 사용
+  const finalLogoConfig: LogoConfig = logoConfig ?? getDefaultLogoConfig();
+
+  // Active label 계산
+  const activeLabel = getActiveNavLabel(navItems, pathname, defaultActiveLabel);
+
+  // GA 측정 ID가 제공된 경우에만 사용
+  if (gaMeasurementId) {
+    useGaPageViews(gaMeasurementId);
+  }
 
   useEffect(() => {
     setIsMobileNavOpen(false);
@@ -189,18 +252,19 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col">
       <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
-        <Logo />
-        <DesktopNav />
+        <Logo config={finalLogoConfig} />
+        <DesktopNav navItems={navItems} />
         <MobileNavDropdown
           open={isMobileNavOpen}
           setOpen={setIsMobileNavOpen}
           activeLabel={activeLabel}
+          navItems={navItems}
         />
       </header>
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
       <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
-        © {new Date().getFullYear()} · Frontend Developer
+        {footerText}
       </footer>
     </div>
   );

@@ -85,7 +85,7 @@ export default function ActivePill({
   return (
     <span
       aria-hidden
-      className="shell:pointer-events-none shell:absolute shell:left-0 shell:top-1/2 shell:-translate-y-1/2 shell:z-0 shell:rounded-full shell:transition-[transform,width] shell:duration-200 shell:will-change-transform shell:bg-[var(--primary)]"
+      className="shell:pointer-events-none shell:absolute shell:left-0 shell:top-1/2 shell:-translate-y-1/2 shell:z-0 shell:rounded-full shell:transition-[transform,width] shell:duration-200 shell:will-change-transform shell:bg-[rgba(8,24,48,0.08)] dark:shell:bg-[rgba(255,255,255,0.12)]"
       style={style}
     />
   );
