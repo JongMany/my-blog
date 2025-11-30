@@ -29,7 +29,7 @@ type AnalyticsTotals = {
 /**
  * Google Analytics 페이지별 통계 데이터
  */
-type AnalyticsPageData = {
+export type AnalyticsPageData = {
   path: string;
   views: number;
   users: number;
@@ -116,51 +116,52 @@ class AnalyticsCacheManager<T = unknown> {
       (typeof sessionStorage !== "undefined" ? sessionStorage : null);
   }
 
-  private getCacheStore(): Record<string, CacheEntry<T>> {
+  private loadCacheStoreFromStorage(): Record<string, CacheEntry<T>> {
     if (!this.storage) return {};
     try {
-      const data = this.storage.getItem(this.cacheKey);
-      return data ? JSON.parse(data) : {};
+      const cachedDataString = this.storage.getItem(this.cacheKey);
+      return cachedDataString ? JSON.parse(cachedDataString) : {};
     } catch {
       return {};
     }
   }
 
   /**
-   * 캐시에 데이터 저장
+   * 캐시에 데이터를 저장합니다.
    */
   set(key: string, value: T): void {
     if (!this.storage) return;
     try {
-      const store = this.getCacheStore();
-      store[key] = { timestamp: Date.now(), value };
-      this.storage.setItem(this.cacheKey, JSON.stringify(store));
+      const cacheStore = this.loadCacheStoreFromStorage();
+      cacheStore[key] = { timestamp: Date.now(), value };
+      this.storage.setItem(this.cacheKey, JSON.stringify(cacheStore));
     } catch {
       // 스토리지 오류는 무시 (용량 초과 등)
     }
   }
 
   /**
-   * 캐시에서 데이터 조회
+   * 캐시에서 데이터를 조회합니다.
    * @param key 캐시 키
    * @param ttlSeconds 캐시 유효 시간 (초). 지정하지 않으면 만료되지 않음
    * @returns 캐시된 데이터 또는 null
    */
   get(key: string, ttlSeconds?: number): T | null {
-    const store = this.getCacheStore();
-    const entry = store[key];
-    if (!entry) return null;
+    const cacheStore = this.loadCacheStoreFromStorage();
+    const cacheEntry = cacheStore[key];
+    if (!cacheEntry) return null;
 
     // TTL 체크
     if (ttlSeconds !== undefined) {
-      const isExpired = Date.now() - entry.timestamp >= ttlSeconds * 1000;
-      if (isExpired) return null;
+      const cacheAgeInMilliseconds = Date.now() - cacheEntry.timestamp;
+      const isCacheExpired = cacheAgeInMilliseconds >= ttlSeconds * 1000;
+      if (isCacheExpired) return null;
     }
 
     // 유효성 검사
-    if (this.validator && !this.validator(entry.value)) return null;
+    if (this.validator && !this.validator(cacheEntry.value)) return null;
 
-    return entry.value;
+    return cacheEntry.value;
   }
 }
 
@@ -219,120 +220,129 @@ class RequestCancellationController {
 /**
  * JSONP 콜백 함수 타입
  */
-type JsonpCallback = (data: AnalyticsApiResponse) => void;
+type JsonpCallbackFunction = (data: AnalyticsApiResponse) => void;
 
 /**
- * window 객체에 JSONP 콜백을 안전하게 설정/제거하는 헬퍼
+ * window 객체에 JSONP 콜백 함수를 안전하게 등록합니다.
  */
-function setJsonpCallback(callbackName: string, callback: JsonpCallback): void {
+function registerJsonpCallbackOnWindow(
+  callbackFunctionName: string,
+  callbackFunction: JsonpCallbackFunction,
+): void {
   const windowWithCallback = window as unknown as Record<
     string,
-    JsonpCallback | undefined
+    JsonpCallbackFunction | undefined
   >;
-  windowWithCallback[callbackName] = callback;
+  windowWithCallback[callbackFunctionName] = callbackFunction;
 }
 
-function removeJsonpCallback(callbackName: string): void {
+/**
+ * window 객체에서 JSONP 콜백 함수를 안전하게 제거합니다.
+ */
+function unregisterJsonpCallbackFromWindow(callbackFunctionName: string): void {
   const windowWithCallback = window as unknown as Record<
     string,
-    JsonpCallback | undefined
+    JsonpCallbackFunction | undefined
   >;
-  if (callbackName in windowWithCallback) {
-    delete windowWithCallback[callbackName];
+  if (callbackFunctionName in windowWithCallback) {
+    delete windowWithCallback[callbackFunctionName];
   }
 }
 
 /**
- * JSONP를 사용하여 Google Analytics API 데이터 조회
+ * JSONP를 사용하여 Google Analytics API 데이터를 조회합니다.
  * CORS 제한을 우회하기 위해 사용됩니다.
  */
-function fetchAnalyticsDataViaJsonp(
+function fetchAnalyticsDataUsingJsonp(
   apiUrl: string,
 ): Promise<AnalyticsApiResponse> {
   return new Promise((resolve, reject) => {
-    const callbackName = `__analytics_jsonp_${Date.now()}_${Math.random()
+    const uniqueCallbackName = `__analytics_jsonp_${Date.now()}_${Math.random()
       .toString(36)
       .slice(2)}`;
-    const scriptElement = document.createElement("script");
-    let isResolved = false;
-    let timeoutId: ReturnType<typeof setTimeout>;
+    const jsonpScriptElement = document.createElement("script");
+    let hasAlreadyResolved = false;
+    let requestTimeoutId: ReturnType<typeof setTimeout>;
 
-    const cleanup = () => {
-      clearTimeout(timeoutId);
-      if (scriptElement.parentNode) {
-        scriptElement.remove();
+    const cleanupJsonpResources = () => {
+      clearTimeout(requestTimeoutId);
+      if (jsonpScriptElement.parentNode) {
+        jsonpScriptElement.remove();
       }
-      removeJsonpCallback(callbackName);
+      unregisterJsonpCallbackFromWindow(uniqueCallbackName);
     };
 
-    const resolveOnce = (value: AnalyticsApiResponse) => {
-      if (isResolved) return;
-      isResolved = true;
-      cleanup();
+    const resolvePromiseOnce = (value: AnalyticsApiResponse) => {
+      if (hasAlreadyResolved) return;
+      hasAlreadyResolved = true;
+      cleanupJsonpResources();
       resolve(value);
     };
 
-    const rejectOnce = (error: Error) => {
-      if (isResolved) return;
-      isResolved = true;
-      cleanup();
+    const rejectPromiseOnce = (error: Error) => {
+      if (hasAlreadyResolved) return;
+      hasAlreadyResolved = true;
+      cleanupJsonpResources();
       reject(error);
     };
 
-    timeoutId = setTimeout(
-      () => rejectOnce(new Error("JSONP 요청 시간 초과")),
+    requestTimeoutId = setTimeout(
+      () => rejectPromiseOnce(new Error("JSONP 요청 시간 초과")),
       JSONP_REQUEST_TIMEOUT_MS,
     );
 
-    const callback: JsonpCallback = (data: AnalyticsApiResponse) =>
-      resolveOnce(data);
-    setJsonpCallback(callbackName, callback);
+    const jsonpCallbackHandler: JsonpCallbackFunction = (
+      data: AnalyticsApiResponse,
+    ) => resolvePromiseOnce(data);
+    registerJsonpCallbackOnWindow(uniqueCallbackName, jsonpCallbackHandler);
 
-    scriptElement.onerror = () =>
-      rejectOnce(new Error("JSONP 스크립트 로드 실패"));
-    scriptElement.async = true;
+    jsonpScriptElement.onerror = () =>
+      rejectPromiseOnce(new Error("JSONP 스크립트 로드 실패"));
+    jsonpScriptElement.async = true;
 
-    const querySeparator = apiUrl.includes("?") ? "&" : "?";
-    scriptElement.src = `${apiUrl}${querySeparator}callback=${callbackName}`;
-    document.body.appendChild(scriptElement);
+    const urlQuerySeparator = apiUrl.includes("?") ? "&" : "?";
+    jsonpScriptElement.src = `${apiUrl}${urlQuerySeparator}callback=${uniqueCallbackName}`;
+    document.body.appendChild(jsonpScriptElement);
   });
 }
 
 /**
- * Google Analytics API 데이터 조회
+ * Google Analytics API 데이터를 조회합니다.
  * fetch를 시도하고 실패 시 JSONP로 폴백합니다.
  */
-async function fetchAnalyticsData(
+async function fetchAnalyticsDataFromApi(
   apiUrl: string,
   abortSignal: AbortSignal,
   shouldForceJsonp: boolean,
 ): Promise<AnalyticsApiResponse> {
   if (shouldForceJsonp) {
-    return fetchAnalyticsDataViaJsonp(apiUrl);
+    return fetchAnalyticsDataUsingJsonp(apiUrl);
   }
 
   try {
-    const response = await fetch(apiUrl, {
+    const httpResponse = await fetch(apiUrl, {
       signal: abortSignal,
       credentials: "omit",
       cache: "no-store",
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    if (!httpResponse.ok) {
+      throw new Error(
+        `HTTP ${httpResponse.status}: ${httpResponse.statusText}`,
+      );
     }
 
-    return await response.json();
+    return await httpResponse.json();
   } catch (error) {
     // CORS 오류 등으로 fetch 실패 시 JSONP로 폴백
-    return fetchAnalyticsDataViaJsonp(apiUrl);
+    return fetchAnalyticsDataUsingJsonp(apiUrl);
   }
 }
 
 /**
- * Analytics 조회 범위에 따라 페이지 경로 결정
+ * Analytics 조회 범위에 따라 실제 조회할 페이지 경로를 결정합니다.
  */
-function resolveAnalyticsPagePath(
+function determineTargetPagePathForAnalytics(
   scope: AnalyticsScope,
   pagePath?: string,
 ): string | undefined {
@@ -342,9 +352,9 @@ function resolveAnalyticsPagePath(
 }
 
 /**
- * Google Analytics API URL 생성
+ * Google Analytics API 요청 URL을 생성합니다.
  */
-function buildAnalyticsApiUrl(
+function constructAnalyticsApiRequestUrl(
   baseApiUrl: string,
   scope: AnalyticsScope,
   pagePath: string | undefined,
@@ -352,12 +362,12 @@ function buildAnalyticsApiUrl(
   endDate: string,
 ): string | null {
   if (!baseApiUrl) return null;
-  const url = new URL(baseApiUrl);
-  url.searchParams.set("scope", scope);
-  if (pagePath) url.searchParams.set("path", pagePath);
-  url.searchParams.set("start", startDate);
-  url.searchParams.set("end", endDate);
-  return url.toString();
+  const requestUrl = new URL(baseApiUrl);
+  requestUrl.searchParams.set("scope", scope);
+  if (pagePath) requestUrl.searchParams.set("path", pagePath);
+  requestUrl.searchParams.set("start", startDate);
+  requestUrl.searchParams.set("end", endDate);
+  return requestUrl.toString();
 }
 
 // ===== 메인 훅 =====
@@ -400,11 +410,11 @@ export function useGoogleAnalyticsStats({
 
   const analyticsApiUrl = useMemo(() => {
     if (!apiUrl) return null;
-    const resolvedPagePath = resolveAnalyticsPagePath(scope, pagePath);
-    return buildAnalyticsApiUrl(
+    const targetPagePath = determineTargetPagePathForAnalytics(scope, pagePath);
+    return constructAnalyticsApiRequestUrl(
       apiUrl,
       scope,
-      resolvedPagePath,
+      targetPagePath,
       startDate,
       endDate,
     );
@@ -432,18 +442,21 @@ export function useGoogleAnalyticsStats({
       pageDataList: [],
     });
 
-    const fetchAndUpdateState = async () => {
-      const abortSignal = cancellationController.createAbortSignal();
-      const cachedResponse = cache.get(analyticsApiUrl, cacheTtlSeconds);
+    const fetchAnalyticsDataAndUpdateState = async () => {
+      const requestAbortSignal = cancellationController.createAbortSignal();
+      const cachedAnalyticsResponse = cache.get(
+        analyticsApiUrl,
+        cacheTtlSeconds,
+      );
 
       // 캐시된 데이터가 있으면 사용
-      if (cachedResponse) {
+      if (cachedAnalyticsResponse) {
         if (!cancellationController.hasBeenCancelled()) {
           setState({
             loading: false,
             error: null,
-            totals: cachedResponse.totals ?? null,
-            pageDataList: cachedResponse.rows ?? [],
+            totals: cachedAnalyticsResponse.totals ?? null,
+            pageDataList: cachedAnalyticsResponse.rows ?? [],
           });
         }
         return;
@@ -451,18 +464,18 @@ export function useGoogleAnalyticsStats({
 
       // API에서 데이터 조회
       try {
-        const response = await fetchAnalyticsData(
+        const analyticsApiResponse = await fetchAnalyticsDataFromApi(
           analyticsApiUrl,
-          abortSignal,
+          requestAbortSignal,
           shouldForceJsonp,
         );
 
         if (cancellationController.hasBeenCancelled()) return;
 
-        if (!response?.ok) {
+        if (!analyticsApiResponse?.ok) {
           setState({
             loading: false,
-            error: response?.error || "API 오류가 발생했습니다",
+            error: analyticsApiResponse?.error || "API 오류가 발생했습니다",
             totals: null,
             pageDataList: [],
           });
@@ -470,14 +483,14 @@ export function useGoogleAnalyticsStats({
         }
 
         // 캐시에 저장
-        cache.set(analyticsApiUrl, response);
+        cache.set(analyticsApiUrl, analyticsApiResponse);
 
         if (!cancellationController.hasBeenCancelled()) {
           setState({
             loading: false,
             error: null,
-            totals: response.totals ?? null,
-            pageDataList: response.rows ?? [],
+            totals: analyticsApiResponse.totals ?? null,
+            pageDataList: analyticsApiResponse.rows ?? [],
           });
         }
       } catch (error) {
@@ -495,7 +508,7 @@ export function useGoogleAnalyticsStats({
       }
     };
 
-    fetchAndUpdateState();
+    fetchAnalyticsDataAndUpdateState();
 
     return () => cancellationController.cancelAllRequests();
   }, [analyticsApiUrl, cacheTtlSeconds, shouldForceJsonp, enabled]);
@@ -525,7 +538,7 @@ export function useAllSiteAnalytics({
   shouldForceJsonp = false,
   enabled = true,
 }: UseAllSiteAnalyticsOptions): UseGoogleAnalyticsStatsResult {
-  return useGoogleAnalyticsStats({
+  const result = useGoogleAnalyticsStats({
     apiUrl,
     scope: "site",
     startDate,
@@ -534,4 +547,16 @@ export function useAllSiteAnalytics({
     shouldForceJsonp,
     enabled,
   });
+
+  // /my-blog로 시작하지 않는 경로 필터링
+  const filteredPageDataList = useMemo(() => {
+    return result.pageDataList.filter((pageData) =>
+      pageData.path.startsWith("/my-blog"),
+    );
+  }, [result.pageDataList]);
+
+  return {
+    ...result,
+    pageDataList: filteredPageDataList,
+  };
 }

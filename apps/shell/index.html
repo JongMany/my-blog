@@ -65,12 +65,14 @@
   /> -->
   <script defer>
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
+    window.gtag = function gtag() {
       dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
+    };
+    window.gtag("js", new Date());
 
-    gtag("config", "G-18LCQRWLKN");
+    window.gtag("config", "G-18LCQRWLKN", {
+      send_page_view: false, // React Router에서 수동으로 전송하므로 자동 전송 비활성화
+    });
 
     // window.dataLayer = window.dataLayer || [];
     // window.gtag = function () {
