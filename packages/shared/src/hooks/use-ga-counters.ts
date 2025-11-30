@@ -516,3 +516,41 @@ export function useGaCountersBatch({
 
   return state;
 }
+
+// ===== 편의 훅: 전체 사이트 페이지 리스트 =====
+
+type UseAllSitePagesOptions = {
+  api: string;
+  start?: string;
+  end?: string;
+  cacheTtlSec?: number;
+  forceJsonp?: boolean;
+};
+
+/**
+ * 전체 사이트의 모든 페이지 리스트를 가져오는 편의 훅
+ * scope: "site"를 기본값으로 사용합니다.
+ *
+ * @example
+ * const { loading, totals, rows } = useAllSitePages({
+ *   api: GA_API_URL,
+ *   start: "30daysAgo",
+ *   end: "today"
+ * });
+ */
+export function useAllSitePages({
+  api,
+  start = "30daysAgo",
+  end = "today",
+  cacheTtlSec = 60,
+  forceJsonp = false,
+}: UseAllSitePagesOptions): State {
+  return useGaCounters({
+    api,
+    scope: "site",
+    start,
+    end,
+    cacheTtlSec,
+    forceJsonp,
+  });
+}
