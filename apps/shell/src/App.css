@@ -62,9 +62,6 @@ body {
 a {
   text-decoration: none;
 }
-a:hover {
-  text-decoration: underline;
-}
 
 /* 유틸(토스 톤) */
 .t-btn {

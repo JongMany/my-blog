@@ -4,7 +4,7 @@ export const HOME_SECTIONS: Section[] = [
   {
     id: "blog",
     label: "Blog",
-    description: "경험을 사유하고 기록합니다",
+    description: "경험과 사유를 기록합니다",
     href: "/blog",
     color: "from-slate-500 to-slate-400",
     size: "lg",

@@ -1,9 +1,9 @@
-import * as React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function BootRedirect() {
   const nav = useNavigate();
-  React.useEffect(() => {
+  useEffect(() => {
     const url = new URL(window.location.href);
     const to = url.searchParams.get("to");
     if (to) {

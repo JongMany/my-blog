@@ -5,122 +5,153 @@ import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
 
-type NavItem = {
+// ===== Types =====
+export type NavItem = {
   to: string;
   label: string;
   end?: boolean;
 };
 
-const NAV: NavItem[] = [
+export type LogoConfig = {
+  logoSrc: string;
+  alt: string;
+  text: string;
+};
+
+export type LayoutDependencies = {
+  navItems?: NavItem[];
+  logoConfig?: LogoConfig;
+  gaMeasurementId?: string;
+  defaultActiveLabel?: string;
+  footerText?: string;
+};
+
+// ===== Default Values =====
+export const DEFAULT_NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Home", end: true },
   { to: "/blog", label: "Blog" },
   { to: "/portfolio", label: "Portfolio" },
   { to: "/resume", label: "Resume" },
 ];
 
-export default function Layout({ children }: PropsWithChildren) {
-  const navRef = useRef<HTMLDivElement>(null);
-  const { pathname } = useLocation();
-  const [open, setOpen] = useState(false);
+export const DEFAULT_ACTIVE_LABEL = "Menu";
+
+export function getDefaultLogoConfig(): LogoConfig {
   const isDevelopment = import.meta.env.MODE === "development";
-  const logoSrc = imageSource("/favicon.svg", "home", {
-    isDevelopment,
-  });
+  return {
+    logoSrc: imageSource("/favicon.svg", "home", { isDevelopment }),
+    alt: "방구석 코딩쟁이",
+    text: "방구석 코딩쟁이",
+  };
+}
 
-  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+// ===== Pure Functions (Testable) =====
+export function isNavItemActive(navItem: NavItem, pathname: string): boolean {
+  if (navItem.to === "/") {
+    return pathname === "/";
+  }
+  return pathname === navItem.to || pathname.startsWith(`${navItem.to}/`);
+}
 
-  useEffect(() => setOpen(false), [pathname]);
+export function getActiveNavLabel(
+  navItems: NavItem[],
+  pathname: string,
+  defaultLabel: string,
+): string {
+  const activeNavItem = navItems.find((item) =>
+    isNavItemActive(item, pathname),
+  );
+  return activeNavItem?.label ?? defaultLabel;
+}
 
-  const activeLabel =
-    NAV.find((n) =>
-      n.to === "/"
-        ? pathname === "/"
-        : pathname === n.to || pathname.startsWith(`${n.to}/`),
-    )?.label ?? "Menu";
+// ===== Components =====
+type LogoProps = {
+  config: LogoConfig;
+};
+
+function Logo({ config }: LogoProps) {
+  return (
+    <Link
+      to="/"
+      className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
+    >
+      <img
+        src={config.logoSrc}
+        alt={config.alt}
+        className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
+      />
+      <div className="shell:text-xl shell:font-semibold shell:tracking-tight shell:no-underline">
+        {config.text}
+      </div>
+    </Link>
+  );
+}
+
+type DesktopNavProps = {
+  navItems: NavItem[];
+};
+
+function DesktopNav({ navItems }: DesktopNavProps) {
+  const navRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col ">
-      {/* <HeroBackdrop /> */}
-
-      <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
-        <Link
-          to="/"
-          className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
+    <div
+      ref={navRef}
+      className="shell:relative shell:z-0 shell:gap-1 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:p-1 shell:hidden shell:md:flex"
+    >
+      <ActivePill containerRef={navRef} />
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          className={({ isActive }) =>
+            cn(
+              "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
+              isActive
+                ? "shell:text-[var(--fg)] shell:font-semibold"
+                : "shell:text-[var(--muted-fg)]",
+            )
+          }
         >
-          <img
-            src={logoSrc}
-            alt="방구석 코딩쟁이"
-            className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
-          />
-          <div className="shell:text-xl shell:font-semibold shell:tracking-tight">
-            방구석 코딩쟁이
-          </div>
-        </Link>
-
-        <div
-          ref={navRef}
-          className="shell:relative shell:z-0 shell:gap-1 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:p-1 shell:hidden shell:md:flex"
-        >
-          <ActivePill containerRef={navRef} />
-          {NAV.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.end}
-              className={({ isActive }) =>
-                cn(
-                  "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-                  isActive ? "shell:text-gray-1" : "",
-                )
-              }
-              children={({ isActive }) => (
-                <span data-active={isActive ? "true" : undefined}>
-                  {n.label}
-                </span>
-              )}
-            />
-          ))}
-        </div>
-
-        <MobileNavDropdown
-          open={open}
-          setOpen={setOpen}
-          activeLabel={activeLabel}
-        />
-      </header>
-
-      <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
-      <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
-        © {new Date().getFullYear()} · Frontend Developer
-      </footer>
+          {({ isActive }) => (
+            <span data-active={isActive ? "true" : undefined}>
+              {item.label}
+            </span>
+          )}
+        </NavLink>
+      ))}
     </div>
   );
 }
+
+type MobileNavDropdownProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  activeLabel: string;
+  navItems: NavItem[];
+};
 
 function MobileNavDropdown({
   open,
   setOpen,
   activeLabel,
-}: {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  activeLabel: string;
-}) {
+  navItems,
+}: MobileNavDropdownProps) {
   const { pathname } = useLocation();
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => setOpen(false);
 
   return (
-    <div ref={rootRef} className="shell:relative shell:z-[70] shell:md:hidden">
+    <div className="shell:relative shell:z-[70] shell:md:hidden">
       <button
-        ref={btnRef}
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls="mobile-nav-menu"
         className={cn(
           "shell:inline-flex shell:items-center shell:gap-2 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:px-3 shell:py-1.5 shell:text-sm",
-          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
+          "shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
         )}
         onClick={() => setOpen(true)}
       >
@@ -140,7 +171,11 @@ function MobileNavDropdown({
 
       {open && (
         <>
-          <div className="shell:fixed shell:inset-0 shell:z-[60]" aria-hidden />
+          <div
+            className="shell:fixed shell:inset-0 shell:z-[60]"
+            aria-hidden
+            onClick={handleClose}
+          />
           <div
             id="mobile-nav-menu"
             role="menu"
@@ -153,29 +188,27 @@ function MobileNavDropdown({
             )}
           >
             <nav className="shell:flex shell:flex-col">
-              {NAV.map((n) => {
-                const isActive =
-                  n.to === "/"
-                    ? pathname === "/"
-                    : pathname === n.to || pathname.startsWith(`${n.to}/`);
+              {navItems.map((item) => {
+                const isActive = isNavItemActive(item, pathname);
                 return (
                   <NavLink
-                    key={n.to}
-                    to={n.to}
-                    onClick={() => setOpen(false)}
-                    end={n.end}
+                    key={item.to}
+                    to={item.to}
+                    onClick={handleClose}
+                    end={item.end}
                     role="menuitem"
                     className={({ isActive: rrActive }) =>
                       cn(
                         "shell:block shell:px-4 shell:py-3 shell:text-sm shell:outline-none",
                         "hover:shell:bg-white/50 dark:hover:shell:bg-white/5",
-                        "shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-                        (rrActive || isActive) &&
-                          "shell:text-[var(--primary)] shell:font-medium",
+                        "shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--border)]",
+                        rrActive || isActive
+                          ? "shell:text-[var(--fg)] shell:font-semibold"
+                          : "shell:text-[var(--muted-fg)]",
                       )
                     }
                   >
-                    {n.label}
+                    {item.label}
                   </NavLink>
                 );
               })}
@@ -183,6 +216,56 @@ function MobileNavDropdown({
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+// ===== Main Layout Component =====
+type LayoutProps = PropsWithChildren<LayoutDependencies>;
+
+export default function Layout({
+  children,
+  navItems = DEFAULT_NAV_ITEMS,
+  logoConfig,
+  gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID,
+  defaultActiveLabel = DEFAULT_ACTIVE_LABEL,
+  footerText = `© ${new Date().getFullYear()} · Frontend Developer`,
+}: LayoutProps) {
+  const { pathname } = useLocation();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  // Logo config 주입 또는 기본값 사용
+  const finalLogoConfig: LogoConfig = logoConfig ?? getDefaultLogoConfig();
+
+  // Active label 계산
+  const activeLabel = getActiveNavLabel(navItems, pathname, defaultActiveLabel);
+
+  // GA 측정 ID가 제공된 경우에만 사용
+  if (gaMeasurementId) {
+    useGaPageViews(gaMeasurementId);
+  }
+
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [pathname]);
+
+  return (
+    <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col">
+      <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
+        <Logo config={finalLogoConfig} />
+        <DesktopNav navItems={navItems} />
+        <MobileNavDropdown
+          open={isMobileNavOpen}
+          setOpen={setIsMobileNavOpen}
+          activeLabel={activeLabel}
+          navItems={navItems}
+        />
+      </header>
+
+      <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
+      <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
+        {footerText}
+      </footer>
     </div>
   );
 }

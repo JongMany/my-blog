@@ -74,6 +74,8 @@ jobs:
           echo "VITE_BUILD_ID=${{ github.sha }}" >> $GITHUB_ENV          # Git 커밋 해시
           echo "VITE_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV  # 빌드 시간 (UTC)
           echo "VITE_BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV      # 브랜치 이름
+          echo "VITE_GA_MEASUREMENT_ID=${{ secrets.VITE_GA_MEASUREMENT_ID }}" >> $GITHUB_ENV  # Google Analytics 측정 ID
+          echo "VITE_GA_API_URL=${{ secrets.VITE_GA_API_URL }}" >> $GITHUB_ENV  # Google Apps Script 웹앱 URL
 
       # 7️⃣ 블로그 콘텐츠 빌드 (MDX → 정적 파일 변환)
       - run: pnpm -w -F blog run content:build
