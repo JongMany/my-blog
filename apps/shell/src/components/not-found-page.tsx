@@ -1,10 +1,16 @@
+import { imageSource } from "@mfe/shared";
 import { Link } from "react-router-dom";
 
 export default function NotFoundPage() {
+  const isDevelopment = import.meta.env.MODE === "development";
+  const illustrationSrc = imageSource("/404.svg", "home", {
+    isDevelopment,
+  });
+
   return (
     <div className="shell:flex shell:flex-col shell:items-center shell:justify-center shell:min-h-[60vh] shell:gap-6 shell:px-4">
       <img
-        src="/404.svg"
+        src={illustrationSrc}
         alt="404 Not Found"
         className="shell:max-w-md shell:w-full shell:h-auto"
       />

@@ -5,7 +5,13 @@ import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
 
-const NAV = [
+type NavItem = {
+  to: string;
+  label: string;
+  end?: boolean;
+};
+
+const NAV: NavItem[] = [
   { to: "/", label: "Home", end: true },
   { to: "/blog", label: "Blog" },
   { to: "/portfolio", label: "Portfolio" },
@@ -16,8 +22,9 @@ export default function Layout({ children }: PropsWithChildren) {
   const navRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const isDevelopment = import.meta.env.MODE === "development";
   const logoSrc = imageSource("/favicon.svg", "home", {
-    isDevelopment: import.meta.env.DEV,
+    isDevelopment,
   });
 
   useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
@@ -59,7 +66,7 @@ export default function Layout({ children }: PropsWithChildren) {
             <NavLink
               key={n.to}
               to={n.to}
-              end={(n as any).end}
+              end={n.end}
               className={({ isActive }) =>
                 cn(
                   "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
@@ -156,7 +163,7 @@ function MobileNavDropdown({
                     key={n.to}
                     to={n.to}
                     onClick={() => setOpen(false)}
-                    end={(n as any).end}
+                    end={n.end}
                     role="menuitem"
                     className={({ isActive: rrActive }) =>
                       cn(

@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
+import { imageSource } from "@mfe/shared";
 import { usePortfolioIndex, useProjectMdx } from "@/entities/project";
 import { LoadingSpinner, ErrorMessage } from "@/components/common";
 import { useMdxContent } from "./hooks/use-mdx-content";
@@ -26,10 +27,15 @@ export default function ProjectDetail() {
   }, [portfolioIndex, slug]);
 
   if (!project) {
+    const isDevelopment = import.meta.env.MODE === "development";
+    const illustrationSrc = imageSource("/404.svg", "portfolio", {
+      isDevelopment,
+    });
+
     return (
       <ErrorMessage
         message={MESSAGE_CONSTANTS.NOT_FOUND_MESSAGE}
-        illustrationSrc="/404.svg"
+        illustrationSrc={illustrationSrc}
         illustrationAlt="프로젝트를 찾을 수 없음을 나타내는 일러스트"
       />
     );
