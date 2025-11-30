@@ -1,523 +1,409 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+// ===== Constants =====
+
+const CACHE_KEY = "__ga_counters_cache__";
+const DEFAULT_CACHE_TTL = 60;
+const DEFAULT_START_DATE = "30daysAgo";
+const DEFAULT_END_DATE = "today";
+const JSONP_TIMEOUT = 15000;
 
 // ===== Types =====
 
 type Scope = "page" | "prefix" | "site";
 
-type Totals = {
+type GaTotals = {
   screenPageViews: number;
   totalUsers: number;
 };
 
-type PageRow = {
+type GaPageRow = {
   path: string;
   views: number;
   users: number;
 };
 
-type GaPayload = {
+type GaApiResponse = {
   ok: boolean;
-  totals?: Totals;
-  rows?: PageRow[];
+  totals?: GaTotals;
+  rows?: GaPageRow[];
   error?: string;
 };
 
-type Options = {
-  api: string; // Apps Script 웹앱 URL
-  scope?: Scope; // 기본 'page'
-  path?: string; // scope=page/prefix 일 때만 의미
-  start?: string; // 기본 '30daysAgo'
-  end?: string; // 기본 'today'
-  cacheTtlSec?: number; // 세션 캐시 TTL (기본 60초)
-  forceJsonp?: boolean; // 강제로 JSONP 사용
+type CacheEntry = {
+  timestamp: number;
+  value: GaApiResponse;
 };
 
-type State = {
+type UseGaCountersOptions = {
+  api: string;
+  scope?: Scope;
+  path?: string;
+  start?: string;
+  end?: string;
+  cacheTtlSec?: number;
+  forceJsonp?: boolean;
+  enabled?: boolean;
+};
+
+type UseGaCountersState = {
   loading: boolean;
   error: string | null;
-  totals: Totals | null;
-  rows: PageRow[]; // 페이지별 데이터 (prefix scope일 때 유용)
+  totals: GaTotals | null;
+  rows: GaPageRow[];
 };
 
-const SS_CACHE_KEY = "__ga_counters_cache__";
+// ===== Cache Utilities =====
+
+function getCache(): Record<string, CacheEntry> {
+  if (typeof sessionStorage === "undefined") return {};
+  try {
+    const data = sessionStorage.getItem(CACHE_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch {
+    return {};
+  }
+}
+
+function setCache(key: string, value: GaApiResponse): void {
+  if (typeof sessionStorage === "undefined") return;
+  try {
+    const cache = getCache();
+    cache[key] = { timestamp: Date.now(), value };
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch {
+    // Ignore cache errors
+  }
+}
+
+function getCached(key: string, ttl: number): GaApiResponse | null {
+  const cache = getCache();
+  const entry = cache[key];
+  if (!entry) return null;
+
+  const isExpired = Date.now() - entry.timestamp >= ttl * 1000;
+  if (isExpired || !entry.value?.ok) return null;
+
+  return entry.value;
+}
+
+// ===== Network Request =====
+
+function createJsonpRequest(url: string): Promise<GaApiResponse> {
+  return new Promise((resolve, reject) => {
+    const callback = `__ga_jsonp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement("script");
+    let isResolved = false;
+    let timeoutId: number;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      if (script.parentNode) script.remove();
+      if ((window as any)[callback]) delete (window as any)[callback];
+    };
+
+    const resolveOnce = (value: GaApiResponse) => {
+      if (isResolved) return;
+      isResolved = true;
+      cleanup();
+      resolve(value);
+    };
+
+    const rejectOnce = (error: Error) => {
+      if (isResolved) return;
+      isResolved = true;
+      cleanup();
+      reject(error);
+    };
+
+    timeoutId = window.setTimeout(
+      () => rejectOnce(new Error("JSONP timeout")),
+      JSONP_TIMEOUT,
+    );
+
+    (window as any)[callback] = (data: GaApiResponse) => resolveOnce(data);
+    script.onerror = () => rejectOnce(new Error("JSONP load error"));
+    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callback}`;
+    script.async = true;
+    document.body.appendChild(script);
+  });
+}
+
+async function fetchData(
+  url: string,
+  signal: AbortSignal,
+  forceJsonp: boolean,
+): Promise<GaApiResponse> {
+  if (forceJsonp) return createJsonpRequest(url);
+
+  try {
+    const response = await fetch(url, {
+      signal,
+      credentials: "omit",
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch {
+    return createJsonpRequest(url);
+  }
+}
+
+function buildRequestUrl(
+  apiUrl: string,
+  scope: Scope,
+  path: string | undefined,
+  startDate: string,
+  endDate: string,
+): string | null {
+  if (!apiUrl) return null;
+  const url = new URL(apiUrl);
+  url.searchParams.set("scope", scope);
+  if (path) url.searchParams.set("path", path);
+  url.searchParams.set("start", startDate);
+  url.searchParams.set("end", endDate);
+  return url.toString();
+}
 
 // ===== Main Hook =====
 
 /**
- * Google Analytics 페이지 조회수를 가져오는 훅
+ * Hook to fetch Google Analytics page view counters
  *
  * @example
- * // 단일 페이지 조회수
  * const { totals } = useGaCounters({
  *   api: GA_API_URL,
  *   scope: "page",
  *   path: "/blog/post1"
  * });
- *
- * @example
- * // prefix로 시작하는 모든 페이지 조회수
- * const { totals, rows } = useGaCounters({
- *   api: GA_API_URL,
- *   scope: "prefix",
- *   path: "/blog/"
- * });
- * // rows에는 각 페이지별 데이터가 들어있음
- *
- * @example
- * // 전체 사이트의 모든 페이지 리스트 (Apps Script 수정 필요)
- * const { totals, rows } = useGaCounters({
- *   api: GA_API_URL,
- *   scope: "site"
- * });
- * // rows에는 모든 페이지별 데이터가 들어있음
  */
 export function useGaCounters({
   api,
   scope = "page",
   path,
-  start = "30daysAgo",
-  end = "today",
-  cacheTtlSec = 60,
+  start = DEFAULT_START_DATE,
+  end = DEFAULT_END_DATE,
+  cacheTtlSec = DEFAULT_CACHE_TTL,
   forceJsonp = false,
-}: Options): State {
-  const [state, setState] = useState<State>({
+  enabled = true,
+}: UseGaCountersOptions): UseGaCountersState {
+  const [state, setState] = useState<UseGaCountersState>({
     loading: true,
     error: null,
     totals: null,
     rows: [],
   });
 
-  // SSR 안전하게 현재 경로 결정
-  const resolvedPath = useMemo(() => {
-    if (scope === "site") return undefined;
-    if (path) return path;
-    if (typeof window !== "undefined") return window.location.pathname;
-    return "/";
-  }, [scope, path]);
-
-  // 요청 URL 생성
-  const url = useMemo(() => {
+  const requestUrl = useMemo(() => {
     if (!api) return null;
-    const u = new URL(api);
-    u.searchParams.set("scope", scope);
-    if (resolvedPath) u.searchParams.set("path", resolvedPath);
-    u.searchParams.set("start", start);
-    u.searchParams.set("end", end);
-    return u.toString();
-  }, [api, scope, resolvedPath, start, end]);
-
-  const inFlight = useRef(false);
+    const resolvedPath =
+      scope === "site"
+        ? undefined
+        : path ||
+          (typeof window !== "undefined" ? window.location.pathname : "/");
+    return buildRequestUrl(api, scope, resolvedPath, start, end);
+  }, [api, scope, path, start, end]);
 
   useEffect(() => {
-    if (!url || !api) {
+    if (!enabled || !requestUrl) {
       setState({ loading: false, error: null, totals: null, rows: [] });
       return;
     }
 
-    if (inFlight.current) return;
-    inFlight.current = true;
+    let isCancelled = false;
+    const abortController = new AbortController();
 
-    const cacheKey = url;
-    const now = Date.now();
-
-    // 세션 캐시 확인
-    if (typeof sessionStorage !== "undefined") {
-      try {
-        const raw = sessionStorage.getItem(SS_CACHE_KEY);
-        if (raw) {
-          const cache = JSON.parse(raw) as Record<
-            string,
-            { t: number; v: GaPayload }
-          >;
-          const hit = cache?.[cacheKey];
-          if (hit && now - hit.t < cacheTtlSec * 1000 && hit.v?.ok) {
-            setState({
-              loading: false,
-              error: null,
-              totals: hit.v.totals ?? null,
-              rows: hit.v.rows ?? [],
-            });
-            inFlight.current = false;
-            return;
-          }
-        }
-      } catch {
-        // 캐시 파싱 실패는 무시
-      }
-    }
-
-    // 네트워크 요청
-    let cleaned = false;
-    const abort = new AbortController();
-
-    const saveCache = (payload: GaPayload) => {
-      if (typeof sessionStorage === "undefined") return;
-      try {
-        const raw = sessionStorage.getItem(SS_CACHE_KEY);
-        const obj = (raw ? JSON.parse(raw) : {}) as Record<
-          string,
-          { t: number; v: GaPayload }
-        >;
-        obj[cacheKey] = { t: now, v: payload };
-        sessionStorage.setItem(SS_CACHE_KEY, JSON.stringify(obj));
-      } catch {
-        /* ignore */
-      }
-    };
-
-    const doJsonp = (): Promise<GaPayload> => {
-      return new Promise((resolve, reject) => {
-        const cb = `__ga_jsonp_cb_${Date.now()}_${Math.random()
-          .toString(36)
-          .slice(2)}`;
-
-        let resolved = false;
-
-        const cleanup = () => {
-          if (script.parentNode) {
-            script.remove();
-          }
-          if ((window as any)[cb]) {
-            delete (window as any)[cb];
-          }
-        };
-
-        (window as any)[cb] = (json: GaPayload) => {
-          if (resolved) return;
-          resolved = true;
-          window.clearTimeout(timer);
-          cleanup();
-          resolve(json);
-        };
-
-        const timer = window.setTimeout(() => {
-          if (resolved) return;
-          resolved = true;
-          cleanup();
-          reject(new Error("JSONP timeout"));
-        }, 15000);
-
-        const script = document.createElement("script");
-        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
-        script.async = true;
-
-        script.onerror = () => {
-          if (resolved) return;
-          resolved = true;
-          window.clearTimeout(timer);
-          cleanup();
-          reject(new Error("JSONP load error"));
-        };
-
-        script.onload = () => window.clearTimeout(timer);
-
-        document.body.appendChild(script);
-      });
-    };
-
-    const fetchData = async (): Promise<GaPayload> => {
-      if (forceJsonp) {
-        return await doJsonp();
-      }
-
-      try {
-        const res = await fetch(url, {
-          signal: abort.signal,
-          credentials: "omit",
-          cache: "no-store",
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        return (await res.json()) as GaPayload;
-      } catch (fetchErr) {
-        // fetch 실패 시 JSONP 폴백
-        return await doJsonp();
-      }
-    };
-
-    const run = async () => {
-      try {
-        const json = await fetchData();
-
-        if (cleaned) return;
-
-        if (!json?.ok) {
+    (async () => {
+      const cached = getCached(requestUrl, cacheTtlSec);
+      if (cached) {
+        if (!isCancelled) {
           setState({
             loading: false,
-            error: json?.error || "GA 응답 오류",
+            error: null,
+            totals: cached.totals ?? null,
+            rows: cached.rows ?? [],
+          });
+        }
+        return;
+      }
+
+      try {
+        const response = await fetchData(
+          requestUrl,
+          abortController.signal,
+          forceJsonp,
+        );
+        if (isCancelled) return;
+
+        if (!response?.ok) {
+          setState({
+            loading: false,
+            error: response?.error || "GA API response error",
             totals: null,
             rows: [],
           });
           return;
         }
 
-        saveCache(json);
-
-        setState({
-          loading: false,
-          error: null,
-          totals: json.totals ?? null,
-          rows: json.rows ?? [],
-        });
-      } catch (err: any) {
-        if (cleaned) return;
-        setState({
-          loading: false,
-          error: err?.message || "네트워크 오류",
-          totals: null,
-          rows: [],
-        });
-      } finally {
-        inFlight.current = false;
+        setCache(requestUrl, response);
+        if (!isCancelled) {
+          setState({
+            loading: false,
+            error: null,
+            totals: response.totals ?? null,
+            rows: response.rows ?? [],
+          });
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setState({
+            loading: false,
+            error: error instanceof Error ? error.message : "Network error",
+            totals: null,
+            rows: [],
+          });
+        }
       }
-    };
-
-    run();
+    })();
 
     return () => {
-      cleaned = true;
-      abort.abort();
-      inFlight.current = false;
+      isCancelled = true;
+      abortController.abort();
     };
-  }, [url, api, cacheTtlSec, forceJsonp]);
+  }, [requestUrl, cacheTtlSec, forceJsonp, enabled]);
 
   return state;
 }
 
-// ===== 배치 요청을 위한 훅 =====
+// ===== Batch Hook =====
 
-type BatchOptions = {
+type UseGaCountersBatchOptions = {
   api: string;
-  paths: string[]; // 여러 경로 배열
+  paths: string[];
   scope?: Scope;
   start?: string;
   end?: string;
   cacheTtlSec?: number;
   forceJsonp?: boolean;
+  enabled?: boolean;
 };
 
-type BatchState = {
+type UseGaCountersBatchState = {
   loading: boolean;
   error: string | null;
-  data: Record<string, Totals | null>; // path -> totals 매핑
+  data: Record<string, GaTotals | null>;
 };
 
 /**
- * 여러 페이지의 조회수를 한 번에 가져오는 훅
- * 각 경로마다 개별 요청을 보냅니다.
+ * Hook to fetch multiple page counters in batch
  *
  * @example
  * const { loading, data } = useGaCountersBatch({
  *   api: GA_API_URL,
- *   paths: ['/blog/post1', '/blog/post2', '/blog/post3'],
+ *   paths: ['/blog/post1', '/blog/post2'],
  *   scope: 'page'
  * });
- * // data['/blog/post1'] => { screenPageViews: 100, totalUsers: 50 }
  */
 export function useGaCountersBatch({
   api,
   paths,
   scope = "page",
-  start = "30daysAgo",
-  end = "today",
-  cacheTtlSec = 60,
+  start = DEFAULT_START_DATE,
+  end = DEFAULT_END_DATE,
+  cacheTtlSec = DEFAULT_CACHE_TTL,
   forceJsonp = false,
-}: BatchOptions): BatchState {
-  const [state, setState] = useState<BatchState>({
+  enabled = true,
+}: UseGaCountersBatchOptions): UseGaCountersBatchState {
+  const [state, setState] = useState<UseGaCountersBatchState>({
     loading: true,
     error: null,
     data: {},
   });
 
   useEffect(() => {
-    if (!api || paths.length === 0) {
+    if (!enabled || !api || paths.length === 0) {
       setState({ loading: false, error: null, data: {} });
       return;
     }
 
-    let cleaned = false;
+    let isCancelled = false;
     const abortControllers = paths.map(() => new AbortController());
 
-    const fetchPath = async (
-      path: string,
+    const fetchSinglePath = async (
+      pagePath: string,
       signal: AbortSignal,
-    ): Promise<Totals | null> => {
-      const u = new URL(api);
-      u.searchParams.set("scope", scope);
-      u.searchParams.set("path", path);
-      u.searchParams.set("start", start);
-      u.searchParams.set("end", end);
+    ): Promise<GaTotals | null> => {
+      const requestUrl = buildRequestUrl(api, scope, pagePath, start, end);
+      if (!requestUrl) return null;
 
-      const url = u.toString();
-      const cacheKey = url;
-      const now = Date.now();
+      const cached = getCached(requestUrl, cacheTtlSec);
+      if (cached?.totals) return cached.totals;
 
-      // 캐시 확인
-      if (typeof sessionStorage !== "undefined") {
-        try {
-          const raw = sessionStorage.getItem(SS_CACHE_KEY);
-          if (raw) {
-            const cache = JSON.parse(raw) as Record<
-              string,
-              { t: number; v: GaPayload }
-            >;
-            const hit = cache?.[cacheKey];
-            if (hit && now - hit.t < cacheTtlSec * 1000 && hit.v?.ok) {
-              return hit.v.totals ?? null;
-            }
-          }
-        } catch {
-          // 캐시 파싱 실패는 무시
-        }
-      }
-
-      // 네트워크 요청
       try {
-        const doJsonp = (): Promise<GaPayload> => {
-          return new Promise((resolve, reject) => {
-            const cb = `__ga_jsonp_cb_${Date.now()}_${Math.random()
-              .toString(36)
-              .slice(2)}`;
-
-            let resolved = false;
-
-            const cleanup = () => {
-              if (script.parentNode) {
-                script.remove();
-              }
-              if ((window as any)[cb]) {
-                delete (window as any)[cb];
-              }
-            };
-
-            (window as any)[cb] = (json: GaPayload) => {
-              if (resolved) return;
-              resolved = true;
-              window.clearTimeout(timer);
-              cleanup();
-              resolve(json);
-            };
-
-            const timer = window.setTimeout(() => {
-              if (resolved) return;
-              resolved = true;
-              cleanup();
-              reject(new Error("JSONP timeout"));
-            }, 15000);
-
-            const script = document.createElement("script");
-            script.src =
-              url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
-            script.async = true;
-
-            script.onerror = () => {
-              if (resolved) return;
-              resolved = true;
-              window.clearTimeout(timer);
-              cleanup();
-              reject(new Error("JSONP load error"));
-            };
-
-            script.onload = () => window.clearTimeout(timer);
-
-            document.body.appendChild(script);
-          });
-        };
-
-        let json: GaPayload;
-
-        if (forceJsonp) {
-          json = await doJsonp();
-        } else {
-          try {
-            const res = await fetch(url, {
-              signal,
-              credentials: "omit",
-              cache: "no-store",
-            });
-
-            if (!res.ok) {
-              throw new Error(`HTTP ${res.status}`);
-            }
-
-            json = (await res.json()) as GaPayload;
-          } catch {
-            // fetch 실패 시 JSONP 폴백
-            json = await doJsonp();
-          }
+        const response = await fetchData(requestUrl, signal, forceJsonp);
+        if (response?.ok && response.totals) {
+          setCache(requestUrl, response);
+          return response.totals;
         }
-
-        if (json?.ok && json.totals) {
-          // 캐시 저장
-          if (typeof sessionStorage !== "undefined") {
-            try {
-              const raw = sessionStorage.getItem(SS_CACHE_KEY);
-              const obj = (raw ? JSON.parse(raw) : {}) as Record<
-                string,
-                { t: number; v: GaPayload }
-              >;
-              obj[cacheKey] = { t: now, v: json };
-              sessionStorage.setItem(SS_CACHE_KEY, JSON.stringify(obj));
-            } catch {
-              /* ignore */
-            }
-          }
-          return json.totals;
-        }
-
-        return null;
       } catch {
-        return null;
+        // Ignore errors
       }
+      return null;
     };
 
-    const run = async () => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
+    (async () => {
+      setState((previousState) => ({
+        ...previousState,
+        loading: true,
+        error: null,
+      }));
 
       try {
         const results = await Promise.all(
-          paths.map((path, idx) =>
-            fetchPath(path, abortControllers[idx].signal),
+          paths.map((pagePath, index) =>
+            fetchSinglePath(pagePath, abortControllers[index].signal),
           ),
         );
 
-        if (cleaned) return;
+        if (isCancelled) return;
 
-        const data: Record<string, Totals | null> = {};
-        paths.forEach((path, idx) => {
-          data[path] = results[idx] ?? null;
+        const pageData: Record<string, GaTotals | null> = {};
+        paths.forEach((pagePath, index) => {
+          pageData[pagePath] = results[index] ?? null;
         });
 
-        setState({
-          loading: false,
-          error: null,
-          data,
-        });
-      } catch (err: any) {
-        if (cleaned) return;
-        setState({
-          loading: false,
-          error: err?.message || "배치 요청 실패",
-          data: {},
-        });
+        setState({ loading: false, error: null, data: pageData });
+      } catch (error) {
+        if (!isCancelled) {
+          setState({
+            loading: false,
+            error:
+              error instanceof Error ? error.message : "Batch request failed",
+            data: {},
+          });
+        }
       }
-    };
-
-    run();
+    })();
 
     return () => {
-      cleaned = true;
-      abortControllers.forEach((ac) => ac.abort());
+      isCancelled = true;
+      abortControllers.forEach((controller) => controller.abort());
     };
-  }, [api, paths.join(","), scope, start, end, cacheTtlSec, forceJsonp]);
+  }, [
+    api,
+    paths.join(","),
+    scope,
+    start,
+    end,
+    cacheTtlSec,
+    forceJsonp,
+    enabled,
+  ]);
 
   return state;
 }
 
-// ===== 편의 훅: 전체 사이트 페이지 리스트 =====
+// ===== Convenience Hook =====
 
 type UseAllSitePagesOptions = {
   api: string;
@@ -525,26 +411,25 @@ type UseAllSitePagesOptions = {
   end?: string;
   cacheTtlSec?: number;
   forceJsonp?: boolean;
+  enabled?: boolean;
 };
 
 /**
- * 전체 사이트의 모든 페이지 리스트를 가져오는 편의 훅
- * scope: "site"를 기본값으로 사용합니다.
+ * Convenience hook to fetch all site pages
  *
  * @example
  * const { loading, totals, rows } = useAllSitePages({
- *   api: GA_API_URL,
- *   start: "30daysAgo",
- *   end: "today"
+ *   api: GA_API_URL
  * });
  */
 export function useAllSitePages({
   api,
-  start = "30daysAgo",
-  end = "today",
-  cacheTtlSec = 60,
+  start = DEFAULT_START_DATE,
+  end = DEFAULT_END_DATE,
+  cacheTtlSec = DEFAULT_CACHE_TTL,
   forceJsonp = false,
-}: UseAllSitePagesOptions): State {
+  enabled = true,
+}: UseAllSitePagesOptions): UseGaCountersState {
   return useGaCounters({
     api,
     scope: "site",
@@ -552,5 +437,6 @@ export function useAllSitePages({
     end,
     cacheTtlSec,
     forceJsonp,
+    enabled,
   });
 }

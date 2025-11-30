@@ -256,7 +256,6 @@ export default function Layout({
     end: "today",
     forceJsonp: true, // CORS 문제 회피를 위해 JSONP 강제 사용
   });
-  console.log("state", state);
   const { loading, error, totals } = state;
 
   useEffect(() => {
