@@ -7,7 +7,7 @@ export function useGaPageViews(
 ) {
   const loc = useLocation();
   useEffect(() => {
-    if (isDevelopment) return;
+    // if (isDevelopment) return;
     const gtag = window.gtag;
     if (!gtag || !measurementId) return;
 
@@ -15,8 +15,8 @@ export function useGaPageViews(
       page_path: loc.pathname + loc.search + loc.hash,
       page_title: document.title,
       page_location: window.location.href,
-      send_to: measurementId,
+      // send_to: measurementId,
       // 필요시: send_to: measurementId,
     });
-  }, [loc.pathname, loc.search, loc.hash, measurementId]);
+  }, [loc.pathname, loc.search, loc.hash, measurementId, isDevelopment]);
 }
