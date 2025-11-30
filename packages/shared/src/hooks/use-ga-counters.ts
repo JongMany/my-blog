@@ -62,6 +62,14 @@ const SS_CACHE_KEY = "__ga_counters_cache__";
  *   path: "/blog/"
  * });
  * // rows에는 각 페이지별 데이터가 들어있음
+ *
+ * @example
+ * // 전체 사이트의 모든 페이지 리스트 (Apps Script 수정 필요)
+ * const { totals, rows } = useGaCounters({
+ *   api: GA_API_URL,
+ *   scope: "site"
+ * });
+ * // rows에는 모든 페이지별 데이터가 들어있음
  */
 export function useGaCounters({
   api,
