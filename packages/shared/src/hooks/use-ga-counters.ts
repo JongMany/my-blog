@@ -1,50 +1,87 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const CACHE_KEY = "__ga_counters_cache__";
-const DEFAULT_CACHE_TTL = 60;
-const DEFAULT_START_DATE = "30daysAgo";
-const DEFAULT_END_DATE = "today";
-const JSONP_TIMEOUT = 15000;
+// ===== 상수 정의 =====
 
-type Scope = "page" | "prefix" | "site";
+const ANALYTICS_CACHE_KEY = "__google_analytics_cache__";
+const DEFAULT_CACHE_TTL_SECONDS = 60;
+const DEFAULT_DATE_RANGE_START = "30daysAgo";
+const DEFAULT_DATE_RANGE_END = "today";
+const JSONP_REQUEST_TIMEOUT_MS = 15000;
 
-type GaTotals = {
+// ===== 타입 정의 =====
+
+/**
+ * Google Analytics 데이터 조회 범위
+ * - page: 특정 페이지의 통계
+ * - prefix: 특정 경로로 시작하는 모든 페이지 통계
+ * - site: 전체 사이트 통계
+ */
+type AnalyticsScope = "page" | "prefix" | "site";
+
+/**
+ * Google Analytics 전체 통계 데이터
+ */
+type AnalyticsTotals = {
   screenPageViews: number;
   totalUsers: number;
 };
 
-type GaPageRow = {
+/**
+ * Google Analytics 페이지별 통계 데이터
+ */
+type AnalyticsPageData = {
   path: string;
   views: number;
   users: number;
 };
 
-type GaApiResponse = {
+/**
+ * Google Analytics API 응답 데이터
+ */
+type AnalyticsApiResponse = {
   ok: boolean;
-  totals?: GaTotals;
-  rows?: GaPageRow[];
+  totals?: AnalyticsTotals;
+  rows?: AnalyticsPageData[];
   error?: string;
 };
 
-type UseGaCountersOptions = {
-  api: string;
-  scope?: Scope;
-  path?: string;
-  start?: string;
-  end?: string;
-  cacheTtlSec?: number;
-  forceJsonp?: boolean;
+/**
+ * Google Analytics 통계 조회 훅 옵션
+ */
+type UseGoogleAnalyticsStatsOptions = {
+  /** Google Analytics API 엔드포인트 URL */
+  apiUrl: string;
+  /** 데이터 조회 범위 */
+  scope?: AnalyticsScope;
+  /** 조회할 페이지 경로 (scope가 'page' 또는 'prefix'일 때 사용) */
+  pagePath?: string;
+  /** 조회 시작 날짜 (예: "30daysAgo", "2024-01-01") */
+  startDate?: string;
+  /** 조회 종료 날짜 (예: "today", "2024-12-31") */
+  endDate?: string;
+  /** 캐시 유효 시간 (초) */
+  cacheTtlSeconds?: number;
+  /** JSONP 요청 강제 사용 여부 */
+  shouldForceJsonp?: boolean;
+  /** 훅 활성화 여부 */
   enabled?: boolean;
 };
 
-type UseGaCountersState = {
+/**
+ * Google Analytics 통계 조회 훅 반환값
+ */
+type UseGoogleAnalyticsStatsResult = {
+  /** 데이터 로딩 중 여부 */
   loading: boolean;
+  /** 에러 메시지 (에러 발생 시) */
   error: string | null;
-  totals: GaTotals | null;
-  rows: GaPageRow[];
+  /** 전체 통계 데이터 */
+  totals: AnalyticsTotals | null;
+  /** 페이지별 통계 데이터 배열 */
+  pageDataList: AnalyticsPageData[];
 };
 
-// ===== Cache Manager =====
+// ===== 캐시 관리자 =====
 
 interface StorageAdapter {
   getItem(key: string): string | null;
@@ -56,26 +93,30 @@ interface CacheEntry<T> {
   value: T;
 }
 
-interface CacheManagerOptions<T> {
+interface AnalyticsCacheManagerOptions<T> {
   storage?: StorageAdapter;
-  key?: string;
+  cacheKey?: string;
   validator?: (value: T) => boolean;
 }
 
-class CacheManager<T = unknown> {
+/**
+ * 세션 스토리지를 사용한 캐시 관리자
+ * Google Analytics API 응답을 캐싱하여 불필요한 요청을 방지합니다.
+ */
+class AnalyticsCacheManager<T = unknown> {
   private readonly storage: StorageAdapter | null;
   private readonly cacheKey: string;
   private readonly validator?: (value: T) => boolean;
 
-  constructor(options: CacheManagerOptions<T> = {}) {
-    this.cacheKey = options.key ?? CACHE_KEY;
+  constructor(options: AnalyticsCacheManagerOptions<T> = {}) {
+    this.cacheKey = options.cacheKey ?? ANALYTICS_CACHE_KEY;
     this.validator = options.validator;
     this.storage =
       options.storage ??
       (typeof sessionStorage !== "undefined" ? sessionStorage : null);
   }
 
-  private getStore(): Record<string, CacheEntry<T>> {
+  private getCacheStore(): Record<string, CacheEntry<T>> {
     if (!this.storage) return {};
     try {
       const data = this.storage.getItem(this.cacheKey);
@@ -85,376 +126,412 @@ class CacheManager<T = unknown> {
     }
   }
 
+  /**
+   * 캐시에 데이터 저장
+   */
   set(key: string, value: T): void {
     if (!this.storage) return;
     try {
-      const store = this.getStore();
+      const store = this.getCacheStore();
       store[key] = { timestamp: Date.now(), value };
       this.storage.setItem(this.cacheKey, JSON.stringify(store));
     } catch {
-      // Ignore errors
+      // 스토리지 오류는 무시 (용량 초과 등)
     }
   }
 
+  /**
+   * 캐시에서 데이터 조회
+   * @param key 캐시 키
+   * @param ttlSeconds 캐시 유효 시간 (초). 지정하지 않으면 만료되지 않음
+   * @returns 캐시된 데이터 또는 null
+   */
   get(key: string, ttlSeconds?: number): T | null {
-    const store = this.getStore();
+    const store = this.getCacheStore();
     const entry = store[key];
     if (!entry) return null;
 
+    // TTL 체크
     if (ttlSeconds !== undefined) {
-      if (Date.now() - entry.timestamp >= ttlSeconds * 1000) return null;
+      const isExpired = Date.now() - entry.timestamp >= ttlSeconds * 1000;
+      if (isExpired) return null;
     }
 
+    // 유효성 검사
     if (this.validator && !this.validator(entry.value)) return null;
 
     return entry.value;
   }
 }
 
-// ===== Request Controller =====
+// ===== 요청 취소 컨트롤러 =====
 
-class RequestController {
-  private controllers: AbortController[] = [];
-  private cancelled = false;
+/**
+ * 비동기 요청의 취소를 관리하는 컨트롤러
+ * 컴포넌트 언마운트나 의존성 변경 시 진행 중인 요청을 취소합니다.
+ */
+class RequestCancellationController {
+  private abortControllers: AbortController[] = [];
+  private isCancelled = false;
 
-  getSignal(): AbortSignal {
-    if (this.cancelled) {
-      const c = new AbortController();
-      c.abort();
-      return c.signal;
+  /**
+   * 새로운 AbortSignal 생성 및 등록
+   */
+  createAbortSignal(): AbortSignal {
+    if (this.isCancelled) {
+      const controller = new AbortController();
+      controller.abort();
+      return controller.signal;
     }
     const controller = new AbortController();
-    this.controllers.push(controller);
+    this.abortControllers.push(controller);
     return controller.signal;
   }
 
-  getSignals(count: number): AbortSignal[] {
-    return Array.from({ length: count }, () => this.getSignal());
+  /**
+   * 취소 상태 확인
+   */
+  hasBeenCancelled(): boolean {
+    return this.isCancelled;
   }
 
-  isCancelled(): boolean {
-    return this.cancelled;
+  /**
+   * 모든 진행 중인 요청 취소
+   */
+  cancelAllRequests(): void {
+    if (this.isCancelled) return;
+    this.isCancelled = true;
+    this.abortControllers.forEach((controller) => controller.abort());
+    this.abortControllers = [];
   }
 
-  cancel(): void {
-    if (this.cancelled) return;
-    this.cancelled = true;
-    this.controllers.forEach((c) => c.abort());
-    this.controllers = [];
-  }
-
+  /**
+   * 취소 상태 초기화 (새로운 요청 시작 전 호출)
+   */
   reset(): void {
-    this.cancel();
-    this.cancelled = false;
+    this.cancelAllRequests();
+    this.isCancelled = false;
   }
 }
 
-// ===== Network =====
+// ===== 네트워크 요청 =====
 
-function jsonp(url: string): Promise<GaApiResponse> {
+/**
+ * JSONP 콜백 함수 타입
+ */
+type JsonpCallback = (data: AnalyticsApiResponse) => void;
+
+/**
+ * window 객체에 JSONP 콜백을 안전하게 설정/제거하는 헬퍼
+ */
+function setJsonpCallback(callbackName: string, callback: JsonpCallback): void {
+  const windowWithCallback = window as unknown as Record<
+    string,
+    JsonpCallback | undefined
+  >;
+  windowWithCallback[callbackName] = callback;
+}
+
+function removeJsonpCallback(callbackName: string): void {
+  const windowWithCallback = window as unknown as Record<
+    string,
+    JsonpCallback | undefined
+  >;
+  if (callbackName in windowWithCallback) {
+    delete windowWithCallback[callbackName];
+  }
+}
+
+/**
+ * JSONP를 사용하여 Google Analytics API 데이터 조회
+ * CORS 제한을 우회하기 위해 사용됩니다.
+ */
+function fetchAnalyticsDataViaJsonp(
+  apiUrl: string,
+): Promise<AnalyticsApiResponse> {
   return new Promise((resolve, reject) => {
-    const cb = `__ga_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    const script = document.createElement("script");
-    let done = false;
-    let timeout: number;
+    const callbackName = `__analytics_jsonp_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2)}`;
+    const scriptElement = document.createElement("script");
+    let isResolved = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-    const finish = (fn: () => void) => {
-      if (done) return;
-      done = true;
-      clearTimeout(timeout);
-      script.remove();
-      delete (window as any)[cb];
-      fn();
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      if (scriptElement.parentNode) {
+        scriptElement.remove();
+      }
+      removeJsonpCallback(callbackName);
     };
 
-    timeout = setTimeout(
-      () => finish(() => reject(new Error("Timeout"))),
-      JSONP_TIMEOUT,
+    const resolveOnce = (value: AnalyticsApiResponse) => {
+      if (isResolved) return;
+      isResolved = true;
+      cleanup();
+      resolve(value);
+    };
+
+    const rejectOnce = (error: Error) => {
+      if (isResolved) return;
+      isResolved = true;
+      cleanup();
+      reject(error);
+    };
+
+    timeoutId = setTimeout(
+      () => rejectOnce(new Error("JSONP 요청 시간 초과")),
+      JSONP_REQUEST_TIMEOUT_MS,
     );
 
-    (window as any)[cb] = (data: GaApiResponse) => finish(() => resolve(data));
-    script.onerror = () => finish(() => reject(new Error("Load error")));
-    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${cb}`;
-    script.async = true;
-    document.body.appendChild(script);
+    const callback: JsonpCallback = (data: AnalyticsApiResponse) =>
+      resolveOnce(data);
+    setJsonpCallback(callbackName, callback);
+
+    scriptElement.onerror = () =>
+      rejectOnce(new Error("JSONP 스크립트 로드 실패"));
+    scriptElement.async = true;
+
+    const querySeparator = apiUrl.includes("?") ? "&" : "?";
+    scriptElement.src = `${apiUrl}${querySeparator}callback=${callbackName}`;
+    document.body.appendChild(scriptElement);
   });
 }
 
-async function fetchData(
-  url: string,
-  signal: AbortSignal,
-  forceJsonp: boolean,
-): Promise<GaApiResponse> {
-  if (forceJsonp) return jsonp(url);
+/**
+ * Google Analytics API 데이터 조회
+ * fetch를 시도하고 실패 시 JSONP로 폴백합니다.
+ */
+async function fetchAnalyticsData(
+  apiUrl: string,
+  abortSignal: AbortSignal,
+  shouldForceJsonp: boolean,
+): Promise<AnalyticsApiResponse> {
+  if (shouldForceJsonp) {
+    return fetchAnalyticsDataViaJsonp(apiUrl);
+  }
+
   try {
-    const res = await fetch(url, {
-      signal,
+    const response = await fetch(apiUrl, {
+      signal: abortSignal,
       credentials: "omit",
       cache: "no-store",
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch {
-    return jsonp(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    // CORS 오류 등으로 fetch 실패 시 JSONP로 폴백
+    return fetchAnalyticsDataViaJsonp(apiUrl);
   }
 }
 
-function buildUrl(
-  api: string,
-  scope: Scope,
-  path: string | undefined,
-  start: string,
-  end: string,
+/**
+ * Analytics 조회 범위에 따라 페이지 경로 결정
+ */
+function resolveAnalyticsPagePath(
+  scope: AnalyticsScope,
+  pagePath?: string,
+): string | undefined {
+  if (scope === "site") return undefined;
+  if (pagePath) return pagePath;
+  return typeof window !== "undefined" ? window.location.pathname : "/";
+}
+
+/**
+ * Google Analytics API URL 생성
+ */
+function buildAnalyticsApiUrl(
+  baseApiUrl: string,
+  scope: AnalyticsScope,
+  pagePath: string | undefined,
+  startDate: string,
+  endDate: string,
 ): string | null {
-  if (!api) return null;
-  const url = new URL(api);
+  if (!baseApiUrl) return null;
+  const url = new URL(baseApiUrl);
   url.searchParams.set("scope", scope);
-  if (path) url.searchParams.set("path", path);
-  url.searchParams.set("start", start);
-  url.searchParams.set("end", end);
+  if (pagePath) url.searchParams.set("path", pagePath);
+  url.searchParams.set("start", startDate);
+  url.searchParams.set("end", endDate);
   return url.toString();
 }
 
-// ===== Main Hook =====
+// ===== 메인 훅 =====
 
-export function useGaCounters({
-  api,
+/**
+ * Google Analytics 페이지 통계 데이터를 조회하는 훅
+ *
+ * @example
+ * ```tsx
+ * const { loading, error, totals, pageDataList } = useGoogleAnalyticsStats({
+ *   apiUrl: "https://api.example.com/analytics",
+ *   scope: "page",
+ *   pagePath: "/about",
+ * });
+ * ```
+ */
+export function useGoogleAnalyticsStats({
+  apiUrl,
   scope = "page",
-  path,
-  start = DEFAULT_START_DATE,
-  end = DEFAULT_END_DATE,
-  cacheTtlSec = DEFAULT_CACHE_TTL,
-  forceJsonp = false,
+  pagePath,
+  startDate = DEFAULT_DATE_RANGE_START,
+  endDate = DEFAULT_DATE_RANGE_END,
+  cacheTtlSeconds = DEFAULT_CACHE_TTL_SECONDS,
+  shouldForceJsonp = false,
   enabled = true,
-}: UseGaCountersOptions): UseGaCountersState {
-  const [state, setState] = useState<UseGaCountersState>({
+}: UseGoogleAnalyticsStatsOptions): UseGoogleAnalyticsStatsResult {
+  const [state, setState] = useState<UseGoogleAnalyticsStatsResult>({
     loading: true,
     error: null,
     totals: null,
-    rows: [],
+    pageDataList: [],
   });
 
   const cacheRef = useRef(
-    new CacheManager<GaApiResponse>({ validator: (v) => v.ok === true }),
+    new AnalyticsCacheManager<AnalyticsApiResponse>({
+      validator: (response) => response.ok === true,
+    }),
   );
-  const controllerRef = useRef(new RequestController());
+  const cancellationControllerRef = useRef(new RequestCancellationController());
 
-  const url = useMemo(() => {
-    if (!api) return null;
-    const resolvedPath =
-      scope === "site"
-        ? undefined
-        : path ||
-          (typeof window !== "undefined" ? window.location.pathname : "/");
-    return buildUrl(api, scope, resolvedPath, start, end);
-  }, [api, scope, path, start, end]);
+  const analyticsApiUrl = useMemo(() => {
+    if (!apiUrl) return null;
+    const resolvedPagePath = resolveAnalyticsPagePath(scope, pagePath);
+    return buildAnalyticsApiUrl(
+      apiUrl,
+      scope,
+      resolvedPagePath,
+      startDate,
+      endDate,
+    );
+  }, [apiUrl, scope, pagePath, startDate, endDate]);
 
   useEffect(() => {
-    if (!enabled || !url) {
-      setState({ loading: false, error: null, totals: null, rows: [] });
+    if (!enabled || !analyticsApiUrl) {
+      setState({
+        loading: false,
+        error: null,
+        totals: null,
+        pageDataList: [],
+      });
       return;
     }
 
-    const controller = controllerRef.current;
+    const cancellationController = cancellationControllerRef.current;
     const cache = cacheRef.current;
-    controller.reset();
+    cancellationController.reset();
 
-    // Always set loading to true when starting a new request
-    setState({ loading: true, error: null, totals: null, rows: [] });
+    setState({
+      loading: true,
+      error: null,
+      totals: null,
+      pageDataList: [],
+    });
 
-    (async () => {
-      const signal = controller.getSignal();
-      const cached = cache.get(url, cacheTtlSec);
+    const fetchAndUpdateState = async () => {
+      const abortSignal = cancellationController.createAbortSignal();
+      const cachedResponse = cache.get(analyticsApiUrl, cacheTtlSeconds);
 
-      if (cached) {
-        if (!controller.isCancelled()) {
+      // 캐시된 데이터가 있으면 사용
+      if (cachedResponse) {
+        if (!cancellationController.hasBeenCancelled()) {
           setState({
             loading: false,
             error: null,
-            totals: cached.totals ?? null,
-            rows: cached.rows ?? [],
+            totals: cachedResponse.totals ?? null,
+            pageDataList: cachedResponse.rows ?? [],
           });
         }
         return;
       }
 
+      // API에서 데이터 조회
       try {
-        const response = await fetchData(url, signal, forceJsonp);
-        if (controller.isCancelled()) return;
+        const response = await fetchAnalyticsData(
+          analyticsApiUrl,
+          abortSignal,
+          shouldForceJsonp,
+        );
+
+        if (cancellationController.hasBeenCancelled()) return;
 
         if (!response?.ok) {
           setState({
             loading: false,
-            error: response?.error || "API error",
+            error: response?.error || "API 오류가 발생했습니다",
             totals: null,
-            rows: [],
+            pageDataList: [],
           });
           return;
         }
 
-        cache.set(url, response);
-        if (!controller.isCancelled()) {
+        // 캐시에 저장
+        cache.set(analyticsApiUrl, response);
+
+        if (!cancellationController.hasBeenCancelled()) {
           setState({
             loading: false,
             error: null,
             totals: response.totals ?? null,
-            rows: response.rows ?? [],
+            pageDataList: response.rows ?? [],
           });
         }
       } catch (error) {
-        if (!controller.isCancelled()) {
+        if (!cancellationController.hasBeenCancelled()) {
           setState({
             loading: false,
-            error: error instanceof Error ? error.message : "Network error",
+            error:
+              error instanceof Error
+                ? error.message
+                : "네트워크 오류가 발생했습니다",
             totals: null,
-            rows: [],
+            pageDataList: [],
           });
         }
       }
-    })();
+    };
 
-    return () => controller.cancel();
-  }, [url, cacheTtlSec, forceJsonp, enabled]);
+    fetchAndUpdateState();
+
+    return () => cancellationController.cancelAllRequests();
+  }, [analyticsApiUrl, cacheTtlSeconds, shouldForceJsonp, enabled]);
 
   return state;
 }
 
-// ===== Batch Hook =====
+// ===== 편의 훅 =====
 
-type UseGaCountersBatchOptions = {
-  api: string;
-  paths: string[];
-  scope?: Scope;
-  start?: string;
-  end?: string;
-  cacheTtlSec?: number;
-  forceJsonp?: boolean;
+/**
+ * 전체 사이트의 Google Analytics 통계를 조회하는 편의 훅
+ */
+type UseAllSiteAnalyticsOptions = {
+  apiUrl: string;
+  startDate?: string;
+  endDate?: string;
+  cacheTtlSeconds?: number;
+  shouldForceJsonp?: boolean;
   enabled?: boolean;
 };
 
-type UseGaCountersBatchState = {
-  loading: boolean;
-  error: string | null;
-  data: Record<string, GaTotals | null>;
-};
-
-export function useGaCountersBatch({
-  api,
-  paths,
-  scope = "page",
-  start = DEFAULT_START_DATE,
-  end = DEFAULT_END_DATE,
-  cacheTtlSec = DEFAULT_CACHE_TTL,
-  forceJsonp = false,
+export function useAllSiteAnalytics({
+  apiUrl,
+  startDate = DEFAULT_DATE_RANGE_START,
+  endDate = DEFAULT_DATE_RANGE_END,
+  cacheTtlSeconds = DEFAULT_CACHE_TTL_SECONDS,
+  shouldForceJsonp = false,
   enabled = true,
-}: UseGaCountersBatchOptions): UseGaCountersBatchState {
-  const [state, setState] = useState<UseGaCountersBatchState>({
-    loading: true,
-    error: null,
-    data: {},
-  });
-
-  const cacheRef = useRef(
-    new CacheManager<GaApiResponse>({ validator: (v) => v.ok === true }),
-  );
-  const controllerRef = useRef(new RequestController());
-
-  useEffect(() => {
-    if (!enabled || !api || !paths.length) {
-      setState({ loading: false, error: null, data: {} });
-      return;
-    }
-
-    const controller = controllerRef.current;
-    const cache = cacheRef.current;
-    controller.reset();
-    const signals = controller.getSignals(paths.length);
-
-    (async () => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      try {
-        const results = await Promise.all(
-          paths.map(async (pagePath, i) => {
-            const url = buildUrl(api, scope, pagePath, start, end);
-            if (!url) return null;
-
-            const cached = cache.get(url, cacheTtlSec);
-            if (cached?.totals) return cached.totals;
-
-            try {
-              const response = await fetchData(url, signals[i], forceJsonp);
-              if (response?.ok && response.totals) {
-                cache.set(url, response);
-                return response.totals;
-              }
-            } catch {
-              // Ignore errors
-            }
-            return null;
-          }),
-        );
-
-        if (controller.isCancelled()) return;
-
-        const data: Record<string, GaTotals | null> = {};
-        paths.forEach((path, i) => {
-          data[path] = results[i] ?? null;
-        });
-
-        setState({ loading: false, error: null, data });
-      } catch (error) {
-        if (!controller.isCancelled()) {
-          setState({
-            loading: false,
-            error: error instanceof Error ? error.message : "Batch failed",
-            data: {},
-          });
-        }
-      }
-    })();
-
-    return () => controller.cancel();
-  }, [
-    api,
-    paths.join(","),
-    scope,
-    start,
-    end,
-    cacheTtlSec,
-    forceJsonp,
-    enabled,
-  ]);
-
-  return state;
-}
-
-// ===== Convenience Hook =====
-
-type UseAllSitePagesOptions = {
-  api: string;
-  start?: string;
-  end?: string;
-  cacheTtlSec?: number;
-  forceJsonp?: boolean;
-  enabled?: boolean;
-};
-
-export function useAllSitePages({
-  api,
-  start = DEFAULT_START_DATE,
-  end = DEFAULT_END_DATE,
-  cacheTtlSec = DEFAULT_CACHE_TTL,
-  forceJsonp = false,
-  enabled = true,
-}: UseAllSitePagesOptions): UseGaCountersState {
-  return useGaCounters({
-    api,
+}: UseAllSiteAnalyticsOptions): UseGoogleAnalyticsStatsResult {
+  return useGoogleAnalyticsStats({
+    apiUrl,
     scope: "site",
-    start,
-    end,
-    cacheTtlSec,
-    forceJsonp,
+    startDate,
+    endDate,
+    cacheTtlSeconds,
+    shouldForceJsonp,
     enabled,
   });
 }

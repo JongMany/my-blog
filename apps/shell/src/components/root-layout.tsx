@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { imageSource, useGaCounters } from "@mfe/shared";
+import { imageSource, useGoogleAnalyticsStats } from "@mfe/shared";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
@@ -248,15 +248,14 @@ export default function Layout({
   }
 
   // 페이지 카운트 조회 (현재 페이지 기준)
-  const state = useGaCounters({
-    api: gaApiUrl || "",
+  const { loading, error, totals } = useGoogleAnalyticsStats({
+    apiUrl: gaApiUrl || "",
     scope: "page",
-    path: pathname,
-    start: "30daysAgo",
-    end: "today",
-    forceJsonp: true, // CORS 문제 회피를 위해 JSONP 강제 사용
+    pagePath: pathname,
+    startDate: "30daysAgo",
+    endDate: "today",
+    shouldForceJsonp: true, // CORS 문제 회피를 위해 JSONP 강제 사용
   });
-  const { loading, error, totals } = state;
 
   useEffect(() => {
     setIsMobileNavOpen(false);
