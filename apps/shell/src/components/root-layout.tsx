@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type PropsWithChildren } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { imageSource, useGoogleAnalyticsStats } from "@mfe/shared";
 import { cn } from "@srf/ui";
@@ -247,15 +253,26 @@ export default function Layout({
     useGaPageViews(gaMeasurementId);
   }
 
+  // pathname이 /my-blog로 시작하지 않으면 /my-blog를 앞에 추가
+  const analyticsPagePath = useMemo(() => {
+    if (pathname.startsWith("/my-blog")) {
+      return pathname;
+    }
+    // /로 시작하는 경우 /my-blog를 앞에 추가
+    return `/my-blog${pathname === "/" ? "" : pathname}`;
+  }, [pathname]);
+
   // 페이지 카운트 조회 (현재 페이지 기준)
-  const { loading, error, totals } = useGoogleAnalyticsStats({
+  const state = useGoogleAnalyticsStats({
     apiUrl: gaApiUrl || "",
     scope: "page",
-    pagePath: pathname,
+    pagePath: analyticsPagePath,
     startDate: "30daysAgo",
     endDate: "today",
     shouldForceJsonp: true, // CORS 문제 회피를 위해 JSONP 강제 사용
   });
+
+  const { loading, error, totals } = state;
 
   useEffect(() => {
     setIsMobileNavOpen(false);
