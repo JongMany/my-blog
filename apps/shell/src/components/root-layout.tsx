@@ -52,7 +52,7 @@ export default function Layout({ children }: PropsWithChildren) {
             alt="방구석 코딩쟁이"
             className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
           />
-          <div className="shell:text-xl shell:font-semibold shell:tracking-tight">
+          <div className="shell:text-xl shell:font-semibold shell:tracking-tight shell:no-underline">
             방구석 코딩쟁이
           </div>
         </Link>

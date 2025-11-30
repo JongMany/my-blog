@@ -20,17 +20,13 @@ export default function ActivePill({
 
     // 1) aria-current="page"
     let el =
-      (root.querySelector(
-        'a[aria-current="page"]'
-      ) as HTMLAnchorElement | null) ??
-      (root.querySelector(
-        'a[aria-current="true"]'
-      ) as HTMLAnchorElement | null);
+      root.querySelector<HTMLAnchorElement>('a[aria-current="page"]') ??
+      root.querySelector<HTMLAnchorElement>('a[aria-current="true"]');
 
     // 2) fallback: prefix match by pathname
     if (!el) {
       const anchors = Array.from(
-        root.querySelectorAll<HTMLAnchorElement>('a[href^="/"]')
+        root.querySelectorAll<HTMLAnchorElement>('a[href^="/"]'),
       );
       let best: HTMLAnchorElement | null = null;
       let bestLen = -1;
@@ -77,9 +73,8 @@ export default function ActivePill({
     const ro = new ResizeObserver(() => requestAnimationFrame(measure));
     if (containerRef.current) ro.observe(containerRef.current);
 
-    (document as any).fonts?.ready?.then?.(() =>
-      requestAnimationFrame(measure)
-    );
+    const fontsReady = document.fonts?.ready;
+    fontsReady?.then(() => requestAnimationFrame(measure));
 
     return () => {
       window.removeEventListener("resize", onResize);

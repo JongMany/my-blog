@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 export function useGaPageViews(measurementId: string) {
   const loc = useLocation();
   useEffect(() => {
-    const gtag = (window as any).gtag as ((...args: any[]) => void) | undefined;
+    const gtag = window.gtag;
     if (!gtag || !measurementId) return;
 
     gtag("event", "page_view", {
