@@ -8,7 +8,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 type ActivePillProps = {
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
 };
 
 type PillStyle = {
