@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
+import { AnalyticsPageData, useAllSiteAnalytics } from "@mfe/shared";
+import { Item, PostMeta } from "@/types/contents/post";
 
 export default function PostsPage() {
   const posts = getPosts();
@@ -12,6 +14,12 @@ export default function PostsPage() {
     return sortByDate(posts, true);
   }, [posts]);
 
+  const { loading, error, totals, pageDataList } = useAllSiteAnalytics({
+    apiUrl: import.meta.env.VITE_GA_API_URL,
+  });
+
+  console.log(totals, pageDataList, posts);
+
   return (
     <div className="max-w-2xl">
       {sortedPosts.length === 0 ? (
@@ -20,33 +28,73 @@ export default function PostsPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {sortedPosts.map((post) => {
-            const dateStr = extractDateFromMeta(post.meta);
-
-            return (
-              <article
-                key={post.slug}
-                className="cursor-pointer"
-                onClick={() => navigate(`/${post.slug}`)}
-              >
-                <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                  {post.meta.title}
-                </h2>
-                {post.meta.summary && (
-                  <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
-                    {post.meta.summary}
-                  </p>
-                )}
-                {dateStr && (
-                  <div className="text-xs text-gray-500 dark:text-gray-500">
-                    <time dateTime={dateStr}>{formatDate(dateStr)}</time>
-                  </div>
-                )}
-              </article>
-            );
-          })}
+          {sortedPosts.map((post) => (
+            <PostItem
+              key={post.slug}
+              post={post}
+              countMeta={{ pageDataList, isCountLoading: loading }}
+            />
+          ))}
         </div>
       )}
     </div>
   );
 }
+
+const PostItem = ({
+  post,
+  countMeta,
+}: {
+  post: Item<PostMeta>;
+  countMeta: { pageDataList?: AnalyticsPageData[]; isCountLoading?: boolean };
+}) => {
+  const dateStr = extractDateFromMeta(post.meta);
+  const navigate = useNavigate();
+  const { pageDataList = [], isCountLoading = true } = countMeta;
+
+  const count = useMemo(() => {
+    return isCountLoading
+      ? 0
+      : (pageDataList?.find((pageData) => pageData.path.endsWith(post.slug))
+          ?.views ?? 0);
+  }, [pageDataList, post.slug, isCountLoading]);
+
+  console.log(count);
+
+  return (
+    <article
+      key={post.slug}
+      className="cursor-pointer"
+      onClick={() => navigate(`/${post.slug}`)}
+    >
+      <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+        {post.meta.title}
+      </h2>
+      {post.meta.summary && (
+        <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+          {post.meta.summary}
+        </p>
+      )}
+      <div className="flex items-center gap-3">
+        {dateStr && (
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            <time dateTime={dateStr}>{formatDate(dateStr)}</time>
+          </div>
+        )}
+
+        <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
+          {isCountLoading ? (
+            <span className="inline-flex items-center gap-1">
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500" />
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500 [animation-delay:0.2s]" />
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500 [animation-delay:0.4s]" />
+            </span>
+          ) : (
+            <span>{count}</span>
+          )}
+          <span>views</span>
+        </div>
+      </div>
+    </article>
+  );
+};
