@@ -258,17 +258,23 @@ export function useGaCounters({
     const controller = controllerRef.current;
     const cache = cacheRef.current;
     controller.reset();
-    const signal = controller.getSignal();
+
+    // Always set loading to true when starting a new request
+    setState({ loading: true, error: null, totals: null, rows: [] });
 
     (async () => {
+      const signal = controller.getSignal();
       const cached = cache.get(url, cacheTtlSec);
-      if (cached && !controller.isCancelled()) {
-        setState({
-          loading: false,
-          error: null,
-          totals: cached.totals ?? null,
-          rows: cached.rows ?? [],
-        });
+
+      if (cached) {
+        if (!controller.isCancelled()) {
+          setState({
+            loading: false,
+            error: null,
+            totals: cached.totals ?? null,
+            rows: cached.rows ?? [],
+          });
+        }
         return;
       }
 
