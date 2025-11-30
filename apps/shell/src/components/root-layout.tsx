@@ -250,7 +250,7 @@ export default function Layout({
 
   // GA 측정 ID가 제공된 경우에만 사용
   if (gaMeasurementId) {
-    useGaPageViews(gaMeasurementId);
+    useGaPageViews(gaMeasurementId, import.meta.env.MODE === "development");
   }
 
   // pathname이 /my-blog로 시작하지 않으면 /my-blog를 앞에 추가

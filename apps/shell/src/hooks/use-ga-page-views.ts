@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export function useGaPageViews(measurementId?: string) {
+export function useGaPageViews(
+  measurementId?: string,
+  isDevelopment?: boolean,
+) {
   const loc = useLocation();
   useEffect(() => {
+    if (isDevelopment) return;
     const gtag = window.gtag;
     if (!gtag || !measurementId) return;
 
