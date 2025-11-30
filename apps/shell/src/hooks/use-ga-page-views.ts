@@ -11,6 +11,7 @@ export function useGaPageViews(measurementId: string) {
       page_path: loc.pathname + loc.search + loc.hash,
       page_title: document.title,
       page_location: window.location.href,
+      send_to: measurementId,
       // 필요시: send_to: measurementId,
     });
   }, [loc.pathname, loc.search, loc.hash, measurementId]);

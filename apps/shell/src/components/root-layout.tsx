@@ -18,81 +18,69 @@ const NAV: NavItem[] = [
   { to: "/resume", label: "Resume" },
 ];
 
-export default function Layout({ children }: PropsWithChildren) {
-  const navRef = useRef<HTMLDivElement>(null);
-  const { pathname } = useLocation();
-  const [open, setOpen] = useState(false);
+const DEFAULT_ACTIVE_LABEL = "Menu";
+
+function isNavItemActive(navItem: NavItem, pathname: string): boolean {
+  if (navItem.to === "/") {
+    return pathname === "/";
+  }
+  return pathname === navItem.to || pathname.startsWith(`${navItem.to}/`);
+}
+
+function useActiveNavLabel(pathname: string): string {
+  const activeNavItem = NAV.find((item) => isNavItemActive(item, pathname));
+  return activeNavItem?.label ?? DEFAULT_ACTIVE_LABEL;
+}
+
+function Logo() {
   const isDevelopment = import.meta.env.MODE === "development";
-  const logoSrc = imageSource("/favicon.svg", "home", {
-    isDevelopment,
-  });
-
-  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
-
-  useEffect(() => setOpen(false), [pathname]);
-
-  const activeLabel =
-    NAV.find((n) =>
-      n.to === "/"
-        ? pathname === "/"
-        : pathname === n.to || pathname.startsWith(`${n.to}/`),
-    )?.label ?? "Menu";
+  const logoSrc = imageSource("/favicon.svg", "home", { isDevelopment });
 
   return (
-    <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col ">
-      {/* <HeroBackdrop /> */}
+    <Link
+      to="/"
+      className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
+    >
+      <img
+        src={logoSrc}
+        alt="방구석 코딩쟁이"
+        className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
+      />
+      <div className="shell:text-xl shell:font-semibold shell:tracking-tight shell:no-underline">
+        방구석 코딩쟁이
+      </div>
+    </Link>
+  );
+}
 
-      <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
-        <Link
-          to="/"
-          className="shell:flex shell:items-center shell:gap-4 shell:mr-2"
+function DesktopNav() {
+  const navRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      ref={navRef}
+      className="shell:relative shell:z-0 shell:gap-1 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:p-1 shell:hidden shell:md:flex"
+    >
+      <ActivePill containerRef={navRef} />
+      {NAV.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          className={({ isActive }) =>
+            cn(
+              "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
+              isActive && "shell:text-gray-1",
+            )
+          }
         >
-          <img
-            src={logoSrc}
-            alt="방구석 코딩쟁이"
-            className="shell:h-10 shell:w-10 md:shell:h-11 md:shell:w-11 shell:object-contain"
-          />
-          <div className="shell:text-xl shell:font-semibold shell:tracking-tight shell:no-underline">
-            방구석 코딩쟁이
-          </div>
-        </Link>
-
-        <div
-          ref={navRef}
-          className="shell:relative shell:z-0 shell:gap-1 shell:rounded-full shell:border shell:border-[var(--border)] shell:bg-[var(--card-bg)] shell:p-1 shell:hidden shell:md:flex"
-        >
-          <ActivePill containerRef={navRef} />
-          {NAV.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.end}
-              className={({ isActive }) =>
-                cn(
-                  "shell:relative shell:z-10 shell:rounded-full shell:px-3 shell:py-1.5 shell:text-sm shell:transition shell:focus:outline-none shell:focus-visible:ring-2 shell:focus-visible:ring-[var(--primary)]",
-                  isActive ? "shell:text-gray-1" : "",
-                )
-              }
-              children={({ isActive }) => (
-                <span data-active={isActive ? "true" : undefined}>
-                  {n.label}
-                </span>
-              )}
-            />
-          ))}
-        </div>
-
-        <MobileNavDropdown
-          open={open}
-          setOpen={setOpen}
-          activeLabel={activeLabel}
-        />
-      </header>
-
-      <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
-      <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
-        © {new Date().getFullYear()} · Frontend Developer
-      </footer>
+          {({ isActive }) => (
+            <span data-active={isActive ? "true" : undefined}>
+              {item.label}
+            </span>
+          )}
+        </NavLink>
+      ))}
     </div>
   );
 }
@@ -103,17 +91,16 @@ function MobileNavDropdown({
   activeLabel,
 }: {
   open: boolean;
-  setOpen: (v: boolean) => void;
+  setOpen: (open: boolean) => void;
   activeLabel: string;
 }) {
   const { pathname } = useLocation();
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => setOpen(false);
 
   return (
-    <div ref={rootRef} className="shell:relative shell:z-[70] shell:md:hidden">
+    <div className="shell:relative shell:z-[70] shell:md:hidden">
       <button
-        ref={btnRef}
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
@@ -140,7 +127,11 @@ function MobileNavDropdown({
 
       {open && (
         <>
-          <div className="shell:fixed shell:inset-0 shell:z-[60]" aria-hidden />
+          <div
+            className="shell:fixed shell:inset-0 shell:z-[60]"
+            aria-hidden
+            onClick={handleClose}
+          />
           <div
             id="mobile-nav-menu"
             role="menu"
@@ -153,17 +144,14 @@ function MobileNavDropdown({
             )}
           >
             <nav className="shell:flex shell:flex-col">
-              {NAV.map((n) => {
-                const isActive =
-                  n.to === "/"
-                    ? pathname === "/"
-                    : pathname === n.to || pathname.startsWith(`${n.to}/`);
+              {NAV.map((item) => {
+                const isActive = isNavItemActive(item, pathname);
                 return (
                   <NavLink
-                    key={n.to}
-                    to={n.to}
-                    onClick={() => setOpen(false)}
-                    end={n.end}
+                    key={item.to}
+                    to={item.to}
+                    onClick={handleClose}
+                    end={item.end}
                     role="menuitem"
                     className={({ isActive: rrActive }) =>
                       cn(
@@ -175,7 +163,7 @@ function MobileNavDropdown({
                       )
                     }
                   >
-                    {n.label}
+                    {item.label}
                   </NavLink>
                 );
               })}
@@ -183,6 +171,37 @@ function MobileNavDropdown({
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+export default function Layout({ children }: PropsWithChildren) {
+  const { pathname } = useLocation();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const activeLabel = useActiveNavLabel(pathname);
+
+  useGaPageViews(import.meta.env.VITE_GA_MEASUREMENT_ID);
+
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [pathname]);
+
+  return (
+    <div className="shell:relative shell:mx-auto shell:max-w-screen-2xl shell:px-5 shell:pt-8 shell:pb-16 shell:min-h-full shell:flex shell:flex-col">
+      <header className="shell:mb-8 shell:flex shell:items-center shell:gap-3">
+        <Logo />
+        <DesktopNav />
+        <MobileNavDropdown
+          open={isMobileNavOpen}
+          setOpen={setIsMobileNavOpen}
+          activeLabel={activeLabel}
+        />
+      </header>
+
+      <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
+      <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
+        © {new Date().getFullYear()} · Frontend Developer
+      </footer>
     </div>
   );
 }
