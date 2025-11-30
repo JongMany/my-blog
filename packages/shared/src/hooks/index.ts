@@ -1,2 +1,2 @@
-export * from "./useGaCounters";
+export * from "./use-ga-counters";
 export * from "./use-boolean";

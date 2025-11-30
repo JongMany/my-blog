@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export function useGaPageViews(measurementId: string) {
+export function useGaPageViews(measurementId?: string) {
   const loc = useLocation();
   useEffect(() => {
     const gtag = window.gtag;

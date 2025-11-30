@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { imageSource } from "@mfe/shared";
+import { imageSource, useGoogleAnalyticsStats } from "@mfe/shared";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useGaPageViews } from "@/hooks/use-ga-page-views";
@@ -22,6 +22,7 @@ export type LayoutDependencies = {
   navItems?: NavItem[];
   logoConfig?: LogoConfig;
   gaMeasurementId?: string;
+  gaApiUrl?: string; // Google Analytics API URL (Apps Script)
   defaultActiveLabel?: string;
   footerText?: string;
 };
@@ -228,6 +229,7 @@ export default function Layout({
   navItems = DEFAULT_NAV_ITEMS,
   logoConfig,
   gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID,
+  gaApiUrl = import.meta.env.VITE_GA_API_URL,
   defaultActiveLabel = DEFAULT_ACTIVE_LABEL,
   footerText = `© ${new Date().getFullYear()} · Frontend Developer`,
 }: LayoutProps) {
@@ -244,6 +246,16 @@ export default function Layout({
   if (gaMeasurementId) {
     useGaPageViews(gaMeasurementId);
   }
+
+  // 페이지 카운트 조회 (현재 페이지 기준)
+  const { loading, error, totals } = useGoogleAnalyticsStats({
+    apiUrl: gaApiUrl || "",
+    scope: "page",
+    pagePath: pathname,
+    startDate: "30daysAgo",
+    endDate: "today",
+    shouldForceJsonp: true, // CORS 문제 회피를 위해 JSONP 강제 사용
+  });
 
   useEffect(() => {
     setIsMobileNavOpen(false);
@@ -264,7 +276,22 @@ export default function Layout({
 
       <main className="shell:relative shell:z-10 shell:flex-1">{children}</main>
       <footer className="shell:mt-14 shell:text-sm shell:text-[var(--muted-fg)]">
-        {footerText}
+        <div className="shell:flex shell:items-center shell:gap-2">
+          <span>{footerText}</span>
+          {gaApiUrl && totals && (
+            <span className="shell:text-[var(--muted-fg)]">
+              · 조회수 {totals.screenPageViews.toLocaleString()}
+            </span>
+          )}
+          {gaApiUrl && loading && (
+            <span className="shell:text-[var(--muted-fg)]">· 로딩 중...</span>
+          )}
+          {gaApiUrl && error && (
+            <span className="shell:text-[var(--muted-fg)]">
+              · 조회수 불러오기 실패
+            </span>
+          )}
+        </div>
       </footer>
     </div>
   );
