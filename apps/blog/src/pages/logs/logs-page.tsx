@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getLogs } from "@/service/logs";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 import { Item, LogMeta } from "@/types/contents/log";
-import { AnalyticsViewCount } from "@/components/analytics-view-count";
+import { ViewCount } from "@/components/view-count";
 
 export default function LogsPage() {
   const logs = getLogs();
@@ -56,7 +56,7 @@ const LogItem = ({ log }: { log: Item<LogMeta> }) => {
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          <AnalyticsViewCount pagePath={`/my-blog/${log.slug}`} />
+          <ViewCount path={`/my-blog/${log.slug}`} />
           <span>views</span>
         </div>
       </div>

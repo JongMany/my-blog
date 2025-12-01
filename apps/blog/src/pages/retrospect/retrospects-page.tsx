@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getRetrospects } from "@/service/retrospects";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 import { Item, RetrospectMeta } from "@/types/contents/retrospect";
-import { AnalyticsViewCount } from "@/components/analytics-view-count";
+import { ViewCount } from "@/components/view-count";
 
 export default function RetrospectsPage() {
   const retrospects = getRetrospects();
@@ -60,7 +60,7 @@ const RetrospectItem = ({
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          <AnalyticsViewCount pagePath={`/my-blog/${retrospect.slug}`} />
+          <ViewCount path={`/my-blog/${retrospect.slug}`} />
           <span>views</span>
         </div>
       </div>

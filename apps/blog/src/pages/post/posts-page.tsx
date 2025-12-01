@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 import { Item, PostMeta } from "@/types/contents/post";
-import { AnalyticsViewCount } from "@/components/analytics-view-count";
+import { ViewCount } from "@/components/view-count";
 
 export default function PostsPage() {
   const posts = getPosts();
@@ -56,7 +56,7 @@ const PostItem = ({ post }: { post: Item<PostMeta> }) => {
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          <AnalyticsViewCount pagePath={`/my-blog/${post.slug}`} />
+          <ViewCount path={`/my-blog/${post.slug}`} />
           <span>views</span>
         </div>
       </div>
