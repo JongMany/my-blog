@@ -1,4 +1,4 @@
-/* 토스 스타일 유려한 애니메이션 */
+
 
 /* 토스 브랜드 컬러 */
 :root {
@@ -132,6 +132,16 @@
   }
 }
 
+/* 스켈레톤 shimmer 애니메이션 */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 /* 토스 스타일 스피너 */
 .toss-spinner {
   animation: toss-spin 1s linear infinite;
@@ -238,6 +248,28 @@
   animation: toss-cursor-blink 1s infinite;
 }
 
+/* 스켈레톤 로딩 스타일 */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(209 213 219 / 0.3) 0%,
+    rgb(209 213 219 / 0.5) 50%,
+    rgb(209 213 219 / 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(55 65 81 / 0.3) 0%,
+    rgb(55 65 81 / 0.5) 50%,
+    rgb(55 65 81 / 0.3) 100%
+  );
+  background-size: 200% 100%;
+}
+
 /* 모션 감소 설정 */
 @media (prefers-reduced-motion: reduce) {
   .toss-spinner,
@@ -249,7 +281,8 @@
   .animate-toss-char-appear,
   .animate-toss-word-fade,
   .toss-typing-text,
-  .toss-cursor {
+  .toss-cursor,
+  .skeleton-shimmer {
     animation: none;
   }
 
