@@ -1,24 +1,17 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
-import { AnalyticsPageData, useAllSiteAnalytics } from "@mfe/shared";
 import { Item, PostMeta } from "@/types/contents/post";
+import { ViewCount } from "@/components/view-count";
 
 export default function PostsPage() {
   const posts = getPosts();
-  const navigate = useNavigate();
 
   // published가 true인 포스트만 필터링하고 최신순으로 정렬
   const sortedPosts = useMemo(() => {
     return sortByDate(posts, true);
   }, [posts]);
-
-  const { loading, error, totals, pageDataList } = useAllSiteAnalytics({
-    apiUrl: import.meta.env.VITE_GA_API_URL,
-  });
-
-  console.log(totals, pageDataList, posts);
 
   return (
     <div className="max-w-2xl">
@@ -29,11 +22,7 @@ export default function PostsPage() {
       ) : (
         <div className="space-y-6">
           {sortedPosts.map((post) => (
-            <PostItem
-              key={post.slug}
-              post={post}
-              countMeta={{ pageDataList, isCountLoading: loading }}
-            />
+            <PostItem key={post.slug} post={post} />
           ))}
         </div>
       )}
@@ -41,25 +30,9 @@ export default function PostsPage() {
   );
 }
 
-const PostItem = ({
-  post,
-  countMeta,
-}: {
-  post: Item<PostMeta>;
-  countMeta: { pageDataList?: AnalyticsPageData[]; isCountLoading?: boolean };
-}) => {
+const PostItem = ({ post }: { post: Item<PostMeta> }) => {
   const dateStr = extractDateFromMeta(post.meta);
   const navigate = useNavigate();
-  const { pageDataList = [], isCountLoading = true } = countMeta;
-
-  const count = useMemo(() => {
-    return isCountLoading
-      ? 0
-      : (pageDataList?.find((pageData) => pageData.path.endsWith(post.slug))
-          ?.views ?? 0);
-  }, [pageDataList, post.slug, isCountLoading]);
-
-  console.log(count);
 
   return (
     <article
@@ -83,15 +56,7 @@ const PostItem = ({
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          {isCountLoading ? (
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500" />
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500 [animation-delay:0.2s]" />
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400 dark:bg-gray-500 [animation-delay:0.4s]" />
-            </span>
-          ) : (
-            <span>{count}</span>
-          )}
+          <ViewCount path={`/my-blog/${post.slug}`} />
           <span>views</span>
         </div>
       </div>

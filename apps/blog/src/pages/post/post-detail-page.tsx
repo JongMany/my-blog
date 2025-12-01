@@ -9,6 +9,7 @@ import Summary from "@/components/summary";
 import Time from "@/components/time";
 import { GiscusComments } from "@/components/giscus-comments";
 import NotFoundPage from "@/components/not-found-page";
+import { ViewCount } from "@/components/view-count";
 
 export default function PostDetailPage() {
   const { slug } = useParams();
@@ -34,13 +35,18 @@ export default function PostDetailPage() {
               {summary}
             </Summary>
           )}
-          {displayDate && (
-            <Time
-              date={displayDate}
-              className="text-xs text-gray-500 dark:text-gray-500"
-              wrapperClassName="mb-8"
-            />
-          )}
+          <div className="flex items-center gap-2 mb-8">
+            {displayDate && (
+              <Time
+                date={displayDate}
+                className="text-xs text-gray-500 dark:text-gray-500"
+              />
+            )}
+            <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
+              <ViewCount path={`/my-blog/blog/posts/${slug}`} />
+              <span>views</span>
+            </div>
+          </div>
           <div className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-600 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 dark:prose-blockquote:text-gray-400">
             <MDX compiledSource={compiledSource} frontmatter={post.meta} />
           </div>
