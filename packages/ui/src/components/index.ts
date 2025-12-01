@@ -2,5 +2,6 @@ export * from "./base";
 export * from "./icon";
 export * from "./analytics";
 export * from "./SEO";
-export * from "./CursorTooltip";
-export * from "./InlineTooltip";
+export * from "./cursor-tooltip";
+export * from "./inline-tooltip";
+export * from "./loading";
