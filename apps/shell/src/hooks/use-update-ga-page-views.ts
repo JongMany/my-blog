@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export function useGaPageViews(
+export function useUpdateGaPageViews(
   measurementId?: string,
   isDevelopment?: boolean,
 ) {
   const loc = useLocation();
   useEffect(() => {
-    // if (isDevelopment) return;
+    if (isDevelopment) return;
+    // gtag는 shell index.html에 있는 script 태그에 의해 정의되어 있습니다.
     const gtag = window.gtag;
     if (!gtag || !measurementId) return;
 

@@ -9,7 +9,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { imageSource, useGoogleAnalyticsStats } from "@mfe/shared";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
-import { useGaPageViews } from "@/hooks/use-ga-page-views";
+import { useUpdateGaPageViews } from "@/hooks/use-update-ga-page-views";
 
 // ===== Types =====
 export type NavItem = {
@@ -250,7 +250,10 @@ export default function Layout({
 
   // GA 측정 ID가 제공된 경우에만 사용
   if (gaMeasurementId) {
-    useGaPageViews(gaMeasurementId, import.meta.env.MODE === "development");
+    useUpdateGaPageViews(
+      gaMeasurementId,
+      import.meta.env.MODE === "development",
+    );
   }
 
   // pathname이 /my-blog로 시작하지 않으면 /my-blog를 앞에 추가
