@@ -14,7 +14,7 @@ export default function PostsPage() {
     return sortByDate(posts, true);
   }, [posts]);
 
-  const { loading, error, totals, pageDataList } = useAllSiteAnalytics({
+  const { loading, pageDataList } = useAllSiteAnalytics({
     apiUrl: import.meta.env.VITE_GA_API_URL,
   });
 
@@ -57,8 +57,6 @@ const PostItem = ({
           ?.views ?? 0);
   }, [pageDataList, post.slug, isCountLoading]);
 
-  console.log(count, isCountLoading);
-
   return (
     <article
       key={post.slug}
@@ -81,7 +79,7 @@ const PostItem = ({
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          {!isCountLoading ? (
+          {isCountLoading ? (
             <LoadingSkeleton width="1rem" height="0.75rem" />
           ) : (
             <span>{count}</span>
