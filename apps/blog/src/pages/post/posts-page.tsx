@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
-import { AnalyticsPageData, useAllSiteAnalytics } from "@mfe/shared";
 import { Item, PostMeta } from "@/types/contents/post";
-import { LoadingSkeleton } from "@srf/ui";
+import { PostViewCount } from "./post-view-count";
 
 export default function PostsPage() {
   const posts = getPosts();
@@ -13,10 +12,6 @@ export default function PostsPage() {
   const sortedPosts = useMemo(() => {
     return sortByDate(posts, true);
   }, [posts]);
-
-  const { loading, pageDataList } = useAllSiteAnalytics({
-    apiUrl: import.meta.env.VITE_GA_API_URL,
-  });
 
   return (
     <div className="max-w-2xl">
@@ -27,11 +22,7 @@ export default function PostsPage() {
       ) : (
         <div className="space-y-6">
           {sortedPosts.map((post) => (
-            <PostItem
-              key={post.slug}
-              post={post}
-              countMeta={{ pageDataList, isCountLoading: loading }}
-            />
+            <PostItem key={post.slug} post={post} />
           ))}
         </div>
       )}
@@ -39,23 +30,9 @@ export default function PostsPage() {
   );
 }
 
-const PostItem = ({
-  post,
-  countMeta,
-}: {
-  post: Item<PostMeta>;
-  countMeta: { pageDataList?: AnalyticsPageData[]; isCountLoading?: boolean };
-}) => {
+const PostItem = ({ post }: { post: Item<PostMeta> }) => {
   const dateStr = extractDateFromMeta(post.meta);
   const navigate = useNavigate();
-  const { pageDataList = [], isCountLoading = true } = countMeta;
-
-  const count = useMemo(() => {
-    return isCountLoading
-      ? 0
-      : (pageDataList?.find((pageData) => pageData.path.endsWith(post.slug))
-          ?.views ?? 0);
-  }, [pageDataList, post.slug, isCountLoading]);
 
   return (
     <article
@@ -79,11 +56,7 @@ const PostItem = ({
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          {isCountLoading ? (
-            <LoadingSkeleton width="1rem" height="0.75rem" />
-          ) : (
-            <span>{count}</span>
-          )}
+          <PostViewCount postSlug={post.slug} />
           <span>views</span>
         </div>
       </div>
