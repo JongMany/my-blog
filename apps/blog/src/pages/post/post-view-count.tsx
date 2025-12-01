@@ -3,7 +3,19 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { AnalyticsPageData } from "@mfe/shared";
 import { LoadingSkeleton } from "@srf/ui";
 
-// Analytics 데이터 페칭 함수
+/**
+ * 전체 사이트의 Google Analytics 페이지 조회수 데이터를 가져오는 함수
+ *
+ * @description
+ * - Google Apps Script로 구현된 Analytics API를 JSONP 방식으로 호출합니다
+ * - CORS 제한을 우회하기 위해 JSONP(JSON with Padding) 방식을 사용합니다
+ * - 전체 사이트의 모든 페이지 조회수를 한 번에 가져옵니다
+ * - /my-blog로 시작하는 경로만 필터링하여 반환합니다
+ *
+ * @param apiUrl - Google Apps Script 웹앱 URL
+ * @returns 페이지별 조회수 데이터 배열 (AnalyticsPageData[])
+ * @throws API URL이 없거나 요청 실패 시 에러를 throw합니다
+ */
 async function fetchAllSiteAnalytics(
   apiUrl: string,
 ): Promise<AnalyticsPageData[]> {
@@ -11,104 +23,62 @@ async function fetchAllSiteAnalytics(
     throw new Error("VITE_GA_API_URL이 설정되지 않았습니다");
   }
 
-  try {
-    const requestUrl = new URL(apiUrl);
-    requestUrl.searchParams.set("scope", "site");
-    requestUrl.searchParams.set("start", "30daysAgo");
-    requestUrl.searchParams.set("end", "today");
+  // API 요청 URL 구성 (전체 사이트 통계, 최근 30일)
+  const url = new URL(apiUrl);
+  url.searchParams.set("scope", "site");
+  url.searchParams.set("start", "30daysAgo");
+  url.searchParams.set("end", "today");
 
-    try {
-      const response = await fetch(requestUrl.toString(), {
-        credentials: "omit",
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (!data?.ok) {
-        throw new Error(data?.error || "API 오류가 발생했습니다");
-      }
-
-      // /my-blog로 시작하지 않는 경로 필터링
-      return (data.rows || []).filter((pageData: AnalyticsPageData) =>
-        pageData.path.startsWith("/my-blog"),
-      );
-    } catch (error) {
-      // JSONP 폴백 시도
-      return fetchAllSiteAnalyticsWithJsonp(requestUrl.toString());
-    }
-  } catch (error) {
-    if (error instanceof TypeError && error.message.includes("Invalid URL")) {
-      throw new Error("유효하지 않은 API URL입니다");
-    }
-    throw error;
-  }
-}
-
-// JSONP를 사용한 데이터 페칭 (CORS 우회)
-function fetchAllSiteAnalyticsWithJsonp(
-  apiUrl: string,
-): Promise<AnalyticsPageData[]> {
+  // JSONP를 사용한 비동기 요청 (CORS 우회)
   return new Promise((resolve, reject) => {
-    const uniqueCallbackName = `__analytics_jsonp_${Date.now()}_${Math.random()
+    // 고유한 콜백 함수명 생성 (전역 스코프에 등록될 함수)
+    const callback = `__analytics_${Date.now()}_${Math.random()
       .toString(36)
       .slice(2)}`;
-    const jsonpScriptElement = document.createElement("script");
-    let hasAlreadyResolved = false;
-    let requestTimeoutId: ReturnType<typeof setTimeout>;
+    const script = document.createElement("script");
+    let done = false;
 
-    const cleanupJsonpResources = () => {
-      clearTimeout(requestTimeoutId);
-      if (jsonpScriptElement.parentNode) {
-        jsonpScriptElement.remove();
-      }
-      if (uniqueCallbackName in window) {
-        delete (window as any)[uniqueCallbackName];
-      }
+    // 정리 함수: 스크립트 태그와 전역 콜백 함수 제거
+    const finish = () => {
+      if (done) return;
+      done = true;
+      script.remove();
+      delete (window as any)[callback];
     };
 
-    const resolvePromiseOnce = (value: AnalyticsPageData[]) => {
-      if (hasAlreadyResolved) return;
-      hasAlreadyResolved = true;
-      cleanupJsonpResources();
-      resolve(value);
-    };
+    // 15초 타임아웃 설정
+    const timeout = setTimeout(() => {
+      finish();
+      reject(new Error("요청 시간 초과"));
+    }, 15000);
 
-    const rejectPromiseOnce = (error: Error) => {
-      if (hasAlreadyResolved) return;
-      hasAlreadyResolved = true;
-      cleanupJsonpResources();
-      reject(error);
-    };
+    // 전역 콜백 함수 등록 (서버에서 호출될 함수)
+    (window as any)[callback] = (data: any) => {
+      finish();
+      clearTimeout(timeout);
 
-    requestTimeoutId = setTimeout(
-      () => rejectPromiseOnce(new Error("JSONP 요청 시간 초과")),
-      15000,
-    );
-
-    (window as any)[uniqueCallbackName] = (data: any) => {
       if (!data?.ok) {
-        rejectPromiseOnce(new Error(data?.error || "API 오류가 발생했습니다"));
+        reject(new Error(data?.error || "API 오류"));
         return;
       }
 
-      const filteredData = (data.rows || []).filter(
-        (pageData: AnalyticsPageData) => pageData.path.startsWith("/my-blog"),
+      // /my-blog로 시작하는 경로만 필터링
+      const filtered = (data.rows || []).filter((pageData: AnalyticsPageData) =>
+        pageData.path.startsWith("/my-blog"),
       );
-      resolvePromiseOnce(filteredData);
+      resolve(filtered);
     };
 
-    jsonpScriptElement.onerror = () =>
-      rejectPromiseOnce(new Error("JSONP 스크립트 로드 실패"));
-    jsonpScriptElement.async = true;
+    // 스크립트 로드 실패 처리
+    script.onerror = () => {
+      finish();
+      clearTimeout(timeout);
+      reject(new Error("스크립트 로드 실패"));
+    };
 
-    const urlQuerySeparator = apiUrl.includes("?") ? "&" : "?";
-    jsonpScriptElement.src = `${apiUrl}${urlQuerySeparator}callback=${uniqueCallbackName}`;
-    document.body.appendChild(jsonpScriptElement);
+    // JSONP 요청: 스크립트 태그를 동적으로 추가하여 데이터 가져오기
+    script.src = `${url.toString()}${url.toString().includes("?") ? "&" : "?"}callback=${callback}`;
+    document.body.appendChild(script);
   });
 }
 
