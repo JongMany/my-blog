@@ -1,14 +1,13 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
 import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
 import { AnalyticsPageData, useAllSiteAnalytics } from "@mfe/shared";
 import { Item, PostMeta } from "@/types/contents/post";
-import { LoadingDots } from "@srf/ui";
+import { LoadingSkeleton } from "@srf/ui";
 
 export default function PostsPage() {
   const posts = getPosts();
-  const navigate = useNavigate();
 
   // published가 true인 포스트만 필터링하고 최신순으로 정렬
   const sortedPosts = useMemo(() => {
@@ -58,6 +57,8 @@ const PostItem = ({
           ?.views ?? 0);
   }, [pageDataList, post.slug, isCountLoading]);
 
+  console.log(count, isCountLoading);
+
   return (
     <article
       key={post.slug}
@@ -80,7 +81,11 @@ const PostItem = ({
         )}
 
         <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          {isCountLoading ? <LoadingDots /> : <span>{count}</span>}
+          {!isCountLoading ? (
+            <LoadingSkeleton width="1rem" height="0.75rem" />
+          ) : (
+            <span>{count}</span>
+          )}
           <span>views</span>
         </div>
       </div>
