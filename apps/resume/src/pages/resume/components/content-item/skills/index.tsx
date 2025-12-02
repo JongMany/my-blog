@@ -13,7 +13,7 @@ export default function SkillsCard({ skills, className }: SkillsCardProps) {
 
   return (
     <Card className={cn("p-3 sm:p-4", className)}>
-      <div className={cn("mb-2 sm:mb-3 font-medium", "text-sm sm:text-base")}>
+      <div className="mb-2 sm:mb-3 text-base font-semibold text-[var(--fg)]">
         Skills
       </div>
       <SkillsSection items={skills} />

@@ -24,7 +24,10 @@ export function Stack({
       className={cn("scroll-mt-24 space-y-3", className)}
     >
       <div className="flex items-center gap-3">
-        <h3 id={headingId} className="text-base font-semibold tracking-tight">
+        <h3
+          id={headingId}
+          className="text-base font-semibold tracking-tight text-[var(--fg)]"
+        >
           {title}
         </h3>
         <div className="h-px flex-1 bg-[var(--border)]" />

@@ -3,7 +3,7 @@
  */
 export function NavigationHeader() {
   return (
-    <div className="mb-2 text-sm font-medium text-[var(--muted-fg)]">
+    <div className="mb-2 text-base font-semibold text-[var(--fg)]">
       목차
     </div>
   );
