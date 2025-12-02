@@ -1,7 +1,12 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLogs } from "@/service/logs";
-import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
+import {
+  filterAndSortByDate,
+  filterPublishedItems,
+  extractDateFromMeta,
+  formatDate,
+} from "@/utils/date";
 import { Item, LogMeta } from "@/types/contents/log";
 import { ViewCount } from "@/components/view-count";
 
@@ -10,14 +15,16 @@ export default function LogsPage() {
 
   // published가 true인 로그만 필터링하고 최신순으로 정렬
   const sortedLogs = useMemo(() => {
-    return sortByDate(logs, true);
+    return filterAndSortByDate(logs, {
+      filters: [filterPublishedItems],
+    });
   }, [logs]);
 
   return (
     <div className="max-w-2xl">
       {sortedLogs.length === 0 ? (
         <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          로그가 없습니다.
+          기록이 없습니다.
         </div>
       ) : (
         <div className="space-y-6">

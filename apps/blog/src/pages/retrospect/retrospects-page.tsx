@@ -1,7 +1,12 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRetrospects } from "@/service/retrospects";
-import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
+import {
+  filterAndSortByDate,
+  filterPublishedItems,
+  extractDateFromMeta,
+  formatDate,
+} from "@/utils/date";
 import { Item, RetrospectMeta } from "@/types/contents/retrospect";
 import { ViewCount } from "@/components/view-count";
 
@@ -10,7 +15,9 @@ export default function RetrospectsPage() {
 
   // published가 true인 회고만 필터링하고 최신순으로 정렬
   const sortedRetrospects = useMemo(() => {
-    return sortByDate(retrospects, true);
+    return filterAndSortByDate(retrospects, {
+      filters: [filterPublishedItems],
+    });
   }, [retrospects]);
 
   return (

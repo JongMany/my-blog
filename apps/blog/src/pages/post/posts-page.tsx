@@ -1,7 +1,12 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "@/service/posts";
-import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
+import {
+  filterAndSortByDate,
+  filterPublishedItems,
+  extractDateFromMeta,
+  formatDate,
+} from "@/utils/date";
 import { Item, PostMeta } from "@/types/contents/post";
 import { ViewCount } from "@/components/view-count";
 
@@ -10,7 +15,9 @@ export default function PostsPage() {
 
   // published가 true인 포스트만 필터링하고 최신순으로 정렬
   const sortedPosts = useMemo(() => {
-    return sortByDate(posts, true);
+    return filterAndSortByDate(posts, {
+      filters: [filterPublishedItems],
+    });
   }, [posts]);
 
   return (

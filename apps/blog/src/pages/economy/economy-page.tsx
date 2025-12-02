@@ -1,7 +1,12 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getEconomies } from "@/service/economy";
-import { sortByDate, extractDateFromMeta, formatDate } from "@/utils/date";
+import {
+  filterAndSortByDate,
+  filterPublishedItems,
+  extractDateFromMeta,
+  formatDate,
+} from "@/utils/date";
 import { Item, EconomyMeta } from "@/types/contents/economy";
 import { ViewCount } from "@/components/view-count";
 
@@ -10,7 +15,9 @@ export default function EconomyPage() {
 
   // published가 true인 콘텐츠만 필터링하고 최신순으로 정렬
   const sortedEconomies = useMemo(() => {
-    return sortByDate(economies, true);
+    return filterAndSortByDate(economies, {
+      filters: [filterPublishedItems],
+    });
   }, [economies]);
 
   return (
