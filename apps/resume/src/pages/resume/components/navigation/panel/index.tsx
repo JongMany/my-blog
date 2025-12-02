@@ -4,7 +4,7 @@ import { cn } from "@srf/ui";
 import { TOC_ITEMS } from "@/pages/resume/constants";
 import { Card } from "@/components/card";
 import { useViewport } from "@/contexts/viewport-context";
-import { useActiveSection, useSectionScroll } from "@/pages/resume/components/navigation/hooks";
+import { useSectionNavigation } from "@/pages/resume/components/navigation/hooks";
 import { NavigationHeader } from "./navigation-header";
 import { NavigationList } from "./navigation-list";
 
@@ -45,31 +45,23 @@ function NavigationContent({
   offset = 96,
   updateHash = true,
 }: NavigationContentProps) {
-  const { active, setActive, lockRef } = useActiveSection({
-    items,
-    offset,
-  });
-  const { scrollToSection, initializeScrollFromHash } = useSectionScroll({
-    offset,
-    updateHash,
-  });
+  const { active, setActive, scrollToSection, initializeScrollFromHash } =
+    useSectionNavigation({
+      items,
+      offset,
+      updateHash,
+    });
 
   // 초기 해시가 있을 경우 스크롤 처리
-  // (active 상태는 useActiveSection에서 자동으로 처리됨)
   useEffect(() => {
-    initializeScrollFromHash(items);
+    initializeScrollFromHash();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleItemClick = (id: string) => {
     // 클릭 시 즉시 상태 업데이트 (낙관적 업데이트)
     setActive(id);
-    scrollToSection(id, "smooth", (lockId: number | null) => {
-      if (lockRef.current) {
-        window.clearTimeout(lockRef.current);
-      }
-      lockRef.current = lockId;
-    });
+    scrollToSection(id, "smooth");
   };
 
   return (

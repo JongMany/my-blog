@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { useResumeContext } from "@/pages/resume/contexts/resume-context-provider";
-import { useActiveSection, useSectionScroll } from "@/pages/resume/components/navigation/hooks";
+import { useSectionNavigation } from "@/pages/resume/components/navigation/hooks";
 import { SectionTabs } from "./section-tabs";
 import { ViewModeToggle } from "./view-mode-toggle";
 
@@ -25,31 +25,23 @@ export default function TopTabs({
   updateHash = true,
 }: TopTabsProps) {
   const { viewMode, toggleViewMode } = useResumeContext();
-  const { active, setActive, lockRef } = useActiveSection({
-    items,
-    offset,
-  });
-  const { scrollToSection, initializeScrollFromHash } = useSectionScroll({
-    offset,
-    updateHash,
-  });
+  const { active, setActive, scrollToSection, initializeScrollFromHash } =
+    useSectionNavigation({
+      items,
+      offset,
+      updateHash,
+    });
 
   // 초기 해시가 있을 경우 스크롤 처리
-  // (active 상태는 useActiveSection에서 자동으로 처리됨)
   useEffect(() => {
-    initializeScrollFromHash(items);
+    initializeScrollFromHash();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTabClick = (id: string) => {
     // 클릭 시 즉시 상태 업데이트 (낙관적 업데이트)
     setActive(id);
-    scrollToSection(id, "smooth", (lockId: number | null) => {
-      if (lockRef.current) {
-        window.clearTimeout(lockRef.current);
-      }
-      lockRef.current = lockId;
-    });
+    scrollToSection(id, "smooth");
   };
 
   const isDetailed = viewMode === "detailed";
