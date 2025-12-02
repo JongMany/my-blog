@@ -9,6 +9,7 @@ import {
 } from "@/utils/date";
 import { Item, PostMeta } from "@/types/contents/post";
 import { ViewCount } from "@/components/view-count";
+import { ContentList } from "@/components/content-list";
 
 export default function PostsPage() {
   const posts = getPosts();
@@ -21,19 +22,12 @@ export default function PostsPage() {
   }, [posts]);
 
   return (
-    <div className="max-w-2xl">
-      {sortedPosts.length === 0 ? (
-        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          포스트가 없습니다.
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {sortedPosts.map((post) => (
-            <PostItem key={post.slug} post={post} />
-          ))}
-        </div>
-      )}
-    </div>
+    <ContentList
+      items={sortedPosts}
+      emptyMessage="포스트가 없습니다."
+      itemKey={(post) => post.slug}
+      renderItem={(post) => <PostItem post={post} />}
+    />
   );
 }
 

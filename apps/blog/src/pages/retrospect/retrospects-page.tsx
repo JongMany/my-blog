@@ -9,6 +9,7 @@ import {
 } from "@/utils/date";
 import { Item, RetrospectMeta } from "@/types/contents/retrospect";
 import { ViewCount } from "@/components/view-count";
+import { ContentList } from "@/components/content-list";
 
 export default function RetrospectsPage() {
   const retrospects = getRetrospects();
@@ -21,19 +22,14 @@ export default function RetrospectsPage() {
   }, [retrospects]);
 
   return (
-    <div className="max-w-2xl">
-      {sortedRetrospects.length === 0 ? (
-        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          회고가 없습니다.
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {sortedRetrospects.map((retrospect) => (
-            <RetrospectItem key={retrospect.slug} retrospect={retrospect} />
-          ))}
-        </div>
+    <ContentList
+      items={sortedRetrospects}
+      emptyMessage="회고가 없습니다."
+      itemKey={(retrospect) => retrospect.slug}
+      renderItem={(retrospect) => (
+        <RetrospectItem retrospect={retrospect} />
       )}
-    </div>
+    />
   );
 }
 

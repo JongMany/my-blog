@@ -9,6 +9,7 @@ import {
 } from "@/utils/date";
 import { Item, LogMeta } from "@/types/contents/log";
 import { ViewCount } from "@/components/view-count";
+import { ContentList } from "@/components/content-list";
 
 export default function LogsPage() {
   const logs = getLogs();
@@ -21,19 +22,12 @@ export default function LogsPage() {
   }, [logs]);
 
   return (
-    <div className="max-w-2xl">
-      {sortedLogs.length === 0 ? (
-        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          기록이 없습니다.
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {sortedLogs.map((log) => (
-            <LogItem key={log.slug} log={log} />
-          ))}
-        </div>
-      )}
-    </div>
+    <ContentList
+      items={sortedLogs}
+      emptyMessage="기록이 없습니다."
+      itemKey={(log) => log.slug}
+      renderItem={(log) => <LogItem log={log} />}
+    />
   );
 }
 

@@ -9,6 +9,7 @@ import {
 } from "@/utils/date";
 import { Item, EconomyMeta } from "@/types/contents/economy";
 import { ViewCount } from "@/components/view-count";
+import { ContentList } from "@/components/content-list";
 
 export default function EconomyPage() {
   const economies = getEconomies();
@@ -21,19 +22,12 @@ export default function EconomyPage() {
   }, [economies]);
 
   return (
-    <div className="max-w-2xl">
-      {sortedEconomies.length === 0 ? (
-        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          경제 관련 콘텐츠가 없습니다.
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {sortedEconomies.map((economy) => (
-            <EconomyItem key={economy.slug} economy={economy} />
-          ))}
-        </div>
-      )}
-    </div>
+    <ContentList
+      items={sortedEconomies}
+      emptyMessage="경제 관련 콘텐츠가 없습니다."
+      itemKey={(economy) => economy.slug}
+      renderItem={(economy) => <EconomyItem economy={economy} />}
+    />
   );
 }
 
