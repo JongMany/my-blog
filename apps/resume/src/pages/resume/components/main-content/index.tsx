@@ -29,7 +29,7 @@ export default function MainContent({
   return (
     <main
       className={cn(
-        "space-y-6",
+        "space-y-6 mt-2",
         isLargeDesktop ? "lg:col-span-7" : "col-span-1",
       )}
     >
