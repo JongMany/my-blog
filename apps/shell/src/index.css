@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* UI 패키지의 Tailwind 클래스를 스캔 범위에 포함 */
+@source "../../../packages/ui/src";
+
 @layer utilities {
   /* 스크롤바 숨기기 - 크로스 브라우저 지원 */
   .hide-scrollbar {
