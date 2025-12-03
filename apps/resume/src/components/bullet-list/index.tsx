@@ -11,12 +11,23 @@ export interface BulletListProps {
   depth?: number;
 }
 
-const listMarker = (d: number) =>
-  d === 0
-    ? "list-disc marker:text-[var(--primary)]"
-    : d === 1
-      ? "list-[circle]"
-      : "list-[square]";
+const MARKER = [
+  "list-disc marker:text-[var(--primary)]",
+  "list-[circle]",
+  "list-[square]",
+];
+const SIZES = {
+  shallow: {
+    text: "text-[12px]",
+    desc: "text-[11px]",
+    tag: "text-[10px] px-2 py-0.5",
+  },
+  deep: {
+    text: "text-[11px]",
+    desc: "text-[10px]",
+    tag: "text-[9px] px-1.5 py-px",
+  },
+};
 
 export function BulletList({
   items,
@@ -26,18 +37,18 @@ export function BulletList({
 }: BulletListProps) {
   if (depth > 5 || !items.length) return null;
 
-  const isDeep = depth >= 2;
+  const s = SIZES[depth >= 2 ? "deep" : "shallow"];
 
   return (
-    <ul className={`${listMarker(depth)} pl-5 space-y-1.5`}>
+    <ul className={`${MARKER[Math.min(depth, 2)]} pl-5 space-y-1.5`}>
       {items.map((item, i) => (
         <li key={i}>
-          <span className={isDeep ? "text-[11px]" : "text-[12px]"}>
+          <span className={s.text}>
             {renderText(item.text)}
             {item.tags?.map((tag) => (
               <span
                 key={tag}
-                className={`ml-1.5 first:ml-2 inline-flex rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--muted-fg)] ${isDeep ? "text-[9px] px-1.5 py-px" : "text-[10px] px-2 py-0.5"}`}
+                className={`ml-1.5 first:ml-2 inline-flex rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--muted-fg)] ${s.tag}`}
               >
                 #{tag}
               </span>
@@ -46,7 +57,7 @@ export function BulletList({
 
           {item.description && (
             <p
-              className={`mt-1.5 ${isDeep ? "text-[10px]" : "text-[11px]"} text-[var(--muted-fg)] leading-relaxed whitespace-pre-line`}
+              className={`mt-1.5 ${s.desc} text-[var(--muted-fg)] leading-relaxed whitespace-pre-line`}
             >
               {renderText(item.description)}
             </p>
