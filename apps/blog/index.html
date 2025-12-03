@@ -36,6 +36,7 @@
       content="https://jongmany.github.io/my-blog/img/profile.jpeg"
     />
     <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="이종민 블로그" />
 
     <!-- Twitter Card 메타데이터 -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -53,9 +54,88 @@
     />
 
     <!-- 추가 SEO 메타데이터 -->
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="theme-color" content="#000000" />
     <link rel="canonical" href="https://jongmany.github.io/my-blog/blog/" />
+
+    <!-- RSS & Atom Feed -->
+    <link rel="alternate" type="application/rss+xml" title="이종민 블로그 RSS Feed" href="https://jongmany.github.io/my-blog/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="이종민 블로그 Atom Feed" href="https://jongmany.github.io/my-blog/blog/atom.xml" />
+
+    <!-- 네이버 서치어드바이저 인증 (필요시 실제 인증 코드로 교체) -->
+    <!-- <meta name="naver-site-verification" content="YOUR_NAVER_VERIFICATION_CODE" /> -->
+
+    <!-- Google Search Console 인증 (필요시 실제 인증 코드로 교체) -->
+    <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" /> -->
+
+    <!-- 구조화된 데이터 (JSON-LD) - 웹사이트 기본 정보 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "이종민 블로그",
+        "description": "이종민의 기술 블로그입니다. 프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다.",
+        "url": "https://jongmany.github.io/my-blog/blog/",
+        "author": {
+          "@type": "Person",
+          "name": "이종민",
+          "jobTitle": "Frontend Developer",
+          "url": "https://jongmany.github.io/my-blog/"
+        },
+        "inLanguage": "ko-KR",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://jongmany.github.io/my-blog/blog/?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- 구조화된 데이터 (JSON-LD) - 저자 정보 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "이종민",
+        "jobTitle": "Frontend Developer",
+        "description": "사용자 경험을 최우선으로 생각하는 Frontend Developer입니다.",
+        "url": "https://jongmany.github.io/my-blog/",
+        "image": "https://jongmany.github.io/my-blog/img/profile.jpeg",
+        "sameAs": [
+          "https://github.com/jongmany"
+        ],
+        "knowsAbout": [
+          "React",
+          "TypeScript",
+          "JavaScript",
+          "Frontend Development",
+          "Web Development",
+          "TradingView"
+        ]
+      }
+    </script>
+
+    <!-- 구조화된 데이터 (JSON-LD) - 블로그 정보 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "이종민 블로그",
+        "description": "프론트엔드 개발 경험과 노하우를 공유하는 기술 블로그",
+        "url": "https://jongmany.github.io/my-blog/blog/",
+        "author": {
+          "@type": "Person",
+          "name": "이종민"
+        },
+        "blogPost": [],
+        "inLanguage": "ko-KR"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

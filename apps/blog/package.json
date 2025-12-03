@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite --port 3001",
     "deploy:dev": "pnpm build && pnpm run preview",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && pnpm run generate:seo",
     "lint": "eslint .",
     "preview": "vite preview --port 3001",
     "dev:mfe": "rimraf dist && concurrently -k -n build,serve -c yellow,magenta \"vite build --watch --mode development\" \"wait-on dist/assets/remoteEntry.js && vite preview --port 3001 --strictPort\"",
-    "build:ghp": "vite build --base=/my-blog/blog/"
+    "build:ghp": "vite build --base=/my-blog/blog/ && pnpm run generate:seo",
+    "generate:seo": "pnpm run generate:sitemap && pnpm run generate:rss",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "generate:rss": "node scripts/generate-rss.js"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
