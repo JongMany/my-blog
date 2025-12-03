@@ -1,6 +1,6 @@
 /**
  * Sitemap 자동 생성 스크립트
- * 빌드 시 MDX 파일들을 읽어서 sitemap.xml을 생성합니다.
+ * 모든 MFE 앱의 페이지를 포함하는 sitemap.xml을 생성합니다.
  */
 
 import fs from 'fs';
@@ -10,12 +10,17 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BASE_URL = 'https://jongmany.github.io/my-blog/blog';
-const CONTENTS_DIR = path.join(__dirname, '../src/contents');
+const BASE_URL = 'https://jongmany.github.io/my-blog';
 const OUTPUT_DIR = path.join(__dirname, '../public');
 
-// 카테고리별 URL 매핑
-const CATEGORY_URL_MAP = {
+// 블로그 콘텐츠 디렉토리
+const BLOG_CONTENTS_DIR = path.join(__dirname, '../../blog/src/contents');
+
+// 포트폴리오 콘텐츠 디렉토리
+const PORTFOLIO_CONTENTS_DIR = path.join(__dirname, '../../portfolio/src/contents');
+
+// 블로그 카테고리별 URL 매핑
+const BLOG_CATEGORIES = {
   posts: 'posts',
   books: 'books',
   retrospect: 'retrospect',
@@ -67,7 +72,7 @@ function parseFrontmatter(content) {
 /**
  * 디렉토리 내 모든 MDX 파일을 재귀적으로 찾습니다.
  */
-function findMdxFiles(dir, category) {
+function findMdxFiles(dir, basePath) {
   const files = [];
 
   if (!fs.existsSync(dir)) return files;
@@ -78,7 +83,7 @@ function findMdxFiles(dir, category) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
-      files.push(...findMdxFiles(fullPath, category));
+      files.push(...findMdxFiles(fullPath, basePath));
     } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
       const content = fs.readFileSync(fullPath, 'utf-8');
       const frontmatter = parseFrontmatter(content);
@@ -91,10 +96,8 @@ function findMdxFiles(dir, category) {
 
       files.push({
         slug,
-        category,
         title: frontmatter.title || slug,
         updatedAt,
-        priority: category === 'posts' ? '0.8' : '0.6',
       });
     }
   }
@@ -107,38 +110,75 @@ function findMdxFiles(dir, category) {
  */
 function generateSitemap() {
   const pages = [];
+  const today = new Date().toISOString().split('T')[0];
 
-  // 정적 페이지들
-  const staticPages = [
-    { url: '', priority: '1.0', changefreq: 'daily' },
-    { url: '/posts', priority: '0.9', changefreq: 'daily' },
-    { url: '/books', priority: '0.7', changefreq: 'weekly' },
-    { url: '/retrospect', priority: '0.7', changefreq: 'weekly' },
-    { url: '/logs', priority: '0.7', changefreq: 'weekly' },
-    { url: '/economy', priority: '0.6', changefreq: 'weekly' },
-  ];
+  // === 정적 페이지들 ===
+  
+  // 메인 (Home)
+  pages.push({
+    loc: BASE_URL,
+    lastmod: today,
+    changefreq: 'weekly',
+    priority: '1.0',
+  });
 
-  // 정적 페이지 추가
-  for (const page of staticPages) {
+  // 블로그 메인 및 카테고리 페이지
+  pages.push({
+    loc: `${BASE_URL}/blog`,
+    lastmod: today,
+    changefreq: 'daily',
+    priority: '0.9',
+  });
+
+  for (const category of Object.values(BLOG_CATEGORIES)) {
     pages.push({
-      loc: `${BASE_URL}${page.url}`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: page.changefreq,
-      priority: page.priority,
+      loc: `${BASE_URL}/blog/${category}`,
+      lastmod: today,
+      changefreq: 'daily',
+      priority: '0.8',
     });
   }
 
-  // 동적 콘텐츠 페이지들
-  for (const [dirName, urlPath] of Object.entries(CATEGORY_URL_MAP)) {
-    const categoryDir = path.join(CONTENTS_DIR, dirName);
-    const files = findMdxFiles(categoryDir, urlPath);
+  // 포트폴리오
+  pages.push({
+    loc: `${BASE_URL}/portfolio`,
+    lastmod: today,
+    changefreq: 'weekly',
+    priority: '0.9',
+  });
+
+  // 이력서
+  pages.push({
+    loc: `${BASE_URL}/resume`,
+    lastmod: today,
+    changefreq: 'monthly',
+    priority: '0.8',
+  });
+
+  // === 블로그 동적 콘텐츠 ===
+  for (const [dirName, urlPath] of Object.entries(BLOG_CATEGORIES)) {
+    const categoryDir = path.join(BLOG_CONTENTS_DIR, dirName);
+    const files = findMdxFiles(categoryDir);
 
     for (const file of files) {
       pages.push({
-        loc: `${BASE_URL}/${file.category}/${file.slug}`,
-        lastmod: file.updatedAt || new Date().toISOString().split('T')[0],
+        loc: `${BASE_URL}/blog/${urlPath}/${file.slug}`,
+        lastmod: file.updatedAt || today,
         changefreq: 'monthly',
-        priority: file.priority,
+        priority: '0.7',
+      });
+    }
+  }
+
+  // === 포트폴리오 동적 콘텐츠 ===
+  if (fs.existsSync(PORTFOLIO_CONTENTS_DIR)) {
+    const portfolioFiles = findMdxFiles(PORTFOLIO_CONTENTS_DIR);
+    for (const file of portfolioFiles) {
+      pages.push({
+        loc: `${BASE_URL}/portfolio/${file.slug}`,
+        lastmod: file.updatedAt || today,
+        changefreq: 'monthly',
+        priority: '0.7',
       });
     }
   }
@@ -162,6 +202,10 @@ ${pages
 </urlset>`;
 
   // 파일 저장
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+  
   const outputPath = path.join(OUTPUT_DIR, 'sitemap.xml');
   fs.writeFileSync(outputPath, xml, 'utf-8');
 

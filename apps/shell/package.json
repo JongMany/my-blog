@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite --port 3000",
     "deploy:dev": "pnpm build && pnpm run preview",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && pnpm run generate:seo",
     "lint": "eslint .",
     "preview": "vite preview --port 3000",
     "dev:mfe": "concurrently -k -n build,serve -c yellow,magenta \"vite build --watch --mode development\" \"vite preview --port 3000 --strictPort\"",
-    "build:ghp": "pnpm -w -F @srf/tokens build && vite build --base=/my-blog/"
+    "build:ghp": "pnpm -w -F @srf/tokens build && vite build --base=/my-blog/ && pnpm run generate:seo",
+    "generate:seo": "pnpm run generate:sitemap && pnpm run generate:rss",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "generate:rss": "node scripts/generate-rss.js"
   },
   "dependencies": {
     "@mfe/shared": "workspace:*",

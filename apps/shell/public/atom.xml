@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>이종민 블로그</title>
-  <subtitle>프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다.</subtitle>
-  <link href="https://jongmany.github.io/my-blog/blog" rel="alternate"/>
-  <link href="https://jongmany.github.io/my-blog/blog/atom.xml" rel="self"/>
-  <id>https://jongmany.github.io/my-blog/blog/</id>
-  <updated>2025-12-03T06:14:11.291Z</updated>
+  <title>이종민 - Frontend Developer</title>
+  <subtitle>사용자 경험을 최우선으로 생각하는 Frontend Developer 이종민입니다. 프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우를 공유합니다.</subtitle>
+  <link href="https://jongmany.github.io/my-blog" rel="alternate"/>
+  <link href="https://jongmany.github.io/my-blog/atom.xml" rel="self"/>
+  <id>https://jongmany.github.io/my-blog/</id>
+  <updated>2025-12-03T06:22:15.439Z</updated>
   <author>
     <name>이종민</name>
   </author>

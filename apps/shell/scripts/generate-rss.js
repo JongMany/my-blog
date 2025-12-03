@@ -1,6 +1,6 @@
 /**
  * RSS Feed 자동 생성 스크립트
- * 빌드 시 MDX 파일들을 읽어서 RSS 피드를 생성합니다.
+ * 모든 MFE 앱의 콘텐츠를 포함하는 RSS 피드를 생성합니다.
  */
 
 import fs from 'fs';
@@ -10,16 +10,18 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = 'https://jongmany.github.io/my-blog/blog';
-const SITE_TITLE = '이종민 블로그';
-const SITE_DESCRIPTION = '프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다.';
+const SITE_URL = 'https://jongmany.github.io/my-blog';
+const SITE_TITLE = '이종민 - Frontend Developer';
+const SITE_DESCRIPTION = '사용자 경험을 최우선으로 생각하는 Frontend Developer 이종민입니다. 프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우를 공유합니다.';
 const AUTHOR_NAME = '이종민';
 
-const CONTENTS_DIR = path.join(__dirname, '../src/contents');
 const OUTPUT_DIR = path.join(__dirname, '../public');
 
-// 카테고리별 URL 매핑
-const CATEGORY_URL_MAP = {
+// 블로그 콘텐츠 디렉토리
+const BLOG_CONTENTS_DIR = path.join(__dirname, '../../blog/src/contents');
+
+// 블로그 카테고리별 URL 매핑
+const BLOG_CATEGORIES = {
   posts: 'posts',
   books: 'books',
   retrospect: 'retrospect',
@@ -111,6 +113,7 @@ function findMdxFiles(dir, category) {
  * XML 특수문자를 이스케이프합니다.
  */
 function escapeXml(str) {
+  if (!str) return '';
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -125,9 +128,9 @@ function escapeXml(str) {
 function generateRssFeed() {
   const allPosts = [];
 
-  // 모든 카테고리의 콘텐츠 수집
-  for (const [dirName, urlPath] of Object.entries(CATEGORY_URL_MAP)) {
-    const categoryDir = path.join(CONTENTS_DIR, dirName);
+  // 블로그 콘텐츠 수집
+  for (const [dirName, urlPath] of Object.entries(BLOG_CATEGORIES)) {
+    const categoryDir = path.join(BLOG_CONTENTS_DIR, dirName);
     const files = findMdxFiles(categoryDir, urlPath);
     allPosts.push(...files);
   }
@@ -164,8 +167,8 @@ ${recentPosts
   .map(
     (post) => `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${SITE_URL}/${post.category}/${post.slug}</link>
-      <guid isPermaLink="true">${SITE_URL}/${post.category}/${post.slug}</guid>
+      <link>${SITE_URL}/blog/${post.category}/${post.slug}</link>
+      <guid isPermaLink="true">${SITE_URL}/blog/${post.category}/${post.slug}</guid>
       <description>${escapeXml(post.summary || post.title)}</description>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
       <dc:creator>${AUTHOR_NAME}</dc:creator>
@@ -177,6 +180,10 @@ ${recentPosts
 </rss>`;
 
   // 파일 저장
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+
   const outputPath = path.join(OUTPUT_DIR, 'rss.xml');
   fs.writeFileSync(outputPath, rss, 'utf-8');
 
@@ -196,8 +203,8 @@ ${recentPosts
   .map(
     (post) => `  <entry>
     <title>${escapeXml(post.title)}</title>
-    <link href="${SITE_URL}/${post.category}/${post.slug}"/>
-    <id>${SITE_URL}/${post.category}/${post.slug}</id>
+    <link href="${SITE_URL}/blog/${post.category}/${post.slug}"/>
+    <id>${SITE_URL}/blog/${post.category}/${post.slug}</id>
     <published>${new Date(post.date).toISOString()}</published>
     <updated>${new Date(post.date).toISOString()}</updated>
     <summary>${escapeXml(post.summary || post.title)}</summary>
