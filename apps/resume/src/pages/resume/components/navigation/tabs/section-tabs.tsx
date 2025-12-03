@@ -4,7 +4,7 @@ import ActivePill from "./active-pill";
 
 interface SectionTabsProps {
   items: { id: string; label: string }[];
-  activeId: string;
+  activeId?: string;
   onTabClick: (id: string) => void;
   variant?: "desktop" | "mobile";
 }
@@ -40,4 +40,3 @@ export function SectionTabs({
     </nav>
   );
 }
-
