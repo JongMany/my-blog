@@ -26,12 +26,10 @@ export default {
     "utils/index": "src/utils/index.ts",
     "utils/tokens": "src/utils/tokens.ts",
     "utils/theme": "src/utils/theme.ts",
+    "utils/token-generator": "src/utils/token-generator.ts",
 
     // Types
     "types/tokens": "src/types/tokens.ts",
-
-    // Build utilities
-    "build/token-generator": "src/build/token-generator.ts",
   },
   output: [
     {

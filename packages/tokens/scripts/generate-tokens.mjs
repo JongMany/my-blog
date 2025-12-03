@@ -29,7 +29,7 @@ const logger = new Logger();
  * @returns {Promise<Object>} 토큰 생성기 함수들
  */
 async function loadTokenGenerator() {
-  const generator = await loadModule("dist/build/token-generator.js");
+  const generator = await loadModule("dist/utils/token-generator.js");
   return {
     generateSemanticCSS: generator.generateSemanticCSS,
     generateTailwindThemeCSS: generator.generateTailwindThemeCSS,
