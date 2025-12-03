@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* Design Tokens - CSS 변수 */
+@import "@srf/tokens/styles";
+
+/* Design Tokens - Tailwind @theme 등록 */
+@theme {
+  /* Spacing */
+  --spacing-my-xs: var(--spacing-component-xs);
+  --spacing-my-sm: var(--spacing-component-sm);
+  --spacing-my-md: var(--spacing-component-md);
+  --spacing-my-lg: var(--spacing-component-lg);
+  --spacing-my-xl: var(--spacing-component-xl);
+
+  /* Border Radius */
+  --radius-my-xs: var(--radius-component-sm);
+  --radius-my-sm: var(--radius-component-sm);
+  --radius-my-md: var(--radius-component-md);
+  --radius-my-lg: var(--radius-component-lg);
+}
+
 @layer utilities {
   /* 스크롤바 숨기기 - 크로스 브라우저 지원 */
   .hide-scrollbar {
@@ -60,6 +79,6 @@ a:hover {
       opacity: 1;
     }
   }
-  
+
   --animate-fade-in: fadeIn 0.3s ease-in-out;
 }

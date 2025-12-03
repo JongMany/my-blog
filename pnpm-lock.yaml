@@ -76,6 +76,9 @@ importers:
       '@mfe/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@srf/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
       '@srf/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -267,6 +270,9 @@ importers:
       '@mfe/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@srf/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
       '@srf/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -376,6 +382,9 @@ importers:
       '@mfe/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@srf/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
       '@srf/ui':
         specifier: workspace:*
         version: link:../../packages/ui

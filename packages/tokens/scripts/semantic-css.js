@@ -75,23 +75,23 @@ const semanticTokens = {
   "color-info-solid": "blue9",
   "color-info-text": "blue11",
 
-  // Spacing
-  "spacing-component-xs": "spacing-1",
-  "spacing-component-sm": "spacing-2",
-  "spacing-component-md": "spacing-3",
-  "spacing-component-lg": "spacing-4",
-  "spacing-component-xl": "spacing-6",
-  "spacing-layout-xs": "spacing-4",
-  "spacing-layout-sm": "spacing-6",
-  "spacing-layout-md": "spacing-8",
-  "spacing-layout-lg": "spacing-12",
-  "spacing-layout-xl": "spacing-16",
+  // Spacing (primitive tokens are --space-*)
+  "spacing-component-xs": "space-1",
+  "spacing-component-sm": "space-2",
+  "spacing-component-md": "space-3",
+  "spacing-component-lg": "space-4",
+  "spacing-component-xl": "space-6",
+  "spacing-layout-xs": "space-4",
+  "spacing-layout-sm": "space-6",
+  "spacing-layout-md": "space-8",
+  "spacing-layout-lg": "space-12",
+  "spacing-layout-xl": "space-16",
 
   // Border Radius
+  // Note: radius-full은 Tailwind 기본값(9999px) 사용하므로 여기서 정의하지 않음
   "radius-component-sm": "radius-sm",
   "radius-component-md": "radius-md",
   "radius-component-lg": "radius-lg",
-  "radius-full": "radius-full",
 };
 
 /**

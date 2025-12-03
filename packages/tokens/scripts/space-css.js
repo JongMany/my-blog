@@ -14,10 +14,10 @@ const spaceOutputDir = path.join(outputDir, "css", "space");
 
 const generateSpaceCSS = (map) => {
   const rules = Object.entries(map)
-    .map(([key, px]) => `  --space-${key}: calc(${px}px * var(--scaling));`)
+    .map(([key, px]) => `  --space-${key}: ${px}px;`)
     .join("\n");
 
-  return `.jds-themes {\n${rules}\n}`;
+  return `:root {\n${rules}\n}`;
 };
 
 const generateSpaceCSSFile = async () => {

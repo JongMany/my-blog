@@ -13,6 +13,7 @@
     "build:ghp": "vite build --base=/my-blog/resume/"
   },
   "dependencies": {
+    "@srf/tokens": "workspace:*",
     "@srf/ui": "workspace:*",
     "@mfe/shared": "workspace:*",
     "@tailwindcss/vite": "^4.1.12",

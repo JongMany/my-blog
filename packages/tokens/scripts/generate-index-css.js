@@ -20,7 +20,9 @@ async function generateIndexCss() {
   colorRoleFiles.forEach((filename) => {
     css += `@import './colors/roles/${filename}'; \n`;
   });
-  css += `@import './base.css'`;
+  css += `@import './base.css';\n`;
+  // Semantic tokens (spacing-component-*, radius-component-*, etc.)
+  css += `@import '../semantic.css';\n`;
   return css;
 }
 

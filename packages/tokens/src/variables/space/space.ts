@@ -9,4 +9,9 @@ export const spaceBaseValues = {
   7: 40,
   8: 48,
   9: 64,
+  10: 80,
+  11: 96,
+  12: 112,
+  14: 128,
+  16: 160,
 } as const;

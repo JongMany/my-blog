@@ -16,6 +16,7 @@
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@mfe/shared": "workspace:*",
+    "@srf/tokens": "workspace:*",
     "@srf/ui": "workspace:*",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.12",

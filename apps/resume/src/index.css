@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Design Tokens */
+@import "@srf/tokens/styles";
+@import "@srf/tokens/tailwind";
+
 @layer utilities {
   /* 스크롤바 숨기기 - 크로스 브라우저 지원 */
   .hide-scrollbar {

@@ -1,2 +1,6 @@
 @import "tailwindcss";
 
+/* Design Tokens */
+@import "@srf/tokens/styles";
+@import "@srf/tokens/tailwind";
+

@@ -13,51 +13,22 @@ const outputDir = tsconfig.compilerOptions.outDir;
 const radiusOutputDir = path.join(outputDir, "css", "radius");
 
 const generateRadiusCSS = (values) => {
-  const lines = [`[data-radius] {`];
+  const lines = [`:root {`];
 
   for (const [key, px] of Object.entries(values)) {
-    lines.push(
-      `  --radius-${key}: calc(${px}px * var(--scaling) * var(--radius-factor));`
-    );
+    lines.push(`  --radius-${key}: ${px}px;`);
   }
+
+  // Semantic radius aliases
+  lines.push(`  /* Semantic radius aliases */`);
+  lines.push(`  --radius-sm: 4px;`);
+  lines.push(`  --radius-md: 6px;`);
+  lines.push(`  --radius-lg: 8px;`);
+  lines.push(`  --radius-xl: 12px;`);
 
   lines.push(`}`);
 
-  let css = lines.join("\n");
-
-  css += `  
-[data-radius='none'] {
-  --radius-factor: 0;
-  --radius-full: 0px;
-  --radius-thumb: 0.5px;
-}
-
-[data-radius='small'] {
-  --radius-factor: 0.75;
-  --radius-full: 0px;
-  --radius-thumb: 0.5px;
-}
-
-[data-radius='medium'] {
-  --radius-factor: 1;
-  --radius-full: 0px;
-  --radius-thumb: 9999px;
-}
-
-[data-radius='large'] {
-  --radius-factor: 1.5;
-  --radius-full: 0px;
-  --radius-thumb: 9999px;
-}
-
-[data-radius='full'] {
-  --radius-factor: 1.5;
-  --radius-full: 9999px;
-  --radius-thumb: 9999px;
-}
-`;
-
-  return css;
+  return lines.join("\n");
 };
 
 const generateRadiusCSSFile = async () => {

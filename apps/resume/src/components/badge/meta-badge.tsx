@@ -6,7 +6,7 @@ export function MetaBadge(p: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full",
+        "inline-flex items-center  rounded-my-xs",
         "border border-[var(--border)] bg-[var(--surface)]",
         "px-2 py-[2px] text-[11px]",
         "tabular-nums text-[var(--muted-fg)]",
