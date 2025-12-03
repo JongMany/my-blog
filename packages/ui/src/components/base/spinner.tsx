@@ -25,7 +25,7 @@ function Spinner({ size = "md", text, className, ...props }: SpinnerProps) {
   return (
     <div className="flex items-center space-x-3">
       {spinner}
-      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+      <span className="text-sm font-medium text-secondary">
         {text}
       </span>
     </div>
