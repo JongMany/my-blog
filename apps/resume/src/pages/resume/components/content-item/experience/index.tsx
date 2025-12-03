@@ -12,7 +12,7 @@ export default function ExperienceSection({
   experiences,
 }: ExperienceSectionProps) {
   return (
-    <MotionStack id="experience" title="경력">
+    <MotionStack id="experience" title="경력" className="mt-1">
       {experiences.map((experience) => (
         <ExperienceItem
           key={`${experience.companyName}-${experience.workPeriod}`}

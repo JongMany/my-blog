@@ -54,11 +54,10 @@ function SectionItem({
       )}
       <BulletList
         items={section.bullets}
-        level={0}
-        prefix={[]}
-        keywordImageMap={keywordImageMap}
-        RichText={RichText}
-        LinkGroup={LinkGroup}
+        renderText={(text) => (
+          <RichText text={text} keywordImageMap={keywordImageMap} />
+        )}
+        renderLinks={(links) => <LinkGroup links={links} />}
       />
       {section.portfolioLinks?.length && (
         <LinkGroup links={section.portfolioLinks} />
@@ -199,11 +198,10 @@ function TimelineBullets({
     <div className="mt-3">
       <BulletList
         items={bullets}
-        level={0}
-        prefix={[]}
-        keywordImageMap={keywordImageMap}
-        RichText={RichText}
-        LinkGroup={LinkGroup}
+        renderText={(text) => (
+          <RichText text={text} keywordImageMap={keywordImageMap} />
+        )}
+        renderLinks={(links) => <LinkGroup links={links} />}
       />
     </div>
   );

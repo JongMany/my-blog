@@ -1,8 +1,10 @@
+import { useRef } from "react";
 import { TabButton } from "./tab-button";
+import ActivePill from "./active-pill";
 
 interface SectionTabsProps {
   items: { id: string; label: string }[];
-  activeId: string;
+  activeId?: string;
   onTabClick: (id: string) => void;
   variant?: "desktop" | "mobile";
 }
@@ -16,8 +18,15 @@ export function SectionTabs({
   onTabClick,
   variant = "desktop",
 }: SectionTabsProps) {
+  const navRef = useRef<HTMLDivElement>(null);
+
   return (
-    <nav aria-label="섹션 탭" className="flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] p-1">
+    <nav
+      ref={navRef}
+      aria-label="섹션 탭"
+      className="relative z-0 flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] p-1"
+    >
+      <ActivePill containerRef={navRef} />
       {items.map((item) => (
         <TabButton
           key={item.id}
@@ -31,4 +40,3 @@ export function SectionTabs({
     </nav>
   );
 }
-

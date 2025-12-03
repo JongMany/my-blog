@@ -11,6 +11,8 @@ import RetrospectsPage from "./pages/retrospect/retrospects-page";
 import RetrospectDetailPage from "./pages/retrospect/retrosepct-detail-page";
 import LogsPage from "./pages/logs/logs-page";
 import LogDetailPage from "./pages/logs/log-detail-page";
+import EconomyPage from "./pages/economy/economy-page";
+import EconomyDetailPage from "./pages/economy/economy-detail-page";
 import NotFoundPage from "./components/not-found-page";
 import { Suspense } from "react";
 
@@ -66,6 +68,17 @@ export default function BlogApp() {
               element={
                 <Suspense fallback={<></>}>
                   <LogDetailPage />
+                </Suspense>
+              }
+            />
+          </Route>
+          <Route path="economy">
+            <Route index element={<EconomyPage />} />
+            <Route
+              path=":slug"
+              element={
+                <Suspense fallback={<></>}>
+                  <EconomyDetailPage />
                 </Suspense>
               }
             />

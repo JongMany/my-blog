@@ -1,3 +1,2 @@
-export { useActiveSection } from "./use-active-section";
-export { useSectionScroll } from "./use-section-scroll";
+export { useSectionNavigation } from "./use-section-navigation";
 export * from "@/pages/resume/components/navigation/utils/utils";

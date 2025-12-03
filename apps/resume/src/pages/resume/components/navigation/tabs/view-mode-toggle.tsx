@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { cn } from "@srf/ui";
+import ActivePill from "./active-pill";
 
 interface ViewModeToggleProps {
   isDetailed: boolean;
@@ -14,6 +16,7 @@ export function ViewModeToggle({
   onToggle,
   variant = "desktop",
 }: ViewModeToggleProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const buttonClasses =
     variant === "desktop"
       ? "px-3 py-1 text-xs"
@@ -30,16 +33,21 @@ export function ViewModeToggle({
       {variant === "desktop" && (
         <span className="text-xs text-gray-500">보기 모드:</span>
       )}
-      <div className="flex rounded-full border border-[var(--border)] bg-[var(--surface)] p-1">
+      <div
+        ref={containerRef}
+        className="relative z-0 flex rounded-full border border-[var(--border)] bg-[var(--surface)] p-1"
+      >
+        <ActivePill containerRef={containerRef} />
         <button
           onClick={onToggle}
           className={cn(
             buttonClasses,
-            "rounded-full transition",
+            "relative z-10 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border)]",
             isDetailed
-              ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-              : "hover:bg-[var(--hover-bg)]",
+              ? "text-[var(--fg)] font-semibold"
+              : "text-[var(--muted-fg)]",
           )}
+          aria-current={isDetailed ? "page" : undefined}
         >
           {variant === "desktop" ? "자세한 버전" : "자세한"}
         </button>
@@ -47,11 +55,12 @@ export function ViewModeToggle({
           onClick={onToggle}
           className={cn(
             buttonClasses,
-            "rounded-full transition",
+            "relative z-10 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border)]",
             !isDetailed
-              ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-              : "hover:bg-[var(--hover-bg)]",
+              ? "text-[var(--fg)] font-semibold"
+              : "text-[var(--muted-fg)]",
           )}
+          aria-current={!isDetailed ? "page" : undefined}
         >
           {variant === "desktop" ? "간단한 버전" : "간단한"}
         </button>

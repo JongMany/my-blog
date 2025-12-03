@@ -115,25 +115,64 @@ export function compareByDate<T extends DateComparable>(a: T, b: T): number {
 }
 
 /**
- * 아이템 리스트를 published 필터링하고 날짜 기준으로 정렬합니다.
+ * 필터링 및 정렬 옵션
+ */
+export interface FilterAndSortOptions<T extends SortableByDate> {
+  /**
+   * 필터 함수 배열
+   * 모든 필터 함수가 true를 반환하는 아이템만 포함됩니다.
+   * @default [] - 필터 없음
+   */
+  filters?: Array<(item: T) => boolean>;
+}
+
+/**
+ * published가 false인 아이템을 필터링하는 기본 필터 함수
+ *
+ * @param item - 필터링할 아이템
+ * @returns published가 false가 아닌 경우 true
+ */
+export function filterPublishedItems<T extends SortableByDate>(
+  item: T,
+): boolean {
+  return item.meta.published !== false;
+}
+
+/**
+ * 아이템 리스트를 필터링하고 날짜 기준으로 정렬합니다.
  *
  * @param items - 정렬할 아이템 배열
- * @param filterPublished - published 필터링 여부 (기본값: true)
- * @returns 정렬된 아이템 배열
+ * @param options - 필터링 및 정렬 옵션
+ * @returns 필터링되고 정렬된 아이템 배열
  *
  * @example
  * ```ts
- * const sortedPosts = sortByDate(posts, true);
+ * // 필터 없이 정렬만
+ * const allPosts = filterAndSortByDate(posts);
+ *
+ * // published 필터링 적용
+ * const sortedPosts = filterAndSortByDate(posts, {
+ *   filters: [filterPublishedItems],
+ * });
+ *
+ * // 커스텀 필터 추가
+ * const sortedPosts = filterAndSortByDate(posts, {
+ *   filters: [
+ *     filterPublishedItems,
+ *     (item) => item.meta.category === "tech",
+ *   ],
+ * });
  * ```
  */
-export function sortByDate<T extends SortableByDate>(
+export function filterAndSortByDate<T extends SortableByDate>(
   items: T[],
-  filterPublished: boolean = true,
+  options: FilterAndSortOptions<T> = {},
 ): T[] {
+  const { filters = [] } = options;
   let filtered = items;
 
-  if (filterPublished) {
-    filtered = items.filter((item) => item.meta.published !== false);
+  if (filters.length > 0) {
+    filtered = items.filter((item) => filters.every((filter) => filter(item)));
   }
 
   return filtered.sort(compareByDate);

@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { fadeUp, stagger, item } from "@/utils/motion";
+import { fadeUp, easeOutCb } from "@/utils/motion";
 
 export function HeroSection() {
   const { scrollYProgress } = useScroll();
@@ -51,8 +51,7 @@ export function HeroSection() {
             show: {
               opacity: 1,
               transition: {
-                staggerChildren: 0.06,
-                delayChildren: 0.2,
+                staggerChildren: 0.08,
               },
             },
           }}
@@ -66,11 +65,16 @@ export function HeroSection() {
             <motion.span
               key={tag.label}
               variants={{
-                hidden: { opacity: 0, scale: 0.9 },
+                hidden: { opacity: 0, y: 8 },
                 show: {
                   opacity: 1,
-                  scale: 1,
-                  transition: { duration: 0.3, ease: "easeOut" },
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15,
+                    mass: 0.8,
+                  },
                 },
               }}
               className="group relative inline-flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-medium text-[var(--fg)] transition-all duration-200 hover:border-[var(--primary)]/30 hover:shadow-sm sm:px-4 sm:py-2 sm:text-sm"

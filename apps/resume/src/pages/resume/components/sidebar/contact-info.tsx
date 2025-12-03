@@ -18,7 +18,7 @@ interface ContactInfoProps {
 export default function ContactInfo({ contact }: ContactInfoProps) {
   return (
     <Card className="p-3 sm:p-4">
-      <div className={cn("font-medium mb-2 sm:mb-3", "text-sm sm:text-base")}>
+      <div className="mb-2 sm:mb-3 text-base font-semibold text-[var(--fg)]">
         Contact
       </div>
       <div

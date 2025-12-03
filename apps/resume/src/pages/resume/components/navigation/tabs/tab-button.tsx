@@ -30,10 +30,10 @@ export function TabButton({
       className={cn(
         baseClasses,
         variantClasses,
-        "cursor-pointer",
+        "relative z-10 cursor-pointer transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border)]",
         isActive
-          ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-          : "hover:bg-[var(--hover-bg)]",
+          ? "text-[var(--fg)] font-semibold"
+          : "text-[var(--muted-fg)]",
       )}
       aria-current={isActive ? "page" : undefined}
     >

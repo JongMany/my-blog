@@ -20,12 +20,12 @@ export function NavigationItem({
     <button
       onClick={() => onClick(id)}
       className={cn(
-        "w-full rounded-full px-3 py-1.5 text-left text-sm transition cursor-pointer",
+        "w-full rounded-full px-3 py-1.5 text-left text-sm transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border)]",
         isActive
-          ? "bg-[var(--primary)] text-[var(--primary-ink)]"
-          : "bg-[var(--surface)] hover:bg-[var(--hover-bg)]",
+          ? "bg-[rgba(8,24,48,0.08)] dark:bg-[rgba(255,255,255,0.12)] text-[var(--fg)] font-semibold"
+          : "text-[var(--muted-fg)] hover:bg-[var(--hover-bg)]",
       )}
-      aria-current={isActive ? "true" : undefined}
+      aria-current={isActive ? "page" : undefined}
     >
       {label}
     </button>
