@@ -1,6 +1,6 @@
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { SEO } from "@srf/ui";
+import { SEO, WebsiteJsonLd, PersonJsonLd } from "@srf/ui";
 
 import BlogLayout from "./components/layout";
 import PostDetailPage from "./pages/post/post-detail-page";
@@ -23,7 +23,17 @@ export default function BlogApp() {
         title="이종민 블로그"
         description="프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다."
         keywords="기술 블로그, 프론트엔드 개발자, React, TypeScript, TradingView, AI, 개발 노하우"
+        siteName="이종민 블로그"
+        url="https://jongmany.github.io/my-blog/blog/"
       />
+      {/* 웹사이트 구조화된 데이터 */}
+      <WebsiteJsonLd
+        name="이종민 블로그"
+        description="프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우, AI 채팅 플랫폼 개발 과정을 공유합니다."
+        url="https://jongmany.github.io/my-blog/blog/"
+      />
+      {/* 저자 구조화된 데이터 */}
+      <PersonJsonLd />
       <Routes>
         <Route path="/" element={<BlogLayout />}>
           <Route index element={<Navigate to="/blog/posts" replace />} />

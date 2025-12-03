@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>이종민 - Frontend Developer</title>
+  <subtitle>사용자 경험을 최우선으로 생각하는 Frontend Developer 이종민입니다. 프론트엔드 개발 경험, React, TypeScript, TradingView 개발 노하우를 공유합니다.</subtitle>
+  <link href="https://jongmany.github.io/my-blog" rel="alternate"/>
+  <link href="https://jongmany.github.io/my-blog/atom.xml" rel="self"/>
+  <id>https://jongmany.github.io/my-blog/</id>
+  <updated>2025-12-03T06:22:15.439Z</updated>
+  <author>
+    <name>이종민</name>
+  </author>
+  <entry>
+    <title>단위테스트의 기술</title>
+    <link href="https://jongmany.github.io/my-blog/blog/books/the_art_of_unit_testing"/>
+    <id>https://jongmany.github.io/my-blog/blog/books/the_art_of_unit_testing</id>
+    <published>2025-12-02T00:00:00.000Z</published>
+    <updated>2025-12-02T00:00:00.000Z</updated>
+    <summary>단위테스트의 기술</summary>
+    <author>
+      <name>이종민</name>
+    </author>
+    
+  </entry>
+  <entry>
+    <title>이전 직장에서의 1년과 토스증권으로의 이직</title>
+    <link href="https://jongmany.github.io/my-blog/blog/retrospect/a_year_from_my_previous_job_and_a_turnover_to_toss_securities"/>
+    <id>https://jongmany.github.io/my-blog/blog/retrospect/a_year_from_my_previous_job_and_a_turnover_to_toss_securities</id>
+    <published>2025-11-21T00:00:00.000Z</published>
+    <updated>2025-11-21T00:00:00.000Z</updated>
+    <summary>토스</summary>
+    <author>
+      <name>이종민</name>
+    </author>
+    <category term="회고"/>
+  </entry>
+</feed>

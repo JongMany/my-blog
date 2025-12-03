@@ -7,6 +7,9 @@ import {
   sortGroupedByYearMonth,
   formatMonthName,
 } from "@/utils/group";
+import { SEO, BreadcrumbJsonLd } from "@srf/ui";
+
+const BASE_URL = "https://jongmany.github.io/my-blog/blog";
 
 export default function BooksPage() {
   const books = getBooks();
@@ -21,7 +24,21 @@ export default function BooksPage() {
   }, [books]);
 
   return (
-    <div className="max-w-2xl">
+    <>
+      <SEO
+        title="도서 리뷰"
+        description="읽은 책들에 대한 리뷰와 인상 깊었던 내용을 정리한 글 모음입니다."
+        keywords="도서 리뷰, 책 리뷰, 개발 서적, 프로그래밍 책, 독서"
+        url={`${BASE_URL}/books`}
+        siteName="이종민 블로그"
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "홈", url: BASE_URL },
+          { name: "도서 리뷰", url: `${BASE_URL}/books` },
+        ]}
+      />
+      <div className="max-w-2xl">
       {groupedBooks.length === 0 ? (
         <div className="py-12 text-center text-gray-500 dark:text-gray-400">
           읽은 책이 없습니다.
@@ -62,6 +79,7 @@ export default function BooksPage() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
