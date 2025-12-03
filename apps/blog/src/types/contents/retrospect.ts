@@ -8,6 +8,5 @@ export interface RetrospectMeta extends BaseMeta {
   // 회고 전용 필드가 필요하면 여기에 추가
 }
 
-// 하위 호환성을 위한 re-export
-export type Meta = RetrospectMeta;
+// 서비스 레이어에서 사용하는 Item 타입
 export type Item<T extends BaseMeta = RetrospectMeta> = ContentItem<T>;

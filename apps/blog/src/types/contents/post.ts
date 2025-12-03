@@ -8,6 +8,5 @@ export interface PostMeta extends BaseMeta {
   categories?: string[];
 }
 
-// 하위 호환성을 위한 re-export
-export type Meta = PostMeta;
+// 서비스 레이어에서 사용하는 Item 타입
 export type Item<T extends BaseMeta = PostMeta> = ContentItem<T>;
