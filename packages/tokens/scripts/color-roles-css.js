@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync } from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const tsconfig = JSON.parse(
-  readFileSync(path.join(__dirname, "../tsconfig.json"), "utf-8")
+  readFileSync(path.join(__dirname, "../tsconfig.json"), "utf-8"),
 );
 
 const outputDir = tsconfig.compilerOptions.outDir;
@@ -80,6 +80,8 @@ async function generateAllRoleCssFiles() {
     if (key.endsWith("A")) continue;
     if (key.endsWith("P3A")) continue;
     if (key.endsWith("Dark")) continue;
+    // Type-only exports (not actual color scales)
+    if (key === "lightColors") continue;
 
     const baseColor = key;
     const p3Key = key + "P3";

@@ -29,6 +29,9 @@ export default {
 
     // Types
     "types/tokens": "src/types/tokens.ts",
+
+    // Build utilities
+    "build/token-generator": "src/build/token-generator.ts",
   },
   output: [
     {

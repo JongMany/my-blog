@@ -48,18 +48,25 @@ async function generateColorCss() {
         ([name]) => name === key + "P3" || name === key.replace(/.$/, "P3A")
       )?.[1];
 
-      const p3CssProperties = Object.entries(p3Values)
-        .map(([name, value]) => [toCssCasing(name), value])
-        .map(([name, value]) => `      --${name}: ${value};`)
-        .join("\n");
+      let finalCss = srgbCssRule;
 
-      let p3CssRule = `    ${selector} {\n${p3CssProperties}\n    }`;
-      p3CssRule = `  ${matchesP3MediaRule} {\n${p3CssRule}\n  }`;
-      p3CssRule = `${supportsP3AtRule} {\n${p3CssRule}\n}`;
+      // Only generate P3 CSS if P3 values exist
+      if (p3Values && typeof p3Values === "object") {
+        const p3CssProperties = Object.entries(p3Values)
+          .map(([name, value]) => [toCssCasing(name), value])
+          .map(([name, value]) => `      --${name}: ${value};`)
+          .join("\n");
+
+        let p3CssRule = `    ${selector} {\n${p3CssProperties}\n    }`;
+        p3CssRule = `  ${matchesP3MediaRule} {\n${p3CssRule}\n  }`;
+        p3CssRule = `${supportsP3AtRule} {\n${p3CssRule}\n}`;
+
+        finalCss = `${srgbCssRule}\n\n${p3CssRule}`;
+      }
 
       writeFileSync(
         path.join(folderPath, toFileName(key) + ".css"),
-        `${srgbCssRule}\n\n${p3CssRule}`
+        finalCss
       );
     });
 }
