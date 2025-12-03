@@ -7,8 +7,6 @@
 import { semanticColors } from "../variables/semantic/colors";
 import { semanticSpacing } from "../variables/semantic/spacing";
 import { semanticRadius } from "../variables/semantic/radius";
-import { radiusBaseValues } from "../variables/radius/radius";
-import type { PrimitiveColorKey } from "../variables/colors";
 
 /**
  * Convert primitive token key to CSS custom property name
