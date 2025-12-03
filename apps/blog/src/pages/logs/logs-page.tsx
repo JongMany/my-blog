@@ -1,20 +1,12 @@
-import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import { getLogs } from "@/service/logs";
-import {
-  filterAndSortByDate,
-  filterPublishedItems,
-  extractDateFromMeta,
-  formatDate,
-} from "@/utils/date";
-import { Item, LogMeta } from "@/types/contents/log";
-import { ViewCount } from "@/components/view-count";
+import { filterAndSortByDate, filterPublishedItems } from "@/utils/date";
 import { ContentList } from "@/components/content-list";
+import { ContentListItem } from "@/components/content-list-item";
 
 export default function LogsPage() {
   const logs = getLogs();
 
-  // published가 true인 로그만 필터링하고 최신순으로 정렬
   const sortedLogs = useMemo(() => {
     return filterAndSortByDate(logs, {
       filters: [filterPublishedItems],
@@ -26,41 +18,7 @@ export default function LogsPage() {
       items={sortedLogs}
       emptyMessage="기록이 없습니다."
       itemKey={(log) => log.slug}
-      renderItem={(log) => <LogItem log={log} />}
+      renderItem={(log) => <ContentListItem item={log} />}
     />
   );
 }
-
-const LogItem = ({ log }: { log: Item<LogMeta> }) => {
-  const dateStr = extractDateFromMeta(log.meta);
-  const navigate = useNavigate();
-
-  return (
-    <article
-      key={log.slug}
-      className="cursor-pointer"
-      onClick={() => navigate(`/${log.slug}`)}
-    >
-      <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-        {log.meta.title}
-      </h2>
-      {log.meta.summary && (
-        <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
-          {log.meta.summary}
-        </p>
-      )}
-      <div className="flex items-center gap-3">
-        {dateStr && (
-          <div className="text-xs text-gray-500 dark:text-gray-500">
-            <time dateTime={dateStr}>{formatDate(dateStr)}</time>
-          </div>
-        )}
-
-        <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-          <ViewCount path={`/my-blog/${log.slug}`} />
-          <span>views</span>
-        </div>
-      </div>
-    </article>
-  );
-};

@@ -1,34 +1,13 @@
+import { BaseMeta, ContentItem } from "./common";
+
 /**
  * 경제 섹션 메타데이터 타입
+ * 필요시 경제 전용 필드를 여기에 추가하세요.
  */
-export interface EconomyMeta {
-  title: string;
-  id: string; // 파일명에서 확장자 제거한 값 (예: "inflation-analysis")
-  summary?: string;
+export interface EconomyMeta extends BaseMeta {
   categories?: string[];
-  tags?: string[];
-  date?: string;
-  slug: string;
-  path: string;
-  createdAt?: string;
-  updatedAt?: string;
-  published?: boolean;
-  [key: string]: unknown; // frontmatter의 추가 필드를 허용
 }
 
-/**
- * 메타데이터 타입 (제네릭)
- */
+// 하위 호환성을 위한 re-export
 export type Meta = EconomyMeta;
-
-/**
- * 콘텐츠 아이템 타입
- *
- * @template T - 메타데이터 타입
- */
-export type Item<T extends Meta> = {
-  slug: string;
-  content: string;
-  meta: T;
-};
-
+export type Item<T extends BaseMeta = EconomyMeta> = ContentItem<T>;

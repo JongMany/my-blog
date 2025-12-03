@@ -1,32 +1,16 @@
+import { BaseMeta, ContentItem } from "./common";
+
 /**
  * 책 메타데이터 타입
+ * 책 전용 필드가 포함됩니다.
  */
-export interface BookMeta {
-  title: string;
-  id: string; // 파일명에서 확장자 제거한 값 (예: "linchipin")
+export interface BookMeta extends BaseMeta {
+  /** 저자 */
   author?: string;
-  summary?: string;
-  tags?: string[];
-  date?: string;
-  slug: string;
-  path: string;
+  /** 생성 시간 (ms) - 레거시 지원 */
   createdAtMs?: number;
-  updatedAt?: string;
-  [key: string]: unknown; // frontmatter의 추가 필드를 허용
 }
 
-/**
- * 메타데이터 타입 (제네릭)
- */
+// 하위 호환성을 위한 re-export
 export type Meta = BookMeta;
-
-/**
- * 콘텐츠 아이템 타입
- *
- * @template T - 메타데이터 타입
- */
-export type Item<T extends Meta> = {
-  slug: string;
-  content: string;
-  meta: T;
-};
+export type Item<T extends BaseMeta = BookMeta> = ContentItem<T>;

@@ -1,33 +1,13 @@
+import { BaseMeta, ContentItem } from "./common";
+
 /**
  * 로그 메타데이터 타입
+ * 필요시 로그 전용 필드를 여기에 추가하세요.
  */
-export interface LogMeta {
-  title: string;
-  id: string; // 파일명에서 확장자 제거한 값 (예: "test")
-  summary?: string;
-  tags?: string[];
-  date?: string;
-  slug: string;
-  path: string;
-  createdAt?: string;
-  updatedAt?: string;
-  published?: boolean;
-  [key: string]: unknown; // frontmatter의 추가 필드를 허용
+export interface LogMeta extends BaseMeta {
+  // 로그 전용 필드가 필요하면 여기에 추가
 }
 
-/**
- * 메타데이터 타입 (제네릭)
- */
+// 하위 호환성을 위한 re-export
 export type Meta = LogMeta;
-
-/**
- * 콘텐츠 아이템 타입
- *
- * @template T - 메타데이터 타입
- */
-export type Item<T extends Meta> = {
-  slug: string;
-  content: string;
-  meta: T;
-};
-
+export type Item<T extends BaseMeta = LogMeta> = ContentItem<T>;
