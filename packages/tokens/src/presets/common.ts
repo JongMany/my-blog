@@ -108,38 +108,3 @@ export const tokens = {
     full: "var(--radius-full)",
   },
 } as const;
-
-/**
- * Simplified token access (for backwards compatibility)
- */
-export const simpleTokens = {
-  background: {
-    canvas: tokens.background.canvas,
-    panel: tokens.background.panel,
-    surface: tokens.background.surface,
-  },
-  text: {
-    primary: tokens.text.primary,
-    secondary: tokens.text.secondary,
-    tertiary: tokens.text.tertiary,
-  },
-  accent: {
-    solid: tokens.accent.solid,
-    subtle: tokens.accent.subtle,
-    text: tokens.accent.text,
-  },
-  status: {
-    success: tokens.status.success.solid,
-    warning: tokens.status.warning.solid,
-    error: tokens.status.error.solid,
-    info: tokens.status.info.solid,
-  },
-  spacing: {
-    xs: tokens.spacing.component.xs,
-    sm: tokens.spacing.component.sm,
-    md: tokens.spacing.component.md,
-    lg: tokens.spacing.component.lg,
-    xl: tokens.spacing.component.xl,
-  },
-  radius: tokens.radius,
-} as const;

@@ -11,14 +11,13 @@ import * as white from "./white";
 import * as dark from "./dark";
 import * as light from "./light";
 
-// Exclude type-only exports from colorScales
-const { lightColors, ...lightColorScales } = light;
-
+// Combine all color scales
+// Note: lightColors is not exported from light.ts (it's only for type generation)
 const colorScales = {
   ...black,
   ...white,
   ...dark,
-  ...lightColorScales,
+  ...light,
 };
 
 export default colorScales;

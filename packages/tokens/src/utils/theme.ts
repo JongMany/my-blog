@@ -6,6 +6,23 @@
 export type Theme = "light" | "dark";
 
 /**
+ * Check if code is running in browser environment
+ */
+function isBrowser(): boolean {
+  return typeof document !== "undefined";
+}
+
+/**
+ * Get document element safely (returns null in SSR)
+ */
+function getDocumentElement(): HTMLElement | null {
+  if (!isBrowser()) {
+    return null;
+  }
+  return document.documentElement;
+}
+
+/**
  * Theme management utilities
  */
 export const theme = {
@@ -13,9 +30,10 @@ export const theme = {
    * Apply light theme
    */
   setLight: () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
+    const root = getDocumentElement();
+    if (root) {
+      root.classList.remove("dark");
+      root.classList.add("light");
     }
   },
 
@@ -23,9 +41,10 @@ export const theme = {
    * Apply dark theme
    */
   setDark: () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.remove("light");
-      document.documentElement.classList.add("dark");
+    const root = getDocumentElement();
+    if (root) {
+      root.classList.remove("light");
+      root.classList.add("dark");
     }
   },
 
@@ -33,13 +52,14 @@ export const theme = {
    * Toggle between light/dark
    */
   toggle: () => {
-    if (typeof document !== "undefined") {
-      const isDark = document.documentElement.classList.contains("dark");
-      if (isDark) {
-        theme.setLight();
-      } else {
-        theme.setDark();
-      }
+    const root = getDocumentElement();
+    if (!root) return;
+
+    const isDark = root.classList.contains("dark");
+    if (isDark) {
+      theme.setLight();
+    } else {
+      theme.setDark();
     }
   },
 
@@ -47,11 +67,12 @@ export const theme = {
    * Get current theme
    */
   getCurrent: (): Theme | null => {
-    if (typeof document === "undefined") return null;
+    const root = getDocumentElement();
+    if (!root) return null;
 
-    if (document.documentElement.classList.contains("dark")) {
+    if (root.classList.contains("dark")) {
       return "dark";
-    } else if (document.documentElement.classList.contains("light")) {
+    } else if (root.classList.contains("light")) {
       return "light";
     }
     return null;
