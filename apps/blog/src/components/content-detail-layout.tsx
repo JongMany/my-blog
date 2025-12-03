@@ -6,9 +6,11 @@ import { MDX } from "@/components/mdx";
 import TableOfContents from "@/components/table-of-contents";
 import Title from "@/components/title";
 import Summary from "@/components/summary";
-import Time from "@/components/time";
+import { Time, NotFoundSection } from "@srf/ui";
 import { GiscusComments } from "@/components/giscus-comments";
-import NotFoundPage from "@/components/not-found-page";
+import { formatDate } from "@/utils/date";
+import { Link } from "react-router-dom";
+import { imageSource } from "@mfe/shared";
 import { ViewCount } from "@/components/view-count";
 import { SEO, ArticleJsonLd, BreadcrumbJsonLd } from "@srf/ui";
 
@@ -67,7 +69,21 @@ export function ContentDetailLayout<T extends BaseMeta>({
   const item = getItem(slug ?? "");
 
   if (!item) {
-    return <NotFoundPage />;
+    return (
+      <NotFoundSection
+        illustrationSrc={imageSource("/404.svg", "blog", {
+          isDevelopment: import.meta.env.MODE === "development",
+        })}
+        renderLink={() => (
+          <Link
+            to="/blog/posts"
+            className="inline-block mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            블로그로 돌아가기
+          </Link>
+        )}
+      />
+    );
   }
 
   return <ContentDetailView 
@@ -170,6 +186,7 @@ function ContentDetailView<T extends BaseMeta>({
                 <Time
                   date={displayDate}
                   className="text-xs text-gray-500 dark:text-gray-500"
+                  formatDate={formatDate}
                 />
               )}
               <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">

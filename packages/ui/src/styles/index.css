@@ -1,2 +1,5 @@
-/* Design Tokens - Tailwind CSS v4 @theme integration */
+@import "tailwindcss";
+
+/* Design Tokens */
+@import "@srf/tokens/styles";
 @import "@srf/tokens/tailwind";
