@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { BaseMeta, ContentItem } from "@/types/contents/common";
-import { extractDateFromMeta, formatDate } from "@/utils/date";
+import { extractDateFromMeta, formatDate } from "@mfe/shared";
 import { ViewCount } from "@/components/view-count";
 
 interface ContentListItemProps<T extends BaseMeta> {

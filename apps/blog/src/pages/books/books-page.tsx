@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBooks } from "@/service/books";
-import { extractDateFromMeta, compareByDate } from "@/utils/date";
+import { extractDateFromMeta, compareByDate } from "@mfe/shared";
 import {
   groupByYearMonth,
   sortGroupedByYearMonth,

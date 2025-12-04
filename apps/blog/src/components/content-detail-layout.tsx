@@ -1,6 +1,6 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import type { BaseMeta, ContentItem } from "@/types/contents/common";
-import { extractDateFromMeta } from "@/utils/date";
+import { extractDateFromMeta, formatDate, imageSource } from "@mfe/shared";
 import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
 import { MDX } from "@/components/mdx";
 import TableOfContents from "@/components/table-of-contents";
@@ -8,9 +8,6 @@ import Title from "@/components/title";
 import Summary from "@/components/summary";
 import { Time, NotFoundSection } from "@srf/ui";
 import { GiscusComments } from "@/components/giscus-comments";
-import { formatDate } from "@/utils/date";
-import { Link } from "react-router-dom";
-import { imageSource } from "@mfe/shared";
 import { ViewCount } from "@/components/view-count";
 import { SEO, ArticleJsonLd, BreadcrumbJsonLd } from "@srf/ui";
 

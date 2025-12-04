@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { getLogs } from "@/service/logs";
-import { filterAndSortByDate, filterPublishedItems } from "@/utils/date";
+import { filterAndSortByDate, filterPublishedItems } from "@mfe/shared";
 import { ContentList } from "@/components/content-list";
 import { ContentListItem } from "@/components/content-list-item";
 import { SEO, BreadcrumbJsonLd } from "@srf/ui";

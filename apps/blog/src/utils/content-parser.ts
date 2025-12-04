@@ -1,4 +1,4 @@
-import { parseFrontmatter } from "./frontmatter";
+import { parseFrontmatter } from "@mfe/shared";
 import type { BaseMeta, ContentItem, ContentCategoryConfig } from "@/types/contents/common";
 
 /**

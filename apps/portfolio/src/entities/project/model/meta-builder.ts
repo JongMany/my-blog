@@ -1,7 +1,4 @@
-import {
-  getString,
-  getOptionalString,
-} from "@/utils/frontmatter";
+import { getString, getOptionalString } from "@mfe/shared";
 import {
   formatProjectName,
   normalizeBoolean,

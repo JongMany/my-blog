@@ -1,5 +1,4 @@
-import { isString } from "@mfe/shared";
-import { parseFrontmatter } from "@/utils/frontmatter";
+import { isString, parseFrontmatter } from "@mfe/shared";
 import { normalizeBoolean } from "@/utils/normalize";
 import { normalizeFilePath } from "@/utils/path";
 import type { FrontmatterData } from "@/components/mdx";
