@@ -60,8 +60,34 @@ const CONFIG = {
   // /{REPO_NAME}로 시작하는 현재 경로를 Shell에 넘긴다
   var base="/{REPO_NAME}";
   var path=location.pathname.startsWith(base)?location.pathname.slice(base.length):location.pathname;
-  var to = path + location.search + location.hash;
-  location.replace(base + "/?to=" + encodeURIComponent(to || "/"));
+  
+  // 앱 경로인지 확인 (동적으로 생성된 앱 경로들)
+  var appPaths = [{APP_PATHS}];
+  var isAppPath = appPaths.some(function(appPath) {
+    return path === appPath || path.startsWith(appPath + "/");
+  });
+  
+  if (isAppPath) {
+    // 앱 경로인 경우: shell의 index.html을 직접 로드
+    // 현재 경로를 유지하면서 shell 앱을 로드
+    var shellIndexPath = base + "/index.html";
+    fetch(shellIndexPath)
+      .then(function(response) { return response.text(); })
+      .then(function(html) {
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch(function() {
+        // fetch 실패 시 기존 리다이렉트 방식 사용
+        var to = path + location.search + location.hash;
+        location.replace(base + "/?to=" + encodeURIComponent(to || "/"));
+      });
+  } else {
+    // 앱 경로가 아닌 경우: 기존 리다이렉트 방식 사용
+    var to = path + location.search + location.hash;
+    location.replace(base + "/?to=" + encodeURIComponent(to || "/"));
+  }
 </script>`,
 };
 
@@ -214,10 +240,16 @@ function createJekyllDisableFile(directoryPath) {
  * @returns {void}
  */
 function createRedirect404Page(directoryPath, repositoryName) {
+  // outputPath가 있는 앱들의 경로를 동적으로 생성
+  const appPaths = Object.values(CONFIG.APPS)
+    .filter((app) => app.outputPath && !app.isMainApp)
+    .map((app) => `"/${app.outputPath}"`)
+    .join(", ");
+
   const redirectContent = CONFIG.REDIRECT_404_TEMPLATE.replace(
     /{REPO_NAME}/g,
     repositoryName,
-  );
+  ).replace(/{APP_PATHS}/g, appPaths);
 
   const redirectPath = path.join(directoryPath, "404.html");
   fs.writeFileSync(redirectPath, redirectContent, "utf8");
