@@ -223,6 +223,39 @@ function createRedirect404Page(directoryPath, repositoryName) {
   fs.writeFileSync(redirectPath, redirectContent, "utf8");
 }
 
+/**
+ * 각 앱 경로에 shell의 index.html 복사 (SPA 라우팅 지원)
+ * GitHub Pages에서 /blog, /portfolio, /resume 등으로 직접 접근 시
+ * 해당 경로의 index.html을 찾을 수 있도록 합니다.
+ * @param {string} outputPath
+ * @returns {void}
+ */
+function createAppIndexPages(outputPath) {
+  const shellIndexPath = path.join(outputPath, "index.html");
+
+  if (!fileExists(shellIndexPath)) {
+    console.warn("⚠️  shell index.html not found, skipping app index pages");
+    return;
+  }
+
+  // outputPath가 있는 앱들에 대해 index.html 복사
+  const appsWithPath = Object.values(CONFIG.APPS).filter(
+    (app) => app.outputPath && !app.isMainApp,
+  );
+
+  for (const app of appsWithPath) {
+    const appDirPath = path.join(outputPath, app.outputPath);
+    const appIndexPath = path.join(appDirPath, "index.html");
+
+    // 디렉토리가 존재하는 경우에만 index.html 복사
+    if (directoryExists(appDirPath)) {
+      ensureDirectory(appDirPath);
+      fs.copyFileSync(shellIndexPath, appIndexPath);
+      console.log(`✓ created index.html for /${app.outputPath}`);
+    }
+  }
+}
+
 // ============================================================================
 // 앱 처리 함수들
 // ============================================================================
@@ -320,7 +353,13 @@ function collectGitHubPagesFiles() {
     // Jekyll 비활성화 파일 생성
     createJekyllDisableFile(outputPath);
 
-    // 404 리다이렉트 페이지 생성
+    // 각 앱 경로에 shell의 index.html 복사 (SPA 라우팅 지원)
+    // 이렇게 하면 /blog, /portfolio, /resume으로 직접 접근 시
+    // GitHub Pages가 해당 경로의 index.html을 찾아 shell 앱을 로드하고,
+    // shell 라우터가 경로를 처리할 수 있습니다.
+    createAppIndexPages(outputPath);
+
+    // 404 리다이렉트 페이지 생성 (실제로 없는 경로용)
     createRedirect404Page(outputPath, CONFIG.REPOSITORY_NAME);
 
     console.log(`✓ GitHub Pages files collected to ${CONFIG.OUTPUT_DIR}`);
@@ -365,5 +404,6 @@ module.exports = {
   create404Page,
   createJekyllDisableFile,
   createRedirect404Page,
+  createAppIndexPages,
   collectAppBuild,
 };
