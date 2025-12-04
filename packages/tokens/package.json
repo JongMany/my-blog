@@ -1,25 +1,69 @@
 {
   "name": "@srf/tokens",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "style": "./dist/css/index.css",
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": {
-      "style": "./dist/css/index.css"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
-    "./styles": "./dist/css/index.css"
+    "./styles": {
+      "style": "./dist/css/index.css",
+      "default": "./dist/css/index.css"
+    },
+    "./presets": {
+      "types": "./dist/presets/index.d.ts",
+      "import": "./dist/presets/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/tokens.d.ts",
+      "import": "./dist/types/tokens.js"
+    },
+    "./colors": {
+      "types": "./dist/variables/colors/index.d.ts",
+      "import": "./dist/colors.js"
+    },
+    "./semantic": {
+      "types": "./dist/variables/semantic/index.d.ts",
+      "import": "./dist/semantic/index.js"
+    },
+    "./tailwind": {
+      "style": "./dist/css/tailwind-theme.css",
+      "default": "./dist/css/tailwind-theme.css"
+    },
+    "./css/*": "./dist/css/*"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "rm:dist": "rm -rf dist/*",
     "build": "pnpm rm:dist && pnpm rollup -c && pnpm build-css-modules",
-    "build-css-modules": "node ./scripts/color-tokens.js && node ./scripts/color-roles-css.js && node ./scripts/color-css.js && node ./scripts/semantic-css.js && node ./scripts/cursor-css.js && node ./scripts/scaling-css.js && node ./scripts/space-css.js && node ./scripts/radius-css.js && node ./scripts/typography-css.js && node ./scripts/shadow-css.js && node ./scripts/base-css.js &&  node ./scripts/generate-index-css.js",
-    "build-semantic": "node ./scripts/semantic-css.js"
+    "build-css-modules": "node ./scripts/color-tokens.js && node ./scripts/color-roles-css.js && node ./scripts/color-css.js && node ./scripts/generate-tokens.mjs && node ./scripts/build-css.mjs",
+    "build-tokens": "node ./scripts/generate-tokens.mjs",
+    "build-semantic": "node ./scripts/generate-tokens.mjs",
+    "build-tailwind": "node ./scripts/generate-tokens.mjs"
   },
-  "keywords": [],
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "css-variables"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Design token system inspired by Radix UI & Adobe Spectrum",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",

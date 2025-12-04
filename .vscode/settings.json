@@ -13,5 +13,34 @@
     "**/.vscode/**": true,
     "files.encoding": true,
     "files.autoGuessEncoding": true
+  },
+  "tailwindCSS.experimental.configFile": "./apps/resume/src/index.css",
+  "tailwindCSS.experimental.configFilePaths": [
+    "./apps/resume/src/index.css",
+    "./apps/home/src/index.css",
+    "./apps/blog/src/index.css",
+    "./apps/portfolio/src/index.css",
+    "./apps/shell/src/index.css",
+    "./packages/tokens/dist/css/tailwind-theme.css"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    ["class[Nn]ame[s]?\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]", "([^\\s'\"`]+)"],
+    ["class:\\s*['\"`]([^'\"`]*)['\"`]", "([^\\s'\"`]+)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass"
+  ],
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
   }
 }

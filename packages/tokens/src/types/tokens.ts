@@ -330,15 +330,6 @@ export type TokenCategory = "color" | "spacing" | "radius" | "typography";
 export type CSSCustomProperty<T extends string> = `var(--${T})`;
 
 /**
- * Get CSS custom property for any token
- */
-export function getTokenCSS<T extends DesignToken>(
-  token: T,
-): CSSCustomProperty<T> {
-  return `var(--${token.replace(/([A-Z])/g, "-$1").toLowerCase()})` as CSSCustomProperty<T>;
-}
-
-/**
  * Token value mapping (for compile-time checking)
  */
 export type TokenValue = {
@@ -371,11 +362,9 @@ export interface ThemeConfig {
 }
 
 /**
- * Available themes
- * Note: Theme type is also exported from utils/theme.ts
- * This export is kept for backward compatibility but should use utils/theme.ts instead
+ * Theme type is exported from utils/theme.ts
+ * Use `import type { Theme } from "@srf/tokens/utils"` to access it
  */
-// export type Theme = "light" | "dark"; // Moved to utils/theme.ts to avoid duplicate export
 
 // ============================================================================
 // Examples & Documentation
@@ -385,12 +374,20 @@ export interface ThemeConfig {
  * Example usage:
  *
  * ```typescript
+ * import { getCSSToken, isValidSemanticToken } from "@srf/tokens/utils";
+ * import type { SemanticColorToken, AccentToken } from "@srf/tokens/types";
+ *
  * // ✅ Type-safe token usage
  * const primaryText: SemanticColorToken = "color-text-primary";
  * const buttonBg: AccentToken = "color-accent-solid";
  *
  * // ✅ CSS custom property generation
- * const cssVar = getTokenCSS("color-background-canvas"); // "var(--color-background-canvas)"
+ * const cssVar = getCSSToken("color-background-canvas"); // "var(--color-background-canvas)"
+ *
+ * // ✅ Runtime token validation
+ * if (isValidSemanticToken("color-text-primary")) {
+ *   // Token exists and is valid
+ * }
  *
  * // ✅ Component token definition
  * const buttonTokens: ComponentTokens = {

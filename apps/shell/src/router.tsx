@@ -1,12 +1,14 @@
 import * as React from "react";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, Link } from "react-router-dom";
+import { NotFoundSection } from "@srf/ui";
+import { imageSource } from "@mfe/shared";
 
 import Layout from "./components/root-layout";
 import BootRedirect from "./components/boot-redirect";
-import NotFoundPage from "./components/not-found-page";
 import { withBoundary } from "./components/with-boundary";
 import { lazyRemote } from "./mfe/lazy-remote";
 import "./App.css";
+import "./index.css"; // prefix 없는 Tailwind (UI 패키지용)
 
 const RAW_BASE = import.meta.env.BASE_URL || "/";
 const BASENAME = RAW_BASE.endsWith("/") ? RAW_BASE.slice(0, -1) : RAW_BASE;
@@ -60,7 +62,24 @@ export const router = createBrowserRouter(
         { path: "blog/*", element: <BlogApp /> },
         { path: "portfolio/*", element: <PortfolioApp /> },
         { path: "resume/*", element: <ResumeApp /> },
-        { path: "*", element: <NotFoundPage /> },
+        {
+          path: "*",
+          element: (
+            <NotFoundSection
+              illustrationSrc={imageSource("/404.svg", "home", {
+                isDevelopment: import.meta.env.MODE === "development",
+              })}
+              renderLink={() => (
+                <Link
+                  to="/"
+                  className="inline-block mt-4 px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  홈으로 돌아가기
+                </Link>
+              )}
+            />
+          ),
+        },
       ],
     },
   ],

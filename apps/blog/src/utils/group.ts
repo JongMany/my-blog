@@ -1,4 +1,4 @@
-import { DateComparable, extractDateFromMeta, compareByDate } from "./date";
+import { DateComparable, extractDateFromMeta, compareByDate } from "@mfe/shared";
 
 /**
  * 날짜에서 년도와 월을 추출합니다.

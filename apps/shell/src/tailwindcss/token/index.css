@@ -1,1 +1,5 @@
+/* CSS 변수 정의 (primitive + semantic tokens) */
 @import "@srf/tokens/styles";
+
+/* Tailwind v4 @theme 통합 */
+@import "@srf/tokens/tailwind";

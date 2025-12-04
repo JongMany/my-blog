@@ -1,14 +1,13 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import type { BaseMeta, ContentItem } from "@/types/contents/common";
-import { extractDateFromMeta } from "@/utils/date";
+import { extractDateFromMeta, formatDate, imageSource } from "@mfe/shared";
 import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
 import { MDX } from "@/components/mdx";
 import TableOfContents from "@/components/table-of-contents";
 import Title from "@/components/title";
 import Summary from "@/components/summary";
-import Time from "@/components/time";
+import { Time, NotFoundSection } from "@srf/ui";
 import { GiscusComments } from "@/components/giscus-comments";
-import NotFoundPage from "@/components/not-found-page";
 import { ViewCount } from "@/components/view-count";
 import { SEO, ArticleJsonLd, BreadcrumbJsonLd } from "@srf/ui";
 
@@ -67,17 +66,33 @@ export function ContentDetailLayout<T extends BaseMeta>({
   const item = getItem(slug ?? "");
 
   if (!item) {
-    return <NotFoundPage />;
+    return (
+      <NotFoundSection
+        illustrationSrc={imageSource("/404.svg", "blog", {
+          isDevelopment: import.meta.env.MODE === "development",
+        })}
+        renderLink={() => (
+          <Link
+            to="/blog/posts"
+            className="inline-block mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            블로그로 돌아가기
+          </Link>
+        )}
+      />
+    );
   }
 
-  return <ContentDetailView 
-    item={item} 
-    category={category}
-    slug={slug ?? ""}
-    renderMeta={renderMeta}
-    renderBeforeContent={renderBeforeContent}
-    renderAfterContent={renderAfterContent}
-  />;
+  return (
+    <ContentDetailView
+      item={item}
+      category={category}
+      slug={slug ?? ""}
+      renderMeta={renderMeta}
+      renderBeforeContent={renderBeforeContent}
+      renderAfterContent={renderAfterContent}
+    />
+  );
 }
 
 // 카테고리별 한글 이름 매핑
@@ -156,8 +171,11 @@ function ContentDetailView<T extends BaseMeta>({
       {/* Breadcrumb JSON-LD */}
       <BreadcrumbJsonLd items={breadcrumbItems} />
 
-      <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">
-        <div className="flex justify-center">
+      <div className="w-full max-w-7xl mx-auto px-4 py-8">
+        <div className="flex justify-center xl:justify-between xl:gap-8">
+          {/* 왼쪽 여백 (xl에서 TOC와 균형을 맞추기 위함) */}
+          <div className="hidden xl:block w-64 shrink-0" />
+
           <article className="w-full max-w-2xl">
             <Title title={title} />
             {summary && (
@@ -170,6 +188,7 @@ function ContentDetailView<T extends BaseMeta>({
                 <Time
                   date={displayDate}
                   className="text-xs text-gray-500 dark:text-gray-500"
+                  formatDate={formatDate}
                 />
               )}
               <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
@@ -187,12 +206,14 @@ function ContentDetailView<T extends BaseMeta>({
               <GiscusComments term={slug} />
             </div>
           </article>
-        </div>
-        <div className="absolute top-8 right-0 xl:block hidden">
-          <TableOfContents />
+
+          <aside className="hidden xl:block w-64 shrink-0">
+            <div className="sticky top-24">
+              <TableOfContents />
+            </div>
+          </aside>
         </div>
       </div>
     </>
   );
 }
-

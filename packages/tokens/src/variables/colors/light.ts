@@ -2322,3 +2322,24 @@ export const orangeP3A = {
   orangeA11: "color(display-p3 0.76 0.34 0)",
   orangeA12: "color(display-p3 0.323 0.185 0.127)",
 };
+
+/**
+ * All primitive color tokens for light theme
+ * Combined from all color scales
+ *
+ * Note: This is used only for type generation, not exported to colorScales
+ */
+const lightColors = {
+  ...gray,
+  ...grayA,
+  ...blue,
+  ...green,
+  ...red,
+  ...amber,
+} as const;
+
+/**
+ * Type for all primitive color token keys
+ * Used for type-safe token references in semantic tokens
+ */
+export type PrimitiveColorKey = keyof typeof lightColors;

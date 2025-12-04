@@ -8,3 +8,5 @@ export * from "./input";
 export * from "./spinner";
 export * from "./remote-loader";
 export * from "./delete-button";
+export * from "./not-found-section";
+export * from "./time";

@@ -37,6 +37,14 @@ export * from "./presets";
 // ============================================================================
 
 // Re-export commonly used items for convenience
-export { tokens, simpleTokens } from "./presets/common";
+export { tokens } from "./presets/common";
 export { theme } from "./utils/theme";
-export { getCSSToken } from "./utils/tokens";
+export {
+  getCSSToken,
+  getCSSTokenSafe,
+  isValidSemanticToken,
+  isSemanticColorToken,
+  isSemanticSpacingToken,
+  isSemanticRadiusToken,
+  getPrimitiveReference,
+} from "./utils/tokens";

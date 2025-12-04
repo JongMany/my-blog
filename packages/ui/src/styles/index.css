@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/* UI 패키지의 Tailwind 클래스를 스캔 범위에 포함 */
-@source "../../../packages/ui/src";
-
 /* Design Tokens */
 @import "@srf/tokens/styles";
 @import "@srf/tokens/tailwind";
-
