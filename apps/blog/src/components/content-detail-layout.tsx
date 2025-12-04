@@ -83,14 +83,16 @@ export function ContentDetailLayout<T extends BaseMeta>({
     );
   }
 
-  return <ContentDetailView 
-    item={item} 
-    category={category}
-    slug={slug ?? ""}
-    renderMeta={renderMeta}
-    renderBeforeContent={renderBeforeContent}
-    renderAfterContent={renderAfterContent}
-  />;
+  return (
+    <ContentDetailView
+      item={item}
+      category={category}
+      slug={slug ?? ""}
+      renderMeta={renderMeta}
+      renderBeforeContent={renderBeforeContent}
+      renderAfterContent={renderAfterContent}
+    />
+  );
 }
 
 // 카테고리별 한글 이름 매핑
@@ -169,8 +171,11 @@ function ContentDetailView<T extends BaseMeta>({
       {/* Breadcrumb JSON-LD */}
       <BreadcrumbJsonLd items={breadcrumbItems} />
 
-      <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">
-        <div className="flex justify-center">
+      <div className="w-full max-w-7xl mx-auto px-4 py-8">
+        <div className="flex justify-center xl:justify-between xl:gap-8">
+          {/* 왼쪽 여백 (xl에서 TOC와 균형을 맞추기 위함) */}
+          <div className="hidden xl:block w-64 shrink-0" />
+
           <article className="w-full max-w-2xl">
             <Title title={title} />
             {summary && (
@@ -201,12 +206,14 @@ function ContentDetailView<T extends BaseMeta>({
               <GiscusComments term={slug} />
             </div>
           </article>
-        </div>
-        <div className="absolute top-8 right-0 xl:block hidden">
-          <TableOfContents />
+
+          <aside className="hidden xl:block w-64 shrink-0">
+            <div className="sticky top-24">
+              <TableOfContents />
+            </div>
+          </aside>
         </div>
       </div>
     </>
   );
 }
-
