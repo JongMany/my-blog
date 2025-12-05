@@ -1,6 +1,25 @@
 import { createElement, ComponentType } from "react";
 
 /**
+ * 순수 함수: URL이 외부 링크인지 확인
+ * MDX Link 컴포넌트에서 사용
+ *
+ * @param url - 확인할 URL 문자열
+ * @returns 외부 링크인지 여부
+ *
+ * @example
+ * ```ts
+ * isExternalUrl("https://example.com"); // true
+ * isExternalUrl("/blog/post"); // false
+ * isExternalUrl("//example.com"); // true
+ * ```
+ */
+export const isExternalUrl = (url?: string): boolean => {
+  if (!url) return false;
+  return /^https?:\/\//i.test(url) || url.startsWith("//");
+};
+
+/**
  * 고차 함수: 컴포넌트에 runtimeConfig를 주입하는 함수
  * MDX 컴포넌트 맵 생성 시 사용
  *

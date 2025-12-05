@@ -2,8 +2,7 @@ import { useMemo } from "react";
 import { Image, Link, Video } from "../components/base";
 import type { ComponentMapOptions } from "../../types";
 import type { ComponentType } from "react";
-import { withRuntimeConfig } from "../utils/with-runtime-config";
-import { mergeComponents } from "../utils/merge-components";
+import { withRuntimeConfig } from "../utils";
 
 /**
  * 순수 함수: 기본 컴포넌트 맵 생성
@@ -25,7 +24,10 @@ export function createMDXComponentMap(
 ): Record<string, ComponentType<any>> {
   const { runtimeConfig, customComponents = {} } = options;
   const baseMap = createBaseComponentMap(runtimeConfig);
-  return mergeComponents(baseMap, customComponents);
+  return {
+    ...baseMap,
+    ...customComponents,
+  };
 }
 
 /**

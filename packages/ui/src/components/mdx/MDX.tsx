@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import { useMDXComponentMap } from "./lib/factory/create-component-map";
-import { mergeComponents } from "./lib/utils/merge-components";
 import type { ComponentMapOptions } from "./types";
 import type { ComponentType } from "react";
 
@@ -20,7 +19,10 @@ export function MDX({
   const baseComponentMap = useMDXComponentMap(componentMapOptions);
   
   const finalComponentMap = useMemo(
-    () => mergeComponents(baseComponentMap, additionalComponents),
+    () => ({
+      ...baseComponentMap,
+      ...(additionalComponents ?? {}),
+    }),
     [baseComponentMap, additionalComponents]
   );
   

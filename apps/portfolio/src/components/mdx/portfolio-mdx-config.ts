@@ -15,7 +15,7 @@ import {
 } from "@/utils/hast";
 import { isExternalUrl } from "@srf/ui";
 import type { MDXRuntimeConfig, SerializeConfig } from "@srf/ui";
-import { createDefaultSerializeConfig, createRuntimeConfig, mergeSerializeConfig } from "@srf/ui";
+import { createDefaultSerializeConfig } from "@srf/ui";
 
 /**
  * 순수 함수: 이미지 소스 처리
@@ -30,11 +30,11 @@ const processImageSource = (src: string, appName: string): string => {
 /**
  * 순수 함수: 런타임 설정 생성
  */
-export const portfolioRuntimeConfig: MDXRuntimeConfig = createRuntimeConfig({
+export const portfolioRuntimeConfig: MDXRuntimeConfig = {
   LinkComponent: Link,
   processImageSource,
   appName: "portfolio",
-});
+};
 
 const MERMAID_DEFAULT_WIDTH = "min(600px, 100%)";
 
@@ -89,41 +89,39 @@ export function sanitizeMdxSource(src: string): string {
 /**
  * 순수 함수: Serialize 설정 생성
  */
-export const portfolioSerializeConfig: SerializeConfig = mergeSerializeConfig(
-  createDefaultSerializeConfig(),
-  {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      rehypeSlug,
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: "wrap",
-          properties: {
-            className: ["anchor"],
-            ariaLabel: "anchor",
-          },
+export const portfolioSerializeConfig: SerializeConfig = {
+  ...createDefaultSerializeConfig(),
+  remarkPlugins: [remarkGfm],
+  rehypePlugins: [
+    rehypeSlug,
+    [
+      rehypeAutolinkHeadings,
+      {
+        behavior: "wrap",
+        properties: {
+          className: ["anchor"],
+          ariaLabel: "anchor",
         },
-      ],
-      rehypeUnwrapImages,
-      rehypeSkipMermaid,
-      [
-        rehypePrettyCode,
-        {
-          theme: "dark-plus",
-          filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
-          onVisitHighlightedLine(node: Element) {
-            if (node.properties && Array.isArray(node.properties.className)) {
-              node.properties.className.push("highlighted");
-            }
-          },
-          onVisitHighlightedWord(node: Element) {
-            node.properties.className = ["word"];
-          },
-        },
-      ],
+      },
     ],
-    sanitizeSource: sanitizeMdxSource,
-  }
-);
+    rehypeUnwrapImages,
+    rehypeSkipMermaid,
+    [
+      rehypePrettyCode,
+      {
+        theme: "dark-plus",
+        filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
+        onVisitHighlightedLine(node: Element) {
+          if (node.properties && Array.isArray(node.properties.className)) {
+            node.properties.className.push("highlighted");
+          }
+        },
+        onVisitHighlightedWord(node: Element) {
+          node.properties.className = ["word"];
+        },
+      },
+    ],
+  ],
+  sanitizeSource: sanitizeMdxSource,
+};
 

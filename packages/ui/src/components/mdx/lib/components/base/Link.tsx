@@ -1,5 +1,5 @@
 import type { MDXRuntimeConfig } from "../../../types";
-import { isExternalUrl } from "../../utils/is-external-url";
+import { isExternalUrl } from "../../utils";
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href?: string;
