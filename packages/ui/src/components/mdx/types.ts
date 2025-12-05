@@ -17,23 +17,39 @@ export interface LinkProps {
 export interface RuntimeConfig {
   /** 내부 링크를 렌더링하는 컴포넌트 */
   LinkComponent: ComponentType<LinkProps>;
-  
+
   /** 이미지 소스를 처리하는 함수 */
   processImageSource: (src: string, appName: string) => string;
-  
+
   /** 앱 이름 (blog, portfolio 등) */
   appName: string;
 }
 
 /**
- * Remark 플러그인 타입
+ * Unified 플러그인 함수 타입
+ * 플러그인은 다양한 시그니처를 가질 수 있음
  */
-export type RemarkPlugin = unknown;
+type PluginFunction = (...args: any[]) => any;
+
+/**
+ * 플러그인 튜플 타입
+ * [플러그인 함수, 옵션] 형태
+ */
+type PluginTuple = [plugin: PluginFunction, options: any];
+
+/**
+ * Remark 플러그인 타입
+ * 단일 플러그인 함수 또는 [플러그인, 옵션] 튜플 형태
+ * @see https://github.com/unifiedjs/unified#plugin
+ */
+export type RemarkPlugin = PluginFunction | PluginTuple;
 
 /**
  * Rehype 플러그인 타입
+ * 단일 플러그인 함수 또는 [플러그인, 옵션] 튜플 형태
+ * @see https://github.com/unifiedjs/unified#plugin
  */
-export type RehypePlugin = unknown;
+export type RehypePlugin = PluginFunction | PluginTuple;
 
 /**
  * Serialize 옵션
@@ -57,4 +73,3 @@ export interface ComponentMapConfig {
   runtime: RuntimeConfig;
   custom?: ComponentMap;
 }
-

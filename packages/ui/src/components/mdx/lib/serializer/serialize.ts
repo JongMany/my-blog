@@ -34,10 +34,8 @@ export async function serialize(content: string, options: SerializeOptions) {
 
   return serializeMDX(sanitized, {
     mdxOptions: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      remarkPlugins: (options.remarkPlugins ?? []) as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      rehypePlugins: (options.rehypePlugins ?? []) as any,
+      remarkPlugins: options.remarkPlugins ?? [],
+      rehypePlugins: options.rehypePlugins ?? [],
     },
   });
 }
