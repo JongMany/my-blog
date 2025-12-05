@@ -1,5 +1,5 @@
-import { use, useMemo } from "react";
-import { serialize } from "@/utils/mdx";
+import { useSerializedMDX as useSerializedMDXBase } from "@srf/ui";
+import { blogSerializeConfig } from "@/components/mdx/blog-mdx-config";
 
 /**
  * MDX 콘텐츠를 시리얼라이즈하는 커스텀 훅
@@ -13,10 +13,6 @@ import { serialize } from "@/utils/mdx";
  * ```
  */
 export function useSerializedMDX(content: string) {
-  // Promise를 메모이제이션하여 안정적인 참조 유지
-  const serializedPromise = useMemo(() => serialize(content), [content]);
-  const { compiledSource } = use(serializedPromise);
-
-  return { compiledSource };
+  return useSerializedMDXBase(content, blogSerializeConfig);
 }
 
