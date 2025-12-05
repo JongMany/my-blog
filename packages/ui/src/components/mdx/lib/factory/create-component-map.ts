@@ -1,20 +1,19 @@
-import { useMemo } from "react";
-import { Image, Link, Video } from "../components/base";
-import type {
-  ComponentMapConfig,
-  ComponentMap,
-  RuntimeConfig,
-} from "../../types";
+import React, { useMemo, createElement } from "react";
+import { Image, Link as BaseLink, Video } from "../components/base";
+import type { ComponentMapConfig, ComponentMap } from "../../types";
 import { injectRuntimeConfig } from "../utils";
 
 /**
  * 기본 컴포넌트 맵 생성
  */
-function createDefaultComponents(runtime: RuntimeConfig): ComponentMap {
+function createDefaultComponents(config: ComponentMapConfig): ComponentMap {
+  const { runtime } = config;
+
   return {
     Image: injectRuntimeConfig(Image, runtime),
     img: injectRuntimeConfig(Image, runtime),
-    Link: injectRuntimeConfig(Link, runtime),
+    Link: BaseLink,
+    a: BaseLink, // MDX에서 <a> 태그도 Link 컴포넌트로 렌더링
     Video: Video,
   };
 }
@@ -23,7 +22,7 @@ function createDefaultComponents(runtime: RuntimeConfig): ComponentMap {
  * 컴포넌트 맵 생성
  */
 export function createComponentMap(config: ComponentMapConfig): ComponentMap {
-  const defaults = createDefaultComponents(config.runtime);
+  const defaults = createDefaultComponents(config);
   return { ...defaults, ...(config.custom ?? {}) };
 }
 
@@ -34,7 +33,7 @@ export function useComponentMap(config: ComponentMapConfig) {
   return useMemo(
     () => createComponentMap(config),
     [
-      config.runtime.LinkComponent,
+      config.linkComponent,
       config.runtime.processImageSource,
       config.runtime.appName,
       config.custom,

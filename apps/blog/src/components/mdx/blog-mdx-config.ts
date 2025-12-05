@@ -17,10 +17,14 @@ function processImageSource(src: string, appName: string): string {
  * 런타임 설정
  */
 export const blogRuntimeConfig: RuntimeConfig = {
-  LinkComponent: Link,
   processImageSource,
   appName: "blog",
 };
+
+/**
+ * 링크 컴포넌트
+ */
+export const blogLinkComponent = Link;
 
 /**
  * Serialize 옵션

@@ -31,10 +31,14 @@ function processImageSource(src: string, appName: string): string {
  * 런타임 설정
  */
 export const portfolioRuntimeConfig: RuntimeConfig = {
-  LinkComponent: Link,
   processImageSource,
   appName: "portfolio",
 };
+
+/**
+ * 링크 컴포넌트
+ */
+export const portfolioLinkComponent = Link;
 
 const MERMAID_DEFAULT_WIDTH = "min(600px, 100%)";
 

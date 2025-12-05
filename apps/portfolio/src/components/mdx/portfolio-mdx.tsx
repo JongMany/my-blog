@@ -1,5 +1,8 @@
 import { MDX } from "@srf/ui";
-import { portfolioRuntimeConfig } from "./portfolio-mdx-config";
+import {
+  portfolioRuntimeConfig,
+  portfolioLinkComponent,
+} from "./portfolio-mdx-config";
 import { portfolioCustomComponents } from "./portfolio-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
 import type { FrontmatterData } from "./lib/types";
@@ -24,6 +27,7 @@ export function PortfolioMDX({
       frontmatter={frontmatter ?? {}}
       scope={scope ?? {}}
       config={{
+        linkComponent: portfolioLinkComponent,
         runtime: portfolioRuntimeConfig,
         custom: portfolioCustomComponents,
       }}

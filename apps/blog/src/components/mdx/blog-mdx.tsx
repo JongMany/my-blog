@@ -1,5 +1,5 @@
 import { MDX } from "@srf/ui";
-import { blogRuntimeConfig } from "./blog-mdx-config";
+import { blogRuntimeConfig, blogLinkComponent } from "./blog-mdx-config";
 import { blogCustomComponents } from "./blog-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
 import type { ComponentMap } from "@srf/ui";
@@ -25,6 +25,7 @@ export function BlogMDX({
       frontmatter={frontmatter ?? {}}
       scope={scope ?? {}}
       config={{
+        linkComponent: blogLinkComponent,
         runtime: blogRuntimeConfig,
         custom: blogCustomComponents,
       }}
