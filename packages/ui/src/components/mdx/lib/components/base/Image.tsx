@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
 import type { MDXRuntimeConfig } from "../../../types";
+import { createImageStyle } from "./image-style";
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   source?: string;
@@ -9,26 +10,6 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   width?: number | string;
   height?: number | string;
   runtimeConfig: MDXRuntimeConfig;
-}
-
-function createImageStyle(
-  width?: number | string,
-  height?: number | string,
-): React.CSSProperties | undefined {
-  if (!width && !height) return undefined;
-  
-  const style: React.CSSProperties = {};
-  
-  if (width) {
-    const widthValue = typeof width === "number" ? `${width}px` : width;
-    style.width = `min(${widthValue}, 100%)`;
-  }
-  
-  if (height) {
-    style.height = typeof height === "number" ? `${height}px` : height;
-  }
-  
-  return style;
 }
 
 export function Image({

@@ -47,7 +47,13 @@ export function BooksLeftToRead() {
   return <span>{booksLeftToRead}</span>;
 }
 
-export function Resource({ href, children }: { href?: string; children: ReactNode }) {
+export function Resource({
+  href,
+  children,
+}: {
+  href?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex w-full justify-end">
       {href ? (
@@ -76,4 +82,3 @@ export const blogCustomComponents = {
   BooksLeftToRead,
   Resource,
 };
-

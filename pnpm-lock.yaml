@@ -628,6 +628,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@mfe/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@radix-ui/react-dialog':
         specifier: ^1.1.14
         version: 1.1.14(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
