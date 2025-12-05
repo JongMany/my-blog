@@ -3,15 +3,11 @@ import { portfolioRuntimeConfig } from "./portfolio-mdx-config";
 import { portfolioCustomComponents } from "./portfolio-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
 import type { FrontmatterData } from "./lib/types";
-import type { ComponentType } from "react";
+import type { ComponentMap } from "@srf/ui";
 
 interface PortfolioMDXProps
   extends Omit<MDXRemoteProps, "components" | "frontmatter" | "scope"> {
-  /**
-   * 추가로 주입할 컴포넌트 맵
-   * 기존 portfolioCustomComponents에 병합됩니다.
-   */
-  additionalComponents?: Record<string, ComponentType<any>>;
+  overrides?: ComponentMap;
   frontmatter?: FrontmatterData;
   scope?: Record<string, unknown>;
 }
@@ -19,7 +15,7 @@ interface PortfolioMDXProps
 export function PortfolioMDX({
   frontmatter,
   scope,
-  additionalComponents,
+  overrides,
   ...props
 }: PortfolioMDXProps) {
   return (
@@ -27,12 +23,11 @@ export function PortfolioMDX({
       {...props}
       frontmatter={frontmatter ?? {}}
       scope={scope ?? {}}
-      componentMapOptions={{
-        runtimeConfig: portfolioRuntimeConfig,
-        customComponents: portfolioCustomComponents,
+      config={{
+        runtime: portfolioRuntimeConfig,
+        custom: portfolioCustomComponents,
       }}
-      additionalComponents={additionalComponents}
+      overrides={overrides}
     />
   );
 }
-

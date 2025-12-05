@@ -13,24 +13,24 @@ import {
   extractClassName,
   extractMermaidCode,
 } from "@/utils/hast";
-import { isExternalUrl } from "@srf/ui";
-import type { MDXRuntimeConfig, SerializeConfig } from "@srf/ui";
-import { createDefaultSerializeConfig } from "@srf/ui";
+import { isExternalLink } from "@srf/ui";
+import type { RuntimeConfig, SerializeOptions } from "@srf/ui";
+import { createDefaultSerializeOptions } from "@srf/ui";
 
 /**
- * 순수 함수: 이미지 소스 처리
+ * 이미지 소스 처리
  */
-const processImageSource = (src: string, appName: string): string => {
-  if (isExternalUrl(src)) return src;
+function processImageSource(src: string, appName: string): string {
+  if (isExternalLink(src)) return src;
   
   const isDevelopment = import.meta.env.MODE === "development";
   return imageSource(src, appName as "portfolio", { isDevelopment });
-};
+}
 
 /**
- * 순수 함수: 런타임 설정 생성
+ * 런타임 설정
  */
-export const portfolioRuntimeConfig: MDXRuntimeConfig = {
+export const portfolioRuntimeConfig: RuntimeConfig = {
   LinkComponent: Link,
   processImageSource,
   appName: "portfolio",
@@ -87,10 +87,10 @@ export function sanitizeMdxSource(src: string): string {
 }
 
 /**
- * 순수 함수: Serialize 설정 생성
+ * Serialize 옵션
  */
-export const portfolioSerializeConfig: SerializeConfig = {
-  ...createDefaultSerializeConfig(),
+export const portfolioSerializeOptions: SerializeOptions = {
+  ...createDefaultSerializeOptions(),
   remarkPlugins: [remarkGfm],
   rehypePlugins: [
     rehypeSlug,

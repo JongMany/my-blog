@@ -2,12 +2,12 @@ import { serialize as serializeMDX } from "next-mdx-remote/serialize";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
-import type { SerializeConfig } from "../../types";
+import type { SerializeOptions } from "../../types";
 
 /**
- * 순수 함수: 기본 serialize 설정 생성
+ * 기본 serialize 옵션 생성
  */
-export function createDefaultSerializeConfig(): SerializeConfig {
+export function createDefaultSerializeOptions(): SerializeOptions {
   return {
     rehypePlugins: [
       rehypeSlug,
@@ -27,18 +27,17 @@ export function createDefaultSerializeConfig(): SerializeConfig {
 }
 
 /**
- * 순수 함수: MDX 소스를 serialize
+ * MDX 콘텐츠 시리얼라이즈
  */
-export async function serialize(
-  source: string,
-  config: SerializeConfig
-) {
-  const sanitizedSource = config.sanitizeSource?.(source) ?? source;
+export async function serialize(content: string, options: SerializeOptions) {
+  const sanitized = options.sanitizeSource?.(content) ?? content;
 
-  return serializeMDX(sanitizedSource, {
+  return serializeMDX(sanitized, {
     mdxOptions: {
-      remarkPlugins: config.remarkPlugins ?? [],
-      rehypePlugins: config.rehypePlugins ?? [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      remarkPlugins: (options.remarkPlugins ?? []) as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rehypePlugins: (options.rehypePlugins ?? []) as any,
     },
   });
 }

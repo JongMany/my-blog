@@ -1,2 +1,2 @@
-export { isExternalUrl, withRuntimeConfig } from "./utils";
+export { isExternalLink, injectRuntimeConfig } from "./utils";
 

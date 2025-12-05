@@ -1,31 +1,31 @@
 import { Link } from "react-router-dom";
 import { imageSource } from "@mfe/shared";
-import { isExternalUrl } from "@srf/ui";
-import type { MDXRuntimeConfig, SerializeConfig } from "@srf/ui";
-import { createDefaultSerializeConfig } from "@srf/ui";
+import { isExternalLink } from "@srf/ui";
+import type { RuntimeConfig, SerializeOptions } from "@srf/ui";
+import { createDefaultSerializeOptions } from "@srf/ui";
 
 /**
- * 순수 함수: 이미지 소스 처리
+ * 이미지 소스 처리
  */
-const processImageSource = (src: string, appName: string): string => {
-  if (isExternalUrl(src)) return src;
+function processImageSource(src: string, appName: string): string {
+  if (isExternalLink(src)) return src;
   const isDevelopment = import.meta.env.MODE === "development";
   return imageSource(src, appName as "blog", { isDevelopment });
-};
+}
 
 /**
- * 순수 함수: 런타임 설정 생성
+ * 런타임 설정
  */
-export const blogRuntimeConfig: MDXRuntimeConfig = {
+export const blogRuntimeConfig: RuntimeConfig = {
   LinkComponent: Link,
   processImageSource,
   appName: "blog",
 };
 
 /**
- * 순수 함수: Serialize 설정 생성
+ * Serialize 옵션
  */
-export const blogSerializeConfig: SerializeConfig = {
-  ...createDefaultSerializeConfig(),
+export const blogSerializeOptions: SerializeOptions = {
+  ...createDefaultSerializeOptions(),
 };
 

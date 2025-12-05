@@ -2,21 +2,13 @@ import { MDX } from "@srf/ui";
 import { blogRuntimeConfig } from "./blog-mdx-config";
 import { blogCustomComponents } from "./blog-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
-import type { ComponentType } from "react";
+import type { ComponentMap } from "@srf/ui";
 
-/**
- * Frontmatter 데이터 타입
- * portfolio와 일관성을 위해 별도 타입으로 정의
- */
 export type FrontmatterData = Record<string, unknown>;
 
 interface BlogMDXProps
   extends Omit<MDXRemoteProps, "components" | "frontmatter" | "scope"> {
-  /**
-   * 추가로 주입할 컴포넌트 맵
-   * 기존 blogCustomComponents에 병합됩니다.
-   */
-  additionalComponents?: Record<string, ComponentType<any>>;
+  overrides?: ComponentMap;
   frontmatter?: FrontmatterData;
   scope?: Record<string, unknown>;
 }
@@ -24,7 +16,7 @@ interface BlogMDXProps
 export function BlogMDX({
   frontmatter,
   scope,
-  additionalComponents,
+  overrides,
   ...props
 }: BlogMDXProps) {
   return (
@@ -32,11 +24,11 @@ export function BlogMDX({
       {...props}
       frontmatter={frontmatter ?? {}}
       scope={scope ?? {}}
-      componentMapOptions={{
-        runtimeConfig: blogRuntimeConfig,
-        customComponents: blogCustomComponents,
+      config={{
+        runtime: blogRuntimeConfig,
+        custom: blogCustomComponents,
       }}
-      additionalComponents={additionalComponents}
+      overrides={overrides}
     />
   );
 }

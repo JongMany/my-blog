@@ -1,11 +1,13 @@
 export { MDX } from "./MDX";
 export { useSerializedMDX } from "./hooks/use-serialized-mdx";
-export { serialize, createDefaultSerializeConfig } from "./lib/serializer/serialize";
-export { createMDXComponentMap, useMDXComponentMap } from "./lib/factory/create-component-map";
-export { isExternalUrl, withRuntimeConfig } from "./lib/utils";
+export { serialize, createDefaultSerializeOptions } from "./lib/serializer/serialize";
+export { createComponentMap, useComponentMap } from "./lib/factory/create-component-map";
+export { isExternalLink, injectRuntimeConfig } from "./lib/utils";
 export type {
-  MDXRuntimeConfig,
-  SerializeConfig,
-  ComponentMapOptions,
+  RuntimeConfig,
+  SerializeOptions,
+  ComponentMapConfig,
+  ComponentMap,
+  LinkProps,
 } from "./types";
 

@@ -1,10 +1,10 @@
-import type { MDXRuntimeConfig } from "../../../types";
-import { isExternalUrl } from "../../utils";
+import type { RuntimeConfig } from "../../../types";
+import { isExternalLink } from "../../utils";
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href?: string;
   children: React.ReactNode;
-  runtimeConfig: MDXRuntimeConfig;
+  runtimeConfig: RuntimeConfig;
 }
 
 /**
@@ -52,8 +52,7 @@ const InternalLink = ({
 export function Link(props: LinkProps) {
   const { href } = props;
   
-  // 순수 함수로 외부 링크 여부 판단
-  return isExternalUrl(href) ? (
+  return isExternalLink(href) ? (
     <ExternalLink {...props} />
   ) : (
     <InternalLink {...props} />

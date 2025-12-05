@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
-import type { MDXRuntimeConfig } from "../../../types";
+import type { RuntimeConfig } from "../../../types";
 import { createImageStyle } from "./image-style";
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -9,7 +9,7 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   figcaption?: string;
   width?: number | string;
   height?: number | string;
-  runtimeConfig: MDXRuntimeConfig;
+  runtimeConfig: RuntimeConfig;
 }
 
 export function Image({
