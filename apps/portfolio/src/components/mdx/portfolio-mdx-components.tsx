@@ -1,4 +1,4 @@
-import { Image, Video, Mermaid, MDXLink } from "@/components/mdx/custom";
+import { Mermaid, MDXLink } from "@/components/mdx/custom";
 import {
   createHeading,
   Paragraph,
@@ -23,10 +23,7 @@ import {
 
 // Portfolio 특화 컴포넌트 맵
 export const portfolioCustomComponents = {
-  Image,
-  img: Image,
   Link: MDXLink,
-  Video,
   Mermaid,
   h1: createHeading("h1"),
   h2: createHeading("h2"),
@@ -53,4 +50,3 @@ export const portfolioCustomComponents = {
   div: Div,
   code: Code,
 };
-

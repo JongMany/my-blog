@@ -62,13 +62,3 @@ export interface SerializeOptions {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ComponentMap = Record<string, ComponentType<any>>;
-
-/**
- * 컴포넌트 맵 생성 설정
- */
-export interface ComponentMapConfig {
-  /** 내부 링크를 렌더링하는 컴포넌트 */
-  linkComponent: ComponentType<LinkProps>;
-  runtime: RuntimeConfig;
-  custom?: ComponentMap;
-}

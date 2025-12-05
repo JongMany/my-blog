@@ -1,4 +1,5 @@
 import { MDX } from "@srf/ui";
+import { Image as BaseImage, Video, Link as BaseLink } from "@srf/ui";
 import { blogRuntimeConfig, blogLinkComponent } from "./blog-mdx-config";
 import { blogCustomComponents } from "./blog-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
@@ -8,28 +9,38 @@ export type FrontmatterData = Record<string, unknown>;
 
 interface BlogMDXProps
   extends Omit<MDXRemoteProps, "components" | "frontmatter" | "scope"> {
-  overrides?: ComponentMap;
   frontmatter?: FrontmatterData;
   scope?: Record<string, unknown>;
 }
 
-export function BlogMDX({
-  frontmatter,
-  scope,
-  overrides,
-  ...props
-}: BlogMDXProps) {
+const BlogImage = (props: React.ComponentProps<typeof BaseImage>) => (
+  <BaseImage
+    {...props}
+    processImageSource={blogRuntimeConfig.processImageSource}
+    appName={blogRuntimeConfig.appName}
+  />
+);
+
+const BlogLink = (props: React.ComponentProps<typeof BaseLink>) => (
+  <BaseLink {...props} linkComponent={blogLinkComponent} />
+);
+
+export function BlogMDX({ frontmatter, scope, ...props }: BlogMDXProps) {
+  const components: ComponentMap = {
+    Image: BlogImage,
+    img: BlogImage,
+    Video,
+    Link: BlogLink,
+    a: BlogLink,
+    ...blogCustomComponents,
+  };
+
   return (
     <MDX
       {...props}
       frontmatter={frontmatter ?? {}}
       scope={scope ?? {}}
-      config={{
-        linkComponent: blogLinkComponent,
-        runtime: blogRuntimeConfig,
-        custom: blogCustomComponents,
-      }}
-      overrides={overrides}
+      components={components}
     />
   );
 }

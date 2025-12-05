@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
-import type { RuntimeConfig } from "../../../types";
 import { createImageStyle } from "./image-style";
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -9,7 +8,8 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   figcaption?: string;
   width?: number | string;
   height?: number | string;
-  runtimeConfig: RuntimeConfig;
+  processImageSource?: (src: string, appName: string) => string;
+  appName?: string;
 }
 
 export function Image({
@@ -21,13 +21,13 @@ export function Image({
   width,
   height,
   className,
-  runtimeConfig,
+  processImageSource,
+  appName = "portfolio",
   ...props
 }: ImageProps) {
   const [opened, setOpened] = useState(false);
-  const processedSrc = src
-    ? runtimeConfig.processImageSource(src, runtimeConfig.appName)
-    : undefined;
+  const processedSrc =
+    src && processImageSource ? processImageSource(src, appName) : src;
 
   if (!processedSrc) return null;
 
