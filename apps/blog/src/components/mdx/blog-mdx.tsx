@@ -3,9 +3,7 @@ import { Image as BaseImage, Video, Link as BaseLink } from "@srf/ui";
 import { blogRuntimeConfig, blogLinkComponent } from "./blog-mdx-config";
 import { blogCustomComponents } from "./blog-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
-import type { ComponentMap } from "@srf/ui";
-
-export type FrontmatterData = Record<string, unknown>;
+import type { ComponentMap, FrontmatterData } from "@srf/ui";
 
 interface BlogMDXProps
   extends Omit<MDXRemoteProps, "components" | "frontmatter" | "scope"> {

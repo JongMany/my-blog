@@ -1,2 +1,1 @@
-export type { FrontmatterData } from "./lib/types";
-export { sanitizeMdxSource } from "./lib/serialize";
+export type { FrontmatterData } from "@srf/ui";

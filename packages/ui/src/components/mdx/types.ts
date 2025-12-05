@@ -62,3 +62,9 @@ export interface SerializeOptions {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ComponentMap = Record<string, ComponentType<any>>;
+
+/**
+ * Frontmatter 데이터 타입
+ * MDX 파일의 frontmatter에서 추출된 메타데이터를 나타냅니다.
+ */
+export type FrontmatterData = Record<string, unknown>;

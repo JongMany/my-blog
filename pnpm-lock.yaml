@@ -716,6 +716,9 @@ importers:
       '@turbo/gen':
         specifier: ^2.5.0
         version: 2.5.0(@types/node@22.15.3)(typescript@5.8.2)
+      '@types/hast':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
@@ -734,6 +737,9 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
+      unist-util-visit:
+        specifier: ^5.0.0
+        version: 5.0.0
 
   packages/utils:
     devDependencies:

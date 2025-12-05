@@ -3,8 +3,7 @@ import { Video } from "@srf/ui";
 import { Image } from "./custom";
 import { portfolioCustomComponents } from "./portfolio-mdx-components";
 import type { MDXRemoteProps } from "next-mdx-remote";
-import type { FrontmatterData } from "./lib/types";
-import type { ComponentMap } from "@srf/ui";
+import type { ComponentMap, FrontmatterData } from "@srf/ui";
 
 interface PortfolioMDXProps
   extends Omit<MDXRemoteProps, "components" | "frontmatter" | "scope"> {

@@ -50,5 +50,6 @@ export interface TranslateState {
   y: number;
 }
 
-export type FrontmatterData = Record<string, unknown>;
+// FrontmatterData는 @srf/ui에서 import하세요
+// export type FrontmatterData = Record<string, unknown>;
 

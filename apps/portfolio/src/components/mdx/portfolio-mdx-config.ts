@@ -1,19 +1,9 @@
 import { Link } from "react-router-dom";
 import { imageSource } from "@mfe/shared";
 import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
-import type { Root, Element, Properties } from "hast";
-import { visit } from "unist-util-visit";
-import {
-  isElement,
-  isImageElement,
-  isMermaidCodeBlock,
-  extractClassName,
-  extractMermaidCode,
-} from "@/utils/hast";
-import { isExternalLink } from "@srf/ui";
+import type { Element } from "hast";
+import { isExternalLink, rehypeUnwrapImages, rehypeSkipMermaid } from "@srf/ui";
 import type { RuntimeConfig, SerializeOptions } from "@srf/ui";
 import { createDefaultSerializeOptions } from "@srf/ui";
 
@@ -40,48 +30,6 @@ export const portfolioRuntimeConfig: RuntimeConfig = {
  */
 export const portfolioLinkComponent = Link;
 
-const MERMAID_DEFAULT_WIDTH = "min(600px, 100%)";
-
-function rehypeUnwrapImages() {
-  return (tree: Root) => {
-    visit(tree, "element", (node) => {
-      if (
-        node.tagName === "p" &&
-        node.children.some(
-          (child): child is Element => isElement(child) && isImageElement(child),
-        )
-      ) {
-        node.tagName = "div";
-      }
-    });
-  };
-}
-
-function rehypeSkipMermaid() {
-  return (tree: Root) => {
-    visit(tree, "element", (node) => {
-      if (node.tagName !== "pre") return;
-      const codeChild = node.children.find(
-        (child): child is Element => isElement(child) && child.tagName === "code",
-      );
-      if (!codeChild?.properties) return;
-      const classStr = extractClassName(codeChild.properties.className);
-      if (!isMermaidCodeBlock(classStr)) return;
-      const mermaidCode = extractMermaidCode(codeChild.children);
-      if (!mermaidCode) return;
-      node.tagName = "div";
-      const mermaidProperties: Properties = {
-        "data-mermaid": "true",
-        "data-mermaid-code": mermaidCode,
-        "data-mermaid-width": MERMAID_DEFAULT_WIDTH,
-        className: ["mermaid-wrapper"],
-      };
-      node.properties = mermaidProperties;
-      node.children = [];
-    });
-  };
-}
-
 export function sanitizeMdxSource(src: string): string {
   return src
     .replace(/^\uFEFF/, "")
@@ -93,21 +41,23 @@ export function sanitizeMdxSource(src: string): string {
 /**
  * Serialize 옵션
  */
+const defaultOptions = createDefaultSerializeOptions();
+// 기본 rehypePlugins에서 rehypePrettyCode를 제거하고 새로운 설정으로 교체
+const baseRehypePlugins = (defaultOptions.rehypePlugins ?? []).filter(
+  (plugin) => {
+    // rehypePrettyCode 플러그인 제거 (튜플 형태 또는 함수 형태 모두 체크)
+    if (Array.isArray(plugin)) {
+      return plugin[0] !== rehypePrettyCode;
+    }
+    return plugin !== rehypePrettyCode;
+  },
+);
+
 export const portfolioSerializeOptions: SerializeOptions = {
-  ...createDefaultSerializeOptions(),
+  ...defaultOptions,
   remarkPlugins: [remarkGfm],
   rehypePlugins: [
-    rehypeSlug,
-    [
-      rehypeAutolinkHeadings,
-      {
-        behavior: "wrap",
-        properties: {
-          className: ["anchor"],
-          ariaLabel: "anchor",
-        },
-      },
-    ],
+    ...baseRehypePlugins,
     rehypeUnwrapImages,
     rehypeSkipMermaid,
     [
