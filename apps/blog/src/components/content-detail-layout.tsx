@@ -2,7 +2,7 @@ import { useParams, useLocation, Link } from "react-router-dom";
 import type { BaseMeta, ContentItem } from "@/types/contents/common";
 import { extractDateFromMeta, formatDate, imageSource } from "@mfe/shared";
 import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
-import { MDX } from "@/components/mdx";
+import { BlogMDX } from "@/components/mdx/blog-mdx";
 import TableOfContents from "@/components/table-of-contents";
 import Title from "@/components/title";
 import Summary from "@/components/summary";
@@ -199,7 +199,10 @@ function ContentDetailView<T extends BaseMeta>({
             </div>
             {renderBeforeContent?.(item)}
             <div className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-600 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 dark:prose-blockquote:text-gray-400">
-              <MDX compiledSource={compiledSource} frontmatter={item.meta} />
+              <BlogMDX
+                compiledSource={compiledSource}
+                frontmatter={item.meta}
+              />
             </div>
             {renderAfterContent?.(item)}
             <div className="mt-12">

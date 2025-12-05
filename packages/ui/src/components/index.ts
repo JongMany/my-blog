@@ -5,3 +5,4 @@ export * from "./SEO";
 export * from "./cursor-tooltip";
 export * from "./inline-tooltip";
 export * from "./loading";
+export * from "./mdx";

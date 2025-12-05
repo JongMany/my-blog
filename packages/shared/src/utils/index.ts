@@ -4,3 +4,4 @@ export * from "./jsonp";
 export * from "./analytics";
 export * from "./frontmatter";
 export * from "./date";
+export * from "./functional";
