@@ -12,7 +12,13 @@ import type { SerializeConfig } from "../types";
 export function useSerializedMDX(content: string, config: SerializeConfig) {
   const serializedPromise = useMemo(
     () => serialize(content, config),
-    [content, config]
+    // config 객체의 참조 동일성 문제를 피하기 위해 개별 속성 사용
+    [
+      content,
+      config.remarkPlugins,
+      config.rehypePlugins,
+      config.sanitizeSource,
+    ]
   );
   const { compiledSource } = use(serializedPromise);
   

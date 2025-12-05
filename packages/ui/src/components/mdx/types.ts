@@ -41,6 +41,5 @@ export interface SerializeConfig {
 export interface ComponentMapOptions {
   runtimeConfig: MDXRuntimeConfig;
   customComponents?: Record<string, ComponentType<any>>;
-  enableMermaid?: boolean;
 }
 

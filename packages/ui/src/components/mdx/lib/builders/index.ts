@@ -1,3 +1,3 @@
-export { RuntimeConfigBuilder } from "./runtime-config-builder";
-export { SerializeConfigBuilder } from "./serialize-config-builder";
+export { createRuntimeConfig } from "./create-runtime-config";
+export { createSerializeConfig, mergeSerializeConfig } from "./create-serialize-config";
 

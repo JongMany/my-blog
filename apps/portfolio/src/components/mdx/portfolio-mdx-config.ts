@@ -15,7 +15,7 @@ import {
 } from "@/utils/hast";
 import { isExternalUrl } from "@srf/ui";
 import type { MDXRuntimeConfig, SerializeConfig } from "@srf/ui";
-import { createDefaultSerializeConfig, RuntimeConfigBuilder, SerializeConfigBuilder } from "@srf/ui";
+import { createDefaultSerializeConfig, createRuntimeConfig, mergeSerializeConfig } from "@srf/ui";
 
 /**
  * 순수 함수: 이미지 소스 처리
@@ -28,13 +28,13 @@ const processImageSource = (src: string, appName: string): string => {
 };
 
 /**
- * Builder Pattern을 사용한 런타임 설정 생성
+ * 순수 함수: 런타임 설정 생성
  */
-export const portfolioRuntimeConfig: MDXRuntimeConfig = RuntimeConfigBuilder.create()
-  .withLinkComponent(Link)
-  .withImageSourceProcessor(processImageSource)
-  .withAppName("portfolio")
-  .build();
+export const portfolioRuntimeConfig: MDXRuntimeConfig = createRuntimeConfig({
+  LinkComponent: Link,
+  processImageSource,
+  appName: "portfolio",
+});
 
 const MERMAID_DEFAULT_WIDTH = "min(600px, 100%)";
 
@@ -87,27 +87,43 @@ export function sanitizeMdxSource(src: string): string {
 }
 
 /**
- * Builder Pattern을 사용한 Serialize 설정 생성
- * 함수형 프로그래밍: 플러그인을 순차적으로 추가
+ * 순수 함수: Serialize 설정 생성
  */
-export const portfolioSerializeConfig: SerializeConfig = SerializeConfigBuilder.fromDefaults(
-  createDefaultSerializeConfig()
-)
-  .addRemarkPlugin(remarkGfm)
-  .addRehypePlugin(rehypeUnwrapImages)
-  .addRehypePlugin(rehypeSkipMermaid)
-  .addRehypePlugin(rehypePrettyCode, {
-    theme: "dark-plus",
-    filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
-    onVisitHighlightedLine(node: Element) {
-      if (node.properties && Array.isArray(node.properties.className)) {
-        node.properties.className.push("highlighted");
-      }
-    },
-    onVisitHighlightedWord(node: Element) {
-      node.properties.className = ["word"];
-    },
-  })
-  .withSanitizeSource(sanitizeMdxSource)
-  .build();
+export const portfolioSerializeConfig: SerializeConfig = mergeSerializeConfig(
+  createDefaultSerializeConfig(),
+  {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: "wrap",
+          properties: {
+            className: ["anchor"],
+            ariaLabel: "anchor",
+          },
+        },
+      ],
+      rehypeUnwrapImages,
+      rehypeSkipMermaid,
+      [
+        rehypePrettyCode,
+        {
+          theme: "dark-plus",
+          filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
+          onVisitHighlightedLine(node: Element) {
+            if (node.properties && Array.isArray(node.properties.className)) {
+              node.properties.className.push("highlighted");
+            }
+          },
+          onVisitHighlightedWord(node: Element) {
+            node.properties.className = ["word"];
+          },
+        },
+      ],
+    ],
+    sanitizeSource: sanitizeMdxSource,
+  }
+);
 
