@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import type { Element } from "hast";
 import { isExternalLink, rehypeUnwrapImages, rehypeSkipMermaid } from "@srf/ui";
-import type { RuntimeConfig, SerializeOptions } from "@srf/ui";
+import type { RuntimeConfig, SerializeOptions, RehypePlugin } from "@srf/ui";
 import { createDefaultSerializeOptions } from "@srf/ui";
 
 /**
@@ -12,7 +12,7 @@ import { createDefaultSerializeOptions } from "@srf/ui";
  */
 function processImageSource(src: string, appName: string): string {
   if (isExternalLink(src)) return src;
-  
+
   const isDevelopment = import.meta.env.MODE === "development";
   return imageSource(src, appName as "portfolio", { isDevelopment });
 }
@@ -30,6 +30,10 @@ export const portfolioRuntimeConfig: RuntimeConfig = {
  */
 export const portfolioLinkComponent = Link;
 
+/**
+ * MDX 소스 정제 함수
+ * BOM 제거, 줄바꿈 정규화, 중괄호 이스케이프 처리
+ */
 export function sanitizeMdxSource(src: string): string {
   return src
     .replace(/^\uFEFF/, "")
@@ -39,18 +43,43 @@ export function sanitizeMdxSource(src: string): string {
 }
 
 /**
+ * 플러그인 배열에서 특정 플러그인을 제거하는 유틸리티
+ */
+function removePlugin(
+  plugins: RehypePlugin[],
+  targetPlugin: unknown,
+): RehypePlugin[] {
+  return plugins.filter((plugin) => {
+    if (Array.isArray(plugin)) {
+      return plugin[0] !== targetPlugin;
+    }
+    return plugin !== targetPlugin;
+  });
+}
+
+/**
+ * rehypePrettyCode 설정
+ */
+const rehypePrettyCodeOptions = {
+  theme: "dark-plus",
+  filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
+  onVisitHighlightedLine(node: Element) {
+    if (node.properties && Array.isArray(node.properties.className)) {
+      node.properties.className.push("highlighted");
+    }
+  },
+  onVisitHighlightedWord(node: Element) {
+    node.properties.className = ["word"];
+  },
+} as const;
+
+/**
  * Serialize 옵션
  */
 const defaultOptions = createDefaultSerializeOptions();
-// 기본 rehypePlugins에서 rehypePrettyCode를 제거하고 새로운 설정으로 교체
-const baseRehypePlugins = (defaultOptions.rehypePlugins ?? []).filter(
-  (plugin) => {
-    // rehypePrettyCode 플러그인 제거 (튜플 형태 또는 함수 형태 모두 체크)
-    if (Array.isArray(plugin)) {
-      return plugin[0] !== rehypePrettyCode;
-    }
-    return plugin !== rehypePrettyCode;
-  },
+const baseRehypePlugins = removePlugin(
+  defaultOptions.rehypePlugins ?? [],
+  rehypePrettyCode,
 );
 
 export const portfolioSerializeOptions: SerializeOptions = {
@@ -60,22 +89,7 @@ export const portfolioSerializeOptions: SerializeOptions = {
     ...baseRehypePlugins,
     rehypeUnwrapImages,
     rehypeSkipMermaid,
-    [
-      rehypePrettyCode,
-      {
-        theme: "dark-plus",
-        filterMetaString: (string: string) => string.replace(/filename="[^"]*"/, ""),
-        onVisitHighlightedLine(node: Element) {
-          if (node.properties && Array.isArray(node.properties.className)) {
-            node.properties.className.push("highlighted");
-          }
-        },
-        onVisitHighlightedWord(node: Element) {
-          node.properties.className = ["word"];
-        },
-      },
-    ],
+    [rehypePrettyCode, rehypePrettyCodeOptions],
   ],
   sanitizeSource: sanitizeMdxSource,
 };
-

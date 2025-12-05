@@ -13,4 +13,5 @@ export type {
   ComponentMap,
   LinkProps,
   FrontmatterData,
+  RehypePlugin,
 } from "./types";
