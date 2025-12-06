@@ -27,14 +27,14 @@ export function filterProjects(
 
   // 검색어 필터링
   if (searchQuery.trim()) {
-    const query = searchQuery.trim();
+    const normalizedQuery = searchQuery.trim();
     result = result.filter((project) => {
-      const target = [
+      const searchableText = [
         project.title,
         project.summary,
         project.project ?? "",
       ].join(" ");
-      return contains(target, query, { ignoreCase: true });
+      return contains(searchableText, normalizedQuery, { ignoreCase: true });
     });
   }
 

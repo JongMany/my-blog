@@ -21,17 +21,17 @@ export function useProjectFilters(
   const [searchParams, setSearchParams] = useSearchParams();
 
   // URL 파라미터에서 읽은 값들
-  const urlSearchQuery = searchParams.get(SEARCH_PARAM_KEY) ?? "";
+  const searchQueryFromUrl = searchParams.get(SEARCH_PARAM_KEY) ?? "";
   const selectedTag = searchParams.get(TAG_PARAM_KEY) ?? "";
   const selectedProject = searchParams.get(PROJECT_PARAM_KEY) ?? "";
 
   // 검색 입력을 위한 로컬 상태 (실시간 필터링용)
-  const [searchInputValue, setSearchInputValue] = useState(urlSearchQuery);
+  const [searchInputValue, setSearchInputValue] = useState(searchQueryFromUrl);
 
   // URL 파라미터가 변경되면 로컬 상태 동기화
   useEffect(() => {
-    setSearchInputValue(urlSearchQuery);
-  }, [urlSearchQuery]);
+    setSearchInputValue(searchQueryFromUrl);
+  }, [searchQueryFromUrl]);
 
   // URL 파라미터 업데이트 헬퍼
   const updateSearchParam = useCallback(
@@ -76,18 +76,20 @@ export function useProjectFilters(
 
   // 모든 필터 초기화
   const clearAllFilters = useCallback(() => {
+    const filterParamKeys = [
+      SEARCH_PARAM_KEY,
+      TAG_PARAM_KEY,
+      PROJECT_PARAM_KEY,
+    ];
+
     setSearchParams(
       (prevParams) => {
         const newParams = new URLSearchParams(prevParams);
-        newParams.delete(SEARCH_PARAM_KEY);
-        newParams.delete(TAG_PARAM_KEY);
-        newParams.delete(PROJECT_PARAM_KEY);
+        filterParamKeys.forEach((key) => newParams.delete(key));
         return newParams;
       },
       { replace: true },
     );
-    // URL 파라미터가 삭제되면 useEffect가 자동으로 searchInputValue를 업데이트함
-    // 하지만 즉시 반영을 위해 여기서도 설정
     setSearchInputValue("");
   }, [setSearchParams]);
 

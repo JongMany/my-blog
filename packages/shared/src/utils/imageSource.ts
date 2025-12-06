@@ -6,7 +6,7 @@ type HostOptions = {
   isDevelopment?: boolean;
 };
 
-const mainHost = (app: AppPrefix, options?: HostOptions) => {
+const getHostUrl = (app: AppPrefix, options?: HostOptions): string => {
   const { isDevelopment = true } = options ?? {};
 
   return isDevelopment ? DEV_HOST_URLS[app] : PROD_HOST_URLS[app];
@@ -27,8 +27,8 @@ const mainHost = (app: AppPrefix, options?: HostOptions) => {
  */
 export const imageSource =
   (prefix: "portfolio" | "blog" | "home" | "resume", options?: HostOptions) =>
-  (src: string) => {
-    const hostUrl = mainHost(prefix, options);
+  (src: string): string => {
+    const hostUrl = getHostUrl(prefix, options);
 
     return `${hostUrl}${src}`;
   };
@@ -37,11 +37,9 @@ export function assetUrl(
   path: string,
   app: AppPrefix = "home",
   options?: HostOptions,
-) {
-  const host = mainHost(app, options);
+): string {
+  const hostUrl = getHostUrl(app, options);
+  const normalizedPath = path.replace(/^\/+/, "");
 
-  const clean = path.replace(/^\/+/, ""); // path 맨 앞의 / 제거
-  // console.log(host, clean);
-  // 중복 슬래시 정리
-  return `${host}/${clean}`;
+  return `${hostUrl}/${normalizedPath}`;
 }

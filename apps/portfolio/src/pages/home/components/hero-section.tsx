@@ -1,21 +1,21 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
-import { fadeUp, easeOutCb } from "@/utils/motion";
+import { fadeUp } from "@/utils/motion";
 
 export function HeroSection() {
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.5]);
+  const backgroundYOffset = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const backgroundOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.5]);
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 md:p-8">
       {/* 배경 그라데이션 효과 - 미묘하게 */}
       <motion.div
-        style={{ y, opacity }}
+        style={{ y: backgroundYOffset, opacity: backgroundOpacity }}
         className="pointer-events-none absolute -right-20 -top-20 size-[320px] rounded-full bg-[conic-gradient(from_0deg,rgba(59,130,246,.12),transparent_60%)] blur-3xl"
       />
       <motion.div
-        style={{ opacity }}
+        style={{ opacity: backgroundOpacity }}
         className="pointer-events-none absolute -left-16 -bottom-16 size-[240px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,.08),transparent_70%)] blur-3xl"
       />
 
