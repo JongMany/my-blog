@@ -16,10 +16,12 @@ export function createProcessImageSource(
 ): (src: string, appName: AppName) => string {
   const isDevelopment = options?.isDevelopment ?? false;
 
+  const getImageSource = imageSource(appName, { isDevelopment });
+
   return (src: string, _appName: AppName): string => {
     if (isExternalLink(src)) return src;
 
-    return imageSource(src, appName, { isDevelopment });
+    return getImageSource(src);
   };
 }
 

@@ -14,9 +14,9 @@ export default function ResumeApp() {
           path="*"
           element={
             <NotFoundSection
-              illustrationSrc={imageSource("/404.svg", "resume", {
+              illustrationSrc={imageSource("resume", {
                 isDevelopment: import.meta.env.MODE === "development",
-              })}
+              })("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/resume"

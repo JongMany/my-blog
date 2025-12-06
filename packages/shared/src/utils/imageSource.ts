@@ -12,16 +12,26 @@ const mainHost = (app: AppPrefix, options?: HostOptions) => {
   return isDevelopment ? DEV_HOST_URLS[app] : PROD_HOST_URLS[app];
 };
 
-export const imageSource = (
-  src: string,
-  prefix: "portfolio" | "blog" | "home" | "resume",
-  // devUrl: string,
-  options?: HostOptions,
-) => {
-  const hostUrl = mainHost(prefix, options);
+/**
+ * 이미지 소스 URL을 생성하는 커링 함수
+ *
+ * @param prefix - 앱 이름 (portfolio, blog, home, resume)
+ * @param options - 호스트 옵션
+ * @returns 이미지 경로를 받아서 전체 URL을 반환하는 함수
+ *
+ * @example
+ * ```typescript
+ * const blogImageSource = imageSource("blog", { isDevelopment: true });
+ * const url = blogImageSource("/image.png"); // "http://localhost:3001/image.png"
+ * ```
+ */
+export const imageSource =
+  (prefix: "portfolio" | "blog" | "home" | "resume", options?: HostOptions) =>
+  (src: string) => {
+    const hostUrl = mainHost(prefix, options);
 
-  return `${hostUrl}${src}`;
-};
+    return `${hostUrl}${src}`;
+  };
 
 export function assetUrl(
   path: string,

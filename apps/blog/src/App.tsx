@@ -97,9 +97,9 @@ export default function BlogApp() {
             path="*"
             element={
               <NotFoundSection
-                illustrationSrc={imageSource("/404.svg", "blog", {
+                illustrationSrc={imageSource("blog", {
                   isDevelopment: import.meta.env.MODE === "development",
-                })}
+                })("/404.svg")}
                 renderLink={() => (
                   <Link
                     to="/blog/posts"

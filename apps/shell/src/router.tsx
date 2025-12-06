@@ -66,9 +66,9 @@ export const router = createBrowserRouter(
           path: "*",
           element: (
             <NotFoundSection
-              illustrationSrc={imageSource("/404.svg", "home", {
+              illustrationSrc={imageSource("home", {
                 isDevelopment: import.meta.env.MODE === "development",
-              })}
+              })("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/"

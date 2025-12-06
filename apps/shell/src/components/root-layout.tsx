@@ -46,7 +46,7 @@ export const DEFAULT_ACTIVE_LABEL = "Menu";
 export function getDefaultLogoConfig(): LogoConfig {
   const isDevelopment = import.meta.env.MODE === "development";
   return {
-    logoSrc: imageSource("/favicon.svg", "home", { isDevelopment }),
+    logoSrc: imageSource("home", { isDevelopment })("/favicon.svg"),
     alt: "방구석 코딩쟁이",
     text: "방구석 코딩쟁이",
   };

@@ -20,9 +20,9 @@ function App() {
           path="*"
           element={
             <NotFoundSection
-              illustrationSrc={imageSource("/404.svg", "portfolio", {
+              illustrationSrc={imageSource("portfolio", {
                 isDevelopment: import.meta.env.MODE === "development",
-              })}
+              })("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/portfolio"

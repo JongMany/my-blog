@@ -62,9 +62,9 @@ function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
   return (
     <motion.img
       {...fadeUp}
-      src={imageSource(profile.photoUrl, "resume", {
+      src={imageSource("resume", {
         isDevelopment: import.meta.env.MODE === "development",
-      })}
+      })(profile.photoUrl)}
       alt={`${profile.name} 프로필`}
       className={cn(
         "rounded-2xl object-cover border border-[var(--border)] flex-shrink-0",

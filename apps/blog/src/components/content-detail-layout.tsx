@@ -68,9 +68,9 @@ export function ContentDetailLayout<T extends BaseMeta>({
   if (!item) {
     return (
       <NotFoundSection
-        illustrationSrc={imageSource("/404.svg", "blog", {
+        illustrationSrc={imageSource("blog", {
           isDevelopment: import.meta.env.MODE === "development",
-        })}
+        })("/404.svg")}
         renderLink={() => (
           <Link
             to="/blog/posts"

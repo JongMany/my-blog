@@ -12,9 +12,9 @@ export function KeywordTooltip({ keyword, imageUrl }: KeywordTooltipProps) {
       content={
         <div>
           <img
-            src={imageSource(imageUrl || "", "resume", {
+            src={imageSource("resume", {
               isDevelopment: import.meta.env.MODE === "development",
-            })}
+            })(imageUrl || "")}
             alt={keyword}
             className={cn(
               "max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] min-h-48",
