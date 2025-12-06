@@ -1,9 +1,13 @@
 import React from "react";
 import { cn } from "@srf/ui";
+import { PROTOCOLS } from "@/constants/protocols";
 
 export function Anchor(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   const { href, target, rel, ...restProps } = props;
-  const isExternalLink = href?.startsWith("http://") || href?.startsWith("https://") || href?.startsWith("//");
+  const isExternalLink =
+    href?.startsWith(PROTOCOLS.HTTP) ||
+    href?.startsWith(PROTOCOLS.HTTPS) ||
+    href?.startsWith(PROTOCOLS.PROTOCOL_RELATIVE);
   const linkTarget = target ?? (isExternalLink ? "_blank" : undefined);
   const linkRel = rel ?? (isExternalLink ? "noopener noreferrer" : undefined);
 

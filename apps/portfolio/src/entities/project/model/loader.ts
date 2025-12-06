@@ -1,5 +1,6 @@
 import type { ProjectDocument } from "./types";
 import { createProjectDocument } from "./parser";
+import { FILE_PATHS } from "@/constants/file-paths";
 
 /**
  * 프로젝트 문서를 로드하고 캐싱하는 모듈
@@ -19,7 +20,7 @@ export function getDocuments(): ProjectDocument[] {
  */
 function loadProjectDocuments(): ProjectDocument[] {
   const modules = import.meta.glob<string>(
-    "../../../contents/projects/**/*.{md,mdx}",
+    FILE_PATHS.PROJECTS_CONTENT_PATTERN,
     {
       eager: true,
       query: "?raw",

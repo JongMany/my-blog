@@ -11,6 +11,7 @@ import {
   ProjectContent,
 } from "./components";
 import { MESSAGE_CONSTANTS } from "./constants/messages";
+import { FILE_PATHS } from "@/constants/file-paths";
 
 export default function ProjectDetail() {
   const { slug = "" } = useParams();
@@ -27,7 +28,7 @@ export default function ProjectDetail() {
   }, [portfolioIndex, slug]);
 
   if (!project) {
-    const illustrationSrc = getImageSource("/404.svg");
+    const illustrationSrc = getImageSource(FILE_PATHS.ERROR_ILLUSTRATION);
 
     return (
       <ErrorMessage

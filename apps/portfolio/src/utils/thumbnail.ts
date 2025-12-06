@@ -1,3 +1,6 @@
+import { FILE_PATHS } from "@/constants/file-paths";
+import { FILE_EXTENSIONS, IMAGE_EXTENSIONS } from "@/constants/file-extensions";
+
 /**
  * 썸네일 관련 유틸리티 함수들
  */
@@ -18,19 +21,18 @@ export const getThumbnailPath = (cover?: string): string => {
 
   const fileExtension = cover.split(".").pop()?.toLowerCase();
   if (!fileExtension) {
-    return `/projects/thumbnails/${cover}`;
+    return `${FILE_PATHS.THUMBNAIL_BASE}/${cover}`;
   }
 
-  if (fileExtension === "gif") {
-    return `/projects/thumbnails/gifs/${cover}`;
+  if (fileExtension === FILE_EXTENSIONS.GIF) {
+    return `${FILE_PATHS.THUMBNAIL_GIFS}/${cover}`;
   }
 
-  const imageExtensions = ["jpg", "jpeg", "png", "webp", "avif"];
-  if (imageExtensions.includes(fileExtension)) {
-    return `/projects/thumbnails/images/${cover}`;
+  if (IMAGE_EXTENSIONS.includes(fileExtension as typeof IMAGE_EXTENSIONS[number])) {
+    return `${FILE_PATHS.THUMBNAIL_IMAGES}/${cover}`;
   }
 
-  return `/projects/thumbnails/${cover}`;
+  return `${FILE_PATHS.THUMBNAIL_BASE}/${cover}`;
 };
 
 /**
@@ -55,5 +57,5 @@ export const getThumbnailAspectRatio = (aspectRatio?: string): string => {
  * 기본 썸네일 경로를 반환합니다.
  */
 export const getFallbackThumbnail = (): string => {
-  return "/projects/thumbnails/fallbacks/http_fallback_thumbnail.png";
+  return FILE_PATHS.FALLBACK_THUMBNAIL;
 };
