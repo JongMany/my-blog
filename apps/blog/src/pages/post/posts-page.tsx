@@ -14,7 +14,7 @@ export default function PostsPage() {
     return filterAndSortByDate(posts, {
       filters: [filterPublishedItems],
     });
-  }, [posts]);
+  }, [posts]) as typeof posts;
 
   return (
     <>

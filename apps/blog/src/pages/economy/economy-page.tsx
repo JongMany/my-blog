@@ -14,7 +14,7 @@ export default function EconomyPage() {
     return filterAndSortByDate(economies, {
       filters: [filterPublishedItems],
     });
-  }, [economies]);
+  }, [economies]) as typeof economies;
 
   return (
     <>

@@ -14,7 +14,7 @@ export default function RetrospectsPage() {
     return filterAndSortByDate(retrospects, {
       filters: [filterPublishedItems],
     });
-  }, [retrospects]);
+  }, [retrospects]) as typeof retrospects;
 
   return (
     <>

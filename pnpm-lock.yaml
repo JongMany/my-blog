@@ -576,6 +576,9 @@ importers:
 
   packages/shared:
     dependencies:
+      '@srf/utils':
+        specifier: workspace:*
+        version: link:../utils
       zustand:
         specifier: ^5.0.7
         version: 5.0.7(@types/react@19.1.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0))
@@ -652,6 +655,9 @@ importers:
       '@srf/tokens':
         specifier: workspace:*
         version: link:../tokens
+      '@srf/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
