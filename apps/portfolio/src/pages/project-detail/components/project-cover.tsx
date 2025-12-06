@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getImageSource } from "@/utils/get-image-source";
 import type { ProjectMeta } from "@/entities/project";
 import { getFallbackThumbnail } from "@/utils/thumbnail";
+import { MAX_COVER_IMAGE_WIDTH_PX } from "@/constants/business";
 
 interface ProjectCoverProps {
   project: ProjectMeta;
@@ -29,7 +30,7 @@ export function ProjectCover({ project }: ProjectCoverProps) {
         src={getImageSource(thumbnailSrc)}
         alt={project.coverAlt || project.title}
         className="h-auto rounded-lg"
-        style={{ width: "min(600px, 100%)" }}
+        style={{ width: `min(${MAX_COVER_IMAGE_WIDTH_PX}px, 100%)` }}
         onError={handleImageError}
       />
       {project.coverCaption && (

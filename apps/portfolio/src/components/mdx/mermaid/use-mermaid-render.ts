@@ -3,6 +3,10 @@ import mermaid from "mermaid/dist/mermaid.esm.min.mjs";
 import { generateMermaidId } from "./utils";
 import { normalizeMermaidCode } from "@/components/mdx/lib/utils";
 import type { ReactNode } from "react";
+import {
+  MERMAID_RENDER_DELAY_MS,
+  MERMAID_ROOT_NODE_INDEX,
+} from "@/constants/business";
 
 const MERMAID_CONFIG = {
   theme: "base" as const,
@@ -53,7 +57,10 @@ function applyMindmapStyles(svgElement: SVGElement, mermaidCode: string): void {
   if (!mermaidCode.trim().startsWith("mindmap")) return;
 
   svgElement.querySelectorAll("g.node").forEach((node, index) => {
-    const colors = index === 0 ? MINDMAP_COLORS.root : MINDMAP_COLORS.child;
+    const colors =
+      index === MERMAID_ROOT_NODE_INDEX
+        ? MINDMAP_COLORS.root
+        : MINDMAP_COLORS.child;
     const path = node.querySelector("path");
     const circle = node.querySelector("circle");
     const text = node.querySelector("text");
@@ -123,8 +130,7 @@ export function useMermaidRender(children: ReactNode) {
       }
     };
 
-    const renderDelay = 100;
-    const timer = setTimeout(renderMermaid, renderDelay);
+    const timer = setTimeout(renderMermaid, MERMAID_RENDER_DELAY_MS);
     return () => clearTimeout(timer);
   }, [mermaidCode]);
 
