@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, cn } from "@srf/ui";
 import { createImageStyle } from "./image-style";
+import type { AppName } from "../../../types";
+import { DEFAULT_APP_NAME } from "../../constants";
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   source?: string;
@@ -8,8 +10,8 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   figcaption?: string;
   width?: number | string;
   height?: number | string;
-  processImageSource?: (src: string, appName: string) => string;
-  appName?: string;
+  processImageSource?: (src: string, appName: AppName) => string;
+  appName?: AppName;
 }
 
 export function Image({
@@ -22,7 +24,7 @@ export function Image({
   height,
   className,
   processImageSource,
-  appName = "portfolio",
+  appName = DEFAULT_APP_NAME,
   ...props
 }: ImageProps) {
   const [opened, setOpened] = useState(false);

@@ -21,3 +21,4 @@ export type {
   RehypePlugin,
   AppName,
 } from "./types";
+export { APP_NAMES, DEFAULT_APP_NAME } from "./lib/constants";

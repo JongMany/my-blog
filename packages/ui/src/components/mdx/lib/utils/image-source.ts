@@ -10,7 +10,7 @@ import type { AppName } from "../../types";
  */
 export function createProcessImageSource(
   appName: AppName,
-): (src: string, _appName: AppName) => string {
+): (src: string, appName: AppName) => string {
   return (src: string, _appName: AppName): string => {
     if (isExternalLink(src)) return src;
 
