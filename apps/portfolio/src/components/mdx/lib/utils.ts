@@ -30,19 +30,19 @@ export function createImageStyle(
   height?: number | string,
 ): React.CSSProperties | undefined {
   if (!width && !height) return undefined;
-
+  
   const style: React.CSSProperties = {};
-
+  
   if (width) {
     const widthValue = typeof width === "number" ? `${width}px` : width;
     style.width = `min(${widthValue}, 100%)`;
   }
-
+  
   if (height) {
     const heightValue = typeof height === "number" ? `${height}px` : height;
     style.height = heightValue;
   }
-
+  
   return style;
 }
 

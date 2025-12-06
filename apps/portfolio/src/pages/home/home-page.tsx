@@ -1,7 +1,6 @@
 import { SEO } from "@srf/ui";
 import { usePortfolioIndex, selectTopProjects } from "@/entities/project";
 import { LoadingSpinner } from "@/components/common";
-import { SectionHeader } from "./components/section-header";
 import { HeroSection, SelectedProjects, ExperienceSection } from "./components";
 
 const SEO_PROPS = {

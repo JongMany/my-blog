@@ -17,13 +17,13 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
       <p className="text-lg text-[var(--muted-fg)] mb-4">{project.summary}</p>
 
       {project.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span key={tag} className="t-chip">
-              #{tag}
-            </span>
-          ))}
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {project.tags.map((tag) => (
+          <span key={tag} className="t-chip">
+            #{tag}
+          </span>
+        ))}
+      </div>
       )}
     </header>
   );

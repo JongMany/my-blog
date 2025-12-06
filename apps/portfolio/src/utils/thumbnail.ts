@@ -22,7 +22,7 @@ export const getThumbnailPath = (cover?: string): string => {
   const fileExtension = cover.split(".").pop()?.toLowerCase();
   if (!fileExtension) {
     return `${FILE_PATHS.THUMBNAIL_BASE}/${cover}`;
-  }
+    }
 
   if (fileExtension === FILE_EXTENSIONS.GIF) {
     return `${FILE_PATHS.THUMBNAIL_GIFS}/${cover}`;

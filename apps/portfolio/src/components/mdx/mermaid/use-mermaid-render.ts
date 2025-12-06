@@ -99,7 +99,7 @@ export function useMermaidRender(children: ReactNode) {
 
   useEffect(() => {
     if (!ref.current) return;
-
+    
     if (!hasMermaidBeenInitialized) {
       mermaid.initialize({ startOnLoad: false, ...MERMAID_CONFIG });
       hasMermaidBeenInitialized = true;

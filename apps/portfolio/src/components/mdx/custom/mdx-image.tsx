@@ -27,30 +27,30 @@ export function Image({
   );
 
   const imageElement = (
-    <img
-      alt={alt ?? ""}
-      src={processedSrc}
-      className={imageClassName}
-      style={createImageStyle(width, height)}
-      loading="lazy"
-      {...props}
-    />
+          <img
+            alt={alt ?? ""}
+            src={processedSrc}
+            className={imageClassName}
+            style={createImageStyle(width, height)}
+            loading="lazy"
+            {...props}
+          />
   );
 
   const dialogContent = (
-    <DialogContent
-      className="fixed left-1/2 top-1/2 z-50 flex h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center outline-none bg-transparent p-0 shadow-none max-w-none"
-      overlayClassName="bg-black/50"
-      hideClose
-    >
-      <DialogTitle className="sr-only">{alt ?? ""}</DialogTitle>
-      <img
-        alt={alt ?? ""}
-        src={processedSrc}
-        className="h-auto max-h-full w-auto max-w-full object-contain"
+        <DialogContent
+          className="fixed left-1/2 top-1/2 z-50 flex h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center outline-none bg-transparent p-0 shadow-none max-w-none"
+          overlayClassName="bg-black/50"
+          hideClose
+        >
+          <DialogTitle className="sr-only">{alt ?? ""}</DialogTitle>
+          <img
+            alt={alt ?? ""}
+            src={processedSrc}
+            className="h-auto max-h-full w-auto max-w-full object-contain"
         onClick={closeDialog}
-      />
-    </DialogContent>
+          />
+        </DialogContent>
   );
 
   const imageWithDialog = (
@@ -88,7 +88,7 @@ export function Image({
       {imageWithDialog}
       {metadataSection}
     </>
-  );
+    );
 
   return figcaption ? (
     <figure className={containerClassName}>{content}</figure>
