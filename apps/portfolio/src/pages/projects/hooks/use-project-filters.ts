@@ -10,10 +10,7 @@ import {
   getTagsForSelectedProject,
   isValidTagForProject,
 } from "@/pages/projects/utils/filter-helpers";
-
-const SEARCH_PARAM_KEY = "q";
-const TAG_PARAM_KEY = "tag";
-const PROJECT_PARAM_KEY = "proj";
+import { URL_PARAM_KEYS } from "@/constants/url-params";
 
 export function useProjectFilters(
   portfolioIndex: ProjectIndex | undefined,
@@ -21,9 +18,9 @@ export function useProjectFilters(
   const [searchParams, setSearchParams] = useSearchParams();
 
   // URL 파라미터에서 읽은 값들
-  const searchQueryFromUrl = searchParams.get(SEARCH_PARAM_KEY) ?? "";
-  const selectedTag = searchParams.get(TAG_PARAM_KEY) ?? "";
-  const selectedProject = searchParams.get(PROJECT_PARAM_KEY) ?? "";
+  const searchQueryFromUrl = searchParams.get(URL_PARAM_KEYS.SEARCH) ?? "";
+  const selectedTag = searchParams.get(URL_PARAM_KEYS.TAG) ?? "";
+  const selectedProject = searchParams.get(URL_PARAM_KEYS.PROJECT) ?? "";
 
   // 검색 입력을 위한 로컬 상태 (실시간 필터링용)
   const [searchInputValue, setSearchInputValue] = useState(searchQueryFromUrl);
@@ -70,16 +67,16 @@ export function useProjectFilters(
   // 선택된 태그가 새로운 프로젝트에 없으면 태그 초기화
   useEffect(() => {
     if (!isValidTagForProject(portfolioIndex, selectedProject, selectedTag)) {
-      updateSearchParam(TAG_PARAM_KEY);
+      updateSearchParam(URL_PARAM_KEYS.TAG);
     }
   }, [selectedProject, selectedTag, portfolioIndex, updateSearchParam]);
 
   // 모든 필터 초기화
   const clearAllFilters = useCallback(() => {
     const filterParamKeys = [
-      SEARCH_PARAM_KEY,
-      TAG_PARAM_KEY,
-      PROJECT_PARAM_KEY,
+      URL_PARAM_KEYS.SEARCH,
+      URL_PARAM_KEYS.TAG,
+      URL_PARAM_KEYS.PROJECT,
     ];
 
     setSearchParams(
@@ -104,12 +101,12 @@ export function useProjectFilters(
 
     // 액션
     setSearchText: setSearchInputValue,
-    commitSearch: (value: string) => updateSearchParam(SEARCH_PARAM_KEY, value),
-    setTag: (tag: string) => toggleSearchParam(TAG_PARAM_KEY, tag),
+    commitSearch: (value: string) => updateSearchParam(URL_PARAM_KEYS.SEARCH, value),
+    setTag: (tag: string) => toggleSearchParam(URL_PARAM_KEYS.TAG, tag),
     setProject: (project: string) =>
-      toggleSearchParam(PROJECT_PARAM_KEY, project),
-    clearTag: () => updateSearchParam(TAG_PARAM_KEY),
-    clearProject: () => updateSearchParam(PROJECT_PARAM_KEY),
+      toggleSearchParam(URL_PARAM_KEYS.PROJECT, project),
+    clearTag: () => updateSearchParam(URL_PARAM_KEYS.TAG),
+    clearProject: () => updateSearchParam(URL_PARAM_KEYS.PROJECT),
     clearAllFilters,
   };
 }
