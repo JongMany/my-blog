@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { isValidElement } from "react";
-import { imageSource } from "@mfe/shared";
+import { portfolioRuntimeConfig } from "../portfolio-mdx-config";
 import type { ElementWithChildren } from "./types";
 
 export function normalizeClassName(className?: string | string[]): string {
@@ -12,15 +12,16 @@ export function isExternalUrl(url?: string): boolean {
   return url ? /^https?:\/\//i.test(url) || url.startsWith("//") : false;
 }
 
+/**
+ * 이미지 소스 처리 함수
+ * RuntimeConfig의 processImageSource를 사용하여 일관성 유지
+ */
 export function processImageSource(src?: string): string | undefined {
   if (!src) return undefined;
-  if (isExternalUrl(src)) return src;
-
-  // 개발/프로덕션 환경에 따라 적절한 호스트 URL을 사용
-  const isDevelopment = import.meta.env.MODE === "development";
-  return imageSource(src, "portfolio", {
-    isDevelopment,
-  });
+  return portfolioRuntimeConfig.processImageSource(
+    src,
+    portfolioRuntimeConfig.appName,
+  );
 }
 
 export function createImageStyle(width?: number | string, height?: number | string): React.CSSProperties | undefined {
