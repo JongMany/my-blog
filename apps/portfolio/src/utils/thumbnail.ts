@@ -10,18 +10,24 @@
 export const getThumbnailPath = (cover?: string): string => {
   if (!cover) return "";
 
-  if (cover.startsWith("/") || cover.startsWith("http")) {
+  const isAbsolutePath = cover.startsWith("/");
+  const isUrl = cover.startsWith("http");
+  if (isAbsolutePath || isUrl) {
     return cover;
   }
 
-  if (cover.includes(".")) {
-    const ext = cover.split(".").pop()?.toLowerCase();
-    if (ext === "gif") {
-      return `/projects/thumbnails/gifs/${cover}`;
-    }
-    if (["jpg", "jpeg", "png", "webp", "avif"].includes(ext || "")) {
-      return `/projects/thumbnails/images/${cover}`;
-    }
+  const fileExtension = cover.split(".").pop()?.toLowerCase();
+  if (!fileExtension) {
+    return `/projects/thumbnails/${cover}`;
+  }
+
+  if (fileExtension === "gif") {
+    return `/projects/thumbnails/gifs/${cover}`;
+  }
+
+  const imageExtensions = ["jpg", "jpeg", "png", "webp", "avif"];
+  if (imageExtensions.includes(fileExtension)) {
+    return `/projects/thumbnails/images/${cover}`;
   }
 
   return `/projects/thumbnails/${cover}`;

@@ -84,7 +84,7 @@ function applyMindmapStyles(svgElement: SVGElement, mermaidCode: string): void {
 }
 
 // mermaid 초기화는 한 번만 수행
-let isMermaidInitialized = false;
+let hasMermaidBeenInitialized = false;
 
 export function useMermaidRender(children: ReactNode) {
   const ref = useRef<HTMLDivElement>(null);
@@ -92,34 +92,39 @@ export function useMermaidRender(children: ReactNode) {
 
   useEffect(() => {
     if (!ref.current) return;
-    
-    // mermaid는 한 번만 초기화
-    if (!isMermaidInitialized) {
+
+    if (!hasMermaidBeenInitialized) {
       mermaid.initialize({ startOnLoad: false, ...MERMAID_CONFIG });
-      isMermaidInitialized = true;
+      hasMermaidBeenInitialized = true;
     }
 
-    const render = async () => {
+    const renderMermaid = async () => {
       if (!ref.current) return;
+
       try {
-        const { svg } = await mermaid.render(generateMermaidId(), mermaidCode);
+        const mermaidId = generateMermaidId();
+        const { svg } = await mermaid.render(mermaidId, mermaidCode);
+
         if (!ref.current) return;
+
         ref.current.innerHTML = svg;
-        const svgEl = ref.current.querySelector("svg");
-        if (svgEl) {
-          svgEl.style.cursor = "grab";
-          svgEl.style.userSelect = "none";
-          applyMindmapStyles(svgEl, mermaidCode);
+        const svgElement = ref.current.querySelector("svg");
+        if (svgElement) {
+          svgElement.style.cursor = "grab";
+          svgElement.style.userSelect = "none";
+          applyMindmapStyles(svgElement, mermaidCode);
         }
       } catch (error) {
-        if (ref.current) {
-          const msg = error instanceof Error ? error.message : String(error);
-          ref.current.innerHTML = `<div class="text-red-500 p-4 border border-red-500 rounded">Mermaid 다이어그램 렌더링 오류: ${msg}</div>`;
-        }
+        if (!ref.current) return;
+
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        ref.current.innerHTML = `<div class="text-red-500 p-4 border border-red-500 rounded">Mermaid 다이어그램 렌더링 오류: ${errorMessage}</div>`;
       }
     };
 
-    const timer = setTimeout(render, 100);
+    const renderDelay = 100;
+    const timer = setTimeout(renderMermaid, renderDelay);
     return () => clearTimeout(timer);
   }, [mermaidCode]);
 
