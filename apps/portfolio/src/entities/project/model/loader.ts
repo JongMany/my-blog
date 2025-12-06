@@ -1,6 +1,5 @@
 import type { ProjectDocument } from "./types";
 import { createProjectDocument } from "./parser";
-import { FILE_PATHS } from "@/constants/file-paths";
 
 /**
  * 프로젝트 문서를 로드하고 캐싱하는 모듈
@@ -17,10 +16,12 @@ export function getDocuments(): ProjectDocument[] {
 
 /**
  * MDX 파일들을 로드하여 프로젝트 문서로 변환합니다
+ * 
+ * 주의: import.meta.glob은 리터럴 문자열만 허용하므로 상수를 사용할 수 없습니다.
  */
 function loadProjectDocuments(): ProjectDocument[] {
   const modules = import.meta.glob<string>(
-    FILE_PATHS.PROJECTS_CONTENT_PATTERN,
+    "../../../contents/projects/**/*.{md,mdx}",
     {
       eager: true,
       query: "?raw",
