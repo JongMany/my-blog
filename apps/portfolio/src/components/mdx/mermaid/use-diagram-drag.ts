@@ -53,13 +53,22 @@ export function useDiagramDrag(
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) document.body.style.overflow = "hidden";
+      const isModifierPressed = e.ctrlKey || e.metaKey;
+      if (isModifierPressed) {
+        document.body.style.overflow = "hidden";
+      }
     };
+
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (!e.ctrlKey && !e.metaKey && !isDragging) document.body.style.overflow = "";
+      const isModifierPressed = e.ctrlKey || e.metaKey;
+      if (!isModifierPressed && !isDragging) {
+        document.body.style.overflow = "";
+      }
     };
+
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);

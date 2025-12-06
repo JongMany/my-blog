@@ -6,8 +6,8 @@ import { easeOutCb } from "@/utils/motion";
 export default function Timeline({ items }: { items: Experience[] }) {
   return (
     <ol className="relative ml-2 border-l border-[var(--border)] pl-4">
-      {items.map((e, i) => (
-        <TimelineItem key={e.company + i} experience={e} />
+      {items.map((experience, index) => (
+        <TimelineItem key={`${experience.company}-${experience.role}-${index}`} experience={experience} />
       ))}
     </ol>
   );
