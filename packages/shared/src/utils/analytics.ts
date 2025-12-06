@@ -1,5 +1,5 @@
 import type { AnalyticsPageData } from "../hooks/use-ga-counters";
-import { requestJsonp } from "./jsonp";
+import { requestJsonp } from "@srf/utils";
 
 // Analytics API 응답 타입
 type AnalyticsApiResponse = {

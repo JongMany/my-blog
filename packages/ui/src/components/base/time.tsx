@@ -1,4 +1,5 @@
 import { cn } from "../../utils";
+import { formatDate as formatDateUtil } from "@srf/utils";
 
 interface TimeProps {
   /**
@@ -39,7 +40,7 @@ export function Time({
   const dateStr = typeof date === "string" ? date : date.toISOString();
   const formattedDate = formatDate
     ? formatDate(dateStr)
-    : formatDateDefault(dateStr);
+    : formatDateUtil(dateStr);
 
   const timeElement = (
     <time
@@ -55,26 +56,5 @@ export function Time({
   }
 
   return timeElement;
-}
-
-/**
- * 기본 날짜 포맷팅 함수
- * yyyy-MM-dd 형식으로 포맷팅합니다.
- */
-function formatDateDefault(dateStr: string): string {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      return dateStr;
-    }
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  } catch {
-    return dateStr;
-  }
 }
 

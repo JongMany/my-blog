@@ -6,7 +6,7 @@ type HostOptions = {
   isDevelopment?: boolean;
 };
 
-const mainHost = (app: AppPrefix, options?: HostOptions) => {
+const getHostUrl = (app: AppPrefix, options?: HostOptions): string => {
   const { isDevelopment = true } = options ?? {};
 
   return isDevelopment ? DEV_HOST_URLS[app] : PROD_HOST_URLS[app];
@@ -15,7 +15,7 @@ const mainHost = (app: AppPrefix, options?: HostOptions) => {
 /**
  * 이미지 소스 URL을 생성하는 커링 함수
  *
- * @param prefix - 앱 이름 (portfolio, blog, home, resume)
+ * @param app - 앱 이름 (portfolio, blog, home, resume)
  * @param options - 호스트 옵션
  * @returns 이미지 경로를 받아서 전체 URL을 반환하는 함수
  *
@@ -26,22 +26,10 @@ const mainHost = (app: AppPrefix, options?: HostOptions) => {
  * ```
  */
 export const imageSource =
-  (prefix: "portfolio" | "blog" | "home" | "resume", options?: HostOptions) =>
-  (src: string) => {
-    const hostUrl = mainHost(prefix, options);
+  (app: "portfolio" | "blog" | "home" | "resume", options?: HostOptions) =>
+  (src: string): string => {
+    const hostUrl = getHostUrl(app, options);
 
     return `${hostUrl}${src}`;
   };
 
-export function assetUrl(
-  path: string,
-  app: AppPrefix = "home",
-  options?: HostOptions,
-) {
-  const host = mainHost(app, options);
-
-  const clean = path.replace(/^\/+/, ""); // path 맨 앞의 / 제거
-  // console.log(host, clean);
-  // 중복 슬래시 정리
-  return `${host}/${clean}`;
-}

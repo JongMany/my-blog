@@ -5,7 +5,7 @@
  * 이 함수는 간단한 YAML frontmatter를 파싱합니다.
  */
 
-import { isString } from "./type-guards";
+import { isString } from "../predicate";
 
 export interface ParseResult {
   data: Record<string, unknown>;

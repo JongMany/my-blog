@@ -7,14 +7,18 @@ import { ProjectExtractor } from "@/entities/project/utils/extractors";
  */
 const orderByPriority = (metaList: ProjectMeta[]): ProjectMeta[] => {
   return [...metaList].sort((a, b) => {
-    const orderA =
+    const priorityA =
       typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
-    const orderB =
+    const priorityB =
       typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
 
-    return orderA !== orderB
-      ? orderA - orderB
-      : (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0);
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+
+    const createdAtA = a.createdAtMs ?? 0;
+    const createdAtB = b.createdAtMs ?? 0;
+    return createdAtB - createdAtA;
   });
 };
 
@@ -24,10 +28,10 @@ const orderByPriority = (metaList: ProjectMeta[]): ProjectMeta[] => {
 const groupByProject = (
   metaList: ProjectMeta[],
 ): Record<string, ProjectMeta[]> => {
-  return metaList.reduce<Record<string, ProjectMeta[]>>((acc, meta) => {
+  return metaList.reduce<Record<string, ProjectMeta[]>>((grouped, meta) => {
     const projectName = meta.project || "기타";
-    acc[projectName] = [...(acc[projectName] || []), meta];
-    return acc;
+    grouped[projectName] = [...(grouped[projectName] || []), meta];
+    return grouped;
   }, {});
 };
 

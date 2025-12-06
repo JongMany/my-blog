@@ -1,21 +1,22 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
-import { fadeUp, easeOutCb } from "@/utils/motion";
+import { fadeUp } from "@/utils/motion";
+import { ROUTE_PATHS } from "@/constants/routes";
 
 export function HeroSection() {
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.5]);
+  const backgroundYOffset = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const backgroundOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.5]);
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 md:p-8">
       {/* 배경 그라데이션 효과 - 미묘하게 */}
       <motion.div
-        style={{ y, opacity }}
+        style={{ y: backgroundYOffset, opacity: backgroundOpacity }}
         className="pointer-events-none absolute -right-20 -top-20 size-[320px] rounded-full bg-[conic-gradient(from_0deg,rgba(59,130,246,.12),transparent_60%)] blur-3xl"
       />
       <motion.div
-        style={{ opacity }}
+        style={{ opacity: backgroundOpacity }}
         className="pointer-events-none absolute -left-16 -bottom-16 size-[240px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,.08),transparent_70%)] blur-3xl"
       />
 
@@ -55,7 +56,7 @@ export function HeroSection() {
           }}
         >
           <Link
-            to="/portfolio/projects"
+            to={ROUTE_PATHS.PROJECTS}
             className="group inline-flex items-center gap-2 rounded-lg border border-[var(--primary)]/30 bg-[var(--primary)]/10 px-5 py-2.5 text-sm font-medium text-[var(--primary)] transition-all duration-200 hover:bg-[var(--primary)]/15 hover:border-[var(--primary)]/50 hover:shadow-sm sm:px-6 sm:py-3 sm:text-base"
           >
             <span>프로젝트 둘러보기</span>

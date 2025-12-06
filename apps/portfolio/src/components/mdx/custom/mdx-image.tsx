@@ -14,8 +14,9 @@ export function Image({
   className,
   ...props
 }: ImageProps) {
-  const { value: opened, toggle, setFalse: close } = useBoolean(false);
+  const { value: isDialogOpen, toggle, setFalse: closeDialog } = useBoolean(false);
   const processedSrc = processImageSource(src);
+  
   if (!processedSrc) return null;
 
   // width가 지정되면 스타일에서 min(width, 100%)로 처리하고, width가 없으면 기본 최대 너비 제한
@@ -25,10 +26,7 @@ export function Image({
     className,
   );
 
-  const imageWrapper = (
-    <div className="relative w-full flex justify-center">
-      <Dialog modal={false} open={opened} onOpenChange={toggle}>
-        <DialogTrigger asChild>
+  const imageElement = (
           <img
             alt={alt ?? ""}
             src={processedSrc}
@@ -37,7 +35,9 @@ export function Image({
             loading="lazy"
             {...props}
           />
-        </DialogTrigger>
+  );
+
+  const dialogContent = (
         <DialogContent
           className="fixed left-1/2 top-1/2 z-50 flex h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center outline-none bg-transparent p-0 shadow-none max-w-none"
           overlayClassName="bg-black/50"
@@ -48,9 +48,16 @@ export function Image({
             alt={alt ?? ""}
             src={processedSrc}
             className="h-auto max-h-full w-auto max-w-full object-contain"
-            onClick={close}
+        onClick={closeDialog}
           />
         </DialogContent>
+  );
+
+  const imageWithDialog = (
+    <div className="relative w-full flex justify-center">
+      <Dialog modal={false} open={isDialogOpen} onOpenChange={toggle}>
+        <DialogTrigger asChild>{imageElement}</DialogTrigger>
+        {dialogContent}
       </Dialog>
       {figcaption && (
         <figcaption className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-gray-400 dark:text-gray-500 text-center px-3 py-1.5 bg-black/70 dark:bg-black/80 backdrop-blur-sm rounded-md max-w-[90%] whitespace-nowrap">
@@ -60,9 +67,8 @@ export function Image({
     </div>
   );
 
-  const imageContent = (
+  const metadataSection = (
     <>
-      {imageWrapper}
       {source && (
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
           [출처: {source}]
@@ -76,19 +82,17 @@ export function Image({
     </>
   );
 
-  // figcaption이 있으면 figure 태그로 감싸서 반환
-  if (figcaption) {
-    return (
-      <figure className="flex w-full max-w-full flex-col items-center overflow-hidden my-8">
-        {imageContent}
-      </figure>
+  const containerClassName = "flex w-full max-w-full flex-col items-center overflow-hidden my-8";
+  const content = (
+    <>
+      {imageWithDialog}
+      {metadataSection}
+    </>
     );
-  }
 
-  // figcaption이 없으면 기존처럼 div로 감싸서 반환
-  return (
-    <div className="flex w-full max-w-full flex-col items-center overflow-hidden my-8">
-      {imageContent}
-    </div>
+  return figcaption ? (
+    <figure className={containerClassName}>{content}</figure>
+  ) : (
+    <div className={containerClassName}>{content}</div>
   );
 }

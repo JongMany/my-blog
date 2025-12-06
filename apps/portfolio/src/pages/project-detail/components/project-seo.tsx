@@ -7,16 +7,15 @@ interface ProjectSEOProps {
 }
 
 export function ProjectSEO({ project }: ProjectSEOProps) {
-  const imageUrl = project.cover
-    ? createProjectImageUrl(project.cover)
-    : undefined;
+  const imageUrl = project.cover ? createProjectImageUrl(project.cover) : undefined;
   const detailUrl = createProjectDetailUrl(project.slug);
+  const keywords = project.tags.length > 0 ? project.tags.join(", ") : undefined;
 
   return (
     <SEO
       title={project.title}
       description={project.summary}
-      keywords={project.tags.join(", ")}
+      keywords={keywords}
       url={detailUrl}
       type="article"
       image={imageUrl}

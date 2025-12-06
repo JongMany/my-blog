@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getImageSource } from "@/utils/get-image-source";
 import type { ProjectMeta } from "@/entities/project";
 import { getFallbackThumbnail } from "@/utils/thumbnail";
+import { MAX_COVER_IMAGE_WIDTH_PX } from "@/constants/business";
 
 interface ProjectCoverProps {
   project: ProjectMeta;
@@ -9,11 +10,11 @@ interface ProjectCoverProps {
 
 export function ProjectCover({ project }: ProjectCoverProps) {
   const [useFallback, setUseFallback] = useState(false);
-  const imageSrc = useFallback
+  const thumbnailSrc = useFallback
     ? getFallbackThumbnail()
-    : (project.cover ?? getFallbackThumbnail());
+    : project.cover ?? getFallbackThumbnail();
 
-  if (!imageSrc) {
+  if (!thumbnailSrc) {
     return null;
   }
 
@@ -26,10 +27,10 @@ export function ProjectCover({ project }: ProjectCoverProps) {
   return (
     <div className="mb-8 flex flex-col items-center">
       <img
-        src={getImageSource(imageSrc)}
+        src={getImageSource(thumbnailSrc)}
         alt={project.coverAlt || project.title}
         className="h-auto rounded-lg"
-        style={{ width: "min(600px, 100%)" }}
+        style={{ width: `min(${MAX_COVER_IMAGE_WIDTH_PX}px, 100%)` }}
         onError={handleImageError}
       />
       {project.coverCaption && (

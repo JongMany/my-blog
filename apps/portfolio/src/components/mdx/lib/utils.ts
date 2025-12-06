@@ -13,30 +13,34 @@ export function isExternalUrl(url?: string): boolean {
 }
 
 /**
- * 이미지 소스 처리 함수
+ * 이미지 소스 URL을 처리하는 함수
  * RuntimeConfig의 processImageSource를 사용하여 일관성 유지
  */
 export function processImageSource(src?: string): string | undefined {
   if (!src) return undefined;
+  
   return portfolioRuntimeConfig.processImageSource(
     src,
     portfolioRuntimeConfig.appName,
   );
 }
 
-export function createImageStyle(width?: number | string, height?: number | string): React.CSSProperties | undefined {
+export function createImageStyle(
+  width?: number | string,
+  height?: number | string,
+): React.CSSProperties | undefined {
   if (!width && !height) return undefined;
   
   const style: React.CSSProperties = {};
   
   if (width) {
-    // width가 지정되면 min(width, 100%)로 처리
     const widthValue = typeof width === "number" ? `${width}px` : width;
     style.width = `min(${widthValue}, 100%)`;
   }
   
   if (height) {
-    style.height = typeof height === "number" ? `${height}px` : height;
+    const heightValue = typeof height === "number" ? `${height}px` : height;
+    style.height = heightValue;
   }
   
   return style;

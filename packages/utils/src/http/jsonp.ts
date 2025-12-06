@@ -83,3 +83,4 @@ function generateUniqueCallbackName(): string {
   const random = Math.random().toString(36).slice(2);
   return `${CALLBACK_PREFIX}${timestamp}_${random}`;
 }
+

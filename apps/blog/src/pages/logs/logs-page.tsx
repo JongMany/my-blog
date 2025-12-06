@@ -14,7 +14,7 @@ export default function LogsPage() {
     return filterAndSortByDate(logs, {
       filters: [filterPublishedItems],
     });
-  }, [logs]);
+  }, [logs]) as typeof logs;
 
   return (
     <>

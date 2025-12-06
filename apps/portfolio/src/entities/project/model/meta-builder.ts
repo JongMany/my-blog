@@ -66,14 +66,17 @@ function inferProjectName(
   return isValidFolderName ? formatProjectName(folderAfterProjects) : undefined;
 }
 
+const VALID_COVER_TYPES = ["gif", "image", "video"] as const;
+const VALID_ASPECT_RATIOS = ["16:9", "4:3", "1:1", "auto"] as const;
+
 /**
  * 유효한 coverType을 반환합니다
  */
 function getValidCoverType(
   value: unknown,
 ): ProjectMeta["coverType"] | undefined {
-  if (value === "gif" || value === "image" || value === "video") {
-    return value;
+  if (typeof value === "string" && VALID_COVER_TYPES.includes(value as typeof VALID_COVER_TYPES[number])) {
+    return value as ProjectMeta["coverType"];
   }
   return undefined;
 }
@@ -84,8 +87,8 @@ function getValidCoverType(
 function getValidCoverAspectRatio(
   value: unknown,
 ): ProjectMeta["coverAspectRatio"] | undefined {
-  if (value === "16:9" || value === "4:3" || value === "1:1" || value === "auto") {
-    return value;
+  if (typeof value === "string" && VALID_ASPECT_RATIOS.includes(value as typeof VALID_ASPECT_RATIOS[number])) {
+    return value as ProjectMeta["coverAspectRatio"];
   }
   return undefined;
 }

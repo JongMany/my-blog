@@ -83,10 +83,16 @@ export function formatProjectName(
   const parts = trimmed
     .split(/[\s_-]+/)
     .filter((part) => part.length > 0)
-    .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase());
+    .map((part) => {
+      const firstChar = part[0].toUpperCase();
+      const restChars = part.slice(1).toLowerCase();
+      return firstChar + restChars;
+    });
 
   if (parts.length === 0) {
-    return trimmed[0].toUpperCase() + trimmed.slice(1);
+    const firstChar = trimmed[0].toUpperCase();
+    const restChars = trimmed.slice(1);
+    return firstChar + restChars;
   }
 
   return parts.join("");

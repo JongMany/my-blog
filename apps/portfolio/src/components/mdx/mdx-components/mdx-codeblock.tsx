@@ -73,9 +73,9 @@ export function Pre({ children, className, ...props }: PreProps) {
   // rehype-pretty-code가 추가한 data-theme, className 등을 그대로 전달
   // data-theme이 있는 경우 rehype-pretty-code가 생성한 코드 블록이므로
   // prose의 기본 스타일을 오버라이드하기 위해 추가 클래스 적용
-  const hasPrettyCode = props["data-theme"] !== undefined;
+  const isPrettyCodeBlock = props["data-theme"] !== undefined;
   const baseClassName = normalizeClassName(className);
-  const combinedClassName = hasPrettyCode
+  const combinedClassName = isPrettyCodeBlock
     ? `${baseClassName} ${CODE_BLOCK_STYLES.prettyCode}`.trim()
     : baseClassName;
 

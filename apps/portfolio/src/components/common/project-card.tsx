@@ -7,6 +7,8 @@ import {
   getFallbackThumbnail,
   getThumbnailAspectRatio,
 } from "@/utils/thumbnail";
+import { ROUTE_PATHS } from "@/constants/routes";
+import { MAX_VISIBLE_TAGS } from "@/constants/business";
 
 const HOVER_ANIMATION = {
   whileHover: { y: -4, scale: 1.01 },
@@ -21,7 +23,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({
   project,
-  maxTags = 3,
+  maxTags = MAX_VISIBLE_TAGS,
   showImage = true,
 }: ProjectCardProps) {
   const tags = project.tags ?? [];
@@ -29,9 +31,9 @@ export function ProjectCard({
   const remainingTagCount = tags.length - visibleTags.length;
 
   const [useFallback, setUseFallback] = useState(false);
-  const imageSrc = useFallback
+  const thumbnailSrc = useFallback
     ? getFallbackThumbnail()
-    : (project.cover ?? getFallbackThumbnail());
+    : project.cover ?? getFallbackThumbnail();
 
   const handleImageError = () => {
     if (!useFallback) {
@@ -42,7 +44,7 @@ export function ProjectCard({
   return (
     <li className="h-full">
       <Link
-        to={`/portfolio/projects/${project.slug}`}
+        to={ROUTE_PATHS.PROJECT_DETAIL(project.slug)}
         className="group block h-full no-underline hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--ring)] [&_*]:no-underline [&_*]:hover:no-underline"
         aria-label={`${project.title} 상세 보기`}
       >
@@ -50,12 +52,12 @@ export function ProjectCard({
           {...HOVER_ANIMATION}
           className="t-card h-full overflow-hidden"
         >
-          {showImage && imageSrc && (
+          {showImage && thumbnailSrc && (
             <div
               className={`relative ${getThumbnailAspectRatio(project.coverAspectRatio)} overflow-hidden`}
             >
               <img
-                src={getImageSource(imageSrc)}
+                src={getImageSource(thumbnailSrc)}
                 alt={project.coverAlt || project.title}
                 loading="lazy"
                 decoding="async"
@@ -83,11 +85,6 @@ export function ProjectCard({
               <h3 className="text-base font-medium leading-tight">
                 {project.title}
               </h3>
-              {/* {!project.cover && project.project && (
-                <div className="text-xs text-[var(--muted-fg)]">
-                  {project.project}
-                </div>
-              )} */}
             </div>
 
             {project.summary && (

@@ -1,16 +1,26 @@
 import React from "react";
 import { cn } from "@srf/ui";
+import { PROTOCOLS } from "@/constants/protocols";
 
 export function Anchor(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const { href, target, rel, ...restProps } = props;
+  const isExternalLink =
+    href?.startsWith(PROTOCOLS.HTTP) ||
+    href?.startsWith(PROTOCOLS.HTTPS) ||
+    href?.startsWith(PROTOCOLS.PROTOCOL_RELATIVE);
+  const linkTarget = target ?? (isExternalLink ? "_blank" : undefined);
+  const linkRel = rel ?? (isExternalLink ? "noopener noreferrer" : undefined);
+
   return (
     <a
-      {...props}
+      {...restProps}
+      href={href}
+      target={linkTarget}
+      rel={linkRel}
       className={cn(
         "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline",
         props.className,
       )}
-      target="_blank"
-      rel="noopener noreferrer"
     />
   );
 }
@@ -42,5 +52,4 @@ export function Strong(props: React.HTMLAttributes<HTMLElement>) {
 export function Emphasis(props: React.HTMLAttributes<HTMLElement>) {
   return <em {...props} className={cn("italic", props.className)} />;
 }
-
 

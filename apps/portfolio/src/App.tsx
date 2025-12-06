@@ -6,24 +6,26 @@ import ProjectsPage from "./pages/projects/projects-page";
 import ProjectDetailPage from "./pages/project-detail/project-detail-page";
 import { NotFoundSection } from "@srf/ui";
 import { getImageSource } from "./utils/get-image-source";
+import { ROUTE_PATHS, ROUTE_SEGMENTS } from "./constants/routes";
+import { FILE_PATHS } from "./constants/file-paths";
 
 function App() {
   return (
     <Routes>
       <Route path="" element={<Layout />}>
         <Route index element={<HomePage />} />
-        <Route path="projects" element={<ProjectsLayout />}>
+        <Route path={ROUTE_SEGMENTS.PROJECTS} element={<ProjectsLayout />}>
           <Route index element={<ProjectsPage />} />
-          <Route path=":slug" element={<ProjectDetailPage />} />
+          <Route path={ROUTE_SEGMENTS.SLUG_PARAM} element={<ProjectDetailPage />} />
         </Route>
         <Route
           path="*"
           element={
             <NotFoundSection
-              illustrationSrc={getImageSource("/404.svg")}
+              illustrationSrc={getImageSource(FILE_PATHS.ERROR_ILLUSTRATION)}
               renderLink={() => (
                 <Link
-                  to="/portfolio"
+                  to={ROUTE_PATHS.HOME}
                   className="inline-block mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   포트폴리오로 돌아가기
