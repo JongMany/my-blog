@@ -7,6 +7,8 @@ import {
   getFallbackThumbnail,
   getThumbnailAspectRatio,
 } from "@/utils/thumbnail";
+import { ROUTE_PATHS } from "@/constants/routes";
+import { MAX_VISIBLE_TAGS } from "@/constants/business";
 
 const HOVER_ANIMATION = {
   whileHover: { y: -4, scale: 1.01 },
@@ -21,7 +23,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({
   project,
-  maxTags = 3,
+  maxTags = MAX_VISIBLE_TAGS,
   showImage = true,
 }: ProjectCardProps) {
   const tags = project.tags ?? [];
@@ -42,7 +44,7 @@ export function ProjectCard({
   return (
     <li className="h-full">
       <Link
-        to={`/portfolio/projects/${project.slug}`}
+        to={ROUTE_PATHS.PROJECT_DETAIL(project.slug)}
         className="group block h-full no-underline hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--ring)] [&_*]:no-underline [&_*]:hover:no-underline"
         aria-label={`${project.title} 상세 보기`}
       >

@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { fadeUp } from "@/utils/motion";
+import { ROUTE_PATHS } from "@/constants/routes";
 
 export function HeroSection() {
   const { scrollYProgress } = useScroll();
@@ -55,7 +56,7 @@ export function HeroSection() {
           }}
         >
           <Link
-            to="/portfolio/projects"
+            to={ROUTE_PATHS.PROJECTS}
             className="group inline-flex items-center gap-2 rounded-lg border border-[var(--primary)]/30 bg-[var(--primary)]/10 px-5 py-2.5 text-sm font-medium text-[var(--primary)] transition-all duration-200 hover:bg-[var(--primary)]/15 hover:border-[var(--primary)]/50 hover:shadow-sm sm:px-6 sm:py-3 sm:text-base"
           >
             <span>프로젝트 둘러보기</span>

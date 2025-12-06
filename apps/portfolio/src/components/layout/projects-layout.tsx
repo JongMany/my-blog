@@ -1,4 +1,5 @@
 import { useOutlet, Link } from "react-router-dom";
+import { ROUTE_PATHS } from "@/constants/routes";
 
 export default function ProjectsLayout() {
   const outlet = useOutlet();
@@ -7,7 +8,7 @@ export default function ProjectsLayout() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Link
-          to="/portfolio"
+          to={ROUTE_PATHS.HOME}
           className="group flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-all hover:bg-[var(--hover-bg)] hover:border-[var(--primary)]"
         >
           <svg
