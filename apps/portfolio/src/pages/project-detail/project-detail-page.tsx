@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "@/utils/get-image-source";
 import { usePortfolioIndex, useProjectMdx } from "@/entities/project";
 import { LoadingSpinner, ErrorMessage } from "@/components/common";
 import { useMdxContent } from "./hooks/use-mdx-content";
@@ -28,9 +28,7 @@ export default function ProjectDetail() {
 
   if (!project) {
     const isDevelopment = import.meta.env.MODE === "development";
-    const illustrationSrc = imageSource("portfolio", {
-      isDevelopment,
-    })("/404.svg");
+    const illustrationSrc = getImageSource("/404.svg");
 
     return (
       <ErrorMessage

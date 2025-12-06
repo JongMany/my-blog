@@ -3,7 +3,7 @@ import "./App.css";
 import ResumePage from "./pages/resume/resume-page";
 import { NotFoundSection } from "@srf/ui";
 import { ViewportProvider } from "./contexts/viewport-context";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "./utils/get-image-source";
 
 export default function ResumeApp() {
   return (
@@ -14,9 +14,7 @@ export default function ResumeApp() {
           path="*"
           element={
             <NotFoundSection
-              illustrationSrc={imageSource("resume", {
-                isDevelopment: import.meta.env.MODE === "development",
-              })("/404.svg")}
+              illustrationSrc={getImageSource("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/resume"

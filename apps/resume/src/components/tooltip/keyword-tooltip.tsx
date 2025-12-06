@@ -1,5 +1,5 @@
 import { InlineTooltip, cn } from "@srf/ui";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "@/utils/get-image-source";
 
 interface KeywordTooltipProps {
   keyword: string;
@@ -12,9 +12,7 @@ export function KeywordTooltip({ keyword, imageUrl }: KeywordTooltipProps) {
       content={
         <div>
           <img
-            src={imageSource("resume", {
-              isDevelopment: import.meta.env.MODE === "development",
-            })(imageUrl || "")}
+            src={getImageSource(imageUrl || "")}
             alt={keyword}
             className={cn(
               "max-w-[calc(28rem-24px)] min-w-[calc(28rem-24px)] min-h-48",

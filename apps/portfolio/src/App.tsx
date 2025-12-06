@@ -5,7 +5,7 @@ import HomePage from "./pages/home/home-page";
 import ProjectsPage from "./pages/projects/projects-page";
 import ProjectDetailPage from "./pages/project-detail/project-detail-page";
 import { NotFoundSection } from "@srf/ui";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "./utils/get-image-source";
 
 function App() {
   return (
@@ -20,9 +20,7 @@ function App() {
           path="*"
           element={
             <NotFoundSection
-              illustrationSrc={imageSource("portfolio", {
-                isDevelopment: import.meta.env.MODE === "development",
-              })("/404.svg")}
+              illustrationSrc={getImageSource("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/portfolio"

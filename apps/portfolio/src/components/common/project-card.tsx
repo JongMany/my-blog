@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "@/utils/get-image-source";
 import type { ProjectMeta } from "@/entities/project";
 import {
   getFallbackThumbnail,
@@ -55,9 +55,7 @@ export function ProjectCard({
               className={`relative ${getThumbnailAspectRatio(project.coverAspectRatio)} overflow-hidden`}
             >
               <img
-                src={imageSource("portfolio", {
-                  isDevelopment: import.meta.env.MODE === "development",
-                })(imageSrc)}
+                src={getImageSource(imageSrc)}
                 alt={project.coverAlt || project.title}
                 loading="lazy"
                 decoding="async"

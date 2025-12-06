@@ -6,7 +6,8 @@ import {
   type PropsWithChildren,
 } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { imageSource, useGoogleAnalyticsStats } from "@mfe/shared";
+import { useGoogleAnalyticsStats } from "@mfe/shared";
+import { getImageSource } from "../utils/get-image-source";
 import { cn } from "@srf/ui";
 import ActivePill from "./active-pill";
 import { useUpdateGaPageViews } from "@/hooks/use-update-ga-page-views";
@@ -46,7 +47,7 @@ export const DEFAULT_ACTIVE_LABEL = "Menu";
 export function getDefaultLogoConfig(): LogoConfig {
   const isDevelopment = import.meta.env.MODE === "development";
   return {
-    logoSrc: imageSource("home", { isDevelopment })("/favicon.svg"),
+    logoSrc: getImageSource("/favicon.svg"),
     alt: "방구석 코딩쟁이",
     text: "방구석 코딩쟁이",
   };

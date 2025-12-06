@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "@/utils/get-image-source";
 import type { ProjectMeta } from "@/entities/project";
 import { getFallbackThumbnail } from "@/utils/thumbnail";
 
@@ -26,9 +26,7 @@ export function ProjectCover({ project }: ProjectCoverProps) {
   return (
     <div className="mb-8 flex flex-col items-center">
       <img
-        src={imageSource("portfolio", {
-          isDevelopment: import.meta.env.MODE === "development",
-        })(imageSrc)}
+        src={getImageSource(imageSrc)}
         alt={project.coverAlt || project.title}
         className="h-auto rounded-lg"
         style={{ width: "min(600px, 100%)" }}
