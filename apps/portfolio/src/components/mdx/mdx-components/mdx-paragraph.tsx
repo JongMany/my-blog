@@ -6,15 +6,14 @@ interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children?: React.ReactNode;
 }
 
-export function Paragraph(p: ParagraphProps) {
+export function Paragraph(props: ParagraphProps) {
   const className = cn(
     "mb-4 leading-relaxed text-gray-700 dark:text-gray-300",
-    p.className,
+    props.className,
   );
 
-  if (hasImage(p.children)) {
-    // div 요소에 전달할 수 있는 속성만 추출
-    const { children, className: _className, ...divProps } = p;
+  if (hasImage(props.children)) {
+    const { children, className: _unusedClassName, ...divProps } = props;
     return (
       <div {...divProps} className={className}>
         {children}
@@ -22,5 +21,5 @@ export function Paragraph(p: ParagraphProps) {
     );
   }
 
-  return <p {...p} className={className} />;
+  return <p {...props} className={className} />;
 }
