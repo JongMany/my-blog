@@ -9,7 +9,9 @@ import {
  * 런타임 설정
  */
 export const blogRuntimeConfig: RuntimeConfig = {
-  processImageSource: createProcessImageSource("blog"),
+  processImageSource: createProcessImageSource("blog", {
+    isDevelopment: import.meta.env.MODE === "development",
+  }),
   appName: "blog",
 };
 

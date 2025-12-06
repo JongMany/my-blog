@@ -1,4 +1,4 @@
-import type { AppName } from "../../types";
+import type { AppName } from "../types";
 
 /**
  * 앱 이름 상수

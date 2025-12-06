@@ -16,7 +16,9 @@ import type { RuntimeConfig, SerializeOptions } from "@srf/ui";
  * 런타임 설정
  */
 export const portfolioRuntimeConfig: RuntimeConfig = {
-  processImageSource: createProcessImageSource("portfolio"),
+  processImageSource: createProcessImageSource("portfolio", {
+    isDevelopment: import.meta.env.MODE === "development",
+  }),
   appName: "portfolio",
 };
 
