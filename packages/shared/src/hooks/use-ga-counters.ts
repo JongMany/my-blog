@@ -342,7 +342,7 @@ async function fetchAnalyticsDataFromApi(
 /**
  * Analytics 조회 범위에 따라 실제 조회할 페이지 경로를 결정합니다.
  */
-function determineTargetPagePathForAnalytics(
+function getTargetPagePath(
   scope: AnalyticsScope,
   pagePath?: string,
 ): string | undefined {
@@ -354,7 +354,7 @@ function determineTargetPagePathForAnalytics(
 /**
  * Google Analytics API 요청 URL을 생성합니다.
  */
-function constructAnalyticsApiRequestUrl(
+function buildAnalyticsApiUrl(
   baseApiUrl: string,
   scope: AnalyticsScope,
   pagePath: string | undefined,
@@ -410,8 +410,8 @@ export function useGoogleAnalyticsStats({
 
   const analyticsApiUrl = useMemo(() => {
     if (!apiUrl) return null;
-    const targetPagePath = determineTargetPagePathForAnalytics(scope, pagePath);
-    return constructAnalyticsApiRequestUrl(
+    const targetPagePath = getTargetPagePath(scope, pagePath);
+    return buildAnalyticsApiUrl(
       apiUrl,
       scope,
       targetPagePath,
