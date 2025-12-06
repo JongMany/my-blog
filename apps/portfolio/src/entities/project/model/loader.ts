@@ -29,10 +29,10 @@ function loadProjectDocuments(): ProjectDocument[] {
 
   return Object.entries(modules)
     .map(([filePath, content]) => {
-      if (typeof content === "string") {
-        return createProjectDocument(filePath, content);
+      if (typeof content !== "string") {
+        return null;
       }
-      return null;
+      return createProjectDocument(filePath, content);
     })
     .filter((doc): doc is ProjectDocument => doc !== null);
 }
