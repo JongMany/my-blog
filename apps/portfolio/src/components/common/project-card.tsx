@@ -29,9 +29,9 @@ export function ProjectCard({
   const remainingTagCount = tags.length - visibleTags.length;
 
   const [useFallback, setUseFallback] = useState(false);
-  const imageSrc = useFallback
+  const thumbnailSrc = useFallback
     ? getFallbackThumbnail()
-    : (project.cover ?? getFallbackThumbnail());
+    : project.cover ?? getFallbackThumbnail();
 
   const handleImageError = () => {
     if (!useFallback) {
@@ -50,12 +50,12 @@ export function ProjectCard({
           {...HOVER_ANIMATION}
           className="t-card h-full overflow-hidden"
         >
-          {showImage && imageSrc && (
+          {showImage && thumbnailSrc && (
             <div
               className={`relative ${getThumbnailAspectRatio(project.coverAspectRatio)} overflow-hidden`}
             >
               <img
-                src={getImageSource(imageSrc)}
+                src={getImageSource(thumbnailSrc)}
                 alt={project.coverAlt || project.title}
                 loading="lazy"
                 decoding="async"

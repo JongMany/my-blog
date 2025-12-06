@@ -56,7 +56,7 @@ export function TagFilter({
   onSelect,
   onReset,
 }: TagFilterProps) {
-  const tagsKey = useMemo(() => availableTags.join(","), [availableTags]);
+  const tagsCacheKey = useMemo(() => availableTags.join(","), [availableTags]);
 
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -66,7 +66,7 @@ export function TagFilter({
         onClick={onReset}
         showPrefix={false}
       />
-      <div key={tagsKey} className="contents">
+      <div key={tagsCacheKey} className="contents">
         {availableTags.map((tag) => (
           <TagButton
             key={tag}
