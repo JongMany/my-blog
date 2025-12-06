@@ -9,11 +9,11 @@ interface ProjectCoverProps {
 
 export function ProjectCover({ project }: ProjectCoverProps) {
   const [useFallback, setUseFallback] = useState(false);
-  const imageSrc = useFallback
+  const thumbnailSrc = useFallback
     ? getFallbackThumbnail()
-    : (project.cover ?? getFallbackThumbnail());
+    : project.cover ?? getFallbackThumbnail();
 
-  if (!imageSrc) {
+  if (!thumbnailSrc) {
     return null;
   }
 
@@ -26,7 +26,7 @@ export function ProjectCover({ project }: ProjectCoverProps) {
   return (
     <div className="mb-8 flex flex-col items-center">
       <img
-        src={getImageSource(imageSrc)}
+        src={getImageSource(thumbnailSrc)}
         alt={project.coverAlt || project.title}
         className="h-auto rounded-lg"
         style={{ width: "min(600px, 100%)" }}
