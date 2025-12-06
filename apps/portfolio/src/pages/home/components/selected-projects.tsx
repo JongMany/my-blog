@@ -9,11 +9,7 @@ interface SelectedProjectsProps {
 export function SelectedProjects({ projects }: SelectedProjectsProps) {
   return (
     <section className="space-y-3">
-      <SectionHeader
-        title="Selected Projects"
-        linkTo="/portfolio/projects"
-        linkText="전체 보기"
-      />
+      <SectionHeader title="주요 프로젝트" />
       <ProjectGrid
         projects={projects}
         renderProject={(project) => <ProjectCard project={project} />}

@@ -1,4 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
 import { fadeUp, easeOutCb } from "@/utils/motion";
 
 export function HeroSection() {
@@ -40,51 +41,41 @@ export function HeroSection() {
           만들어갑니다.
         </motion.p>
 
-        {/* 태그 섹션 */}
+        {/* CTA 버튼 */}
         <motion.div
-          className="mt-6 flex flex-wrap gap-2 sm:mt-7"
-          initial="hidden"
-          whileInView="show"
+          className="mt-6 sm:mt-7"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ margin: "-10% 0px", once: true }}
-          variants={{
-            hidden: { opacity: 0 },
-            show: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.08,
-              },
-            },
+          transition={{
+            delay: 0.2,
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
           }}
         >
-          {[
-            { label: "Frontend", color: "from-blue-500/10 to-cyan-500/10" },
-            { label: "UX", color: "from-blue-500/10 to-indigo-500/10" },
-            { label: "DX", color: "from-purple-500/10 to-pink-500/10" },
-            { label: "협업", color: "from-emerald-500/10 to-teal-500/10" },
-          ].map((tag) => (
-            <motion.span
-              key={tag.label}
-              variants={{
-                hidden: { opacity: 0, y: 8 },
-                show: {
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15,
-                    mass: 0.8,
-                  },
-                },
-              }}
-              className="group relative inline-flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-medium text-[var(--fg)] transition-all duration-200 hover:border-[var(--primary)]/30 hover:shadow-sm sm:px-4 sm:py-2 sm:text-sm"
+          <Link
+            to="/portfolio/projects"
+            className="group inline-flex items-center gap-2 rounded-lg border border-[var(--primary)]/30 bg-[var(--primary)]/10 px-5 py-2.5 text-sm font-medium text-[var(--primary)] transition-all duration-200 hover:bg-[var(--primary)]/15 hover:border-[var(--primary)]/50 hover:shadow-sm sm:px-6 sm:py-3 sm:text-base"
+          >
+            <span>프로젝트 둘러보기</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="transition-transform duration-200 group-hover:translate-x-1"
             >
-              <span className="relative z-10">{tag.label}</span>
-              <span
-                className={`absolute inset-0 rounded-lg bg-gradient-to-r ${tag.color} opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
+              <path
+                d="M6 12L10 8L6 4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
-            </motion.span>
-          ))}
+            </svg>
+          </Link>
         </motion.div>
       </div>
     </section>

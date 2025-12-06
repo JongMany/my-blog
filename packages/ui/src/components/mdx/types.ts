@@ -1,6 +1,11 @@
 import type { ReactNode, ComponentType } from "react";
 
 /**
+ * 앱 이름 타입
+ */
+export type AppName = "blog" | "portfolio" | "home" | "resume";
+
+/**
  * 링크 컴포넌트의 props 타입
  */
 export interface LinkProps {
@@ -16,10 +21,10 @@ export interface LinkProps {
  */
 export interface RuntimeConfig {
   /** 이미지 소스를 처리하는 함수 */
-  processImageSource: (src: string, appName: string) => string;
+  processImageSource: (src: string, appName: AppName) => string;
 
   /** 앱 이름 (blog, portfolio 등) */
-  appName: string;
+  appName: AppName;
 }
 
 /**

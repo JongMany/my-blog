@@ -4,7 +4,12 @@ export {
   serialize,
   createDefaultSerializeOptions,
 } from "./lib/serializer/serialize";
-export { isExternalLink } from "./lib/utils";
+export {
+  isExternalLink,
+  createProcessImageSource,
+  removePlugin,
+  sanitizeMdxSource,
+} from "./lib/utils";
 export { Image, Link, Video } from "./lib/components/base";
 export { rehypeUnwrapImages, rehypeSkipMermaid } from "./lib/plugins";
 export type {
@@ -14,4 +19,6 @@ export type {
   LinkProps,
   FrontmatterData,
   RehypePlugin,
+  AppName,
 } from "./types";
+export { APP_NAMES, DEFAULT_APP_NAME } from "./lib/constants";

@@ -1,6 +1,7 @@
 import { useParams, useLocation, Link } from "react-router-dom";
 import type { BaseMeta, ContentItem } from "@/types/contents/common";
-import { extractDateFromMeta, formatDate, imageSource } from "@mfe/shared";
+import { extractDateFromMeta, formatDate } from "@mfe/shared";
+import { getImageSource } from "../utils/get-image-source";
 import { useSerializedMDX } from "@/hooks/use-serialized-mdx";
 import { BlogMDX } from "@/components/mdx/blog-mdx";
 import TableOfContents from "@/components/table-of-contents";
@@ -68,9 +69,7 @@ export function ContentDetailLayout<T extends BaseMeta>({
   if (!item) {
     return (
       <NotFoundSection
-        illustrationSrc={imageSource("/404.svg", "blog", {
-          isDevelopment: import.meta.env.MODE === "development",
-        })}
+        illustrationSrc={getImageSource("/404.svg")}
         renderLink={() => (
           <Link
             to="/blog/posts"

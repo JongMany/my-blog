@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { cn } from "@srf/ui";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "@/utils/get-image-source";
 
 import type { ResumeData } from "@/service";
 import { Card } from "@/components/card";
@@ -62,9 +62,7 @@ function ProfileImage({ profile }: { profile: ResumeData["profile"] }) {
   return (
     <motion.img
       {...fadeUp}
-      src={imageSource(profile.photoUrl, "resume", {
-        isDevelopment: import.meta.env.MODE === "development",
-      })}
+      src={getImageSource(profile.photoUrl)}
       alt={`${profile.name} 프로필`}
       className={cn(
         "rounded-2xl object-cover border border-[var(--border)] flex-shrink-0",

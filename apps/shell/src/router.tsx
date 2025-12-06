@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createBrowserRouter, Outlet, Link } from "react-router-dom";
 import { NotFoundSection } from "@srf/ui";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "./utils/get-image-source";
 
 import Layout from "./components/root-layout";
 import BootRedirect from "./components/boot-redirect";
@@ -66,9 +66,7 @@ export const router = createBrowserRouter(
           path: "*",
           element: (
             <NotFoundSection
-              illustrationSrc={imageSource("/404.svg", "home", {
-                isDevelopment: import.meta.env.MODE === "development",
-              })}
+              illustrationSrc={getImageSource("/404.svg")}
               renderLink={() => (
                 <Link
                   to="/"

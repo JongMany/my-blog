@@ -1,7 +1,7 @@
 import "./App.css";
 import { Navigate, Route, Routes, Link } from "react-router-dom";
 import { SEO, WebsiteJsonLd, PersonJsonLd, NotFoundSection } from "@srf/ui";
-import { imageSource } from "@mfe/shared";
+import { getImageSource } from "./utils/get-image-source";
 
 import BlogLayout from "./components/layout";
 import PostDetailPage from "./pages/post/post-detail-page";
@@ -97,9 +97,7 @@ export default function BlogApp() {
             path="*"
             element={
               <NotFoundSection
-                illustrationSrc={imageSource("/404.svg", "blog", {
-                  isDevelopment: import.meta.env.MODE === "development",
-                })}
+                illustrationSrc={getImageSource("/404.svg")}
                 renderLink={() => (
                   <Link
                     to="/blog/posts"

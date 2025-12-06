@@ -28,7 +28,7 @@ interface NotFoundSectionProps {
  * @example
  * ```tsx
  * <NotFoundSection
- *   illustrationSrc={imageSource("/404.svg", "blog", { isDevelopment })}
+ *   illustrationSrc={imageSource("blog", { isDevelopment })("/404.svg")}
  *   renderLink={() => (
  *     <Link
  *       to="/blog/posts"
