@@ -3,6 +3,7 @@ export * from "./isArray";
 export * from "./isArrayBuffer";
 export * from "./isBlob";
 export * from "./isBoolean";
+export * from "./isNumber";
 export * from "./isBrowser";
 export * from "./isBuffer";
 export * from "./isDate";

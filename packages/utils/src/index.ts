@@ -5,3 +5,6 @@ export * from "./predicate";
 export * from "./optimize";
 export * from "./storage";
 export * from "./function";
+export * from "./parse";
+export * from "./date";
+export * from "./http";
