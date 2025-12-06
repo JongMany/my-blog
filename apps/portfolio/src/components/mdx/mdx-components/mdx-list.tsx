@@ -29,4 +29,3 @@ export function ListItem(props: React.HTMLAttributes<HTMLLIElement>) {
   return <li {...props} className={cn("leading-relaxed", props.className)} />;
 }
 
-
