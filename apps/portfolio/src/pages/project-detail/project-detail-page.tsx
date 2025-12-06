@@ -27,7 +27,6 @@ export default function ProjectDetail() {
   }, [portfolioIndex, slug]);
 
   if (!project) {
-    const isDevelopment = import.meta.env.MODE === "development";
     const illustrationSrc = getImageSource("/404.svg");
 
     return (
