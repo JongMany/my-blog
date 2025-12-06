@@ -19,7 +19,6 @@ export default defineConfig({
       filename: "remoteEntry.js",
       exposes: {
         "./App": "./src/App.tsx",
-        "./routes": "./src/routes.tsx",
       },
       shared: {
         react: { version: pkg.dependencies.react },

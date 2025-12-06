@@ -20,7 +20,7 @@ export default defineConfig({
     federation({
       name: "portfolio",
       filename: "remoteEntry.js",
-      exposes: { "./routes": "./src/routes.tsx", "./App": "./src/App.tsx" },
+      exposes: { "./App": "./src/App.tsx" },
       shared: {
         react: { version: pkg.dependencies.react },
         "react-dom": { version: pkg.dependencies["react-dom"] },
