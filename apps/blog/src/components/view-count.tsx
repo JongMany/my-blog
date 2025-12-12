@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, Component, type ReactNode, type ErrorInfo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LoadingSkeleton } from "@srf/ui";
 import { fetchAllSiteAnalytics } from "@mfe/shared";
@@ -9,6 +9,42 @@ const DEFAULT_SKELETON_SIZE = {
 } as const;
 
 const DEFAULT_PATH_PREFIX = "/my-blog";
+
+type ViewCountErrorBoundaryProps = {
+  children: ReactNode;
+  fallback?: ReactNode;
+};
+
+type ViewCountErrorBoundaryState = {
+  hasError: boolean;
+  error: Error | null;
+};
+
+class ViewCountErrorBoundary extends Component<
+  ViewCountErrorBoundaryProps,
+  ViewCountErrorBoundaryState
+> {
+  constructor(props: ViewCountErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ViewCountErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("ViewCount 에러 발생:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? null;
+    }
+
+    return this.props.children;
+  }
+}
 
 type ViewCountProps = {
   /**
@@ -66,13 +102,15 @@ export function ViewCount({
   const skeletonHeight = skeleton.height ?? DEFAULT_SKELETON_SIZE.height;
 
   return (
-    <Suspense
-      fallback={
-        <ViewCountSkeleton width={skeletonWidth} height={skeletonHeight} />
-      }
-    >
-      <ViewCountContent path={path} pathPrefix={pathPrefix} />
-    </Suspense>
+    <ViewCountErrorBoundary>
+      <Suspense
+        fallback={
+          <ViewCountSkeleton width={skeletonWidth} height={skeletonHeight} />
+        }
+      >
+        <ViewCountContent path={path} pathPrefix={pathPrefix} />
+      </Suspense>
+    </ViewCountErrorBoundary>
   );
 }
 
