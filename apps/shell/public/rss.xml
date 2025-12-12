@@ -9,11 +9,20 @@
     <link>https://jongmany.github.io/my-blog</link>
     <atom:link href="https://jongmany.github.io/my-blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>ko-KR</language>
-    <lastBuildDate>Tue, 02 Dec 2025 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 06 Dec 2025 00:00:00 GMT</lastBuildDate>
     <managingEditor>이종민</managingEditor>
     <webMaster>이종민</webMaster>
     <generator>Custom RSS Generator</generator>
     <ttl>60</ttl>
+    <item>
+      <title>TEOConf 2025 후기</title>
+      <link>https://jongmany.github.io/my-blog/blog/logs/teo_conf_2025</link>
+      <guid isPermaLink="true">https://jongmany.github.io/my-blog/blog/logs/teo_conf_2025</guid>
+      <description>2025년 테오콘 후기를 담아보았습니다.</description>
+      <pubDate>Sat, 06 Dec 2025 00:00:00 GMT</pubDate>
+      <dc:creator>이종민</dc:creator>
+      <category>컨퍼런스</category>
+    </item>
     <item>
       <title>단위테스트의 기술</title>
       <link>https://jongmany.github.io/my-blog/blog/books/the_art_of_unit_testing</link>

@@ -5,10 +5,22 @@
   <link href="https://jongmany.github.io/my-blog" rel="alternate"/>
   <link href="https://jongmany.github.io/my-blog/atom.xml" rel="self"/>
   <id>https://jongmany.github.io/my-blog/</id>
-  <updated>2025-12-05T16:15:28.678Z</updated>
+  <updated>2025-12-12T14:15:33.918Z</updated>
   <author>
     <name>이종민</name>
   </author>
+  <entry>
+    <title>TEOConf 2025 후기</title>
+    <link href="https://jongmany.github.io/my-blog/blog/logs/teo_conf_2025"/>
+    <id>https://jongmany.github.io/my-blog/blog/logs/teo_conf_2025</id>
+    <published>2025-12-06T00:00:00.000Z</published>
+    <updated>2025-12-06T00:00:00.000Z</updated>
+    <summary>2025년 테오콘 후기를 담아보았습니다.</summary>
+    <author>
+      <name>이종민</name>
+    </author>
+    <category term="컨퍼런스"/>
+  </entry>
   <entry>
     <title>단위테스트의 기술</title>
     <link href="https://jongmany.github.io/my-blog/blog/books/the_art_of_unit_testing"/>

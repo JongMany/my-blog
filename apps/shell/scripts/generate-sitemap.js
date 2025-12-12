@@ -89,7 +89,11 @@ function findMdxFiles(dir, basePath) {
       const frontmatter = parseFrontmatter(content);
 
       // published가 명시적으로 false인 경우 제외
-      if (frontmatter.published === false) continue;
+      // published가 없거나 true인 경우 포함 (기본값: true)
+      if (frontmatter.published === false) {
+        console.log(`   ⏭️  건너뜀 (published: false): ${entry.name}`);
+        continue;
+      }
 
       const slug = path.basename(entry.name, path.extname(entry.name));
       const updatedAt = frontmatter.updatedAt || frontmatter.createdAt || frontmatter.date;
@@ -158,12 +162,25 @@ function generateSitemap() {
   // === 블로그 동적 콘텐츠 ===
   for (const [dirName, urlPath] of Object.entries(BLOG_CATEGORIES)) {
     const categoryDir = path.join(BLOG_CONTENTS_DIR, dirName);
+    
+    if (!fs.existsSync(categoryDir)) {
+      console.warn(`⚠️  카테고리 디렉토리가 없습니다: ${categoryDir}`);
+      continue;
+    }
+    
     const files = findMdxFiles(categoryDir);
+    console.log(`📁 ${dirName}: ${files.length}개 파일 발견`);
 
     for (const file of files) {
+      // 날짜 포맷팅 (YYYY-MM-DD 형식으로 정규화)
+      let lastmod = file.updatedAt || today;
+      if (lastmod && lastmod.length > 10) {
+        lastmod = lastmod.substring(0, 10);
+      }
+      
       pages.push({
         loc: `${BASE_URL}/blog/${urlPath}/${file.slug}`,
-        lastmod: file.updatedAt || today,
+        lastmod: lastmod || today,
         changefreq: 'monthly',
         priority: '0.7',
       });
@@ -209,7 +226,22 @@ ${pages
   const outputPath = path.join(OUTPUT_DIR, 'sitemap.xml');
   fs.writeFileSync(outputPath, xml, 'utf-8');
 
-  console.log(`✅ Sitemap generated: ${outputPath}`);
+  // 카테고리별 통계 출력
+  const categoryStats = {};
+  for (const page of pages) {
+    const match = page.loc.match(/\/blog\/([^\/]+)/);
+    if (match) {
+      const category = match[1];
+      categoryStats[category] = (categoryStats[category] || 0) + 1;
+    }
+  }
+  
+  console.log(`\n📊 카테고리별 통계:`);
+  for (const [category, count] of Object.entries(categoryStats)) {
+    console.log(`   ${category}: ${count}개`);
+  }
+  
+  console.log(`\n✅ Sitemap generated: ${outputPath}`);
   console.log(`   Total URLs: ${pages.length}`);
 
   return pages.length;
