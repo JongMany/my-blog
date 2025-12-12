@@ -288,6 +288,69 @@ function createAppIndexPages(outputPath) {
   }
 }
 
+/**
+ * Sitemap에서 모든 URL 경로를 추출하여 각 경로에 index.html 생성
+ * Googlebot이 404 없이 크롤링할 수 있도록 합니다.
+ * @param {string} outputPath
+ * @returns {void}
+ */
+function createSitemapIndexPages(outputPath) {
+  const shellIndexPath = path.join(outputPath, "index.html");
+  const sitemapPath = path.join(outputPath, "sitemap.xml");
+
+  if (!fileExists(shellIndexPath)) {
+    console.warn(
+      "⚠️  shell index.html not found, skipping sitemap index pages",
+    );
+    return;
+  }
+
+  if (!fileExists(sitemapPath)) {
+    console.warn("⚠️  sitemap.xml not found, skipping sitemap index pages");
+    return;
+  }
+
+  try {
+    const sitemapContent = fs.readFileSync(sitemapPath, "utf-8");
+    const urlMatches = sitemapContent.matchAll(
+      /<loc>(https?:\/\/[^<]+)<\/loc>/g,
+    );
+
+    const baseUrl = "https://jongmany.github.io/my-blog";
+    let createdCount = 0;
+
+    for (const match of urlMatches) {
+      const fullUrl = match[1];
+
+      // base URL 제거하여 경로만 추출
+      if (!fullUrl.startsWith(baseUrl)) continue;
+
+      const urlPath = fullUrl.replace(baseUrl, "").replace(/\/$/, "") || "/";
+
+      // 루트 경로는 이미 index.html이 있으므로 스킵
+      if (urlPath === "/") continue;
+
+      // 경로에서 index.html 생성
+      // 예: /blog/books/the_art_of_unit_testing -> dist_ghp/blog/books/the_art_of_unit_testing/index.html
+      const targetDir = path.join(outputPath, urlPath.slice(1)); // 앞의 / 제거
+      const targetIndexPath = path.join(targetDir, "index.html");
+
+      // 이미 존재하는 경우 스킵 (앱 경로는 이미 생성됨)
+      if (fileExists(targetIndexPath)) continue;
+
+      ensureDirectory(targetDir);
+      fs.copyFileSync(shellIndexPath, targetIndexPath);
+      createdCount++;
+    }
+
+    if (createdCount > 0) {
+      console.log(`✓ created ${createdCount} index.html files from sitemap`);
+    }
+  } catch (error) {
+    console.warn(`⚠️  Failed to create sitemap index pages: ${error.message}`);
+  }
+}
+
 // ============================================================================
 // 앱 처리 함수들
 // ============================================================================
@@ -390,6 +453,10 @@ function collectGitHubPagesFiles() {
     // GitHub Pages가 해당 경로의 index.html을 찾아 shell 앱을 로드하고,
     // shell 라우터가 경로를 처리할 수 있습니다.
     createAppIndexPages(outputPath);
+
+    // Sitemap의 모든 URL 경로에 index.html 생성
+    // Googlebot이 404 없이 크롤링할 수 있도록 합니다.
+    createSitemapIndexPages(outputPath);
 
     // 404 리다이렉트 페이지 생성 (실제로 없는 경로용)
     createRedirect404Page(outputPath, CONFIG.REPOSITORY_NAME);
