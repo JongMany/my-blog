@@ -4,12 +4,16 @@ export const experiences: Experience[] = [
   {
     companyName: "토스증권 (Toss Securities)",
     position: "Frontend Developer(Chart)",
-    workPeriod: "2025.12.08 입사 예정",
+    workPeriod: "2025.12.08 - now",
+    overview:
+      "토스증권 내 유저의 거래를 돕기 위한 차트 내 기능들을 개발하고 있습니다.",
+    techStack: ["TradingView", "Next.js"],
+    sections: [],
   },
   {
     companyName: "아데나 소프트웨어 (코인니스)",
     position: "Frontend Developer",
-    workPeriod: "2025.07 - now",
+    workPeriod: "2025.07 - 2025.11",
     overview:
       "암호화폐 거래소의 WTS(Web Trading System)을 개발했습니다. 이 과정에서 사용자의 거래 편의성을 높이기 위한 기능들을 기획 및 개발했습니다.",
     techStack: [
